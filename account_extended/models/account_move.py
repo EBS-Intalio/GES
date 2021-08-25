@@ -55,7 +55,7 @@ class AccountMoveEXT(models.Model):
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': company.expense_account_id.id or False,
+                                        'account_id': company.receivable_id.id or False,
                                         'debit': new_amount - old_amount,
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -82,7 +82,7 @@ class AccountMoveEXT(models.Model):
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': company.income_account_id.id or  False,
+                                        'account_id': company.receivable_id.id or  False,
                                         'credit': abs(new_amount - old_amount),
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -116,7 +116,7 @@ class AccountMoveEXT(models.Model):
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': company.expense_account_id.id or  False,
+                                        'account_id': company.payable_id.id or  False,
                                         'debit': new_amount - old_amount,
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -142,7 +142,7 @@ class AccountMoveEXT(models.Model):
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': company.income_account_id.id or  False,
+                                        'account_id': company.payable_id.id or  False,
                                         'credit': abs(new_amount - old_amount),
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(

@@ -15,4 +15,6 @@ class ResConfigSettingsExt(models.TransientModel):
                                                                      ('user_type_id', 'in', %s)]" % [
                                             self.env.ref('account.data_account_type_revenue').id,
                                             self.env.ref('account.data_account_type_other_income').id])
+    receivable_id = fields.Many2one('account.account', string='Receivable Account', related='company_id.receivable_id',readonly=False)
+    payable_id = fields.Many2one('account.account', string='Payable Account', related='company_id.payable_id', readonly=False)
 
