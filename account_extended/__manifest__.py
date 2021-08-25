@@ -14,7 +14,7 @@
         'views/ir_cron.xml',
         'views/res_company.xml',
         'wizard/res_config_settings_view.xml',
-        # 'views/search_template_inherit.xml',
+        'views/search_template_inherit.xml',
     ],
     'installable': True,
     'application': True,
