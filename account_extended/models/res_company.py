@@ -20,5 +20,5 @@ class ResCompanyEXT(models.Model):
     account_journal_id = fields.Many2one('account.journal', string='Journal', domain=[('type', '=', 'general')])
     expense_account_id = fields.Many2one('account.account', string='Expense Account')
     income_account_id = fields.Many2one('account.account', string='Income Account')
-    receivable_id = fields.Many2one('account.account', string='Receivable Account')
-    payable_id = fields.Many2one('account.account', string='Payable Account')
+    # receivable_id = fields.Many2one('account.account', string='Receivable Account')
+    # payable_id = fields.Many2one('account.account', string='Payable Account')

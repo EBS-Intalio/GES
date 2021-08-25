@@ -28,14 +28,7 @@
                                         <label for="expense_account_id" class="col-lg-3 o_light_label"/>
                                         <field name="expense_account_id"/>
                                     </div>
-                                    <div class="row mt8">
-                                        <label for="receivable_id" class="col-lg-3 o_light_label"/>
-                                        <field name="receivable_id"/>
-                                    </div>
-                                    <div class="row mt8">
-                                        <label for="payable_id" class="col-lg-3 o_light_label"/>
-                                        <field name="payable_id"/>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
