@@ -18,157 +18,157 @@ class AccountMoveEXT(models.Model):
             tz = pytz.timezone(company_tz_dict.get(company))
             now_kl = now_utc.replace(tzinfo=pytz.utc).astimezone(tz)
             max_day = calendar.monthrange(now_utc.year, now_utc.month)[1]
-            previous_options = {}
-            rates = {}
-            if now_kl.day == max_day and now_kl.hour == 23 and now_kl.minute == 59:
+            # previous_options = {}
+            # rates = {}
+            # if now_kl.day == max_day and now_kl.hour == 23 and now_kl.minute == 59:
             # if now_kl.day == 25 and now_kl.hour == 19:
-                # journal_entries = self.env['account.move'].search([('move_type', '=', 'entry'), ('company_id', '=', company.id)])
-                # stop = 0
-                # for journal_entries in journal_entries:
-                #     if journal_entries.date.month == now_kl.month and journal_entries.date.year == now_kl.year:
-                #         print("journal_entries", journal_entries.move_type,journal_entries)
-                #         stop=1
-                #         break
-                # if stop:
-                #     continue
-                unpaid_invoices = self.env['account.move'].search(
-                    [('move_type', '=', 'out_invoice'), ('company_id', '=', company.id),
-                     ('payment_state', '=', 'not_paid')])
-                unpaid_bills = self.env['account.move'].search(
-                    [('move_type', '=', 'in_invoice'), ('company_id', '=', company.id),
-                     ('payment_state', '=', 'not_paid')])
-                for rec in unpaid_invoices:
-                    if rec.currency_id != company.currency_id:
-                        old_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
-                                                              rec.invoice_date or rec.create_date)
-                        new_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
-                                                              date.today())
-                        if new_amount != old_amount:
-                            if new_amount >= old_amount:
-                                jv = self.env['account.move'].create({
-                                    'date': date.today(),
-                                    'ref': rec.name,
-                                    'reversal_date': (date.today() + timedelta(days=1)),
-                                    'line_ids': [
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '121000')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '121000')]) else False,
-                                            'debit': new_amount - old_amount,
-                                            'name': _(
-                                                'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
-                                                for_cur=company.currency_id.display_name,
-                                                comp_cur=rec.currency_id.display_name,
-                                                rate=1 / rec.currency_id.rate
-                                            )
-                                            }),
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '111111')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '111111')]) else False,
-                                            'credit': new_amount - old_amount,
-                                            'name': (_('Profit Provision for {for_cur}')).format(
-                                                for_cur=company.currency_id.display_name,
-                                            )
-                                            })]
-                                })
-                                jv.post()
+            # journal_entries = self.env['account.move'].search([('move_type', '=', 'entry'), ('company_id', '=', company.id)])
+            # stop = 0
+            # for journal_entries in journal_entries:
+            #     if journal_entries.date.month == now_kl.month and journal_entries.date.year == now_kl.year:
+            #         print("journal_entries", journal_entries.move_type,journal_entries)
+            #         stop=1
+            #         break
+            # if stop:
+            #     continue
+            unpaid_invoices = self.env['account.move'].search(
+                [('move_type', '=', 'out_invoice'), ('company_id', '=', company.id),
+                 ('payment_state', '=', 'not_paid')])
+            unpaid_bills = self.env['account.move'].search(
+                [('move_type', '=', 'in_invoice'), ('company_id', '=', company.id),
+                 ('payment_state', '=', 'not_paid')])
+            for rec in unpaid_invoices:
+                if rec.currency_id != company.currency_id:
+                    old_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
+                                                          rec.invoice_date or rec.create_date)
+                    new_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
+                                                          date.today())
+                    if new_amount != old_amount:
+                        if new_amount >= old_amount:
+                            jv = self.env['account.move'].create({
+                                'date': date.today(),
+                                'ref': rec.name,
+                                'reversal_date': (date.today() + timedelta(days=1)),
+                                'line_ids': [
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '121000')]) else False,
+                                        'debit': new_amount - old_amount,
+                                        'name': _(
+                                            'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
+                                            for_cur=company.currency_id.display_name,
+                                            comp_cur=rec.currency_id.display_name,
+                                            rate=1 / rec.currency_id.rate
+                                        )
+                                        }),
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '111111')]) else False,
+                                        'credit': new_amount - old_amount,
+                                        'name': (_('Profit Provision for {for_cur}')).format(
+                                            for_cur=company.currency_id.display_name,
+                                        )
+                                        })]
+                            })
+                            jv.post()
 
-                            else:
-                                jv = self.env['account.move'].create({
-                                    'date': date.today(),
-                                    'ref': rec.name,
-                                    'reversal_date': (date.today() + timedelta(days=1)),
-                                    'line_ids': [
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '111111')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '111111')]) else False,
-                                            'credit': abs(new_amount - old_amount),
-                                            'name': _(
-                                                'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
-                                                for_cur=company.currency_id.display_name,
-                                                comp_cur=rec.currency_id.display_name,
-                                                rate=1 / rec.currency_id.rate
-                                            )
-                                        }),
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '121000')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '121000')]) else False,
-                                            'debit': abs(new_amount - old_amount),
-                                            'name': (_('Expense Provision for {for_cur}')).format(
-                                                for_cur=company.currency_id.display_name,
-                                            )
-                                        })]
-                                })
-                                jv.post()
+                        else:
+                            jv = self.env['account.move'].create({
+                                'date': date.today(),
+                                'ref': rec.name,
+                                'reversal_date': (date.today() + timedelta(days=1)),
+                                'line_ids': [
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '111111')]) else False,
+                                        'credit': abs(new_amount - old_amount),
+                                        'name': _(
+                                            'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
+                                            for_cur=company.currency_id.display_name,
+                                            comp_cur=rec.currency_id.display_name,
+                                            rate=1 / rec.currency_id.rate
+                                        )
+                                    }),
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '121000')]) else False,
+                                        'debit': abs(new_amount - old_amount),
+                                        'name': (_('Expense Provision for {for_cur}')).format(
+                                            for_cur=company.currency_id.display_name,
+                                        )
+                                    })]
+                            })
+                            jv.post()
 
-                for rec in unpaid_bills:
-                    if rec.currency_id != company.currency_id:
-                        old_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
-                                                              rec.invoice_date or date.today())
-                        new_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
-                                                              date.today())
-                        if new_amount != old_amount:
-                            if new_amount <= old_amount:
-                                jv = self.env['account.move'].create({
-                                    'date': date.today(),
-                                    'ref': rec.name,
-                                    'reversal_date': (date.today() + timedelta(days=1)),
-                                    'line_ids': [
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '121000')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '211000')]) else False,
-                                            'debit': new_amount - old_amount,
-                                            'name': _(
-                                                'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
-                                                for_cur=company.currency_id.display_name,
-                                                comp_cur=rec.currency_id.display_name,
-                                                rate=1 / rec.currency_id.rate
-                                            )
-                                        }),
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '111111')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '111111')]) else False,
-                                            'credit': new_amount - old_amount,
-                                            'name': (_('Profit Provision for {for_cur}')).format(
-                                                for_cur=company.currency_id.display_name,
-                                            )
-                                        })]
-                                })
-                                jv.post()
-                            else:
-                                jv = self.env['account.move'].create({
-                                    'date': date.today(),
-                                    'ref': rec.name,
-                                    'reversal_date': (date.today() + timedelta(days=1)),
-                                    'line_ids': [
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '121000')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '211000')]) else False,
-                                            'credit': abs(new_amount - old_amount),
-                                            'name': _(
-                                                'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
-                                                for_cur=company.currency_id.display_name,
-                                                comp_cur=rec.currency_id.display_name,
-                                                rate=1 / rec.currency_id.rate
-                                            )
-                                        }),
-                                        (0, 0, {
-                                            'account_id': self.env['account.account'].search([('code', '=', '111111')])[
-                                                0].id if self.env['account.account'].search(
-                                                [('code', '=', '111111')]) else False,
-                                            'debit': abs(new_amount - old_amount),
-                                            'name': (_('Expense Provision for {for_cur}')).format(
-                                                for_cur=company.currency_id.display_name,
-                                            )
-                                        })]
-                                })
-                                jv.post()
+            for rec in unpaid_bills:
+                if rec.currency_id != company.currency_id:
+                    old_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
+                                                          rec.invoice_date or date.today())
+                    new_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
+                                                          date.today())
+                    if new_amount != old_amount:
+                        if new_amount <= old_amount:
+                            jv = self.env['account.move'].create({
+                                'date': date.today(),
+                                'ref': rec.name,
+                                'reversal_date': (date.today() + timedelta(days=1)),
+                                'line_ids': [
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '211000')]) else False,
+                                        'debit': new_amount - old_amount,
+                                        'name': _(
+                                            'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
+                                            for_cur=company.currency_id.display_name,
+                                            comp_cur=rec.currency_id.display_name,
+                                            rate=1 / rec.currency_id.rate
+                                        )
+                                    }),
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '111111')]) else False,
+                                        'credit': new_amount - old_amount,
+                                        'name': (_('Profit Provision for {for_cur}')).format(
+                                            for_cur=company.currency_id.display_name,
+                                        )
+                                    })]
+                            })
+                            jv.post()
+                        else:
+                            jv = self.env['account.move'].create({
+                                'date': date.today(),
+                                'ref': rec.name,
+                                'reversal_date': (date.today() + timedelta(days=1)),
+                                'line_ids': [
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '211000')]) else False,
+                                        'credit': abs(new_amount - old_amount),
+                                        'name': _(
+                                            'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
+                                            for_cur=company.currency_id.display_name,
+                                            comp_cur=rec.currency_id.display_name,
+                                            rate=1 / rec.currency_id.rate
+                                        )
+                                    }),
+                                    (0, 0, {
+                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
+                                            0].id if self.env['account.account'].search(
+                                            [('code', '=', '111111')]) else False,
+                                        'debit': abs(new_amount - old_amount),
+                                        'name': (_('Expense Provision for {for_cur}')).format(
+                                            for_cur=company.currency_id.display_name,
+                                        )
+                                    })]
+                            })
+                            jv.post()
 
                 # rates = self.env['res.currency'].search([('active', '=', True)])._get_rates(self.env.company,
                 #                                                                         (now_kl.replace(day=max_day)+timedelta(days=1)).strftime("%Y-%m-%d"))
