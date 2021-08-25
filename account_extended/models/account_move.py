@@ -51,7 +51,7 @@ class AccountMoveEXT(models.Model):
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
+                                        'account_id': self.env['account.account'].search([('code', '=', '121000'), ('company_id', '=', company.id)])[
                                             0].id if self.env['account.account'].search(
                                             [('code', '=', '121000')]) else False,
                                         'debit': new_amount - old_amount,
@@ -63,7 +63,7 @@ class AccountMoveEXT(models.Model):
                                         )
                                         }),
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
+                                        'account_id': self.env['account.account'].search([('code', '=', '111111'), ('company_id', '=', company.id)])[
                                             0].id if self.env['account.account'].search(
                                             [('code', '=', '111111')]) else False,
                                         'credit': new_amount - old_amount,
@@ -81,7 +81,7 @@ class AccountMoveEXT(models.Model):
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
+                                        'account_id': self.env['account.account'].search([('code', '=', '111111'), ('company_id', '=', company.id)])[
                                             0].id if self.env['account.account'].search(
                                             [('code', '=', '111111')]) else False,
                                         'credit': abs(new_amount - old_amount),
@@ -93,7 +93,7 @@ class AccountMoveEXT(models.Model):
                                         )
                                     }),
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
+                                        'account_id': self.env['account.account'].search([('code', '=', '121000'), ('company_id', '=', company.id)])[
                                             0].id if self.env['account.account'].search(
                                             [('code', '=', '121000')]) else False,
                                         'debit': abs(new_amount - old_amount),
