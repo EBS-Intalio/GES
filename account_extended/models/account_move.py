@@ -71,56 +71,59 @@ class AccountMoveEXT(models.Model):
 
 
             # rec = self.env['account.multicurrency.revaluation'].with_context(unfolded_lines=[], currency_rates=currency_rates)._get_lines(options=options,)
-            wiz_rec = self.env['account.multicurrency.revaluation.wizard'].with_context(unfolded_lines=[],
-                                                                              currency_rates=currency_rates).create({
-                    'journal_id':company.account_revaluation_journal_id.id,
-                    'expense_provision_account_id':company.account_revaluation_expense_provision_account_id.id,
-                    'income_provision_account_id':company.account_revaluation_income_provision_account_id.id,
-                    'date':now_kl.replace(day=max_day).strftime("%Y-%m-%d"),
-                    'reversal_date':(now_kl.replace(day=max_day)+timedelta(days=1)).strftime("%Y-%m-%d"),
-                    'company_id':company.id
-                })
-            if wiz_rec and company.expense_account_id and company.income_account_id:
-                account_move_id = self.env['account.move'].create({
-                    'date': date.today(),
-                    'ref': 'Adjustment Entry',
-                    'company_id':company.id,
-                    'journal_id': company.account_journal_id.id or False,
-                    'reversal_date': (date.today() + timedelta(days=1)),
-                })
-                preview_data = json.loads(wiz_rec.preview_data)
-                for group in preview_data.get('groups_vals'):
-                    for items_vals in group.get('items_vals'):
-                        data = items_vals[2]
-                        if data.get('account_int_id') != False:
-                            self.env['account.move.line'].with_context(check_move_validity=False).create({
-                                'date': date.today(),
-                                'move_id':account_move_id.id,
-                                'account_id':data.get('account_int_id'),
-                                'debit':data.get('debit_int'),
-                                'credit':data.get('credit_int'),
-                            })
-                        else:
-                            if data.get('debit_int') != 0.0:
-                                # for loss
-                                # loss account
-
+            try:
+                wiz_rec = self.env['account.multicurrency.revaluation.wizard'].with_context(allowed_company_ids=[company.id],company_id=company.id,unfolded_lines=[],
+                                                                                  currency_rates=currency_rates).create({
+                        'journal_id':company.account_revaluation_journal_id.id,
+                        'expense_provision_account_id':company.account_revaluation_expense_provision_account_id.id,
+                        'income_provision_account_id':company.account_revaluation_income_provision_account_id.id,
+                        'date':now_kl.replace(day=max_day).strftime("%Y-%m-%d"),
+                        'reversal_date':(now_kl.replace(day=max_day)+timedelta(days=1)).strftime("%Y-%m-%d"),
+                        'company_id':company.id
+                    })
+                if wiz_rec and company.expense_account_id and company.income_account_id:
+                    account_move_id = self.env['account.move'].create({
+                        'date': date.today(),
+                        'ref': 'Adjustment Entry',
+                        'company_id':company.id,
+                        'journal_id': company.account_journal_id.id or False,
+                        'reversal_date': (date.today() + timedelta(days=1)),
+                    })
+                    preview_data = json.loads(wiz_rec.preview_data)
+                    for group in preview_data.get('groups_vals'):
+                        for items_vals in group.get('items_vals'):
+                            data = items_vals[2]
+                            if data.get('account_int_id') != False:
                                 self.env['account.move.line'].with_context(check_move_validity=False).create({
                                     'date': date.today(),
-                                    'move_id': account_move_id.id,
-                                    'account_id': company.expense_account_id.id,
-                                    'debit': data.get('debit_int'),
-                                    'credit': data.get('credit_int'),
+                                    'move_id':account_move_id.id,
+                                    'account_id':data.get('account_int_id'),
+                                    'debit':data.get('debit_int'),
+                                    'credit':data.get('credit_int'),
                                 })
                             else:
-                                self.env['account.move.line'].with_context(check_move_validity=False).create({
-                                    'date': date.today(),
-                                    'move_id': account_move_id.id,
-                                    'account_id': company.income_account_id.id,
-                                    'debit': data.get('debit_int'),
-                                    'credit': data.get('credit_int'),
-                                })
-                account_move_id.post()
+                                if data.get('debit_int') != 0.0:
+                                    # for loss
+                                    # loss account
+
+                                    self.env['account.move.line'].with_context(check_move_validity=False).create({
+                                        'date': date.today(),
+                                        'move_id': account_move_id.id,
+                                        'account_id': company.expense_account_id.id,
+                                        'debit': data.get('debit_int'),
+                                        'credit': data.get('credit_int'),
+                                    })
+                                else:
+                                    self.env['account.move.line'].with_context(check_move_validity=False).create({
+                                        'date': date.today(),
+                                        'move_id': account_move_id.id,
+                                        'account_id': company.income_account_id.id,
+                                        'debit': data.get('debit_int'),
+                                        'credit': data.get('credit_int'),
+                                    })
+                    account_move_id.post()
+            except:
+                continue
 
 
             # self.env['account.aged.receivable'].with_context(date_to=fields.Date.today(),
