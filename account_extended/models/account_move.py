@@ -73,9 +73,9 @@ class AccountMoveEXT(models.Model):
             # rec = self.env['account.multicurrency.revaluation'].with_context(unfolded_lines=[], currency_rates=currency_rates)._get_lines(options=options,)
             wiz_rec = self.env['account.multicurrency.revaluation.wizard'].with_context(unfolded_lines=[],
                                                                               currency_rates=currency_rates).create({
-                    'journal_id':company.account_revaluation_journal_id,
-                    'expense_provision_account_id':company.account_revaluation_expense_provision_account_id,
-                    'income_provision_account_id':company.account_revaluation_income_provision_account_id,
+                    'journal_id':company.account_revaluation_journal_id.id,
+                    'expense_provision_account_id':company.account_revaluation_expense_provision_account_id.id,
+                    'income_provision_account_id':company.account_revaluation_income_provision_account_id.id,
                     'date':now_kl.replace(day=max_day).strftime("%Y-%m-%d"),
                     'reversal_date':(now_kl.replace(day=max_day)+timedelta(days=1)).strftime("%Y-%m-%d"),
                     'company_id':company.id
@@ -84,6 +84,7 @@ class AccountMoveEXT(models.Model):
                 account_move_id = self.env['account.move'].create({
                     'date': date.today(),
                     'ref': 'Adjustment Entry',
+                    'company_id':company.id,
                     'journal_id': company.account_journal_id.id or False,
                     'reversal_date': (date.today() + timedelta(days=1)),
                 })
