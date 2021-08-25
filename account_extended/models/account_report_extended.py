@@ -1,5 +1,5 @@
 from odoo import api, models, _, fields
-from odoo.odoo.tools import date_utils
+from odoo.tools import date_utils
 
 
 class AccountReportExtended(models.AbstractModel):
