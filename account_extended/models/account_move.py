@@ -43,17 +43,19 @@ class AccountMoveEXT(models.Model):
                                                           rec.invoice_date or rec.create_date)
                     new_amount = rec.currency_id._convert(rec.amount_total, company.currency_id, company,
                                                           date.today())
+                    # journal_id = int(self.env['ir.config_parameter'].sudo().get_param('account_extended.account_journal_id'))
+                    # income_account_id = int(self.env['ir.config_parameter'].sudo().get_param('account_extended.income_account_id'))
+                    # expense_account_id = int(self.env['ir.config_parameter'].sudo().get_param('account_extended.expense_account_id'))
                     if new_amount != old_amount:
                         if new_amount >= old_amount:
                             jv = self.env['account.move'].create({
                                 'date': date.today(),
                                 'ref': rec.name,
+                                'journal_id': company.account_journal_id.id or False,
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '121000'), ('company_id', '=', company.id)])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '121000')]) else False,
+                                        'account_id': company.expense_account_id.id or False,
                                         'debit': new_amount - old_amount,
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -63,9 +65,7 @@ class AccountMoveEXT(models.Model):
                                         )
                                         }),
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '111111'), ('company_id', '=', company.id)])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '111111')]) else False,
+                                        'account_id': company.income_account_id.id or  False,
                                         'credit': new_amount - old_amount,
                                         'name': (_('Profit Provision for {for_cur}')).format(
                                             for_cur=company.currency_id.display_name,
@@ -78,12 +78,11 @@ class AccountMoveEXT(models.Model):
                             jv = self.env['account.move'].create({
                                 'date': date.today(),
                                 'ref': rec.name,
+                                'journal_id': company.account_journal_id.id or False,
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '111111'), ('company_id', '=', company.id)])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '111111')]) else False,
+                                        'account_id': company.income_account_id.id or  False,
                                         'credit': abs(new_amount - old_amount),
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -93,9 +92,7 @@ class AccountMoveEXT(models.Model):
                                         )
                                     }),
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '121000'), ('company_id', '=', company.id)])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '121000')]) else False,
+                                        'account_id': company.expense_account_id.id or False,
                                         'debit': abs(new_amount - old_amount),
                                         'name': (_('Expense Provision for {for_cur}')).format(
                                             for_cur=company.currency_id.display_name,
@@ -115,12 +112,11 @@ class AccountMoveEXT(models.Model):
                             jv = self.env['account.move'].create({
                                 'date': date.today(),
                                 'ref': rec.name,
+                                'journal_id': company.account_journal_id.id or False,
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '211000')]) else False,
+                                        'account_id': company.expense_account_id.id or  False,
                                         'debit': new_amount - old_amount,
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -130,9 +126,7 @@ class AccountMoveEXT(models.Model):
                                         )
                                     }),
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '111111')]) else False,
+                                        'account_id': company.income_account_id.id or  False,
                                         'credit': new_amount - old_amount,
                                         'name': (_('Profit Provision for {for_cur}')).format(
                                             for_cur=company.currency_id.display_name,
@@ -144,12 +138,11 @@ class AccountMoveEXT(models.Model):
                             jv = self.env['account.move'].create({
                                 'date': date.today(),
                                 'ref': rec.name,
+                                'journal_id': company.account_journal_id.id or False,
                                 'reversal_date': (date.today() + timedelta(days=1)),
                                 'line_ids': [
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '121000')])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '211000')]) else False,
+                                        'account_id': company.income_account_id.id or  False,
                                         'credit': abs(new_amount - old_amount),
                                         'name': _(
                                             'Provision for {for_cur} (1 {comp_cur} = {rate} {for_cur})').format(
@@ -159,9 +152,7 @@ class AccountMoveEXT(models.Model):
                                         )
                                     }),
                                     (0, 0, {
-                                        'account_id': self.env['account.account'].search([('code', '=', '111111')])[
-                                            0].id if self.env['account.account'].search(
-                                            [('code', '=', '111111')]) else False,
+                                        'account_id': company.expense_account_id.id or  False,
                                         'debit': abs(new_amount - old_amount),
                                         'name': (_('Expense Provision for {for_cur}')).format(
                                             for_cur=company.currency_id.display_name,
