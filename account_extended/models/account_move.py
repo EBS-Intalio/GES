@@ -96,6 +96,7 @@ class AccountMoveEXT(models.Model):
                             if data.get('account_int_id') != False:
                                 self.env['account.move.line'].with_context(check_move_validity=False).create({
                                     'date': date.today(),
+                                    'name':data.get('name'),
                                     'move_id':account_move_id.id,
                                     'account_id':data.get('account_int_id'),
                                     'debit':data.get('debit_int'),
@@ -108,6 +109,7 @@ class AccountMoveEXT(models.Model):
 
                                     self.env['account.move.line'].with_context(check_move_validity=False).create({
                                         'date': date.today(),
+                                        'name': data.get('name'),
                                         'move_id': account_move_id.id,
                                         'account_id': company.expense_account_id.id,
                                         'debit': data.get('debit_int'),
@@ -116,6 +118,7 @@ class AccountMoveEXT(models.Model):
                                 else:
                                     self.env['account.move.line'].with_context(check_move_validity=False).create({
                                         'date': date.today(),
+                                        'name': data.get('name'),
                                         'move_id': account_move_id.id,
                                         'account_id': company.income_account_id.id,
                                         'debit': data.get('debit_int'),
