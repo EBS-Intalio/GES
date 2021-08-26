@@ -93,6 +93,7 @@ class AccountMoveEXT(models.Model):
                     for group in preview_data.get('groups_vals'):
                         for items_vals in group.get('items_vals'):
                             data = items_vals[2]
+                            print("=============================",data)
                             if data.get('account_int_id') != False:
                                 self.env['account.move.line'].with_context(check_move_validity=False).create({
                                     'date': date.today(),
@@ -101,6 +102,7 @@ class AccountMoveEXT(models.Model):
                                     'account_id':data.get('account_int_id'),
                                     'debit':data.get('debit_int'),
                                     'credit':data.get('credit_int'),
+                                    'currency_id':data.get('currency_id'),
                                 })
                             else:
                                 if data.get('debit_int') != 0.0:
@@ -114,6 +116,7 @@ class AccountMoveEXT(models.Model):
                                         'account_id': company.expense_account_id.id,
                                         'debit': data.get('debit_int'),
                                         'credit': data.get('credit_int'),
+                                        'currency_id': data.get('currency_id'),
                                     })
                                 else:
                                     self.env['account.move.line'].with_context(check_move_validity=False).create({
@@ -123,6 +126,7 @@ class AccountMoveEXT(models.Model):
                                         'account_id': company.income_account_id.id,
                                         'debit': data.get('debit_int'),
                                         'credit': data.get('credit_int'),
+                                        'currency_id': data.get('currency_id'),
                                     })
                     account_move_id.post()
             except:
