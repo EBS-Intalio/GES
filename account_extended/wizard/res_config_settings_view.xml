@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="account_extended_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">account_extended.res.config.settings.form.view.account</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <div id="analytic" position="after">
+                    <h2>Unrealized gain/loss</h2>
+                    <div class="row mt16 o_settings_container" name="unrealized_gain_loss_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="unrealized_gain_loss">
+                            <div class="o_setting_right_pane">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <b>Unrealized gain/loss entries in:</b>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="account_journal_id" class="col-lg-3 o_light_label" />
+                                        <field name="account_journal_id"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="income_account_id" class="col-lg-3 o_light_label"/>
+                                        <field name="income_account_id"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="expense_account_id" class="col-lg-3 o_light_label"/>
+                                        <field name="expense_account_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>
