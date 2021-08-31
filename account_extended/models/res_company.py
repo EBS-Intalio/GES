@@ -4,6 +4,8 @@ from odoo import api, fields, models, _
 
 # put POSIX 'Etc/*' entries at the end to avoid confusing users - see bug 1086728
 _tzs = [(tz, tz) for tz in sorted(pytz.all_timezones, key=lambda tz: tz if not tz.startswith('Etc/') else '_')]
+
+
 def _tz_get(self):
     return _tzs
 
@@ -20,5 +22,3 @@ class ResCompanyEXT(models.Model):
     account_journal_id = fields.Many2one('account.journal', string='Journal', domain=[('type', '=', 'general')])
     expense_account_id = fields.Many2one('account.account', string='Expense Account')
     income_account_id = fields.Many2one('account.account', string='Income Account')
-    # receivable_id = fields.Many2one('account.account', string='Receivable Account')
-    # payable_id = fields.Many2one('account.account', string='Payable Account')

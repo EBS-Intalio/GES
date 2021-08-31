@@ -1,22 +1,16 @@
 <odoo>
     <data>
-<!--        <template id="assets_backend" name="account assets" inherit_id="web.assets_backend">-->
-<!--            <xpath expr="." position="inside">-->
-<!--                <script type="text/javascript" src="/account_extended/static/src/js/account_reports.js"/>-->
-<!--            </xpath>-->
-<!--        </template>-->
+
         <template id="search_template" inherit_id="account_reports.search_template">
             <xpath expr="//div[hasclass('o_account_reports_filter_date_cmp')]" position="after">
-                <div class="btn-group o_dropdown" t-if="options.get('currency') != None ">
+                <div class="btn-group o_dropdown" t-if="options.get('currency') != None and options.get('unhide_currency') == True">
                     <t t-call="account_extended.search_template_filter_currency"/>
                 </div>
 
-<!--                <div class="btn-g_get_options_domainroup o_dropdown " t-if="options.get('accounts') != None">-->
-<!--                    <t t-call="account_extended.search_template_filter_account"/>-->
-<!--                </div>-->
             </xpath>
         </template>
         <template id="search_template_filter_currency">
+
             <a type="button" class="dropdown-toggle select_currency" data-toggle="dropdown">
                 <span class="fa fa-book"/>
                 Currencies:
@@ -25,7 +19,7 @@
                 <t t-if="selected_currency">
                     <t t-esc="selected_currency"/>
                 </t>
-                <t t-else="">All</t>
+                <t t-else="">None</t>
             </a>
             <div id="select_currency" class="dropdown-menu o_filters_menu" role="menu">
                 <t t-foreach="options['currency']" t-as="j">
@@ -53,60 +47,6 @@
                 </t>
             </div>
         </template>
-<!--        <template id="search_template_filter_account">-->
-<!--            <a  type="button" class="dropdown-toggle account_account_filter" data-toggle="dropdown">-->
-<!--                <span class="fa fa-folder-open"/>-->
-<!--                Accounts Accounts-->
-<!--            </a>-->
-<!--            <ul class="dropdown-menu o_filters_menu" role="menu">-->
-<!--                <li class="o_account_report_search js_account_model_m2m"/>-->
-<!--            </ul>-->
-<!--        </template>-->
 
-<!--        <template id="search_template_filter_account">-->
-<!--            <a type="button" class="dropdown-toggle accounts_filter" data-toggle="dropdown">-->
-<!--                <span class="fa fa-folder-open"/>-->
-<!--                Account-->
-<!--            </a>-->
-<!--            <div class="dropdown-menu o_filters_menu" role="menu">-->
-<!--                <li style='margin-left: 10px; margin-right: 10px;'>-->
-<!--                    <b>Account</b>-->
-<!--                    <br/>-->
-<!--                    <select class="js_account_reports_accounts"-->
-<!--                            data-filter="accounts" multiple="multiple" style="min-width: 200px;">-->
-<!--                        <t t-foreach="request.env['account.account'].search([('company_id','in',request.env.company.ids)])" t-as="a">-->
-<!--                            <option t-att-value="a.id">-->
-<!--                                <t t-esc="a.code"/> - <t t-esc="a.name"/>-->
-<!--                            </option>-->
-<!--                        </t>-->
-<!--                    </select>-->
-<!--                </li>-->
-<!--                <div class="dropdown-divider" role="separator"></div>-->
-<!--            </div>-->
-<!--        </template>-->
-
-        <!--         This template is inherit to show warning only in TRIAL BALANCE report -->
-<!--        <template id="main_template_warning" inherit_id="account_reports.main_template">-->
-<!--            <xpath expr="//div[hasclass('o_account_reports_body')]/div" position="after">-->
-<!--                <t t-foreach="model.reverse(options['currency'])" t-as="curr">-->
-<!--                    <t t-if="curr.get('selected') == True">-->
-<!--                        <div class="alert alert-info text-center mb-0 no_print">-->
-<!--                            <t t-if="model._name == 'account.coa.report'">-->
-<!--                                <span style="color:red;">-->
-<!--                                    To select another currency please-->
-<!--                                    <b>disable current currency</b>-->
-<!--                                </span>-->
-<!--                            </t>-->
-<!--                            <t t-elif="model._name == 'account.assets.report'">-->
-<!--                                <span style="color:red;">-->
-<!--                                    To select another currency please-->
-<!--                                    <b>disable current currency</b>-->
-<!--                                </span>-->
-<!--                            </t>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                </t>-->
-<!--            </xpath>-->
-<!--        </template>-->
     </data>
 </odoo>
