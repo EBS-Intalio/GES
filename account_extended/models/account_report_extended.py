@@ -3,6 +3,8 @@ from odoo.tools import date_utils
 
 from odoo.tools import formatLang
 from odoo.addons.account_reports.models.formula import FormulaSolver, PROTECTED_KEYWORDS
+from odoo.http import request
+from collections import defaultdict
 
 
 class AccountReportExtended(models.AbstractModel):
@@ -75,6 +77,118 @@ class AccountReportExtended(models.AbstractModel):
                 'name': c.name,
                 'selected': currency_map.get(c.id, c.id in currencies),
             })
+
+    @api.model
+    def _create_hierarchy(self, lines, options):
+        """Compute the hierarchy based on account groups when the option is activated.
+
+        The option is available only when there are account.group for the company.
+        It should be called when before returning the lines to the client/templater.
+        The lines are the result of _get_lines(). If there is a hierarchy, it is left
+        untouched, only the lines related to an account.account are put in a hierarchy
+        according to the account.group's and their prefixes.
+        """
+        unfold_all = self.env.context.get('print_mode') and len(options.get('unfolded_lines')) == 0 or options.get(
+            'unfold_all')
+
+        def add_to_hierarchy(lines, key, level, parent_id, hierarchy_parent, hierarchy):
+            val_dict = hierarchy[key]
+            # add the group totals
+            lines.append({
+                'id': val_dict['id'],
+                'name': val_dict['name'],
+                'title_hover': val_dict['name'],
+                'unfoldable': True,
+                'unfolded': hierarchy_parent in options.get('unfolded_lines') or unfold_all,
+                'level': level,
+                'parent_id': parent_id,
+                'columns': [{'name': self.format_value(c) if isinstance(c, (int, float)) else c, 'no_format_name': c}
+                            for c in val_dict['totals']],
+                'name_class': 'o_account_report_name_ellipsis top-vertical-align'
+            })
+            # add every direct child group recursively
+            for child in val_dict['children_codes']:
+                add_to_hierarchy(lines, child, level + 1, val_dict['id'], hierarchy_parent, hierarchy)
+            # add all the lines that are in this group but not in one of this group's children groups
+            for l in val_dict['lines']:
+                l['level'] = level + 1
+                l['parent_id'] = val_dict['id']
+            lines.extend(val_dict['lines'])
+
+        def compute_hierarchy(lines, level, parent_id, hierarchy_parent, options=False):
+            # put every line in each of its parents (from less global to more global) and compute the totals
+            hierarchy = defaultdict(
+                lambda: {'totals': [None] * len(lines[0]['columns']), 'lines': [], 'children_codes': set(), 'name': '',
+                         'parent_id': None, 'id': ''})
+            for line in lines:
+                account = self.env['account.account'].browse(
+                    line.get('account_id', self._get_caret_option_target_id(line.get('id'))))
+                codes = self.get_account_codes(account)  # id, name
+                for code in codes:
+                    hierarchy[code[0]]['id'] = 'hierarchy_' + str(code[0])
+                    hierarchy[code[0]]['name'] = code[1]
+                    for i, column in enumerate(line['columns']):
+                        if 'no_format_name' in column:
+                            no_format = column['no_format_name']
+                        elif 'no_format' in column:
+                            no_format = column['no_format']
+                        else:
+                            no_format = None
+                        if isinstance(no_format, (int, float)):
+                            if hierarchy[code[0]]['totals'][i] is None:
+                                hierarchy[code[0]]['totals'][i] = no_format
+                            else:
+                                hierarchy[code[0]]['totals'][i] += no_format
+                for code, child in zip(codes[:-1], codes[1:]):
+                    hierarchy[code[0]]['children_codes'].add(child[0])
+                    hierarchy[child[0]]['parent_id'] = hierarchy[code[0]]['id']
+                hierarchy[codes[-1][0]]['lines'] += [line]
+            # compute the tree-like structure by starting at the roots (being groups without parents)
+            hierarchy_lines = []
+            for root in [k for k, v in hierarchy.items() if not v['parent_id']]:
+                add_to_hierarchy(hierarchy_lines, root, level, parent_id, hierarchy_parent, hierarchy)
+
+            if hierarchy_lines:
+                if 'currency' in options:
+                    for heararchy in hierarchy_lines:
+                        i = 1
+                        for curr in options.get('currency'):
+                            if curr.get('selected'):
+                                # amount = self.get_multi_currency_balance(heararchy.get('columns')[0].get('no_format'), curr.get('id'))
+                                currency_id = request.env['res.currency'].browse(curr.get('id'))
+                                heararchy['columns'][i]['name'] = formatLang(request.env, heararchy['columns'][i].get(
+                                    'no_format_name') or heararchy['columns'][i].get('no_format'),
+                                                                             currency_obj=currency_id)
+                                i += 1
+
+            return hierarchy_lines
+
+        new_lines = []
+        account_lines = []
+        current_level = 0
+        parent_id = 'root'
+        for line in lines:
+            if not (line.get('caret_options') == 'account.account' or line.get('account_id')):
+                # make the hierarchy with the lines we gathered, append it to the new lines and restart the gathering
+                if account_lines:
+                    new_lines.extend(compute_hierarchy(account_lines, current_level + 1, parent_id, parent_id, options))
+                account_lines = []
+                new_lines.append(line)
+                current_level = line['level']
+                parent_id = line['id']
+            else:
+                # gather all the lines we can create a hierarchy on
+                account_lines.append(line)
+        # do it one last time for the gathered lines remaining
+        if account_lines:
+            new_lines.extend(compute_hierarchy(account_lines, current_level + 1, parent_id, parent_id, options))
+        return new_lines
+
+
+
+    ####################################################
+    # OPTIONS: CORE
+    ####################################################
 
 
 class ReportAccountFinancialReportExtended(models.Model):
