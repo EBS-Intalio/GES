@@ -1,3 +1,0 @@
-[submodule "freight_management"]
-	path = freight_management
-	url = git@github.com:ebs-odoosh/freight.git
