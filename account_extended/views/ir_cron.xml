@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
+    <data>
 
-    <!-- Cron to Unrealized gain/loss journal entry -->
-    <record id="unrealized_gain_loss_journal_entry" model="ir.cron">
-      <field name="name">Account: Unrealized gain/loss journal entry</field>
-      <field name="model_id" ref="model_account_move"/>
-      <field name="state">code</field>
-      <field name="code">model.cron_unrealized_gain_loss()</field>
-      <field name="active" eval="False"/>
-      <field name="interval_number">1</field>
-      <field name="interval_type">minutes</field>
-      <field name="numbercall">-1</field>
-    </record>
+        <!-- Cron to Unrealized gain/loss journal entry -->
+        <record id="unrealized_gain_loss_journal_entry" model="ir.cron">
+            <field name="name">Account: Unrealized gain/loss journal entry</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_unrealized_gain_loss()</field>
+            <field name="active" eval="False"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+        </record>
 
-    <record id="reversal_entry" model="ir.cron">
-      <field name="name">Reverse Journal Entry</field>
-      <field name="model_id" ref="model_account_move"/>
-      <field name="state">code</field>
-      <field name="code">model.reverse_account_entry()</field>
-      <field name="active" eval="False"/>
-      <field name="interval_number">1</field>
-      <field name="interval_type">days</field>
-      <field name="numbercall">-1</field>
-    </record>
+        <record id="reversal_entry" model="ir.cron">
+            <field name="name">Reverse Journal Entry</field>
+            <field name="model_id" ref="model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">model.reverse_account_entry()</field>
+            <field name="active" eval="False"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
 
-  </data>
+    </data>
 </odoo>
-<!--      <field name="nextcall" eval="(DateTime.now().date().replace(day=1) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />-->
+        <!--      <field name="nextcall" eval="(DateTime.now().date().replace(day=1) + relativedelta(months=1, days=-1)).strftime('%Y-%m-%d %H:%M:%S')" />-->
