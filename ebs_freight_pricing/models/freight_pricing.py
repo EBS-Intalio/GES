@@ -4,14 +4,6 @@ from odoo import models, fields, api, _
 from datetime import timedelta, date, datetime
 
 
-class ChargesList(models.Model):
-    _name = 'charges.list'
-    _description = 'Charges List'
-
-    name = fields.Char()
-    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport')
-
-
 class FreightPricingCharges(models.Model):
     _name = 'freight.pricing.charges'
     _description = 'Freight Pricing Charges'
@@ -25,24 +17,39 @@ class FreightPricingCharges(models.Model):
                                  related='pricing_id.transport')
 
     # Charges & Fees
-    charges = fields.Many2one('charges.list', string='Charge')
-    # ,
-    # domain = lambda self: [('type', '=', self.transport)]
+    product_id = fields.Many2one('product.product', string='Charge', readonly=True)
     charge_amount = fields.Monetary(currency_field='currency_id', string='Charge Amount')
-    margin_per = fields.Float(string='Margin(%)')
+    margin_per = fields.Float(string='Margin(%)', readonly=False)
     margin_amount = fields.Monetary(currency_field='currency_id', string='Margin Amount',
-                                    compute='_compute_charge_total_amount')
+                                    compute="_compute_charge_amount", inverse="_inverse_charge_amount",
+                                    readonly=False)
     charge_total_amount = fields.Monetary(currency_field='currency_id', string='Charge Total Amount',
-                                          compute='_compute_charge_total_amount')
+                                          compute="_compute_charge_total_amount", )
 
     @api.depends('charge_amount', 'margin_per')
-    def _compute_charge_total_amount(self):
-        margin_amount = charge_total_amount = 0
+    def _compute_charge_amount(self):
         for line in self:
-            if line.charge_amount and line.margin_per:
-                margin_amount = (line.charge_amount * line.margin_per) / 100
-                charge_total_amount = line.charge_amount + margin_amount
+            margin_amount = 0
+            if line.charge_amount:
+                if line.margin_per:
+                    margin_amount = (line.charge_amount * line.margin_per) / 100
             line.margin_amount = margin_amount
+
+    @api.depends('charge_amount', 'margin_amount')
+    def _inverse_charge_amount(self):
+        for line in self:
+            margin_per = 0
+            if line.charge_amount:
+                if line.margin_amount:
+                    margin_per = (line.margin_amount * 100) / line.charge_amount
+            line.margin_per = margin_per
+
+    @api.depends('charge_amount', 'margin_amount')
+    def _compute_charge_total_amount(self):
+        for line in self:
+            charge_total_amount = 0
+            if line.charge_amount and line.margin_amount:
+                charge_total_amount = line.charge_amount + line.margin_amount
             line.charge_total_amount = charge_total_amount
 
 
@@ -106,8 +113,6 @@ class FreightPricing(models.Model):
         readonly=True, check_company=True,
         domain=lambda self: [('type', '=', self.transport)],
         states={'draft': [('readonly', False)]}, )
-    order_line = fields.One2many('sale.order.line', 'pricing_id', string='Order Lines',
-                                 related='sale_order_template_id.sale_order_template_line_ids')
 
     @api.model
     def create(self, values):

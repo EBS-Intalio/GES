@@ -26,6 +26,14 @@ class FreightBooking(models.Model):
             'freight_id': self.freight_id.id,
             'sale_order_template_id': sale_order_template_id.id,
             'book_id': self.id})
+        order_lines = []
+        for line in sale_order_template_id.sale_order_template_line_ids:
+            if line.product_id:
+                order_lines.append((0, 0, {
+                    'product_id': line.product_id.id,
+                    'pricing_id': pricing.id,
+                }))
+        pricing.update({'charges_ids': order_lines})
         self.state = 'pricing'
         self.pricing_id = pricing.id
         return {
