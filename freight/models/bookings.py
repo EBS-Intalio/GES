@@ -39,11 +39,11 @@ class Bookings(models.Model):
     operation = fields.Selection([('direct', 'Direct'), ('house', 'House'), ('master', 'Master')], string='Operation')
     ocean_shipment_type = fields.Selection(([('fcl', 'FCL'), ('lcl', 'LCL')]), string='Ocean Shipment Type')
     inland_shipment_type = fields.Selection(([('ftl', 'FTL'), ('ltl', 'LTL')]), string='Inland Shipment Type')
-    air_shipment_type = fields.Selection(([('air', 'Air'), ('breakbulk', 'Breakbulk'), ('roro', 'Roro')]), string='Air Shipment Type')
+    air_shipment_type = fields.Selection(([('breakbulk', 'Breakbulk'), ('roro', 'Roro')]), string='Air Shipment Type')
     shipper_id = fields.Many2one('res.partner', 'Shipper')
     consignee_id = fields.Many2one('res.partner', 'Consignee')
-    source_location_id = fields.Many2one('freight.port', 'Origin Airport', index=True, required=True)
-    destination_location_id = fields.Many2one('freight.port', 'Destination Airport', index=True, required=True)
+    source_location_id = fields.Many2one('freight.port', 'Origin Airport', index=True)
+    destination_location_id = fields.Many2one('freight.port', 'Destination Airport', index=True)
     origin_close = fields.Boolean("Consider close by Airport")
     destination_close = fields.Boolean("Consider close by Airport")
     obl = fields.Char('OBL', help='Original Bill Of Landing')
@@ -57,7 +57,7 @@ class Bookings(models.Model):
     truck_ref = fields.Char('CMR/RWB#/PRO#:')
     trucker = fields.Many2one('freight.trucker', 'Trucker')
     trucker_number = fields.Char('Trucker No')
-    agent_id = fields.Many2one('res.partner', 'Agent')
+    agent_id = fields.Many2one('res.partner', 'Customer', required=True)
     operator_id = fields.Many2one('res.users', 'User')
     freight_pc = fields.Selection(([('collect', 'Collect'), ('prepaid', 'Prepaid')]), string="Freight PC")
     other_pc = fields.Selection(([('collect', 'Collect'), ('prepaid', 'Prepaid')]), string="Other PC")
@@ -78,7 +78,6 @@ class Bookings(models.Model):
                                   help='You can attach the copy of your document', copy=False)
     track_ids = fields.One2many('booking.tracker', 'booking_id', 'Tracker Lines')
 
-    customer_id = fields.Many2one('res.partner', 'Customer', required=True)
     job_type = fields.Char("Job Type")
     por_origin = fields.Selection(([]), string="POR /Origin")
     pol = fields.Selection(([]), string="POL")
@@ -88,11 +87,11 @@ class Bookings(models.Model):
                                                 ('40_hc', '40 HC'), ('40_open_top', '40 OPEN TOP'), ('45', '45'),
                                                 ('53', '53'), ('goh_single', 'GOH (Single)'), ('goh_double', 'GOH (Double)'), ('open_top_gauge', 'Open Top in-gauge'),
                                                 ('open_top_out_gauge', 'Open Top out-of-gauge'), ('isotank', 'Isotank'), ('shipper_own', 'Shipper Owned Container'),
-                                                ('mafi_trailer', 'Mafi Trailer'), ('tank', 'Tank'), ('flexibag', 'Flexibag')]), string="Equipment Type",required=True)
+                                                ('mafi_trailer', 'Mafi Trailer'), ('tank', 'Tank'), ('flexibag', 'Flexibag')]), string="Equipment Type")
     vehicle_size = fields.Selection(([('3_ton', '3 Ton Truck'), ('7_ton', '7 Ton Truck'), ('10_ton', '10 Ton Truck'),
-                                      ('12_ton', '12 Meter Trailer'), ('15_ton', '15 Meter Trailer')]), string="Vehicle Size",required=True)
+                                      ('12_ton', '12 Meter Trailer'), ('15_ton', '15 Meter Trailer')]), string="Vehicle Size")
     vehicle_type = fields.Selection(([('flat_bed', 'Flat Bed'), ('full_box', 'Full Box'), ('curtain_slider', 'Curtain Slider'),
-                                      ('53', '53'), ('hot_shot', 'Hot Shot'),('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')]), string="Vehicle Type",required=True)
+                                      ('53', '53'), ('hot_shot', 'Hot Shot'),('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')]), string="Vehicle Type")
 
     reefer_status = fields.Selection(([('yes', 'YES'), ('no', 'NO'), ('non_operate', 'Non Operating Reefer')]), string="Reefer Status",required=True)
     temperature = fields.Selection(([('celsius', 'Celsius'), ('fahrenheit', 'Fahrenheit')]), string="Temperature")
@@ -112,7 +111,7 @@ class Bookings(models.Model):
     stackability = fields.Selection(([('stackable', 'Stackable'), ('no_stackable', 'No Stackable')]), string="Stackability")
     additional_requirements = fields.Text("Additional requirements")
     package_type_id = fields.Many2one('freight.package', 'Package Type')
-    # loading_address =
+    # loading_address
     country_id = fields.Many2one('res.country', string='Country')
     state_id = fields.Many2one('res.country.state', string='State', domain="[('country_id', '=?', country_id)]")
     city = fields.Char("City")
@@ -170,6 +169,8 @@ class Bookings(models.Model):
             final_dict['ocean_shipment_type'] = self.ocean_shipment_type
         if self.inland_shipment_type:
             final_dict['inland_shipment_type'] = self.inland_shipment_type
+        if self.air_shipment_type:
+            final_dict['air_shipment_type'] = self.air_shipment_type
         if self.shipper_id:
             final_dict['shipper_id'] = self.shipper_id.id or False
         if self.consignee_id:
@@ -199,9 +200,30 @@ class Bookings(models.Model):
             final_dict['truck_ref'] = self.truck_ref
         if self.trucker_number:
             final_dict['trucker_number'] = self.trucker_number
+        if self.vehicle_size:
+            final_dict['vehicle_size'] = self.vehicle_size
+        if self.vehicle_type:
+            final_dict['vehicle_type'] = self.vehicle_type
         if self.trucker:
             final_dict['trucker'] = self.trucker.id or False
+        # Air Fields
+        if self.origin_close:
+            final_dict['origin_close'] = True
+        if self.destination_close:
+            final_dict['destination_close'] = True
         # General Data
+        if self.job_type:
+            final_dict['job_type'] = self.job_type
+        if self.por_origin:
+            final_dict['por_origin'] = self.por_origin
+        if self.pol:
+            final_dict['pol'] = self.pol
+        if self.pod:
+            final_dict['pod'] = self.pod
+        if self.pofd_destination:
+            final_dict['pofd_destination'] = self.pofd_destination
+        if self.equipment_type:
+            final_dict['equipment_type'] = self.equipment_type
         if self.barcode:
             final_dict['barcode'] = self.barcode
         if self.notes:
@@ -210,9 +232,19 @@ class Bookings(models.Model):
             final_dict['freight_pc'] = self.freight_pc
         if self.other_pc:
             final_dict['other_pc'] = self.other_pc
+        if self.reefer_status:
+            final_dict['reefer_status'] = self.reefer_status
+        if self.temperature:
+            final_dict['temperature'] = self.temperature
+        if self.set_temperature:
+            final_dict['set_temperature'] = self.set_temperature
+        if self.commodity_category:
+            final_dict['commodity_category'] = self.commodity_category
+        if self.commodity_description:
+            final_dict['commodity_description'] = self.commodity_description
         if self.tracking_number:
             final_dict['tracking_number'] = self.tracking_number
-        if  self.dangerous_goods:
+        if self.dangerous_goods:
             final_dict['dangerous_goods'] = True
             if self.dangerous_goods_notes:
                 final_dict['dangerous_goods_notes'] = self.dangerous_goods_notes

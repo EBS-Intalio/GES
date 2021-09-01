@@ -87,6 +87,8 @@ class BookingsCustom(http.Controller):
                 final_dict['ocean_shipment_type'] = post.get('ocean')
             if post.get('land'):
                 final_dict['inland_shipment_type'] = post.get('land')
+            if post.get('air'):
+                final_dict['air_shipment_type'] = post.get('air')
             if post.get('shipper'):
                 final_dict['shipper_id'] = partners.browse(int(post.get('shipper'))).id
             if post.get('consignee'):
@@ -103,6 +105,16 @@ class BookingsCustom(http.Controller):
             if post.get('airline'):
                 final_dict['airline_id'] = airlines.browse(int(post.get('airline'))).id
             #Ocean Fields
+            if post.get('por_origin'):
+                final_dict['por_origin'] = post.get('por_origin')
+            if post.get('pol'):
+                final_dict['pol'] = post.get('pol')
+            if post.get('pod'):
+                final_dict['pod'] = post.get('pod')
+            if post.get('pofd_destination'):
+                final_dict['pofd_destination'] = post.get('pofd_destination')
+            if post.get('equipment_type'):
+                final_dict['equipment_type'] = post.get('equipment_type')
             if post.get('shipping_line_id'):
                 final_dict['shipping_line_id'] = partners.browse(int(post.get('shipping_line_id'))).id
             if post.get('vessel_id'):
@@ -116,9 +128,21 @@ class BookingsCustom(http.Controller):
                 final_dict['truck_ref'] = post.get('cmr_no')
             if post.get('trucker_number'):
                 final_dict['trucker_number'] = post.get('trucker_number')
+            if post.get('vehicle_size'):
+                final_dict['vehicle_size'] = post.get('vehicle_size')
+            if post.get('vehicle_type'):
+                final_dict['vehicle_type'] = post.get('vehicle_type')
             if post.get('trucker'):
                 final_dict['trucker'] = truckers.browse(int(post.get('trucker'))).id
+
+            # Air Fields
+            if 'origin_close' in post.keys() and post.get('origin_close') == 'on':
+                final_dict['origin_close'] = True
+            if 'destination_close' in post.keys() and post.get('destination_close') == 'on':
+                final_dict['destination_close'] = True
             #General Data
+            if post.get('job_type'):
+                final_dict['job_type'] = post.get('job_type')
             if post.get('barcode'):
                 final_dict['barcode'] = post.get('barcode')
             if post.get('notes'):
@@ -127,6 +151,16 @@ class BookingsCustom(http.Controller):
                 final_dict['freight_pc'] = post.get('freight_pc')
             if post.get('other_pc'):
                 final_dict['other_pc'] = post.get('other_pc')
+            if post.get('reefer_status'):
+                final_dict['reefer_status'] = post.get('reefer_status')
+            if post.get('temperature'):
+                final_dict['temperature'] = post.get('temperature')
+            if post.get('set_temperature'):
+                final_dict['set_temperature'] = post.get('set_temperature')
+            if post.get('commodity_category'):
+                final_dict['commodity_category'] = post.get('commodity_category')
+            if post.get('commodity_description'):
+                final_dict['commodity_description'] = post.get('commodity_description')
             if post.get('trac_no'):
                 final_dict['tracking_number'] = post.get('trac_no')
             if 'danger' in post.keys() and post.get('danger') == 'on':

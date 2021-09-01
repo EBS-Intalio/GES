@@ -42,7 +42,7 @@
                             </table>
                             <table width="100%" style="margin-top:25px" class="table table-bordered">
                                 <tr>
-                                    <td><strong>Gateway</strong></td>
+                                    <td><strong>Origin</strong></td>
                                     <td><span t-field="o.source_location_id.name"/></td>
                                     <td><strong>Destination</strong></td>
                                     <td><span t-field="o.destination_location_id.name"/></td>

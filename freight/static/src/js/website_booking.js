@@ -5,6 +5,7 @@ $(document).ready(function ()
 	{
 	    $('#ocean_div').hide();
 	    $('#land_div').hide();
+	    $('#air_div').hide();
 	    $('#dng_info').hide();
 	    $('#danger_info').hide();
 	    $('#dng_info').hide();
@@ -22,6 +23,7 @@ $(document).ready(function ()
                 console.log("AIR");
                 $('#ocean_div').hide();
 	            $('#land_div').hide();
+	            $('#air_div').show();
 
 
 
@@ -45,6 +47,7 @@ $(document).ready(function ()
                 console.log("OCEAN");
                 $('#ocean_div').show();
 	            $('#land_div').hide();
+	            $('#air_div').hide();
 
 	            $('#air_lbl_1').hide()
 	            $('#air_data_1').hide()
@@ -66,6 +69,7 @@ $(document).ready(function ()
             else if (this.value == 'land') {
                 console.log("LAND");
                 $('#ocean_div').hide();
+                $('#air_div').hide();
 	            $('#land_div').show();
 
 

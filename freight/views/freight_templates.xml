@@ -230,12 +230,15 @@
                         <span><b>Transport:</b> <span t-field="booking.transport"/> </span>
                         <br/>
                         <br/>
-                        <t t-if="booking.transport !='air'">
+                        <t>
                             <t t-if="booking.transport =='ocean'">
                                 <span><b>Ocean Shipment Type:</b> <span t-field="booking.ocean_shipment_type"/> </span>
                             </t>
                             <t t-if="booking.transport =='land'">
                                 <span><b>Inland Shipment Type:</b> <span t-field="booking.inland_shipment_type"/> </span>
+                            </t>
+                            <t t-if="booking.transport =='air'">
+                                <span><b>Air Shipment Type:</b> <span t-field="booking.air_shipment_type"/> </span>
                             </t>
                         </t>
                     </div>
@@ -268,7 +271,9 @@
                         </div>
                         <div class="col-5">
                             <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Main Carriage</span><br/><br/>
-                            <span><b>Gateway:</b> <span t-field="booking.source_location_id.name"/> </span><br/>
+                            <span><b>Origin:</b> <span t-field="booking.source_location_id.name"/> </span><br/>
+                            <span><b>Origin Close:</b> <span t-field="booking.origin_close"/> </span><br/>
+                            <span><b>Destination Close:</b> <span t-field="booking.destination_close"/></span><br/>
                             <span><b>MAWB No:</b> <span t-field="booking.mawb_no"/> </span><br/>
                         </div>
                         <div class="col-5">
@@ -295,6 +300,11 @@
                             <span><b>User:</b> <span t-field="booking.operator_id.name"/> </span><br/>
                             <span><b>Freight PC:</b> <span t-field="booking.freight_pc"/> </span><br/>
                             <span><b>Other PC:</b> <span t-field="booking.other_pc"/> </span><br/>
+                            <span><b>Reefer Status:</b> <span t-field="booking.reefer_status"/> </span><br/>
+                            <span><b>Temperature:</b> <span t-field="booking.temperature"/> </span><br/>
+                            <span><b>Set Temperature:</b> <span t-field="booking.set_temperature"/> </span><br/>
+                            <span><b>Commodity Category:</b> <span t-field="booking.commodity_category"/> </span><br/>
+                            <span><b>Commodity Description:</b> <span t-field="booking.commodity_description"/> </span><br/>
                             <span><b>Notes:</b> <span t-field="booking.notes"/> </span><br/>
                         </div>
                         <div class="col-5">
@@ -307,7 +317,6 @@
                                     <input  type="checkbox" disabled="True"/>
                                 </t>
                             </span><br/>
-
                             <t t-if="booking.dangerous_goods">
                                 <span><b>Dangerous Goods Info:</b> <span t-field="booking.dangerous_goods_notes"/></span><br/>
                             </t>
@@ -353,6 +362,11 @@
                             <span><b>Voyage No:</b> <span t-field="booking.voyage_no"/> </span><br/>
                             <span><b>Vessel:</b> <span t-field="booking.vessel_id.name"/> </span><br/>
                             <span><b>OBL:</b> <span t-field="booking.obl"/> </span><br/>
+                            <span><b>POR/Origin:</b> <span t-field="booking.por_origin"/> </span><br/>
+                            <span><b>POL:</b> <span t-field="booking.pol"/> </span><br/>
+                            <span><b>POD:</b> <span t-field="booking.pod"/> </span><br/>
+                            <span><b>Pofd Destination:</b> <span t-field="booking.pofd_destination"/> </span><br/>
+                            <span><b>Equipment Type:</b> <span t-field="booking.equipment_type"/> </span><br/>
                         </div>
                         <div class="col-5">
                             <br/><br/>
@@ -376,6 +390,11 @@
                             <span><b>User:</b> <span t-field="booking.operator_id.name"/> </span><br/>
                             <span><b>Freight PC:</b> <span t-field="booking.freight_pc"/> </span><br/>
                             <span><b>Other PC:</b> <span t-field="booking.other_pc"/> </span><br/>
+                            <span><b>Reefer Status:</b> <span t-field="booking.reefer_status"/> </span><br/>
+                            <span><b>Temperature:</b> <span t-field="booking.temperature"/> </span><br/>
+                            <span><b>Set Temperature:</b> <span t-field="booking.set_temperature"/> </span><br/>
+                            <span><b>Commodity Category:</b> <span t-field="booking.commodity_category"/> </span><br/>
+                            <span><b>Commodity Description:</b> <span t-field="booking.commodity_description"/> </span><br/>
                             <span><b>Notes:</b> <span t-field="booking.notes"/> </span><br/>
                         </div>
                         <div class="col-5">
@@ -438,6 +457,8 @@
                             <span><b>CMR/RWB#/PRO#:</b> <span t-field="booking.truck_ref"/></span><br/>
                             <span><b>Trucker:</b> <span t-field="booking.trucker.name"/></span><br/>
                             <span><b>Trucker No:</b> <span t-field="booking.trucker_number"/></span><br/>
+                            <span><b>Vehicle Size:</b> <span t-field="booking.vehicle_size"/></span><br/>
+                            <span><b>Vehicle Type:</b> <span t-field="booking.vehicle_type"/></span><br/>
                         </div>
                         <div class="col-1">
 
@@ -452,10 +473,16 @@
                         <div class="col-5">
                             <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">General</span><br/><br/>
                             <span><b>Barcode:</b> <span t-field="booking.barcode"/> </span><br/>
+                            <span><b>Job Type:</b> <span t-field="booking.job_type"/> </span><br/>
                             <span><b>Agent:</b> <span t-field="booking.agent_id.display_name"/> </span><br/>
                             <span><b>User:</b> <span t-field="booking.operator_id.name"/> </span><br/>
                             <span><b>Freight PC:</b> <span t-field="booking.freight_pc"/> </span><br/>
                             <span><b>Other PC:</b> <span t-field="booking.other_pc"/> </span><br/>
+                            <span><b>Reefer Status:</b> <span t-field="booking.reefer_status"/> </span><br/>
+                            <span><b>Temperature:</b> <span t-field="booking.temperature"/> </span><br/>
+                            <span><b>Set Temperature</b> <span t-field="booking.set_temperature"/> </span><br/>
+                            <span><b>Commodity Category</b> <span t-field="booking.commodity_category"/> </span><br/>
+                            <span><b>Commodity Description</b> <span t-field="booking.commodity_description"/> </span><br/>
                             <span><b>Notes:</b> <span t-field="booking.notes"/> </span><br/>
                         </div>
                         <div class="col-5">
@@ -684,6 +711,19 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
+                            <div id="air_div">
+                                <b style="color:#7C7BAD;">Air Shipment Type:</b><br/><br/>
+
+                                <label  class="cont" for="breakbulk" style="margin-right:10px;">Breakbulk
+                                    <input type="radio" id="breakbulk" name="air" value="breakbulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label  class="cont" for="roro" style="margin-right:10px;">Roro
+                                    <input type="radio" id="roro" name="air" value="roro"/>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
                         </div>
                         <div class="col-1">
 
@@ -733,7 +773,9 @@
                         <div class="col-2">
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">Main Carriage</span><br/><br/>
                             <div id="air_lbl_1">
-                                <label id="air_source_location_id"  for="air_source_location_id" style="margin-top: 10px;">Gateway:</label><br/>
+                                <label id="air_source_location_id"  for="air_source_location_id" style="margin-top: 10px;">Origin:</label><br/>
+                                <label id="origin_close_lbl"  for="origin_close" style="margin-top: 10px;">Origin Close:</label><br/>
+                                <label id="destination_close_lbl"  for="destination_close" style="margin-top: 10px;">Destination Close:</label><br/>
                                 <label id="mawb_lbl" style="margin-top: 27px;" for="mawb">MAWB No:</label><br/>
                                 <br/>
                             </div>
@@ -743,6 +785,12 @@
                                 <label id="voyage_lbl" style="margin-top: 31px;"  for="voyage_no">Voyage No:</label><br/>
                                 <label id="vessel_lbl"  style="margin-top: 30px;" for="vessel_id">Vessel:</label><br/>
                                 <label id="obl_lbl"  style="margin-top: 26px;" for="obl">OBL:</label><br/>
+                                <br /><br />
+                                <label id="por_origin_lbl"  style="margin-top: 26px;" for="por_origin">POR/Origin:</label><br/>
+                                <label id="pol_lbl"  style="margin-top: 26px;" for="pol">POL:</label><br/>
+                                <label id="pod_lbl"  style="margin-top: 26px;" for="pod">POD:</label><br/>
+                                <label id="pofd_destination_lbl"  style="margin-top: 26px;" for="pofd_destination">Pofd Destination:</label><br/>
+                                <label id="equipment_type_lbl"  style="margin-top: 26px;" for="equipment_type">Equipment Type:</label><br/>
                                 <br/>
                             </div>
                             <div id="land_lbl_1" style="display:none;">
@@ -760,7 +808,11 @@
                                     <t t-foreach="gateways" t-as="gate">
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
-                                <br/>
+                                <br />
+                                <input name="origin_close" id="origin_close" type="checkbox" checked="False" />
+                                <br />
+                                <input name="destination_close" id="destination_close" type="checkbox" checked="False" />
+                                <br />
                                 <input name="mawb" class="input-class form-control" id="mawb" /><br/>
                                 <br/>
                             </div>
@@ -784,6 +836,32 @@
                                 </select>
                                 <br/>
                                 <input name="obl" class="input-class form-control" id="obl" />
+                                <br/>
+                                <br />
+                                <select id="por_origin" name="por_origin" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
+                                <br/>
+                                <select id="pol" name="pol" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
+                                <br/>
+                                <select id="pod" name="pod" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
+                                <br/>
+                                <select id="pofd_destination" name="pofd_destination" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
+                                <br/>
+                                <select id="equipment_type" name="equipment_type" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
                                 <br/>
                             </div>
                             <div id="land_data_1" style="display:none;">
@@ -818,6 +896,8 @@
                                 <label id="cmr_lbl" style="margin-top: 29px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
                                 <label id="trucker_lbl"  style="margin-top: 29px;" for="trucker">Trucker:</label><br/>
                                 <label id="trucker_no_lbl"  style="margin-top: 36px;" for="trucker_number">Trucker No:</label><br/>
+                                <label id="vehicle_size_lbl"  style="margin-top: 36px;" for="vehicle_size">Vehicle Size:</label><br/>
+                                <label id="vehicle_type_lbl"  style="margin-top: 36px;" for="vehicle_type">Vehicle Type:</label><br/>
                                 <br/>
                             </div>
                         </div>
@@ -872,6 +952,15 @@
                                 <br/>
                                 <input name="trucker_number" class="input-class form-control" id="trucker_number"/>
                                 <br/>
+                                <select id="vehicle_size" name="vehicle_size" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
+                                <br />
+                                <select id="vehicle_type" name="vehicle_type" class="form-control">
+                                    <option value="value_a" >Value A</option>
+                                    <option value="Value_b" >Value B</option>
+                                </select>
                             </div>
                         </div>
 
@@ -890,16 +979,23 @@
 
                         <div class="col-2">
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">General</span><br/><br/>
+                            <label for="job_type" style="margin-top: 10px;">Job Type:</label><br/><br/>
                             <label for="barcode" style="margin-top: 10px;">Barcode:</label><br/><br/>
-                            <label for="agent_id" style="margin-top: 6px;">Agent:</label><br/><br/>
+                            <label for="agent_id" style="margin-top: 6px;">Customer:</label><br/><br/>
                             <label for="operator_id" style="margin-top: 6px;">User:</label><br/><br/>
                             <label for="freight_pc" style="margin-top: 17px;">Freight PC:</label><br/><br/>
                             <label for="other_pc" style="margin-top: 4px;">Other PC:</label><br/><br/>
+                            <label for="reefer_status" style="margin-top: 4px;">Reefer Status:</label><br/><br/>
+                            <label for="temperature" style="margin-top: 4px;">Temperature:</label><br/><br/>
+                            <label for="set_temperature" style="margin-top: 4px;">Set Temperature:</label><br/><br/>
+                            <label for="commodity_category" style="margin-top: 4px;">Commodity Category:</label><br/><br/>
+                            <label for="commodity_description" style="margin-top: 4px;">Commodity Description:</label><br/><br/>
                             <label for="notes"  style="margin-top: 4px;">Notes:</label><br/><br/>
                             <br/>
                         </div>
                         <div class="col-3">
                             <br/><br/><br/>
+                            <input name="job_type" class="input-class form-control" id="job_type" /><br/>
                             <input name="barcode" class="input-class form-control" id="barcode" /><br/>
                             <select id="agent_id" name="agent_id" required="True" class="form-control">
                                 <t t-foreach="partners" t-as="partner">
@@ -917,7 +1013,29 @@
                                 <option value="collect" >Collect</option>
                                 <option value="prepaid" >Prepaid</option>
                             </select><br/>
+                            <select id="reefer_status" name="reefer_status" required="True" class="form-control">
+                                <option value="yes" >YES</option>
+                                <option value="no" >NO</option>
+                                <option value="non_operate" >Non Operating Reefer</option>
+                            </select><br/>
+                            <select id="temperature" name="temperature" required="False" class="form-control">
+                                <option value="celsius" >Celsius</option>
+                                <option value="fahrenheit" >Fahrenheit</option>
+                            </select><br/>
+                            <input name="set_temperature" class="input-class form-control" id="set_temperature" /><br/>
+                            <select id="commodity_category" name="commodity_category" required="False" class="form-control">
+                                <option value="food_perishable">Food Perishable</option>
+                                <option value="nonfood_perishable">Non food perishable</option>
+                                <option value="non_perishable">Non perishable F and B</option>
+                                <option value="furniture">Furniture</option>
+                                <option value="building_material">Building Material</option>
+                                <option value="automotive">Automotive</option>
+                                <option value="pharmaceuticals">Pharmaceuticals</option>
+                                <option value="petroleum_products">Products</option>
+                                <option value="other_chemicals">Other Chemicals</option>
+                            </select><br/>
                             <textarea id="notes" name="notes" class="form-control"/>
+                            <textarea id="commodity_description" name="commodity_description" class="form-control"/>
                             <br/>
                         </div>
                         <div class="col-2">
