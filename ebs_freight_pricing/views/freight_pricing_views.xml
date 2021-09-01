@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--        <record id="view_freight_pricing_filter" model="ir.ui.view">-->
+        <!--            <field name="name">freight.pricing.view.search</field>-->
+        <!--            <field name="model">freight.pricing</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <search string="Search pricings">-->
+        <!--                    <field name="shipper_id"/>-->
+        <!--                    <field name="consignee_id"/>-->
+        <!--                    <field name="agent_id"/>-->
+        <!--                    <field name="stage_id" domain="[]"/>-->
+        <!--                    <field name="operation"/>-->
+        <!--                    <filter string="Direct" domain="[('operation', '=', 'direct')]" name="direct"/>-->
+        <!--                    <filter string="House" domain="[('operation', '=', 'house')]" name="house"/>-->
+        <!--                    <filter string="Master" domain="[('operation', '=', 'master')]" name="master"/>-->
+        <!--                    <separator/>-->
+        <!--                    <group expand="0" string="Group By">-->
+        <!--                        <filter string="Shipper" name="shipper" domain="[]" context="{'group_by':'shipper_id'}"/>-->
+        <!--                        <filter string="Consignee" name="job" domain="[]" context="{'group_by':'consignee_id'}"/>-->
+        <!--                        <filter string="Agent" name="degree" domain="[]" context="{'group_by':'agent_id'}"/>-->
+        <!--                    </group>-->
+        <!--                </search>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <record id="helpdesk_ticket_view_kanban_pricing" model="ir.ui.view">
+            <field name="name">freight.pricing.kanban</field>
+            <field name="model">freight.pricing</field>
+            <field name="priority">10</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="stage_id" class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="color"/>
+                    <field name="eta"/>
+                    <field name="etd"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                                <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+                                        <span class="fa fa-bars fa-lg" title="Operation Dropdown"/>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <t t-if="widget.editable">
+                                            <li>
+                                                <a type="edit">Edit</a>
+                                            </li>
+                                        </t>
+                                        <t t-if="widget.deletable">
+                                            <li>
+                                                <a type="delete">Delete</a>
+                                            </li>
+                                        </t>
+                                        <li>
+                                            <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <div>
+                                        <strong>
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <t t-if="record.eta.raw_value and record.eta.raw_value &lt; (new Date())"
+                                       t-set="red">oe_kanban_text_red
+                                    </t>
+                                    Date:
+                                    <span t-attf-class="#{red}">
+                                        <i>
+                                            <field name="eta"/>
+                                            <field name="etd"/>
+                                        </i>
+                                    </span>
+                                    <br/>
+                                    <div class="oe_kanban_bottom_right">
+                                    </div>
+                                    <div class="oe_clear"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_pricing_form">
+            <field name="name">freight.pricing.form</field>
+            <field name="model">freight.pricing</field>
+            <field name="arch" type="xml">
+                <form string="Operations">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="action_done" string="Done" states="draft" type="object"
+                                default_focus="1" class="oe_highlight"/>
+                        <button name="reset_pricing" string="Reset" states="done" type="object" default_focus="1"
+                                class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="button_shipping"
+                                    attrs="{'invisible': ['|', ('freight_id','=',False),('state','=','draft')]}"
+                                    type="object" icon="fa-truck">
+                                Shipment
+                            </button>
+                            <button class="oe_stat_button" name="button_booking"
+                                    attrs="{'invisible': [('book_id','=',False)]}"
+                                    type="object" icon="fa-truck">
+                                Book
+                            </button>
+                        </div>
+                        <h1>
+                            <div>
+                                <field name="name" readonly="1"/>
+                            </div>
+                        </h1>
+                        <group string="Operation">
+                            <group>
+                                <field name="transport" widget="radio"/>
+                                <field name="freight_id" invisible="1"/>
+                                <field name="book_id" invisible="1"/>
+
+                                <field name="eta"/>
+                                <field name="etd"/>
+                            </group>
+                            <group>
+                                <field name="airline_id" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                <field name="flight_no" attrs="{'invisible': [('transport','!=','air')]}"/>
+
+                                <field name="shipping_line_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="origin_days" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="vessel_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="Port_days" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+
+                                <field name="origin_country" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                <field name="origin_country_border" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                <field name="transit_country" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                <field name="transit_country_border"
+                                       attrs="{'invisible': [('transport','!=','land')]}"/>
+                                <field name="rout" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                <field name="trucker" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                <field name="trucker_number" attrs="{'invisible': [('transport','!=','land')]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="additional_comments"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page name='charges' string="Charges">
+                                <field name="charges_ids" nolabel="1" widget="one2many" mode="tree">
+                                    <tree string="Charges" editable="bottom">
+                                        <field name="charges" options="{'no_create_edit':1}"/>
+                                        <field name="charge_amount"/>
+                                        <field name="margin_per"/>
+                                        <field name="margin_amount"/>
+                                        <field name="charge_total_amount"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="total_charges"/>
+<!--                            <field name="total_charges" class="oe_subtotal_footer_separator"/>-->
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_pricing_tree">
+            <field name="name">freight.pricing.tree</field>
+            <field name="model">freight.pricing</field>
+            <field name="arch" type="xml">
+                <tree string="Operations">
+                    <field name="name"/>
+                    <!--                    <field name="direction"/>-->
+                    <!--                    <field name="shipper_id"/>-->
+                    <!--                    <field name="consignee_id"/>-->
+                    <!--                    <field name="source_location_id"/>-->
+                    <!--                    <field name="destination_location_id"/>-->
+                    <!--                    <field name="agent_id"/>-->
+                    <!--                    <field name="transport"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_freight_pricing_action">
+            <field name="name">Freight pricing</field>
+            <field name="res_model">freight.pricing</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Freight Pricing.
+                </p>
+            </field>
+        </record>
+        <menuitem name="Freight pricing" parent="freight.freight_operations"
+                  id="freight_pricing_menuitem" action="view_freight_pricing_action" sequence="6"/>
+
+    </data>
+</odoo>

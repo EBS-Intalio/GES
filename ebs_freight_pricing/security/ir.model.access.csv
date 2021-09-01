@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_freight_pricing,ebs_freight_pricing,model_freight_pricing,base.group_user,1,1,1,1
+access_freight_pricing_charges,ebs_freight_pricing_charges,model_freight_pricing_charges,base.group_user,1,1,1,1
+access_charges_list,ebs_charges_list,model_charges_list,base.group_user,1,1,1,1

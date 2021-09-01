@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!--             Land Charges  Fees-->
+
+        <record id="land_charge1_data" model="charges.list">
+            <field name="name">Transportation Charges</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge2_data" model="charges.list">
+            <field name="name">Inspection Charges</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge3_data" model="charges.list">
+            <field name="name">Weight Charges</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge4_data" model="charges.list">
+            <field name="name">Boarder Fees (Origin)</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge5_data" model="charges.list">
+            <field name="name">Boarder Fees (Destination)</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge6_data" model="charges.list">
+            <field name="name">Boarder Fees (Transit)</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge7_data" model="charges.list">
+            <field name="name">Tolls</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge8_data" model="charges.list">
+            <field name="name">Bill of Entry</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge9_data" model="charges.list">
+            <field name="name">Duty</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge10_data" model="charges.list">
+            <field name="name">Gate Pass</field>
+            <field name="transport">land</field>
+        </record>
+        <record id="land_charge11_data" model="charges.list">
+            <field name="name">Exit Stamp</field>
+            <field name="transport">land</field>
+        </record>
+
+        <!--             Ocean Charges  Fees-->
+
+        <record id="ocean_charge1_data" model="charges.list">
+            <field name="name">Ocean Freight Charges</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge2_data" model="charges.list">
+            <field name="name">War Risk Surcharge Charges</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge3_data" model="charges.list">
+            <field name="name">Low Sulfur Charges</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge4_data" model="charges.list">
+            <field name="name">Peak Season Surcharge</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge5_data" model="charges.list">
+            <field name="name">Marine Fuel Recovery</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge6_data" model="charges.list">
+            <field name="name">Unbalance Charge</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge7_data" model="charges.list">
+            <field name="name">Bill of Lading</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge8_data" model="charges.list">
+            <field name="name">Terminal Handling Charges</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge9_data" model="charges.list">
+            <field name="name">Seal</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge10_data" model="charges.list">
+            <field name="name">Bill of Entry</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge11_data" model="charges.list">
+            <field name="name">DPC</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge12_data" model="charges.list">
+            <field name="name">VGM</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge13_data" model="charges.list">
+            <field name="name">Token</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge14_data" model="charges.list">
+            <field name="name">TLUC</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge15_data" model="charges.list">
+            <field name="name">Bill of Exit</field>
+            <field name="transport">ocean</field>
+        </record>
+        <record id="ocean_charge16_data" model="charges.list">
+            <field name="name">Gater Pass</field>
+            <field name="transport">ocean</field>
+        </record>
+
+
+        <!--             Air Charges  Fees-->
+
+        <record id="air_charge1_data" model="charges.list">
+            <field name="name">Air Freight Charges</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge2_data" model="charges.list">
+            <field name="name">Handling</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge3_data" model="charges.list">
+            <field name="name">Fuel And Security</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge4_data" model="charges.list">
+            <field name="name">Airway Bill</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge5_data" model="charges.list">
+            <field name="name">Bill of Entry</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge6_data" model="charges.list">
+            <field name="name">Unbalance Charge</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge7_data" model="charges.list">
+            <field name="name">Bill of Lading</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge8_data" model="charges.list">
+            <field name="name">Standing Guarantee</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge9_data" model="charges.list">
+            <field name="name">Customs Inspection</field>
+            <field name="transport">air</field>
+        </record>
+        <record id="air_charge10_data" model="charges.list">
+            <field name="name">Seal</field>
+            <field name="transport">air</field>
+        </record>
+
+
+    </data>
+</odoo>
