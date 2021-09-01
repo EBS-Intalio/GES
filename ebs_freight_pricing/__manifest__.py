@@ -20,7 +20,7 @@
 
     # always loaded
     'data': [
-        'data/charges_data.xml',
+        # 'data/charges_data.xml',
         'data/freight_pricing_data.xml',
         'security/ir.model.access.csv',
         'views/freight_pricing_views.xml',
