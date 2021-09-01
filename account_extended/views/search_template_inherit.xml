@@ -2,8 +2,9 @@
     <data>
 
         <template id="search_template" inherit_id="account_reports.search_template">
-            <xpath expr="//div[hasclass('o_account_reports_filter_date_cmp')]" position="after">
-                <div class="btn-group o_dropdown" t-if="options.get('currency') != None and options.get('unhide_currency') == True">
+            <xpath expr="//div[hasclass('o_account_reports_filter_date')]" position="after">
+<!--                <t t-esc="options"/>-->
+                <div class="btn-group o_dropdown" t-if="options.get('currency') != None and options.get('unhide_currency') == True and options.get('curr_model') in ['account.financial.html.report','account.assets.report']">
                     <t t-call="account_extended.search_template_filter_currency"/>
                 </div>
 

@@ -1,10 +1,11 @@
 from odoo import api, models, _, fields
 from odoo.tools import date_utils
 
-from odoo.tools import formatLang
+from odoo.tools import formatLang,format_date
 from odoo.addons.account_reports.models.formula import FormulaSolver, PROTECTED_KEYWORDS
 from odoo.http import request
 from collections import defaultdict
+MAX_NAME_LENGTH = 50
 
 
 class AccountReportExtended(models.AbstractModel):
@@ -88,6 +89,7 @@ class AccountReportExtended(models.AbstractModel):
         untouched, only the lines related to an account.account are put in a hierarchy
         according to the account.group's and their prefixes.
         """
+        options['curr_model'] = self._context.get('model')
         unfold_all = self.env.context.get('print_mode') and len(options.get('unfolded_lines')) == 0 or options.get(
             'unfold_all')
 
@@ -147,19 +149,19 @@ class AccountReportExtended(models.AbstractModel):
             hierarchy_lines = []
             for root in [k for k, v in hierarchy.items() if not v['parent_id']]:
                 add_to_hierarchy(hierarchy_lines, root, level, parent_id, hierarchy_parent, hierarchy)
-
-            if hierarchy_lines:
-                if 'currency' in options:
-                    for heararchy in hierarchy_lines:
-                        i = 1
-                        for curr in options.get('currency'):
-                            if curr.get('selected'):
-                                # amount = self.get_multi_currency_balance(heararchy.get('columns')[0].get('no_format'), curr.get('id'))
-                                currency_id = request.env['res.currency'].browse(curr.get('id'))
-                                heararchy['columns'][i]['name'] = formatLang(request.env, heararchy['columns'][i].get(
-                                    'no_format_name') or heararchy['columns'][i].get('no_format'),
-                                                                             currency_obj=currency_id)
-                                i += 1
+            if self._context.get('model') == 'account.financial.html.report':
+                if hierarchy_lines:
+                    if 'currency' in options:
+                        for heararchy in hierarchy_lines:
+                            i = 1
+                            for curr in options.get('currency'):
+                                if curr.get('selected'):
+                                    # amount = self.get_multi_currency_balance(heararchy.get('columns')[0].get('no_format'), curr.get('id'))
+                                    currency_id = request.env['res.currency'].browse(curr.get('id'))
+                                    heararchy['columns'][i]['name'] = formatLang(request.env, heararchy['columns'][i].get(
+                                        'no_format_name') or heararchy['columns'][i].get('no_format'),
+                                                                                 currency_obj=currency_id)
+                                    i += 1
 
             return hierarchy_lines
 
@@ -197,6 +199,7 @@ class ReportAccountFinancialReportExtended(models.Model):
     def _build_headers_hierarchy(self, options_list, groupby_keys):
 
         groupby_list = self._get_options_groupby_fields(options_list[0])
+
 
         keys_grouped_by_ids = [set() for gb in groupby_list]
         for key in groupby_keys:
@@ -244,13 +247,13 @@ class ReportAccountFinancialReportExtended(models.Model):
                 'class': 'number'
             } for key, sub_keys in current_node.items()]
             headers = sorted(headers, key=lambda header: sorting_map[level][header['key']][0])
-            i = 1
+
             options[0]['unhide_currency'] = True
             if options[0].get('comparison').get('filter') != 'no_comparison':
                 options[0]['unhide_currency'] = False
                 for cur in options[0].get('currency'):
                     cur['selected'] = False
-
+            i = 1
             for currency in options[0].get('currency'):
                 if currency.get('selected'):
                     headers.append({'name': currency.get('name'),
@@ -358,7 +361,7 @@ class ReportAccountFinancialReportExtended(models.Model):
         i = 1
         for curr in options.get('currency'):
             if curr.get('selected'):
-                amount = self.get_multi_currency_balance(columns[0].get('no_format'), curr.get('id'))
+                amount = self.get_multi_currency_balance(columns[0].get('no_format'), curr.get('id'),options.get('date').get('date_to'))
 
                 columns[i].update(amount)
                 i += 1
@@ -406,7 +409,7 @@ class ReportAccountFinancialReportExtended(models.Model):
         i = 1
         for curr in options.get('currency'):
             if curr.get('selected'):
-                amount = self.get_multi_currency_balance(columns[0].get('no_format'), curr.get('id'))
+                amount = self.get_multi_currency_balance(columns[0].get('no_format'), curr.get('id'),options.get('date').get('date_to'))
                 columns[i].update(amount)
                 i += 1
 
@@ -457,3 +460,171 @@ class ReportAccountFinancialReportExtended(models.Model):
         multi_currency_amount = company_currency._convert(balance, currency_id, company, date)
         return {'name': formatLang(self.env, multi_currency_amount, currency_obj=currency_id),
                 'no_format': multi_currency_amount}
+
+
+
+class assets_report_extended(models.AbstractModel):
+    _inherit = 'account.assets.report'
+
+    def get_header(self, options):
+        options['unhide_currency'] = True
+        start_date = format_date(self.env, options['date']['date_from'])
+        end_date = format_date(self.env, options['date']['date_to'])
+        header =  [
+            [
+                {'name': ''},
+                {'name': _('Characteristics'), 'colspan': 4},
+                {'name': _('Assets'), 'colspan': 4},
+                {'name': _('Depreciation'), 'colspan': 4},
+                {'name': _('Book Value')},
+            ],
+            [
+                {'name': ''},  # Description
+                {'name': _('Acquisition Date'), 'class': 'text-center'},  # Characteristics
+                {'name': _('First Depreciation'), 'class': 'text-center'},
+                {'name': _('Method'), 'class': 'text-center'},
+                {'name': _('Rate'), 'class': 'number', 'title': _('In percent.<br>For a linear method, the depreciation rate is computed per year.<br>For a declining method, it is the declining factor'), 'data-toggle': 'tooltip'},
+                {'name': start_date, 'class': 'number'},  # Assets
+                {'name': _('+'), 'class': 'number'},
+                {'name': _('-'), 'class': 'number'},
+                {'name': end_date, 'class': 'number'},
+                {'name': start_date, 'class': 'number'},  # Depreciation
+                {'name': _('+'), 'class': 'number'},
+                {'name': _('-'), 'class': 'number'},
+                {'name': end_date, 'class': 'number'},
+                {'name': '', 'class': 'number'},  # Gross
+            ],
+        ]
+        for currency in options.get('currency'):
+            if currency.get('selected'):
+                header[0].append({'name': _('Book Value '+currency.get('name'))})
+
+        return header
+
+    def _get_lines(self, options, line_id=None):
+        options['self'] = self
+        lines = []
+        total = [0] * 9
+        asset_lines = self._get_assets_lines(options)
+        parent_lines = []
+        children_lines = defaultdict(list)
+        for al in asset_lines:
+            if al['parent_id']:
+                children_lines[al['parent_id']] += [al]
+            else:
+                parent_lines += [al]
+        for al in parent_lines:
+            if al['asset_method'] == 'linear' and al['asset_method_number']:  # some assets might have 0 depreciations because they dont lose value
+                asset_depreciation_rate = ('{:.2f} %').format((100.0 / al['asset_method_number']) * (12 / int(al['asset_method_period'])))
+            elif al['asset_method'] == 'linear':
+                asset_depreciation_rate = ('{:.2f} %').format(0.0)
+            else:
+                asset_depreciation_rate = ('{:.2f} %').format(float(al['asset_method_progress_factor']) * 100)
+
+            depreciation_opening = al['depreciated_start'] - al['depreciation']
+            depreciation_closing = al['depreciated_end']
+            depreciation_minus = 0.0
+
+            opening = (al['asset_acquisition_date'] or al['asset_date']) < fields.Date.to_date(options['date']['date_from'])
+            asset_opening = al['asset_original_value'] if opening else 0.0
+            asset_add = 0.0 if opening else al['asset_original_value']
+            asset_minus = 0.0
+
+            if al['import_depreciated']:
+                asset_opening += asset_add
+                asset_add = 0
+                depreciation_opening += al['import_depreciated']
+                depreciation_closing += al['import_depreciated']
+
+            for child in children_lines[al['asset_id']]:
+                depreciation_opening += child['depreciated_start'] - child['depreciation']
+                depreciation_closing += child['depreciated_end']
+
+                opening = (child['asset_acquisition_date'] or child['asset_date']) < fields.Date.to_date(options['date']['date_from'])
+                asset_opening += child['asset_original_value'] if opening else 0.0
+                asset_add += 0.0 if opening else child['asset_original_value']
+
+            depreciation_add = depreciation_closing - depreciation_opening
+            asset_closing = asset_opening + asset_add
+
+            if al['asset_state'] == 'close' and al['asset_disposal_date'] and al['asset_disposal_date'] < fields.Date.to_date(options['date']['date_to']):
+                depreciation_minus = depreciation_closing
+                depreciation_closing = 0.0
+                depreciation_opening += depreciation_add
+                depreciation_add = 0
+                asset_minus = asset_closing
+                asset_closing = 0.0
+
+            asset_gross = asset_closing - depreciation_closing
+
+            total = [x + y for x, y in zip(total, [asset_opening, asset_add, asset_minus, asset_closing, depreciation_opening, depreciation_add, depreciation_minus, depreciation_closing, asset_gross])]
+
+            id = "_".join([self._get_account_group(al['account_code'])[0], str(al['asset_id'])])
+            name = str(al['asset_name'])
+            line = {
+                'id': id,
+                'level': 1,
+                'name': name if len(name) < MAX_NAME_LENGTH else name[:MAX_NAME_LENGTH - 2] + '...',
+                'columns': [
+                    {'name': al['asset_acquisition_date'] and format_date(self.env, al['asset_acquisition_date']) or '', 'no_format_name': ''},  # Characteristics
+                    {'name': al['asset_date'] and format_date(self.env, al['asset_date']) or '', 'no_format_name': ''},
+                    {'name': (al['asset_method'] == 'linear' and _('Linear')) or (al['asset_method'] == 'degressive' and _('Declining')) or _('Dec. then Straight'), 'no_format_name': ''},
+                    {'name': asset_depreciation_rate, 'no_format_name': ''},
+                    {'name': self.format_value(asset_opening), 'no_format_name': asset_opening},  # Assets
+                    {'name': self.format_value(asset_add), 'no_format_name': asset_add},
+                    {'name': self.format_value(asset_minus), 'no_format_name': asset_minus},
+                    {'name': self.format_value(asset_closing), 'no_format_name': asset_closing},
+                    {'name': self.format_value(depreciation_opening), 'no_format_name': depreciation_opening},  # Depreciation
+                    {'name': self.format_value(depreciation_add), 'no_format_name': depreciation_add},
+                    {'name': self.format_value(depreciation_minus), 'no_format_name': depreciation_minus},
+                    {'name': self.format_value(depreciation_closing), 'no_format_name': depreciation_closing},
+                    {'name': self.format_value(asset_gross), 'no_format_name': asset_gross},  # Gross
+                ],
+                'unfoldable': False,
+                'unfolded': False,
+                'caret_options': 'account.asset.line',
+                'account_id': al['account_id']
+            }
+            if len(name) >= MAX_NAME_LENGTH:
+                line.update({'title_hover': name})
+            lines.append(line)
+        lines.append({
+            'id': 'total',
+            'level': 0,
+            'name': _('Total'),
+            'columns': [
+                {'name': ''},  # Characteristics
+                {'name': ''},
+                {'name': ''},
+                {'name': ''},
+                {'name': self.format_value(total[0]),'no_format_name':total[0]},  # Assets
+                {'name': self.format_value(total[1]),'no_format_name':total[1]},
+                {'name': self.format_value(total[2]),'no_format_name':total[2]},
+                {'name': self.format_value(total[3]),'no_format_name':total[3]},
+                {'name': self.format_value(total[4]),'no_format_name':total[4]},  # Depreciation
+                {'name': self.format_value(total[5]),'no_format_name':total[5]},
+                {'name': self.format_value(total[6]),'no_format_name':total[6]},
+                {'name': self.format_value(total[7]),'no_format_name':total[7]},
+                {'name': self.format_value(total[8]),'no_format_name':total[8]},  # Gross
+            ],
+            'unfoldable': False,
+            'unfolded': False,
+        })
+        # for line in lines:
+        #     amount = line['columns'][-1].get('no_format_name')
+        #     for currency in options.get('currency'):
+        #         if currency.get('selected'):
+        #             line['columns'].append(self.get_multi_currency_balance(amount, currency.get('id')))
+        return lines
+
+    def get_multi_currency_balance(self, balance, currency, date=False):
+        """
+        Returns the computed balance for the selected currency.
+        """
+        date = date or fields.Date.today()
+        company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
+        company_currency = self.env.company.currency_id
+        currency_id = self.env['res.currency'].browse(currency)
+        multi_currency_amount = company_currency._convert(balance, currency_id, company, date)
+        return {'name': formatLang(self.env, multi_currency_amount, currency_obj=currency_id),
+                'no_format_name': multi_currency_amount}
