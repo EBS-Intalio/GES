@@ -35,7 +35,7 @@ class Bookings(models.Model):
     name = fields.Char(string='Name', copy=False)
     direction = fields.Selection(([('import', 'Import'), ('export', 'Export')]), string='Direction')
     state = fields.Selection(([('draft', 'Draft'), ('converted', 'Converted')]), string='Status', default='draft')
-    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport', required=True)
+    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport', required=False)
     operation = fields.Selection([('direct', 'Direct'), ('house', 'House'), ('master', 'Master')], string='Operation')
     ocean_shipment_type = fields.Selection(([('fcl', 'FCL'), ('lcl', 'LCL')]), string='Ocean Shipment Type')
     inland_shipment_type = fields.Selection(([('ftl', 'FTL'), ('ltl', 'LTL')]), string='Inland Shipment Type')
@@ -79,11 +79,11 @@ class Bookings(models.Model):
     track_ids = fields.One2many('booking.tracker', 'booking_id', 'Tracker Lines')
 
     job_type = fields.Char("Job Type")
-    por_origin = fields.Selection(([]), string="POR /Origin")
-    pol = fields.Selection(([]), string="POL")
-    pod = fields.Selection(([]), string="POD")
-    pofd_destination = fields.Selection(([]), string="POFD /Destination")
-    equipment_type = fields.Selection(([('20', '20'), ('20_open_top', '20 Open Top '), ('40', '40'),
+    por_origin = fields.Selection(([('value_a', 'value_a'),('Value_b', 'Value_b')]), string="POR /Origin")
+    pol = fields.Selection(([('value_a', 'value_a'),('Value_b', 'Value_b')]), string="POL")
+    pod = fields.Selection(([('value_a', 'value_a'),('Value_b', 'Value_b')]), string="POD")
+    pofd_destination = fields.Selection(([('value_a', 'value_a'),('Value_b', 'Value_b')]), string="POFD /Destination")
+    equipment_type = fields.Selection(([('20', '20'), ('20_open_top', '20 Open Top'), ('40', '40'),
                                                 ('40_hc', '40 HC'), ('40_open_top', '40 OPEN TOP'), ('45', '45'),
                                                 ('53', '53'), ('goh_single', 'GOH (Single)'), ('goh_double', 'GOH (Double)'), ('open_top_gauge', 'Open Top in-gauge'),
                                                 ('open_top_out_gauge', 'Open Top out-of-gauge'), ('isotank', 'Isotank'), ('shipper_own', 'Shipper Owned Container'),
@@ -103,7 +103,7 @@ class Bookings(models.Model):
     danger_class = fields.Selection(([('class_1', 'Class 1'), ('class_2 ', 'Class 2'), ('class_3', 'Class 3'),
                                             ('class_4', 'Class 4'), ('class_5', 'Class 5'), ('class_6', 'Class 6'),
                                             ('class_7', 'Class 7'), ('class_8', 'Class 8'), ('class_9', 'Class 9')]), string="Danger Class")
-    hs_code = fields.Selection(([]), string="HS Code")
+    hs_code = fields.Selection(([('value_1', 'value_1'),('value_2', 'value_2')]), string="HS Code")
     gross_weight= fields.Float("Gross weight (KG)", required=True)
     weight_type = fields.Selection(([('estimated', 'Estimated'), ('actual', 'Actual')]), string="Weight Type", required=True)
     number_packages = fields.Integer("Number of packages / Pallets", required=True)
@@ -132,12 +132,12 @@ class Bookings(models.Model):
     clearance_required = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Clearance Required", required=True)
     warehousing = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Warehousing / Storage", required=True)
     target_rate = fields.Float("Target Rate in USD")
-    shipment_ready_date = fields.Date("Shipment Ready Date")
-    shipment_ready_asap = fields.Boolean("Shipment Ready ASAP")
-    target_eta = fields.Date("Target ETA")
-    target_eta_asap = fields.Boolean("Target ETA SAP")
-    target_etd = fields.Date("Target ETD")
-    target_etd_asap = fields.Boolean("Target ETD SAP")
+    # shipment_ready_date = fields.Date("Shipment Ready Date")
+    # shipment_ready_asap = fields.Boolean("Shipment Ready ASAP")
+    # target_eta = fields.Date("Target ETA")
+    # target_eta_asap = fields.Boolean("Target ETA SAP")
+    # target_etd = fields.Date("Target ETD")
+    # target_etd_asap = fields.Boolean("Target ETD SAP")
     target_transit_time = fields.Integer("Target Transit Time")
     expected_free_time_at_origin = fields.Integer("Expected Free Time at Origin")
     expected_free_time_at_destination = fields.Integer("Expected Free Time at Destination")
@@ -234,6 +234,30 @@ class Bookings(models.Model):
             final_dict['other_pc'] = self.other_pc
         if self.reefer_status:
             final_dict['reefer_status'] = self.reefer_status
+        if self.hs_code:
+            final_dict['hs_code'] = self.hs_code
+        if self.gross_weight:
+            final_dict['gross_weight'] = self.gross_weight
+        if self.weight_type:
+            final_dict['weight_type'] = self.weight_type
+        if self.number_packages:
+            final_dict['number_packages'] = self.number_packages
+        if self.stackability:
+            final_dict['stackability'] = self.stackability
+        if self.clearance_required:
+            final_dict['clearance_required'] = self.clearance_required
+        if self.warehousing:
+            final_dict['warehousing'] = self.warehousing
+        if self.target_rate:
+            final_dict['target_rate'] = self.target_rate
+        if self.expected_free_time_at_origin:
+            final_dict['expected_free_time_at_origin'] = self.expected_free_time_at_origin
+        if self.expected_free_time_at_destination:
+            final_dict['expected_free_time_at_destination'] = self.expected_free_time_at_destination
+        if self.target_transit_time:
+            final_dict['target_transit_time'] = self.target_transit_time
+        if self.additional_requirements:
+            final_dict['additional_requirements'] = self.additional_requirements
         if self.temperature:
             final_dict['temperature'] = self.temperature
         if self.set_temperature:
@@ -248,6 +272,8 @@ class Bookings(models.Model):
             final_dict['dangerous_goods'] = True
             if self.dangerous_goods_notes:
                 final_dict['dangerous_goods_notes'] = self.dangerous_goods_notes
+            if self.danger_class:
+                final_dict['danger_class'] = self.danger_class
         if self.agent_id:
             final_dict['agent_id'] = self.agent_id.id or False
         if self.operator_id:
@@ -256,6 +282,8 @@ class Bookings(models.Model):
             final_dict['move_type'] = self.move_type.id or False
         if self.incoterm:
             final_dict['incoterm'] = self.incoterm.id or False
+        if self.package_type_id:
+            final_dict['package_type_id'] = self.package_type_id.id or False
         if self.datetime:
             final_dict['datetime'] = self.datetime
         res = {}

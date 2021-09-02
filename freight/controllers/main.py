@@ -44,6 +44,7 @@ class BookingsCustom(http.Controller):
         partners = request.env['res.partner'].search([])
         users = request.env['res.users'].search([])
         incoterms = request.env['freight.incoterms'].search([])
+        package_type_id = request.env['freight.package'].search([])
         move_type = request.env['freight.move.type'].search([])
         gateways = request.env['freight.port'].search([])
         airlines = request.env['freight.airline'].search([])
@@ -54,6 +55,7 @@ class BookingsCustom(http.Controller):
             'partners':partners,
             'users':users,
             'incoterms':incoterms,
+            'package_type_id':package_type_id,
             'move_type':move_type,
             'gateways':gateways,
             'airlines':airlines,
@@ -67,6 +69,7 @@ class BookingsCustom(http.Controller):
         partners = request.env['res.partner']
         users = request.env['res.users']
         incoterms = request.env['freight.incoterms']
+        package_type_id = request.env['freight.package']
         move_type = request.env['freight.move.type']
         gateways = request.env['freight.port']
         airlines = request.env['freight.airline']
@@ -136,9 +139,9 @@ class BookingsCustom(http.Controller):
                 final_dict['trucker'] = truckers.browse(int(post.get('trucker'))).id
 
             # Air Fields
-            if 'origin_close' in post.keys() and post.get('origin_close') == 'on':
+            if post.get('origin_close'):
                 final_dict['origin_close'] = True
-            if 'destination_close' in post.keys() and post.get('destination_close') == 'on':
+            if post.get('destination_close'):
                 final_dict['destination_close'] = True
             #General Data
             if post.get('job_type'):
@@ -153,6 +156,30 @@ class BookingsCustom(http.Controller):
                 final_dict['other_pc'] = post.get('other_pc')
             if post.get('reefer_status'):
                 final_dict['reefer_status'] = post.get('reefer_status')
+            if post.get('hs_code'):
+                final_dict['hs_code'] = post.get('hs_code')
+            if post.get('gross_weight'):
+                final_dict['gross_weight'] = post.get('gross_weight')
+            if post.get('weight_type'):
+                final_dict['weight_type'] = post.get('weight_type')
+            if post.get('number_packages'):
+                final_dict['number_packages'] = post.get('number_packages')
+            if post.get('stackability'):
+                final_dict['stackability'] = post.get('stackability')
+            if post.get('clearance_required'):
+                final_dict['clearance_required'] = post.get('clearance_required')
+            if post.get('warehousing'):
+                final_dict['warehousing'] = post.get('warehousing')
+            if post.get('target_rate'):
+                final_dict['target_rate'] = post.get('target_rate')
+            if post.get('target_transit_time'):
+                final_dict['target_transit_time'] = post.get('target_transit_time')
+            if post.get('expected_free_time_at_origin'):
+                final_dict['expected_free_time_at_origin'] = post.get('expected_free_time_at_origin')
+            if post.get('expected_free_time_at_destination'):
+                final_dict['expected_free_time_at_destination'] = post.get('expected_free_time_at_destination')
+            if post.get('additional_requirements'):
+                final_dict['additional_requirements'] = post.get('additional_requirements')
             if post.get('temperature'):
                 final_dict['temperature'] = post.get('temperature')
             if post.get('set_temperature'):
@@ -167,6 +194,8 @@ class BookingsCustom(http.Controller):
                 final_dict['dangerous_goods'] = True
                 if 'danger_info' in post.keys():
                     final_dict['dangerous_goods_notes'] = post.get('danger_info')
+            if post.get('danger_class'):
+                final_dict['danger_class'] = post.get('danger_class')
             if post.get('agent_id'):
                 final_dict['agent_id'] = partners.browse(int(post.get('agent_id'))).id
             if post.get('operator_id'):
@@ -175,6 +204,8 @@ class BookingsCustom(http.Controller):
                 final_dict['move_type'] = move_type.browse(int(post.get('move_type'))).id
             if post.get('incoterm'):
                 final_dict['incoterm'] = incoterms.browse(int(post.get('incoterm'))).id
+            if post.get('package_type_id'):
+                final_dict['package_type_id'] = package_type_id.browse(int(post.get('package_type_id'))).id
             if post.get('date'):
                 final_dict['datetime'] = dt.strptime(post.get('date'), '%Y-%m-%dT%H:%M')
             if post.get('new_date'):

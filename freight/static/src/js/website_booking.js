@@ -8,6 +8,8 @@ $(document).ready(function ()
 	    $('#air_div').hide();
 	    $('#dng_info').hide();
 	    $('#danger_info').hide();
+	    $('#danger_class').hide();
+	    $('#danger_class_info').hide();
 	    $('#dng_info').hide();
 	    $('input[type=datetime-local][name=date]').change(function() {
 	        console.log("THISSSSSSSSSSS", this,this.value);
@@ -97,17 +99,23 @@ $(document).ready(function ()
             var a = $('#danger').is(":checked");
             if ($('#danger').is(":checked")){
                 $('#danger_info').show();
+                $('#danger_class').show();
+                $('#danger_class_info').show();
                 $('#dng_info').show();
                 $("#dg_bool").after("<br />");
                 $("#dng_info").after("<br />");
                 $("#danger").after("<br />");
+                $("#danger_class_info").after("<br />");
             }
             else{
                 $('#danger_info').hide();
+                $('#danger_class').hide();
+                $('#danger_class_info').hide();
                 $('#dng_info').hide();
                 $("#dng_info").next("br").remove();
                 $("#dg_bool").next("br").remove();
                 $("#danger").next("br").remove();
+                $("#danger_class_info").next("br").remove();
             }
         });
     });

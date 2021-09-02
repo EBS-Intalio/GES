@@ -134,10 +134,14 @@
                                 <label for="source_location_id" string="From" attrs="{'invisible': [('transport','!=','land')]}"/>
                                 <div attrs="{'invisible': [('transport','!=','land')]}">
                                     <field name="source_location_id"/>
+                                    <label for="origin_close"/>
+                                    <field name="origin_close"/>
                                 </div>
                                 <label for="source_location_id" string="Loading Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
                                 <div attrs="{'invisible': [('transport','!=','ocean')]}">
                                     <field name="source_location_id"/>
+                                    <label for="origin_close"/>
+                                    <field name="origin_close"/>
                                 </div>
                                 <label for="source_location_id" string="Origin" attrs="{'invisible': [('transport','!=','air')]}"/>
                                 <div attrs="{'invisible': [('transport','!=','air')]}">
@@ -227,24 +231,24 @@
                                 <field name="clearance_required" />
                                 <field name="warehousing" />
                                 <field name="target_rate" />
-                                <label for="shipment_ready_date"/>
-                                <div class="o_row" name="shipment_ready_date">
-                                    <field name="shipment_ready_date" nolabel="1"/>
-                                    <span attrs="{'invisible': [('shipment_ready_date','=',False)]}">ASAP</span>
-                                    <field name="shipment_ready_asap" nolabel="1" attrs="{'invisible': [('shipment_ready_date','=',False)]}"/>
-                                </div>
-                                <label for="target_eta"/>
-                                <div class="o_row" name="target_eta">
-                                    <field name="target_eta" nolabel="1"/>
-                                    <span attrs="{'invisible': [('target_eta','=',False)]}">ASAP</span>
-                                    <field name="target_eta_asap" nolabel="1" attrs="{'invisible': [('target_eta','=',False)]}"/>
-                                </div>
-                                <label for="target_etd"/>
-                                <div class="o_row" name="target_etd">
-                                    <field name="target_etd" nolabel="1"/>
-                                    <span attrs="{'invisible': [('target_etd','=',False)]}">ASAP</span>
-                                    <field name="target_etd_asap" nolabel="1" attrs="{'invisible': [('target_etd','=',False)]}"/>
-                                </div>
+<!--                                <label for="shipment_ready_date"/>-->
+<!--                                <div class="o_row" name="shipment_ready_date">-->
+<!--                                    <field name="shipment_ready_date" nolabel="1"/>-->
+<!--                                    <span attrs="{'invisible': [('shipment_ready_date','=',False)]}">ASAP</span>-->
+<!--                                    <field name="shipment_ready_asap" nolabel="1" attrs="{'invisible': [('shipment_ready_date','=',False)]}"/>-->
+<!--                                </div>-->
+<!--                                <label for="target_eta"/>-->
+<!--                                <div class="o_row" name="target_eta">-->
+<!--                                    <field name="target_eta" nolabel="1"/>-->
+<!--                                    <span attrs="{'invisible': [('target_eta','=',False)]}">ASAP</span>-->
+<!--                                    <field name="target_eta_asap" nolabel="1" attrs="{'invisible': [('target_eta','=',False)]}"/>-->
+<!--                                </div>-->
+<!--                                <label for="target_etd"/>-->
+<!--                                <div class="o_row" name="target_etd">-->
+<!--                                    <field name="target_etd" nolabel="1"/>-->
+<!--                                    <span attrs="{'invisible': [('target_etd','=',False)]}">ASAP</span>-->
+<!--                                    <field name="target_etd_asap" nolabel="1" attrs="{'invisible': [('target_etd','=',False)]}"/>-->
+<!--                                </div>-->
                                 <label for="target_transit_time"/>
                                 <div class="o_row" name="target_transit_time">
                                     <field name="target_transit_time" nolabel="1"/>

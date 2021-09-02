@@ -319,10 +319,24 @@
                             </span><br/>
                             <t t-if="booking.dangerous_goods">
                                 <span><b>Dangerous Goods Info:</b> <span t-field="booking.dangerous_goods_notes"/></span><br/>
+                                <span><b>Danger Class:</b> <span t-field="booking.danger_class"/></span><br/>
                             </t>
                             <span><b>Move Type:</b> <span t-field="booking.move_type.name"/></span><br/>
                             <span><b>Tracking Numver:</b> <span t-field="booking.tracking_number"/></span><br/>
                             <span><b>Incoterm:</b> <span t-field="booking.incoterm.name"/></span><br/>
+                            <span><b>Package Type:</b> <span t-field="booking.package_type_id.name"/></span><br/>
+                            <span><b>HS Code:</b> <span t-field="booking.hs_code"/></span><br/>
+                            <span><b>Gross Weight(KG):</b> <span t-field="booking.gross_weight"/></span><br/>
+                            <span><b>Weight Type:</b> <span t-field="booking.weight_type"/></span><br/>
+                            <span><b>Number of Packages:</b> <span t-field="booking.number_packages"/></span><br/>
+                            <span><b>Stackability:</b> <span t-field="booking.stackability"/></span><br/>
+                            <span><b>Clearance Required:</b> <span t-field="booking.clearance_required"/></span><br/>
+                            <span><b>Warehousing / Storage:</b> <span t-field="booking.warehousing"/></span><br/>
+                            <span><b>Target Rate</b> <span t-field="booking.target_rate"/></span><br/>
+                            <span><b>Target Transit Time</b> <span t-field="booking.target_transit_time"/></span><br/>
+                            <span><b>Expected Free Time at Origin</b> <span t-field="booking.expected_free_time_at_origin"/></span><br/>
+                            <span><b>Expected Free Time at Destination</b> <span t-field="booking.expected_free_time_at_destination"/></span><br/>
+                            <span><b>Additional Requirements:</b> <span t-field="booking.additional_requirements"/></span><br/>
                         </div>
                         <div class="col-1">
 
@@ -410,10 +424,25 @@
 
                             <t t-if="booking.dangerous_goods">
                                 <span><b>Dangerous Goods Info:</b> <span t-field="booking.dangerous_goods_notes"/></span><br/>
+                                <span><b>Danger Class:</b> <span t-field="booking.danger_class"/></span><br/>
                             </t>
                             <span><b>Move Type:</b> <span t-field="booking.move_type.name"/></span><br/>
                             <span><b>Tracking Numver:</b> <span t-field="booking.tracking_number"/></span><br/>
                             <span><b>Incoterm:</b> <span t-field="booking.incoterm.name"/></span><br/>
+                            <span><b>Package Type:</b> <span t-field="booking.package_type_id.name"/></span><br/>
+                            <span><b>HS Code:</b> <span t-field="booking.hs_code"/></span><br/>
+                            <span><b>Gross Weight(KG):</b> <span t-field="booking.gross_weight"/></span><br/>
+                            <span><b>Weight Type:</b> <span t-field="booking.weight_type"/></span><br/>
+                            <span><b>Number of Packages:</b> <span t-field="booking.number_packages"/></span><br/>
+                            <span><b>Stackability:</b> <span t-field="booking.stackability"/></span><br/>
+                            <span><b>Clearance Required:</b> <span t-field="booking.clearance_required"/></span><br/>
+                            <span><b>Warehousing / Storage:</b> <span t-field="booking.warehousing"/></span><br/>
+                            <span><b>Target Rate:</b> <span t-field="booking.target_rate"/></span><br/>
+                            <span><b>Target Transit Time:</b> <span t-field="booking.target_transit_time"/></span><br/>
+                            <span><b>Expected Free Time ar Origin:</b> <span t-field="booking.expected_free_time_at_origin"/></span><br/>
+                            <span><b>Expected Free Time ar Destination:</b> <span t-field="booking.expected_free_time_at_destination"/></span><br/>
+                            <span><b>Additional Requirements:</b> <span t-field="booking.additional_requirements"/></span><br/>
+
                         </div>
                         <div class="col-1">
 
@@ -498,10 +527,24 @@
 
                             <t t-if="booking.dangerous_goods">
                                 <span><b>Dangerous Goods Info:</b> <span t-field="booking.dangerous_goods_notes"/></span><br/>
+                                <span><b>Danger Class:</b> <span t-field="booking.danger_class"/></span><br/>
                             </t>
                             <span><b>Move Type:</b> <span t-field="booking.move_type.name"/></span><br/>
                             <span><b>Tracking Numver:</b> <span t-field="booking.tracking_number"/></span><br/>
                             <span><b>Incoterm:</b> <span t-field="booking.incoterm.name"/></span><br/>
+                            <span><b>Package Type:</b> <span t-field="booking.package_type_id.name"/></span><br/>
+                            <span><b>HS Code:</b> <span t-field="booking.hs_code"/></span><br/>
+                            <span><b>Gross Weight(KG):</b> <span t-field="booking.gross_weight"/></span><br/>
+                            <span><b>Weight Type:</b> <span t-field="booking.weight_type"/></span><br/>
+                            <span><b>Number of Packages:</b> <span t-field="booking.number_packages"/></span><br/>
+                            <span><b>Stackability:</b> <span t-field="booking.stackability"/></span><br/>
+                            <span><b>Clearance Required:</b> <span t-field="booking.clearance_required"/></span><br/>
+                            <span><b>Warehousing / Storage:</b> <span t-field="booking.warehousing"/></span><br/>
+                            <span><b>Target Rate:</b> <span t-field="booking.target_rate"/></span><br/>
+                            <span><b>Target Transit Time:</b> <span t-field="booking.target_transit_time"/></span><br/>
+                            <span><b>Expected Free Time at Origin:</b> <span t-field="booking.expected_free_time_at_origin"/></span><br/>
+                            <span><b>Expected Free Time at Destination:</b> <span t-field="booking.expected_free_time_at_destination"/></span><br/>
+                            <span><b>Additional Requirements:</b> <span t-field="booking.additional_requirements"/></span><br/>
                         </div>
                         <div class="col-1">
 
@@ -774,8 +817,8 @@
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">Main Carriage</span><br/><br/>
                             <div id="air_lbl_1">
                                 <label id="air_source_location_id"  for="air_source_location_id" style="margin-top: 10px;">Origin:</label><br/>
-                                <label id="origin_close_lbl"  for="origin_close" style="margin-top: 10px;">Origin Close:</label><br/>
-                                <label id="destination_close_lbl"  for="destination_close" style="margin-top: 10px;">Destination Close:</label><br/>
+                                <label id="origin_close_lbl"  for="origin_close" style="margin-top: 30px;">Origin Close:</label><br/>
+                                <label id="destination_close_lbl"  for="destination_close" style="margin-top: 2px;">Destination Close:</label><br/>
                                 <label id="mawb_lbl" style="margin-top: 27px;" for="mawb">MAWB No:</label><br/>
                                 <br/>
                             </div>
@@ -812,7 +855,7 @@
                                 <input name="origin_close" id="origin_close" type="checkbox" checked="False" />
                                 <br />
                                 <input name="destination_close" id="destination_close" type="checkbox" checked="False" />
-                                <br />
+                                <br /><br />
                                 <input name="mawb" class="input-class form-control" id="mawb" /><br/>
                                 <br/>
                             </div>
@@ -859,8 +902,22 @@
                                 </select>
                                 <br/>
                                 <select id="equipment_type" name="equipment_type" class="form-control">
-                                    <option value="value_a" >Value A</option>
-                                    <option value="Value_b" >Value B</option>
+                                    <option value="20" >20</option>
+                                    <option value="20_open_top" >20 Open Top</option>
+                                    <option value="40" >40</option>
+                                    <option value="40_hc" >40 HC</option>
+                                    <option value="40_open_top" >40 OPEN TOP</option>
+                                    <option value="45" >45</option>
+                                    <option value="53" >53</option>
+                                    <option value="goh_single" >GOH (Single)</option>
+                                    <option value="goh_double" >GOH (Double)</option>
+                                    <option value="open_top_gauge" >Open Top in-gauge</option>
+                                    <option value="open_top_out_gauge" >Open Top out-of-gauge</option>
+                                    <option value="isotank" >Isotank</option>
+                                    <option value="shipper_own" >Shipper Owned Container</option>
+                                    <option value="mafi_trailer" >Mafi Trailer</option>
+                                    <option value="tank" >Tank</option>
+                                    <option value="flexibag" >Flexibag</option>
                                 </select>
                                 <br/>
                             </div>
@@ -945,7 +1002,7 @@
                                 <br/>
                                 <input name="cmr_no" class="input-class form-control" id="cmr_no"/>
                                 <br/>
-                                <select id="trucker" name="trucker" required="True" class="form-control">
+                                <select id="trucker" name="trucker" required="False" class="form-control">
                                     <t t-foreach="truckers" t-as="truck">
                                         <option t-att-value="truck.id" t-esc="truck.name"/></t>
                                 </select>
@@ -953,13 +1010,21 @@
                                 <input name="trucker_number" class="input-class form-control" id="trucker_number"/>
                                 <br/>
                                 <select id="vehicle_size" name="vehicle_size" class="form-control">
-                                    <option value="value_a" >Value A</option>
-                                    <option value="Value_b" >Value B</option>
+                                    <option value="3_ton" >3 Ton Truck</option>
+                                    <option value="7_ton" >7 Ton Truck</option>
+                                    <option value="10_ton" >10 Ton Truck</option>
+                                    <option value="12_ton" >12 Meter Trailer</option>
+                                    <option value="15_ton" >15 Meter Trailer</option>
                                 </select>
                                 <br />
                                 <select id="vehicle_type" name="vehicle_type" class="form-control">
-                                    <option value="value_a" >Value A</option>
-                                    <option value="Value_b" >Value B</option>
+                                    <option value="flat_bed" >Flat Bed</option>
+                                    <option value="full_box" >Full Box</option>
+                                    <option value="curtain_slider">Curtain Slider</option>
+                                    <option value="53">53</option>
+                                    <option value="hot_shot">Hot Shot</option>
+                                    <option value="low_bed">Low Bed</option>
+                                    <option value="box_truck">Box Truck w/Liftgate</option>
                                 </select>
                             </div>
                         </div>
@@ -1023,7 +1088,7 @@
                                 <option value="fahrenheit" >Fahrenheit</option>
                             </select><br/>
                             <input name="set_temperature" class="input-class form-control" id="set_temperature" /><br/>
-                            <select id="commodity_category" name="commodity_category" required="False" class="form-control">
+                            <select id="commodity_category" name="commodity_category" required="True" class="form-control">
                                 <option value="food_perishable">Food Perishable</option>
                                 <option value="nonfood_perishable">Non food perishable</option>
                                 <option value="non_perishable">Non perishable F and B</option>
@@ -1035,23 +1100,48 @@
                                 <option value="other_chemicals">Other Chemicals</option>
                             </select><br/>
                             <textarea id="notes" name="notes" class="form-control"/>
-                            <textarea id="commodity_description" name="commodity_description" class="form-control"/>
+                            <textarea id="commodity_description" name="commodity_description" required="True" class="form-control"/>
                             <br/>
                         </div>
                         <div class="col-2">
                             <br/><br/><br/>
                             <label id="dg_bool" for="danger">Dangerous Goods:</label><br/>
                             <div id="goods_info"><label id="dng_info" for="danger_info">Dangerous Goods Info:</label><br/><br/></div>
+                            <div id="danger_class"><label id="danger_class" for="danger_class">Danger Class:</label><br/><br/></div>
                             <label for="move_type">Move Type:</label><br/><br/>
                             <label for="trac_no">Tracking Number:</label><br/><br/>
                             <label for="incoterm" style="margin-top: 6px;">Incoterm:</label><br/><br/>
-                            <label for="attachment" style="margin-top: 8px;">Attachment:</label><br/><br/>
+                            <label for="package_type_id" style="margin-top: 6px;">Package Type:</label><br/><br/>
+                            <label for="hs_code" style="margin-top: 10px;">HS Code:</label><br/><br/>
+                            <label for="gross_weight" style="margin-top: 10px;">Gross Weight(KG):</label><br/><br/>
+                            <label for="weight_type" style="margin-top: 10px;">Weight Type:</label><br/><br/>
+                            <label for="number_packages" style="margin-top: 10px;">Number of Packages:</label><br/><br/>
+                            <label for="stackability" style="margin-top: 6px;">Stackability:</label><br/><br/>
+                            <label for="clearance_required" style="margin-top: 6px;">Clearance Required:</label><br/><br/>
+                            <label for="warehousing" style="margin-top: 6px;">Warehousing / Storage:</label><br/><br/>
+                            <label for="target_rate">Target Rate:</label><br/><br/>
+                            <label for="target_transit_time">Target Transit Time:</label><br/><br/>
+                            <label for="expected_free_time_at_origin">Expected Free Time at Origin(Days):</label><br/><br/>
+                            <label for="expected_free_time_at_destination">Expected Free Time at Destination(Days):</label><br/><br/>
+                            <label for="additional_requirements" style="margin-top: 10px;">Additional Requirements:</label><br/><br/>
+                            <label for="attachment" style="margin-top: 10px;">Attachment:</label><br/><br/>
                             <br/>
                         </div>
                         <div class="col-3">
                             <br/><br/><br/>
                             <input  id="danger" name="danger" type="checkbox" /><br/>
                             <textarea id="danger_info" style="resize: none;" name="danger_info" class="form-control"/><br/><br/>
+                            <select id="danger_class_info" name="danger_class" class="form-control">
+                                <option value="class_1">Class 1</option>
+                                <option value="class_2">Class 2</option>
+                                <option value="class_3">Class 3</option>
+                                <option value="class_4">Class 4</option>
+                                <option value="class_5">Class 5</option>
+                                <option value="class_6">Class 6</option>
+                                <option value="class_7">Class 7</option>
+                                <option value="class_8">Class 8</option>
+                                <option value="class_9">Class 9</option>
+                            </select>
                             <select id="move_type" name="move_type" required="True" class="form-control">
                                 <t t-foreach="move_type" t-as="move">
                                     <option t-att-value="move.id" t-esc="move.name"/></t>
@@ -1061,8 +1151,44 @@
                             <select id="incoterm" name="incoterm" required="True" class="form-control">
                                 <t t-foreach="incoterms" t-as="inc">
                                     <option t-att-value="inc.id" t-esc="inc.name"/></t>
+                            </select><br />
+                            <select id="package_type_id" name="package_type_id" required="True" class="form-control">
+                                <t t-foreach="package_type_id" t-as="inc">
+                                    <option t-att-value="inc.id" t-esc="inc.name"/></t>
+                            </select><br />
+                            <select id="hs_code" name="hs_code" class="form-control">
+                                <option value="value_1">Value 1</option>
+                                <option value="value_2">Value 2</option>
                             </select>
                             <br/>
+                            <input name="gross_weight" required="True" class="input-class form-control" id="gross_weight" /><br/>
+                            <select id="weight_type" name="weight_type" class="form-control">
+                                <option value="estimated">Estimated</option>
+                                <option value="actual">Actual</option>
+                            </select>
+                            <br/>
+                            <input name="number_packages" required="True" class="input-class form-control" id="number_packages" /><br/>
+                            <br/>
+                            <select id="stackability" name="stackability" class="form-control">
+                                <option value="stackable">Stackable</option>
+                                <option value="no_stackable">No Stackable</option>
+                            </select>
+                            <br/>
+                            <select id="clearance_required" name="clearance_required" class="form-control">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                            <br/>
+                            <select id="warehousing" name="warehousing" class="form-control">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                            <br/><br />
+                            <input name="target_rate" class="input-class form-control" id="target_rate" /><br/>
+                            <input name="target_transit_time" class="input-class form-control" id="target_transit_time" /><br/>
+                            <input name="expected_free_time_at_origin" class="input-class form-control" id="expected_free_time_at_origin" /><br/>
+                            <input name="expected_free_time_at_destination" class="input-class form-control" id="expected_free_time_at_destination" /><br/>
+                            <textarea id="additional_requirements" style="resize: none;" name="additional_requirements" class="form-control"/><br/><br/>
                             <input type="file" name="file_booking" multiple="false"
                                    accept="image/*,application/pdf,video/*"/>
                             <br/>
