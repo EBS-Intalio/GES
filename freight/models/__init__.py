@@ -8,3 +8,4 @@
 from . import freight
 from . import freight_dashboard
 from . import bookings
+from . import processing_checklist

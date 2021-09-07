@@ -20,3 +20,4 @@ access_freight_route_service_user,freight.route.service,freight.model_freight_ro
 access_register_invoice_user,register.invoice,freight.model_register_invoice,base.group_user,1,1,1,1
 access_freight_booking_group_hr_freight_user,freight.booking.group.freight.user,freight.model_freight_booking,base.group_user,1,1,1,1
 access_freight_booking_tracker_group_hr_freight_user,freight.booking.tracker.group.freight.user,freight.model_booking_tracker,,1,1,1,1
+access_processing_checklist_group_hr_freight_user,processing.checklist.group.freight.user,freight.model_processing_checklist,base.group_user,1,1,1,1

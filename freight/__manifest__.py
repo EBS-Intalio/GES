@@ -47,6 +47,7 @@ Key Features
         'views/freight_view.xml',
         'views/booking_view.xml',
         'views/freight_templates.xml',
+        'views/processing_checklist_view.xml',
     ],
     'qweb': [
         "static/src/xml/freight_dashboard.xml",
