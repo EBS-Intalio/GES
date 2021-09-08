@@ -87,8 +87,8 @@
                                         <field name="charge_amount"/>
                                         <field name="charge_amount_price_2"/>
                                         <field name="charge_amount_price_3"/>
-                                        <field name="margin_per" attrs="{'column_invisible': [('parent.state','=','done')]}"/>
-                                        <field name="margin_amount" attrs="{'column_invisible': [('parent.state','=','done')]}"/>
+                                        <field name="margin_per" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
+                                        <field name="margin_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="charge_total_amount"/>
                                         <field name="converted_amount" invisible="1"/>
                                     </tree>
