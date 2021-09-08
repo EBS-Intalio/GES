@@ -380,7 +380,7 @@ class FreightBooking(models.Model):
     _inherit = 'freight.booking'
 
     freight_request_id = fields.Many2one('freight.job.request','RequestID')
-    hs_code = fields.Many2many('freight.hs.code', string="Freight Hs-Codes", required=True)
+    hs_code = fields.Many2many('freight.hs.code', string="Freight Hs-Codes")
 
     def button_request(self):
         return {
