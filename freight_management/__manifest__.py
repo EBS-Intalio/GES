@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.0.2',
+    'version': '14.0.0.3',
     'category': 'Freight',
     'description': """
                 Freight Management
@@ -12,7 +12,7 @@
     'website': "http://www.ever-bs.com/",
     'data': [
         "security/ir.model.access.csv",
-        # "data/website_menu.xml",
+        "data/website_menu.xml",
         "data/ir_sequence.xml",
         "views/freight_job_request.xml",
         "views/freight_hs_code.xml",
