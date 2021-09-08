@@ -40,6 +40,7 @@ class RequestCustom(http.Controller):
         airlines = request.env['freight.airline'].search([])
         vessels = request.env['freight.vessel'].search([])
         truckers = request.env['freight.trucker'].search([])
+        hs_codes = request.env['freight.hs.code'].search([])
         packages = request.env['freight.package'].search([])
 
         values = {
@@ -48,6 +49,7 @@ class RequestCustom(http.Controller):
             'consignees': consignees,
             'users':users,
             'incoterms':incoterms,
+            'codes':hs_codes,
             # 'move_type':move_type,
             'packages': packages,
             'gateways':gateways,
@@ -59,19 +61,13 @@ class RequestCustom(http.Controller):
 
     @http.route(['/submit_request'], type='http', auth='public', website=True, cache=300,  csrf=False)
     def portal_my_request_submit(self, **post):
-        partner_obj = request.env['res.partner']
-        users = request.env['res.users']
-        incoterms = request.env['freight.incoterms']
-        # move_type = request.env['freight.move.type']
-        gateways = request.env['freight.port']
-        airlines = request.env['freight.airline']
-        vessels = request.env['freight.vessel']
-        truckers = request.env['freight.trucker']
-        operation = request.env['freight.booking']
         final_dict = {}
         dir = ''
+        final_dict['gross_weight'] = 0
         if post:
             # Air Fields
+            # if final_dict.get('mode_of_transport') == 'air':
+            dir = post.get('mode_of_transport')
             if 'origin_close' in post.keys() and post.get('origin_close') == 'on':
                 final_dict['consider_origin_close'] = True
             if 'destination_close' in post.keys() and post.get('destination_close') == 'on':
@@ -82,163 +78,130 @@ class RequestCustom(http.Controller):
             # General Data
             # Mode of transport and shipment
             # final_dict['mode_of_transport'] = 'air'
-            # if post.get('transport'):
-            #     final_dict['mode_of_transport'] = post.get('transport')
-            #     dir = post.get('transport')
-            #
-            # if final_dict.get('mode_of_transport') == 'air':
-            #     final_dict['air_shipment'] = 'breakbulk'
-            #     if post.get('air'):
-            #         final_dict['air_shipment'] = post.get('air')
-            # elif final_dict.get('mode_of_transport') == 'ocean':
-            #     final_dict['air_shipment'] = 'fcl'
-            #     if post.get('ocean'):
-            #         final_dict['ocean_shipment'] = post.get('ocean')
-            # else:
-            #     final_dict['inland_shipment'] = 'ftl'
-            #     if post.get('land'):
-            #         final_dict['inland_shipment'] = post.get('land')
-            #
+            if post.get('mode_of_transport'):
+                final_dict['mode_of_transport'] = post.get('mode_of_transport')
+            if post.get('shipper_id'):
+                final_dict['shipper_id'] = int(post.get('shipper_id'))
+            if post.get('consignee_id'):
+                final_dict['consignee_id'] = int(post.get('consignee_id'))
+            if post.get('air_source_location_id'):
+                final_dict['origin_airport_id'] = int(post.get('air_source_location_id'))
+            if post.get('mawb_no'):
+                final_dict['mawb_no'] = post.get('mawb_no')
+            if post.get('shipping_line_id'):
+                final_dict['shipping_line_id'] = int(post.get('shipping_line_id'))
+            if post.get('voyage_no'):
+                final_dict['voyage_no'] = post.get('voyage_no')
+            if post.get('vessel_id'):
+                final_dict['vessel_id'] = int(post.get('vessel_id'))
+            if post.get('equipment_type'):
+                final_dict['equipment_type'] = post.get('equipment_type')
+            if post.get('preferred_airline_id'):
+                final_dict['preferred_airline_id'] = int(post.get('preferred_airline_id'))
+            if post.get('flight_no'):
+                final_dict['flight_no'] = post.get('flight_no')
+            if post.get('truck_ref'):
+                final_dict['truck_ref'] = post.get('truck_ref')
+            if post.get('trucker_number'):
+                final_dict['trucker_number'] = post.get('trucker_number')
+            if post.get('trucker'):
+                final_dict['trucker'] = post.get('trucker')
+            if post.get('job_type'):
+                final_dict['job_type'] = post.get('job_type')
+            if post.get('partner_id'):
+                final_dict['partner_id'] = int(post.get('partner_id'))
+            # if post.get('freight_hs_code_ids'):
+            # final_dict['freight_hs_code_ids'] = [(6,0, [1,2])],
+            if post.get('package_type_id'):
+                final_dict['package_type_id'] = int(post.get('package_type_id'))
+            if post.get('reefer_status'):
+                final_dict['reefer_status'] = post.get('reefer_status')
+            if post.get('temperature'):
+                final_dict['temperature'] = post.get('temperature')
+            if post.get('set_temperature_value'):
+                final_dict['temperature_value'] = float(post.get('set_temperature_value'))
+            if post.get('target_transit_time'):
+                final_dict['target_transit_time'] = int(post.get('target_transit_time'))
+            if post.get('expected_free_time_at_origin'):
+                final_dict['expected_free_time_at_origin'] = int(post.get('expected_free_time_at_origin'))
+            if post.get('expected_free_time_at_destination'):
+                final_dict['expected_free_time_at_destination'] = int(post.get('expected_free_time_at_destination'))
+            if post.get('commodity_category'):
+                final_dict['commodity_category'] = post.get('commodity_category')
+
+            if post.get('commodity_description'):
+                final_dict['commodity_description'] = post.get('commodity_description')
+            if post.get('freight_incoterm_id'):
+                final_dict['freight_incoterm_id'] = int(post.get('freight_incoterm_id'))
+
+            if post.get('dangerous_goods_class'):
+                final_dict['dangerous_goods_class'] = post.get('dangerous_goods_class')
+            if post.get('clearance_required'):
+                final_dict['clearance_required'] = post.get('clearance_required')
+            if post.get('warehousing'):
+                final_dict['warehousing'] = post.get('warehousing')
+            if post.get('target_rate'):
+                final_dict['target_rate'] = float(post.get('target_rate'))
+            if post.get('gross_weight'):
+                final_dict['gross_weight'] = float(post.get('gross_weight'))
+            if post.get('number_of_pallets_packages'):
+                final_dict['number_of_pallets_packages'] = int(post.get('number_of_pallets_packages'))
+            if post.get('stackability'):
+                final_dict['stackability'] = post.get('stackability')
+            # air_shipment
+
+
+            if post.get('mode_of_transport') == 'air':
+                final_dict['air_shipment'] = post.get('air')
+            if post.get('mode_of_transport') == 'ocean':
+                final_dict['ocean_shipment'] = post.get('ocean')
+            if post.get('mode_of_transport') == 'land':
+                final_dict['inland_shipment'] = post.get('land')
+            final_dict['vehicle_size'] = post.get('vehicle_size')
+            final_dict['vehicle_type'] = post.get('vehicle_type')
 
 
 
-            # if post.get('shipper_id'):
-            #     post['shipper_id'] = int(post.get('shipper_id'))
-            # if post.get('consignee_id'):
-            #     post['consignee_id'] = int(post.get('consignee_id'))
-            #
-            # # if post.get('air_source_location_id'):
-            # post['origin_airport_id'] = int(post.get('air_source_location_id'))
-            # # if post.get('destination_location_id'):
-            # post['destination_airport_id'] = int(post.get('air_destination_location_id'))
-            # post['preferred_airline_id'] = int(post.get('preferred_airline_id'))
-            # post['freight_incoterm_id'] = int(post.get('freight_incoterm_id'))
+            if post.get('freight_hs_code_ids'):
+                code_vals = []
+                for f_val in request.httprequest.form.getlist('freight_hs_code_ids'):
+                    code_vals.append(int(f_val))
+                final_dict['freight_hs_code_ids'] = [[6, False, code_vals]]
 
+            if post.get('additional_comments'):
+                final_dict['additional_comments'] = post.get('additional_comments')
+            if post.get('additional_requirement'):
+                final_dict['additional_requirements'] = post.get('additional_requirement')
+            if 'danger' in post.keys() and post.get('danger') == 'on':
+                final_dict['is_dangerous_goods'] = True
+            if post.get('dangerous_goods_notes'):
+                final_dict['dangerous_goods_notes'] = post.get('dangerous_goods_notes')
+            if dir == 'air' or not dir:
+                if post.get('air_source_location_id'):
+                    final_dict['origin_airport_id'] = int(post.get('air_source_location_id'))
+                if post.get('air_destination_location_id'):
+                    final_dict['destination_airport_id'] = int(post.get('air_destination_location_id'))
+            if dir == 'ocean':
+                if post.get('ocean_source_location_id'):
+                    final_dict['origin_airport_id']  = int(post.get('ocean_source_location_id'))
+                if post.get('ocean_destination_location_id'):
+                    final_dict['destination_airport_id'] = int(post.get('ocean_destination_location_id'))
+            if dir == 'land':
+                if post.get('land_source_location_id'):
+                    final_dict['origin_airport_id'] = int(post.get('land_source_location_id'))
+                if post.get('land_destination_location_id'):
+                    final_dict['destination_airport_id'] = int(post.get('land_destination_location_id'))
 
-
-
-            # if post.get('mawb'):
-            #     final_dict['mawb_no'] = post.get('mawb')
-        #     if post.get('flight_no'):
-        #         final_dict['flight_no'] = post.get('flight_no')
-        #     if post.get('airline'):
-        #         final_dict['airline_id'] = airlines.browse(int(post.get('airline'))).id
-        #     #Ocean Fields
-        #     if post.get('por_origin'):
-        #         final_dict['por_origin'] = post.get('por_origin')
-        #     if post.get('pol'):
-        #         final_dict['pol'] = post.get('pol')
-        #     if post.get('pod'):
-        #         final_dict['pod'] = post.get('pod')
-        #     if post.get('pofd_destination'):
-        #         final_dict['pofd_destination'] = post.get('pofd_destination')
-        #     if post.get('equipment_type'):
-        #         final_dict['equipment_type'] = post.get('equipment_type')
-        #     if post.get('shipping_line_id'):
-        #         final_dict['shipping_line_id'] = partner_obj.browse(int(post.get('shipping_line_id'))).id
-        #     if post.get('vessel_id'):
-        #         final_dict['vessel_id'] = vessels.browse(int(post.get('vessel_id'))).id
-        #     if post.get('voyage_no'):
-        #         final_dict['voyage_no'] = post.get('voyage_no')
-        #     if post.get('obl'):
-        #         final_dict['obl'] = post.get('obl')
-        #     # Inland Fields
-        #     if post.get('cmr_no'):
-        #         final_dict['truck_ref'] = post.get('cmr_no')
-        #     if post.get('trucker_number'):
-        #         final_dict['trucker_number'] = post.get('trucker_number')
-        #     if post.get('vehicle_size'):
-        #         final_dict['vehicle_size'] = post.get('vehicle_size')
-        #     if post.get('vehicle_type'):
-        #         final_dict['vehicle_type'] = post.get('vehicle_type')
-        #     if post.get('trucker'):
-        #         final_dict['trucker'] = truckers.browse(int(post.get('trucker'))).id
-        #
-
-        #     if post.get('freight_pc'):
-        #         final_dict['freight_pc'] = post.get('freight_pc')
-        #     if post.get('other_pc'):
-        #         final_dict['other_pc'] = post.get('other_pc')
-        #     if post.get('reefer_status'):
-        #         final_dict['reefer_status'] = post.get('reefer_status')
-        #     if post.get('temperature'):
-        #         final_dict['temperature'] = post.get('temperature')
-        #     if post.get('set_temperature'):
-        #         final_dict['set_temperature'] = post.get('set_temperature')
-        #     if post.get('commodity_category'):
-        #         final_dict['commodity_category'] = post.get('commodity_category')
-        #     if post.get('commodity_description'):
-        #         final_dict['commodity_description'] = post.get('commodity_description')
-        #     if post.get('trac_no'):
-        #         final_dict['tracking_number'] = post.get('trac_no')
-        #     if 'danger' in post.keys() and post.get('danger') == 'on':
-        #         final_dict['dangerous_goods'] = True
-        #         if 'danger_info' in post.keys():
-        #             final_dict['dangerous_goods_notes'] = post.get('danger_info')
-        #     if post.get('agent_id'):
-        #         final_dict['agent_id'] = partners.browse(int(post.get('agent_id'))).id
-        #     if post.get('operator_id'):
-        #         final_dict['operator_id'] = users.browse(int(post.get('operator_id'))).id
-        #     if post.get('incoterm'):
-        #         final_dict['incoterm'] = incoterms.browse(int(post.get('incoterm'))).id
-        #     if post.get('date'):
-        #         final_dict['datetime'] = dt.strptime(post.get('date'), '%Y-%m-%dT%H:%M')
-        #     if post.get('new_date'):
-        #         final_dict['datetime'] = dt.strptime(post.get('new_date'), '%Y-%m-%dT%H:%M')
-        #     if dir == 'air' or not dir:
-        #         if post.get('air_source_location_id'):
-        #             final_dict['origin_airport_id'] = gateways.browse(int(post.get('air_source_location_id'))).id
-        #         if post.get('air_destination_location_id'):
-        #             final_dict['destination_airport_id'] = gateways.browse(int(post.get('air_destination_location_id'))).id
-            # if dir == 'ocean':
-            #     if post.get('ocean_source_location_id'):
-            #         final_dict['source_location_id']  = gateways.browse(int(post.get('ocean_source_location_id'))).id
-            #     if post.get('ocean_destination_location_id'):
-            #         final_dict['destination_location_id'] = gateways.browse(int(post.get('ocean_destination_location_id'))).id
-            # if dir == 'land':
-            #     if post.get('land_source_location_id'):
-            #         final_dict['source_location_id']  = gateways.browse(int(post.get('land_source_location_id'))).id
-            #     if post.get('land_destination_location_id'):
-            #         final_dict['destination_location_id'] = gateways.browse(int(post.get('land_destination_location_id'))).id
-        #
-        # final_dict.update({'state':'draft'})
-        # booking = operation.sudo().create(final_dict)
-        # for file in request.httprequest.files.getlist('file_booking'):
-        #     data = file.read()
-        #     mimetype = file.content_type
-        #     attachment_id = request.env['ir.attachment'].create({
-        #         'name':  file.filename,
-        #         'mimetype': mimetype,
-        #         'type': 'binary',
-        #         'datas':base64.b64encode(data),
-        #         'res_model': booking._name,
-        #         'res_id': booking.id
-        #     })
-        #     booking.update({
-        #         'attachment': [(4, attachment_id.id)],
-        #     })
-        # del final_dict['state']
         request_obj = request.env['freight.job.request']
+        freight_request = request_obj.sudo().create(final_dict)
 
-        # default_vals = request_obj.sudo().default_get(request_obj._fields.keys())
+        lead_obj = request.env['crm.lead']
+        lead_id = lead_obj.create({
+            'name': freight_request.name,
+            'partner_id': freight_request.partner_id.id,
+        })
+        freight_request.lead_id = lead_id.id
 
-        default_vals = {'mode_of_transport': 'air',
-                'shipper_id': 13,
-                'consignee_id': 14,
-                'freight_incoterm_id': 1,
-                'is_dangerous_goods': True,
-                'dangerous_goods_class': 'class_1',
-                'package_type_id': 1,
-                'commodity_category': 'food_perishable',
-                'commodity_description': '2345asdf',
-                'freight_hs_code_ids': [[6, False, [1, 2]]],
-                'number_of_pallets_packages': 12,
-                'gross_weight': 0}
-
-
-
-
-        freight_request = request_obj.sudo().create(post)
         print("freight_requestfreight_requestfreight_request", freight_request)
         return request.render("freight_management.portal_my_request_thank_you")
 

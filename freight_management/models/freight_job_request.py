@@ -108,12 +108,12 @@ class FreightJobRequest(models.Model):
     warehousing = fields.Selection(([('yes', 'YES'),
                                      ('no', 'NO')]), default="yes", string="Warehousing / Storage", required=True)
     target_rate = fields.Float(string="Target Rate in USD")
-    shipment_ready_date = fields.Date(string="Shipment Ready Date")
-    shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
-    target_eta = fields.Date(string="Target ETA")
-    target_eta_asap = fields.Boolean(string="Target ETA SAP")
-    target_etd = fields.Date(string="Target ETD")
-    target_etd_asap = fields.Boolean(string="Target ETD SAP")
+    # shipment_ready_date = fields.Date(string="Shipment Ready Date")
+    # shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
+    # target_eta = fields.Date(string="Target ETA")
+    # target_eta_asap = fields.Boolean(string="Target ETA SAP")
+    # target_etd = fields.Date(string="Target ETD")
+    # target_etd_asap = fields.Boolean(string="Target ETD SAP")
     target_transit_time = fields.Integer(string="Target Transit Time")
     expected_free_time_at_origin = fields.Integer(string="Expected Free Time at Origin")
     expected_free_time_at_destination = fields.Integer(string="Expected Free Time at Destination")
@@ -376,7 +376,7 @@ class FreightJobRequest(models.Model):
         #     }
 
 #
-class FreightBookingInherit(models.Model):
+class FreightBooking(models.Model):
     _inherit = 'freight.booking'
 
     freight_request_id = fields.Many2one('freight.job.request','RequestID')

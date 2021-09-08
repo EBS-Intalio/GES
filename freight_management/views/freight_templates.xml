@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <odoo>
+    <template id="requestassets_frontend" inherit_id="web.assets_frontend" name="Request Assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/freight_management/static/src/js/website_request.js"></script>
+        </xpath>
+    </template>
 <!--    <template id="track_shipment" name="Track Shipment">-->
 <!--        <t t-call="website.layout">-->
 <!--            <div class="container mt8">-->
@@ -647,7 +652,7 @@
                             <br/><br/><br/><br/>
                             <b style="color:#7C7BAD;">Transport:</b><br/>
                             <label class="cont" for="air" style="margin-right:10px;margin-top: 10px;">Air
-                                <input type="radio" id="air" name="mode_of_transport" value="air"/>
+                                <input type="radio" id="air" name="mode_of_transport" value="air" required="required" />
                                 <span class="checkmark"></span>
                             </label>
 
@@ -661,7 +666,7 @@
                                 <span class="checkmark"></span>
                             </label><br/><br/>
 
-                            <div id="ocean_div">
+                            <div id="ocean_div" >
                                 <b style="color:#7C7BAD;">Ocean Shipment Type:</b><br/><br/>
 
                                 <label class="cont"  for="fcl" style="margin-right:10px;">FCL
@@ -839,7 +844,11 @@
 <!--                                    <option value="Value_b" >Value B</option>-->
 <!--                                </select>-->
 <!--                                <br/>-->
-                                <select id="equipment_type_lbl" name="equipment_type" class="form-control">
+
+
+
+
+                                <select id="equipment_type" name="equipment_type" class="form-control">
                                     <option value="" ></option>
                                     <option value="20" >20</option>
                                     <option value="20_open_top" >20_open_top</option>
@@ -876,6 +885,7 @@
                                 <label id="source_lbl" for="air_destination_location_id">Destination:</label><br/>
                                 <label id="airline_lbl" style="margin-top: 27px;" for="airline">Airline:</label><br/>
                                 <label id="flight_no_lbl" style="margin-top: 31px;" for="flight_no">Flight No:</label><br/>
+
 <!--                                <label id="date_lbl" style="margin-top: 33px;" for="date">Shipment Ready Date 1:</label><br/><br/>-->
                             </div>
                             <div id="ocean_lbl_2" style="display:none;">
@@ -891,6 +901,9 @@
                                 <label id="cmr_lbl" style="margin-top: 29px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
                                 <label id="trucker_lbl"  style="margin-top: 29px;" for="trucker">Trucker:</label><br/>
                                 <label id="trucker_no_lbl"  style="margin-top: 36px;" for="trucker_number">Trucker No:</label><br/>
+                                <label class="vehicle_size"  style="margin-top: 26px;" for="vehicle_size">Vehicle Size:</label><br/><br/>
+                                <label class="vehicle_type"  style="margin-top: 26px;" for="vehicle_type">Vehicle Type:</label><br/><br/>
+
 <!--                                <label id="vehicle_size_lbl"  style="margin-top: 36px;" for="vehicle_size">Vehicle Size:</label><br/>-->
 <!--                                <label id="vehicle_type_lbl"  style="margin-top: 36px;" for="vehicle_type">Vehicle Type:</label><br/>-->
                                 <br/>
@@ -947,6 +960,31 @@
                                 <br/>
                                 <input name="trucker_number" class="input-class form-control" id="trucker_number"/>
                                 <br/>
+
+                                <select id="vehicle_size" name="vehicle_size" class="form-control vehicle_size">
+                                    <option value="" ></option>
+                                    <option value="3_ton" >3 Ton Truck</option>
+                                    <option value="7_ton" >7 Ton Truck</option>
+                                    <option value="10_ton" >10 Ton Truck</option>
+                                    <option value="12_ton" >12 Meter Trailer</option>
+                                    <option value="15_ton" >15 Meter Trailer</option>
+                                </select>
+                                <br/>
+
+                                <select id="vehicle_type" name="vehicle_type" class="form-control vehicle_type">
+                                    <option value="" ></option>
+                                    <option value="flat_bed" >Flat Bed</option>
+                                    <option value="full_box" >Full Box</option>
+                                    <option value="curtain_slider" >Curtain Slider</option>
+                                    <option value="53" >53</option>
+                                    <option value="hot_shot" >Hot Shot</option>
+                                    <option value="low_bed" >Low Bed</option>
+                                    <option value="box_truck" >Box Truck w/Liftgate</option>
+                                </select>
+                                <br/>
+
+
+
                             </div>
                         </div>
 
@@ -967,6 +1005,7 @@
                         <div class="col-2">
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">General</span><br/><br/>
                             <label for="job_type" style="margin-top: 10px;">Job Type:</label><br/><br/>
+                            <label id="freight_hs_code_ids_lbl"  style="margin-top: 10px;" for="freight_hs_code_ids">Freight Hs-Codes:</label><br/><br/>
 <!--                            <label for="barcode" style="margin-top: 10px;">Barcode:</label><br/><br/>-->
                             <label for="agent_id" style="margin-top: 6px;">Customer:</label><br/><br/>
                             <label for="agent_id" style="margin-top: 6px;">Package Type:</label><br/><br/>
@@ -991,6 +1030,12 @@
                         <div class="col-3">
                             <br/><br/>
                             <input name="job_type" class="input-class form-control" id="job_type" /><br/>
+                            <select id='freight_hs_code_ids' name="freight_hs_code_ids" required="True" class="form-control link-style" multiple='multiple'>
+                                     <t t-foreach="codes" t-as="code">
+                                        <option t-att-value="code.id" t-esc="code.name"/></t>
+						        </select>
+<!--                            <input type="hidden" name="freight_hs_code_ids_list" id="freight_hs_code_ids_list"/>-->
+                                <br/>
                             <select id="partner_id" name="partner_id" required="True" class="form-control">
                                 <t t-foreach="partners" t-as="partner">
                                     <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
@@ -1043,12 +1088,12 @@
                                 <option value="other_chemicals">Other Chemicals</option>
                             </select><br/>
 <!--                            <textarea id="notes" name="notes" class="form-control"/>-->
-                            <textarea id="commodity_description" name="commodity_description" class="form-control"/><br/>
+                            <textarea id="commodity_description" name="commodity_description" required="True" class="form-control"/><br/>
                             <br/>
                         </div>
                         <div class="col-2">
                             <br/><br/><br/>
-                            <label for="incoterm" style="margin-top: 6px;">Incoterm:</label><br/>
+                            <label for="incoterm" style="margin-top: 6px;" id="incoterm_lbl">Incoterm:</label><br/>
 <!--                            <label for="attachment" style="margin-top: 8px;">Attachment:</label><br/><br/>-->
                             <br/>
 
@@ -1063,16 +1108,13 @@
 
                             <div id="goods_info"><label id="dng_info" for="danger_info">Dangerous Goods Info:</label><br/><br/></div>
 
-                             <div id="trac_no"><label id="trac_no" for="trac_no">Trucker No:</label><br/><br/></div>
+                             <div id="trac_no_lb"><label id="trac_no_lbl" for="trac_no">Trucker No:</label><br/><br/></div>
 
                             <div class="clearance_required"><label id="clearance_required" class="clearance_required" for="clearance_required">Clearance Required:</label><br/><br/></div>
                             <div class="warehousing_storage"><label id="warehousing_storage" class="warehousing_storage" for="warehousing_storage">Warehousing / Storage:</label><br/><br/></div>
 
                             <div id="rate_in_usd"><label for="rate_in_usd" style="margin-top: 4px;">Target Rate in USD:</label><br/><br/></div>
 
-                            <div id="shipment_ready_date"><label for="shipment_ready_date" style="margin-top: 4px;">Shipment Ready Date:</label><br/><br/></div>
-                            <div id="target_eta"><label for="target_eta" style="margin-top: 4px;">Target ETA:</label><br/><br/></div>
-                            <div id="target_etd"><label for="target_etd" style="margin-top: 4px;">Target ETD:</label><br/><br/></div>
 
                             <div id="gross_weight_kg"><label for="gross_weight_kg" style="margin-top: 4px;">Gross weight (KG):</label><br/><br/></div>
 
@@ -1130,13 +1172,10 @@
                             </select><br/>
 
                             <input id="rate_in_usd" name="target_rate" type="number" class="input-class form-control" /><br/><br/>
-                            <input id="shipment_ready_date" name="shipment_ready_date" type="date" class="input-class form-control"  /><br/>
-                            <input id="target_eta" name="target_eta" type="date" class="input-class form-control"  /><br/>
-                            <input id="target_etd" name="target_etd" type="date" class="input-class form-control"  /><br/>
 
-                            <input id="gross_weight_kg" name="gross_weight" type="number" class="input-class form-control" /><br/>
+                            <input id="gross_weight_kg" name="gross_weight" type="number" requied="True" class="input-class form-control" /><br/>
 
-                            <input id="number_of_packages_pallets" name="number_of_pallets_packages" type="number" class="input-class form-control" /><br/>
+                            <input id="number_of_packages_pallets" required="True" name="number_of_pallets_packages" type="number" class="input-class form-control" /><br/>
 
 <!--                            <select id="number_of_packages_pallets" name="number_of_packages_pallets" class="number_of_packages_pallets form-control">-->
 <!--                                <option value="number_of_packages_pallets_yes">Yes</option>-->
@@ -1195,7 +1234,7 @@
                     <br/><br/><br/>
                     <div class="col-md-12 text-center">
                         <h1>Your Request has been created.</h1>
-                        <h4><a href="/freight_bookings">Click Here to check your bookings.</a> </h4>
+<!--                        <h4><a href="/freight_bookings">Click Here to check your bookings.</a> </h4>-->
                     </div>
                 </div>
             </div>
