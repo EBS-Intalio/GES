@@ -294,6 +294,7 @@
                     </div>
                     <br/>
                     <br/>
+
                     <div class="col-12 row">
                         <div class="col-1">
 
@@ -415,7 +416,7 @@
                             </span><br/>
 
                             <t t-if="f_request.is_dangerous_goods">
-                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.is_dangerous_goods_notes"/></span><br/>
+                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.is_dangerous_goods"/></span><br/>
                             </t>
 <!--                            <span><b>Move Type:</b> <span t-field="request.move_type.name"/></span><br/>-->
 <!--                            <span><b>Tracking Numver:</b> <span t-field="request.tracking_number"/></span><br/>-->
@@ -503,7 +504,7 @@
                             </span><br/>
 
                             <t t-if="f_request.is_dangerous_goods">
-                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.is_dangerous_goods_notes"/></span><br/>
+                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.is_dangerous_goods"/></span><br/>
                             </t>
 <!--                            <span><b>Move Type:</b> <span t-field="request.move_type.name"/></span><br/>-->
 <!--                            <span><b>Tracking Numver:</b> <span t-field="request.tracking_number"/></span><br/>-->
@@ -996,6 +997,79 @@
                     <br/>
                     <br/>
 <!--                    DP ADDEDDDDDDDDDDDDDDDDDD-->
+
+                    <div class="col-12 row row_hover">
+                        <br/>
+                        <div class="col-1">
+
+                        </div>
+
+                        <div class="col-2">
+                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Addresses</span><br/><br/>
+
+                            <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Delivery Address</span><br/><br/>
+                            <label for="building" style="margin-top: 10px;">Building:</label><br/><br/>
+                            <label for="area" style="margin-top: 10px;">Area:</label><br/><br/>
+                            <label for="street" style="margin-top: 10px;">Street:</label><br/><br/>
+                            <label for="city" style="margin-top: 10px;">City:</label><br/><br/>
+                            <label for="state_id" style="margin-top: 10px;">State:</label><br/><br/>
+                            <label for="po_box" style="margin-top: 10px;">PO Box:</label><br/><br/>
+                            <label for="zip_code" style="margin-top: 10px;">Zip Code:</label><br/><br/>
+                            <label for="country_id" style="margin-top: 10px;">Country:</label><br/><br/>
+
+                        </div>
+                        <div class="col-3">
+                            <br/><br/><br/><br/><br/>
+                            <input name="building" class="input-class form-control" id="building" /><br/>
+                            <input name="area" class="input-class form-control" id="area" /><br/>
+                            <input name="street" class="input-class form-control" id="street" /><br/>
+                            <input name="city" class="input-class form-control" id="city" /><br/>
+                            <select id="state_id" name="state_id" required="True" class="form-control">
+                                <t t-foreach="states" t-as="state">
+                                    <option t-att-value="state.id" t-esc="state.name"/></t>
+                            </select><br/>
+                            <input name="po_box" class="input-class form-control" id="po_box" /><br/>
+                            <input name="zip_code" class="input-class form-control" id="zip_code" /><br/>
+                            <select id="country_id" name="country_id" required="True" class="form-control">
+                                <t t-foreach="countries" t-as="country">
+                                    <option t-att-value="country.id" t-esc="country.name"/></t>
+                            </select><br/>
+                        </div>
+
+                        <div class="col-2">
+                            <br/><br/>
+                            <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Loading Address</span><br/><br/>
+                            <label for="delivery_building" style="margin-top: 10px;">Building:</label><br/><br/>
+                            <label for="delivery_area" style="margin-top: 10px;">Area:</label><br/><br/>
+                            <label for="delivery_street" style="margin-top: 10px;">Street:</label><br/><br/>
+                            <label for="delivery_city" style="margin-top: 10px;">City:</label><br/><br/>
+                            <label for="delivery_state_id" style="margin-top: 10px;">State:</label><br/><br/>
+                            <label for="delivery_po_box" style="margin-top: 10px;">PO Box:</label><br/><br/>
+                            <label for="delivery_zip_code" style="margin-top: 10px;">Zip Code:</label><br/><br/>
+                            <label for="delivery_country_id" style="margin-top: 10px;">Country:</label><br/><br/>
+
+                        </div>
+                        <div class="col-3">
+                            <br/><br/>
+                            <br/><br/><br/>
+                            <input name="delivery_building" class="input-class form-control" id="delivery_building" /><br/>
+                            <input name="delivery_area" class="input-class form-control" id="delivery_area" /><br/>
+                            <input name="delivery_street" class="input-class form-control" id="delivery_street" /><br/>
+                            <input name="delivery_city" class="input-class form-control" id="delivery_city" /><br/>
+                            <select id="delivery_state_id" name="delivery_state_id" required="True" class="form-control">
+                                <t t-foreach="states" t-as="state">
+                                    <option t-att-value="state.id" t-esc="state.name"/></t>
+                            </select><br/>
+                            <input name="delivery_po_box" class="input-class form-control" id="delivery_po_box" /><br/>
+                            <input name="delivery_zip_code" class="input-class form-control" id="delivery_zip_code" /><br/>
+                            <select id="delivery_country_id" name="delivery_country_id" required="True" class="form-control">
+                                <t t-foreach="countries" t-as="country">
+                                    <option t-att-value="country.id" t-esc="country.name"/></t>
+                            </select><br/>
+                        </div>
+
+                    </div>
+<br/><br/>
                     <div class="col-12 row row_hover">
                         <br/>
                         <div class="col-1">

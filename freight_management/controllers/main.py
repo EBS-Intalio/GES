@@ -42,8 +42,12 @@ class RequestCustom(http.Controller):
         truckers = request.env['freight.trucker'].search([])
         hs_codes = request.env['freight.hs.code'].search([])
         packages = request.env['freight.package'].search([])
+        countries = request.env['res.country'].search([])
+        states = request.env['res.country.state'].search([])
 
         values = {
+            'countries':countries,
+            'states': states,
             'partners':partners,
             'shipper': shippers,
             'consignees': consignees,
@@ -74,6 +78,40 @@ class RequestCustom(http.Controller):
                 final_dict['consider_destination_close'] = True
             if 'danger' in post.keys() and post.get('danger') == 'on':
                 final_dict['is_dangerous_goods'] = True
+
+            if post.get('building'):
+                final_dict['building'] = post.get('building')
+            if post.get('area'):
+                final_dict['area'] = post.get('area')
+            if post.get('street'):
+                final_dict['street'] = post.get('street')
+            if post.get('city'):
+                final_dict['city'] = post.get('city')
+            if post.get('state_id'):
+                final_dict['state_id'] = int(post.get('state_id'))
+            if post.get('po_box'):
+                final_dict['po_box'] = post.get('po_box')
+            if post.get('zip_code'):
+                final_dict['zip_code'] = post.get('zip_code')
+            if post.get('country_id'):
+                final_dict['country_id'] = int(post.get('country_id'))
+
+            if post.get('delivery_building'):
+                final_dict['delivery_building'] = post.get('delivery_building')
+            if post.get('delivery_area'):
+                final_dict['delivery_area'] = post.get('delivery_area')
+            if post.get('delivery_street'):
+                final_dict['delivery_street'] = post.get('delivery_street')
+            if post.get('delivery_city'):
+                final_dict['delivery_city'] = post.get('delivery_city')
+            if post.get('delivery_state_id'):
+                final_dict['delivery_state_id'] = int(post.get('delivery_state_id'))
+            if post.get('delivery_po_box'):
+                final_dict['delivery_po_box'] = post.get('delivery_po_box')
+            if post.get('delivery_zip_code'):
+                final_dict['delivery_zip_code'] = post.get('delivery_zip_code')
+            if post.get('delivery_country_id'):
+                final_dict['delivery_country_id'] = int(post.get('delivery_country_id'))
 
             # General Data
             # Mode of transport and shipment
