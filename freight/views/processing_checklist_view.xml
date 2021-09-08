@@ -6,6 +6,11 @@
             <field name="model">processing.checklist</field>
             <field name="arch" type="xml">
                 <form string="Processing Checklists">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done_partially,confirm"/>
+                        <button name="action_done_partially" type="object" string="Done" states="draft" class="oe_highlight"/>
+                        <button name="action_confirm" type="object" string="Confirm" states="draft,done_partially" class="oe_highlight"/>
+                    </header>
                     <sheet>
                         <h1>
                             <div>
@@ -13,69 +18,69 @@
                             </div>
                         </h1>
                         <group string="Checklist" colspan="5" col="5">
-                            <field name="transport" />
+                            <field name="transport" attrs="{'readonly': [('state','!=','draft')]}" />
                             <!--Air Fields-->
-                            <field name="booking_confirmed" />
-                            <field name="Coordinate_with_driver_to_collect_shipment" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="pass_customs_documents" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="final_airway_bill_execution" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="hand_awb_to_driver" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="shipment_dropped_to_airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="inspection_if_needed" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="confirm_flight_is_on_schedule" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="hand_shipment_to_airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="send_prealert_to_customer" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="track_fleight" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="fleight_arrival_confirmation" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="collect_original_documents_form_airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="pass_bill_of_entry_customs" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="book_collection_timing" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="vehicle_collects_the_shipment" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="driver_contact_consignee_to_arrange_delivery" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="proof_of_delivery" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
-                            <field name="add_additional_charges_not_included_in_quotation" />
-                            <field name="billing" />
+                            <field name="booking_confirmed" attrs="{'readonly': [('state','=','confirm')]}" />
+                            <field name="Coordinate_with_driver_to_collect_shipment" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="pass_customs_documents" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="final_airway_bill_execution" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="hand_awb_to_driver" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="shipment_dropped_to_airport" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="inspection_if_needed" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="confirm_flight_is_on_schedule" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="hand_shipment_to_airport" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="send_prealert_to_customer" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="track_fleight" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="fleight_arrival_confirmation" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="collect_original_documents_form_airport" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="pass_bill_of_entry_customs" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="book_collection_timing" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="vehicle_collects_the_shipment" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="driver_contact_consignee_to_arrange_delivery" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="proof_of_delivery" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}" />
+                            <field name="add_additional_charges_not_included_in_quotation" attrs="{'readonly': [('state','=','confirm')]}" />
+                            <field name="billing" attrs="{'readonly': [('state','=','confirm')]}"/>
                             <!--Ocean Fields-->
-                            <field name="Coordinate_with_driver" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="driver_pickup_empty_container_from_origin_port" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="deliver_container_to_point_of_loading" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="stuffing" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="collect_documents_from_shipper" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="pass_export_decleration" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="deliver_containers_back_to_port" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="share_shipping_instructions_to_carrier" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="receive_draft_bL_form_carrier" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="share_mbl_draft_with_shipper_for_confirmation_ammendments" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="confirm_final_mbl_draft" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="confirm_vessel_etd_advice_customer_if_any_delays" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="vessel_departs" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="receive_invoice_form_carrier" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="settele_cahrges_receive_bl_in_hand" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="bl_delivered_to_consignee" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="confirm_all_original_documents_are_with_consignee" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="vessel_arrives" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="apply_for_delivery_order" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="pass_bill_of_entry" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="prepare_lgp" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="coordinate_with_consignee_for_delivery" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="book_inspection_is_requiered" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="apply_for_do_extention_if_needed" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="final_delivery" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
-                            <field name="return_container_to_port" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="Coordinate_with_driver" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="driver_pickup_empty_container_from_origin_port" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="deliver_container_to_point_of_loading" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="stuffing" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="collect_documents_from_shipper" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="pass_export_decleration" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="deliver_containers_back_to_port" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="share_shipping_instructions_to_carrier" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="receive_draft_bL_form_carrier" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="share_mbl_draft_with_shipper_for_confirmation_ammendments" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="confirm_final_mbl_draft" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="confirm_vessel_etd_advice_customer_if_any_delays" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="vessel_departs" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="receive_invoice_form_carrier" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="settele_cahrges_receive_bl_in_hand" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="bl_delivered_to_consignee" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="confirm_all_original_documents_are_with_consignee" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="vessel_arrives" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="apply_for_delivery_order" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="pass_bill_of_entry" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="prepare_lgp" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="coordinate_with_consignee_for_delivery" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="book_inspection_is_requiered" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="apply_for_do_extention_if_needed" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="final_delivery" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                            <field name="return_container_to_port" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
 
                             <!--Ocean Fields-->
-                            <field name="confirm_exact_date_and_time_of_loading" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="obtain_truck_details" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_loads_shipment" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="confirm_all_documents_handed_over_to_driver" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_mover_towards_boarder" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="update_consignee_of_any_delays_if_any" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_passes_origin_boarder" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_passes_transit_boarder_if_any" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_passes_final_boarder" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_reaches_consignee" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="truck_off_loaded" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                            <field name="obtain_deliver_note_form_customer" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="confirm_exact_date_and_time_of_loading" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="obtain_truck_details" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_loads_shipment" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="confirm_all_documents_handed_over_to_driver" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_mover_towards_boarder" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="update_consignee_of_any_delays_if_any" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_passes_origin_boarder" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_passes_transit_boarder_if_any" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_passes_final_boarder" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_reaches_consignee" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="truck_off_loaded" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                            <field name="obtain_deliver_note_form_customer" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
                         </group>
                     </sheet>
                 </form>

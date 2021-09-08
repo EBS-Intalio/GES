@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -18,10 +19,16 @@ class ProcessingChecklist(models.Model):
         checklist = super(ProcessingChecklist, self).create(values)
         return checklist
 
-    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport')
+    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport', required=True)
+
+    state = fields.Selection([('draft', 'Draft'), ('done_partially', 'Done Partially'), ('confirm', 'Confirm')], default='draft', string='Status')
+
+    #common fields
+    booking_confirmed = fields.Boolean('Booking Confirmed')
+    add_additional_charges_not_included_in_quotation = fields.Boolean('Add additional charges not included in quotation')
+    billing = fields.Boolean('Billing')
 
     #Air Fields
-    booking_confirmed = fields.Boolean('Booking Confirmed')
     Coordinate_with_driver_to_collect_shipment = fields.Boolean('Coordinate with Driver to collect Shipment')
     pass_customs_documents = fields.Boolean('Pass Customs Documents')
     final_airway_bill_execution = fields.Boolean('Final Airway Bill Execution')
@@ -39,8 +46,6 @@ class ProcessingChecklist(models.Model):
     vehicle_collects_the_shipment = fields.Boolean('Vehicle collects the shipment')
     driver_contact_consignee_to_arrange_delivery = fields.Boolean('driver contact consignee to arrange delivery')
     proof_of_delivery = fields.Boolean('Proof of Delivery')
-    add_additional_charges_not_included_in_quotation = fields.Boolean('Add additional charges not included in quotation')
-    billing = fields.Boolean('Billing')
 
     #Ocean Fields
     Coordinate_with_driver = fields.Boolean('Coordinate with Driver')
@@ -83,3 +88,43 @@ class ProcessingChecklist(models.Model):
     truck_reaches_consignee = fields.Boolean('Truck reaches consignee')
     truck_off_loaded = fields.Boolean('Truck offloaded')
     obtain_deliver_note_form_customer = fields.Boolean('Obtain deliver note form customer')
+
+
+    def action_done_partially(self):
+        self.state = 'done_partially'
+
+    def action_confirm(self):
+        for rec in self:
+            if rec.transport == 'air':
+                if rec.booking_confirmed and rec.add_additional_charges_not_included_in_quotation and rec.billing \
+                    and rec.Coordinate_with_driver_to_collect_shipment and rec.pass_customs_documents and rec.final_airway_bill_execution \
+                    and rec.hand_awb_to_driver and rec.shipment_dropped_to_airport and rec.inspection_if_needed and rec.confirm_flight_is_on_schedule \
+                    and rec.hand_shipment_to_airport and rec.send_prealert_to_customer and rec.track_fleight and rec.fleight_arrival_confirmation \
+                    and rec.collect_original_documents_form_airport and rec.pass_bill_of_entry_customs and rec.book_collection_timing and rec.vehicle_collects_the_shipment \
+                    and rec.driver_contact_consignee_to_arrange_delivery and rec.proof_of_delivery:
+                    rec.state = 'confirm'
+                else:
+                    raise ValidationError(_('Please Make sure all condition are True for Air Transport Mode.'))
+
+            elif rec.transport == 'ocean':
+                if rec.booking_confirmed and rec.add_additional_charges_not_included_in_quotation and rec.billing \
+                    and rec.Coordinate_with_driver and rec.driver_pickup_empty_container_from_origin_port and rec.deliver_container_to_point_of_loading \
+                    and rec.stuffing and rec.collect_documents_from_shipper and rec.pass_export_decleration and rec.deliver_containers_back_to_port \
+                    and rec.share_shipping_instructions_to_carrier and rec.receive_draft_bL_form_carrier and rec.share_mbl_draft_with_shipper_for_confirmation_ammendments \
+                    and rec.confirm_final_mbl_draft and rec.confirm_vessel_etd_advice_customer_if_any_delays and rec.vessel_departs and rec.receive_invoice_form_carrier \
+                    and rec.settele_cahrges_receive_bl_in_hand and rec.bl_delivered_to_consignee and rec.confirm_all_original_documents_are_with_consignee \
+                    and rec.vessel_arrives and rec.apply_for_delivery_order and rec.pass_bill_of_entry and rec.prepare_lgp and rec.coordinate_with_consignee_for_delivery \
+                    and rec.book_inspection_is_requiered and rec.apply_for_do_extention_if_needed and rec.final_delivery and rec.return_container_to_port:
+                    rec.state = 'confirm'
+                else:
+                    raise ValidationError(_('Please Make sure all condition are True for Ocean Transport Mode.'))
+
+            elif rec.transport == 'land':
+                if rec.booking_confirmed and rec.add_additional_charges_not_included_in_quotation and rec.billing \
+                    and rec.confirm_exact_date_and_time_of_loading and rec.obtain_truck_details and rec.truck_loads_shipment \
+                    and rec.confirm_all_documents_handed_over_to_driver and rec.truck_mover_towards_boarder and rec.update_consignee_of_any_delays_if_any \
+                    and rec.truck_passes_origin_boarder and rec.truck_passes_transit_boarder_if_any and rec.truck_passes_final_boarder and rec.truck_reaches_consignee \
+                    and rec.truck_off_loaded and rec.obtain_deliver_note_form_customer:
+                    rec.state = 'confirm'
+                else:
+                    raise ValidationError(_('Please Make sure all condition are True for Land Transport Mode.'))
