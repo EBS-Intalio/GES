@@ -110,8 +110,7 @@ class FreightPricing(models.Model):
 
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
-        readonly=True, check_company=True,
-        domain=lambda self: [('type', '=', self.transport)],
+        readonly=True,
         states={'draft': [('readonly', False)]}, )
 
     @api.model

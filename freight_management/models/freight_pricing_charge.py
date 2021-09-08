@@ -41,14 +41,10 @@ class FreightPricingCharges(models.Model):
     @api.depends('charge_amount', 'charge_amount_price_2', 'charge_amount_price_3', 'margin_amount', 'different_amount')
     def _compute_charge_total_amount(self):
         for line in self:
-            charge_total_amount = 0
             if line.different_amount == 'price_1':
-                if line.charge_amount and line.margin_amount:
-                    charge_total_amount = line.charge_amount + line.margin_amount
+                charge_total_amount = line.charge_amount + line.margin_amount
             elif line.different_amount == 'price_2':
-                if line.charge_amount_price_2 and line.margin_amount:
-                    charge_total_amount = line.charge_amount_price_2 + line.margin_amount
+                charge_total_amount = line.charge_amount_price_2 + line.margin_amount
             else:
-                if line.charge_amount_price_3 and line.margin_amount:
-                    charge_total_amount = line.charge_amount_price_3 + line.margin_amount
+                charge_total_amount = line.charge_amount_price_3 + line.margin_amount
             line.charge_total_amount = charge_total_amount
