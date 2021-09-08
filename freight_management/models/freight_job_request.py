@@ -268,7 +268,7 @@ class FreightJobRequest(models.Model):
                 'dangerous_goods':self.is_dangerous_goods,
                 'danger_class':self.dangerous_goods_class,
                 'temperature':self.temperature,
-                # 'hs_code':self.freight_hs_code_ids.ids,
+                'hs_code':self.freight_hs_code_ids and self.freight_hs_code_ids.ids,
                 'stackability':self.stackability,
                 'additional_requirements':self.additional_requirements,
                 'target_rate':self.target_rate,
@@ -380,6 +380,7 @@ class FreightBooking(models.Model):
     _inherit = 'freight.booking'
 
     freight_request_id = fields.Many2one('freight.job.request','RequestID')
+    hs_code = fields.Many2many('freight.hs.code', string="Freight Hs-Codes", required=True)
 
     def button_request(self):
         return {

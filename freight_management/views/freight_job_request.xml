@@ -250,6 +250,9 @@
                 <xpath expr="//field[@name='shipper_id']" position="after">
                     <field name="freight_request_id" readonly="1"/>
                 </xpath>
+                <xpath expr="//field[@name='hs_code']" position="replace">
+                    <field name="hs_code" widget="many2many_tags"/>
+                </xpath>
             </field>
         </record>
 
