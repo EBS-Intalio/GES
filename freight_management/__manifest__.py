@@ -20,6 +20,7 @@
         "views/crm_lead.xml",
         "views/freight_pricing.xml",
         "views/freight_templates.xml"
+        
     ],
     'installable': True,
     'application': True,
