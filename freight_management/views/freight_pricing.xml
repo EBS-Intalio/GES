@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="freight_management_freight_pricing_form_view" model="ir.ui.view">
+            <field name="name">freight_management.freight.pricing.form</field>
+            <field name="model">freight.pricing</field>
+            <field name="arch" type="xml">
+                <form string="Operations">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="action_done" string="Done" states="draft" type="object"
+                                default_focus="1" class="oe_highlight"/>
+                        <button name="reset_pricing" string="Reset" states="done" type="object" default_focus="1"
+                                class="oe_highlight"/>
+                        <button name="create_quotations" string="Create Quotations" states="done" type="object" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+<!--                            <button class="oe_stat_button" name="button_shipping"-->
+<!--                                    attrs="{'invisible': ['|', ('freight_id','=',False),('state','=','draft')]}"-->
+<!--                                    type="object" icon="fa-truck">-->
+<!--                                Shipment-->
+<!--                            </button>-->
+                            <button class="oe_stat_button" name="button_request"
+                                    attrs="{'invisible': [('freight_request_id','=',False)]}"
+                                    type="object" icon="fa-truck">
+                                Request
+                            </button>
+                             <button name="action_view_sales_order"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                attrs="{'invisible': [('sales_count', '=', 0)]}">
+                            <field name="sales_count" widget="statinfo" string="Sales Order"/>
+                        </button>
+                        </div>
+                        <h1>
+                            <div>
+                                <field name="name" readonly="1"/>
+                            </div>
+                        </h1>
+                        <group string="Operation">
+                            <group>
+                                <field name="freight_transport" widget="radio"/>
+<!--                                <field name="freight_id" invisible="1"/>-->
+                                <field name="freight_request_id" invisible="1"/>
+
+                                <field name="eta"/>
+                                <field name="etd"/>
+                            </group>
+                            <group>
+                                <field name="airline_id" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
+                                <field name="flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
+
+                                <field name="freight_shipping_line_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
+                                <field name="origin_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
+                                <field name="freight_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
+                                <field name="Port_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
+
+                                <field name="origin_country" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="origin_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="transit_country" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="transit_country_border"
+                                       attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="rout" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="freight_trucker" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="freight_trucker_number" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="additional_comments"/>
+                                <field name="sale_order_template_id"/>
+                                <field name="currency_id"/>
+                                <field name="different_amount"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page name='charges' string="Charges">
+                                <field name="charges_ids" nolabel="1" widget="one2many" mode="tree">
+                                    <tree string="Charges" editable="bottom">
+                                        <field name="product_id" options="{'no_create_edit':1}"/>
+                                        <field name="currency_id"/>
+                                        <field name="different_amount"/>
+                                        <field name="charge_amount"/>
+                                        <field name="charge_amount_price_2"/>
+                                        <field name="charge_amount_price_3"/>
+                                        <field name="margin_per" attrs="{'column_invisible': [('parent.state','=','done')]}"/>
+                                        <field name="margin_amount" attrs="{'column_invisible': [('parent.state','=','done')]}"/>
+                                        <field name="charge_total_amount"/>
+                                        <field name="converted_amount" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="total_charges"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_management_view_freight_pricing_tree">
+            <field name="name">freight.pricing.tree</field>
+            <field name="model">freight.pricing</field>
+            <field name="arch" type="xml">
+                <tree string="Operations">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_management_view_freight_pricing_action">
+            <field name="name">Freight pricing</field>
+            <field name="res_model">freight.pricing</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Freight Pricing.
+                </p>
+            </field>
+        </record>
+
+<!--        <menuitem name="Freight pricing" parent="freight_management.menu_freight_operations"-->
+<!--                  id="freight_pricing_menuitem" action="view_freight_pricing_action" sequence="6"/>-->
+
+    </data>
+</odoo>

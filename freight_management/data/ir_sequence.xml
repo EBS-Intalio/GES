@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="sequence_bookings" model="ir.sequence">
+            <field name="name">Freight Request</field>
+            <field name="code">freight.job.request</field>
+            <field name="prefix">FR/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+<!--        <record id="sequence_pricing" model="ir.sequence">-->
+<!--            <field name="name">Pricing</field>-->
+<!--            <field name="code">freight.pricing</field>-->
+<!--            <field name="prefix">PRICING/</field>-->
+<!--            <field name="padding">5</field>-->
+<!--            <field name="company_id" eval="False"/>-->
+<!--        </record>-->
+
+    </data>
+</odoo>

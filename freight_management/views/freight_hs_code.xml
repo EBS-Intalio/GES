@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="freight_management_freight_hs_code_form_view">
+            <field name="name">freight_management.freight.hs.code.form.view</field>
+            <field name="model">freight.hs.code</field>
+            <field name="arch" type="xml">
+                <form string="HS-Code">
+                    <sheet>
+                        <field name="active" invisible="1"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_management_freight_hs_code_tree_view">
+            <field name="name">freight_management.freight.hs.code.tree.view</field>
+            <field name="model">freight.hs.code</field>
+            <field name="arch" type="xml">
+                <tree string="HS-Code">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_management_action_freight_hs_code">
+            <field name="name">HS-Code</field>
+            <field name="res_model">freight.hs.code</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="HS-Code" parent="freight.freight_operations" id="menu_freight_management_freight_hs_code"
+                  action="freight_management_action_freight_hs_code" sequence="4"/>
+    </data>
+</odoo>
