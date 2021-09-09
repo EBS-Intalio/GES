@@ -92,7 +92,7 @@ class RequestCustom(http.Controller):
             if post.get('po_box'):
                 final_dict['po_box'] = post.get('po_box')
             if post.get('zip_code'):
-                final_dict['zip_code'] = post.get('zip_code')
+                final_dict['zip_code'] = int(post.get('zip_code'))
             if post.get('country_id'):
                 final_dict['country_id'] = int(post.get('country_id'))
 
@@ -108,8 +108,10 @@ class RequestCustom(http.Controller):
                 final_dict['delivery_state_id'] = int(post.get('delivery_state_id'))
             if post.get('delivery_po_box'):
                 final_dict['delivery_po_box'] = post.get('delivery_po_box')
+            if post.get('weight_type'):
+                final_dict['weight_type'] = post.get('weight_type')
             if post.get('delivery_zip_code'):
-                final_dict['delivery_zip_code'] = post.get('delivery_zip_code')
+                final_dict['delivery_zip_code'] = int(post.get('delivery_zip_code'))
             if post.get('delivery_country_id'):
                 final_dict['delivery_country_id'] = int(post.get('delivery_country_id'))
 

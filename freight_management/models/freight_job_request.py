@@ -29,7 +29,7 @@ class FreightJobRequest(models.Model):
     # pofd_destination = fields.Selection(([]), string="POFD /Destination")
 
     freight_incoterm_id = fields.Many2one('freight.incoterms', string="Incoterm")
-    origin_airport_id = fields.Many2one('freight.port', string="Origin ")
+    origin_airport_id = fields.Many2one('freight.port', string="Origin")
     destination_airport_id = fields.Many2one('freight.port', string="Destination")
     consider_origin_close = fields.Boolean("Consider close by Origin")
     consider_destination_close = fields.Boolean("Consider close by Destination")

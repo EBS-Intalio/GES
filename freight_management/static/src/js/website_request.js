@@ -9,6 +9,10 @@ $(document).ready(function (){
         $('#dng_info').hide();
         $("#trac_no").hide();
         $("#trac_no_lb").hide();
+        $("#air_lbl1").hide();
+        $("#air_lbl2").hide();
+        $("#ocean_lbl1").hide();
+        $("#ocean_lbl2").hide();
 
         $("#equipment_type_lbl").hide();
 	            $("#shipping_line_id").hide();
@@ -32,6 +36,8 @@ $(document).ready(function (){
 	            $("#mawb_lbl").hide();
 	            $("#flight_no_lbl").hide();
 	            $("#airline_lbl").hide();
+	            $("#incoterm1").hide();
+
 	            /*$('.vehicle_size').hide();
                 $('.vehicle_type').hide();*/
 
@@ -76,6 +82,7 @@ $(document).ready(function (){
 	            $("#trucker").hide();
 	            $("#trucker_lbl").hide();
 	            $("#incoterm").show();
+	            $("#incoterm1").show();
 	            $("#incoterm")[0].required = true;
 	            $("#equipment_type")[0].required = false;
 
@@ -84,6 +91,7 @@ $(document).ready(function (){
 
 
 	            $("#incoterm_lbl").show();
+
 	            $("#mawb").show();
 	            $("#mawb_lbl").show();
 	            $("#flight_no").show();
@@ -92,6 +100,12 @@ $(document).ready(function (){
 	            $("#airline_lbl").show();
 	            $("#trac_no").hide();
                 $("#trac_no_lb").hide();
+
+
+                   $("#air_lbl1").show();
+                $("#air_lbl2").show();
+                $("#ocean_lbl1").hide();
+                $("#ocean_lbl2").hide();
                 /*$('.vehicle_size').hide();
                 $('.vehicle_type').hide();*/
             }
@@ -122,6 +136,8 @@ $(document).ready(function (){
                 $("#equipment_type_lbl").show();
                 $("#equipment_type").show();
                 $("#incoterm").show();
+                $("#incoterm1").show();
+//                $("#incoterm").after("<br/>");
                 $("#incoterm_lbl").show();
                 $("#vessel_id").show();
                 $("#vessel_lbl").show();
@@ -145,6 +161,10 @@ $(document).ready(function (){
                 $("#trucker_no_lbl").hide();
                 $("#airline").hide();
                 $("#airline_lbl").hide();
+                $("#air_lbl1").hide();
+                $("#air_lbl2").hide();
+                $("#ocean_lbl1").show();
+                $("#ocean_lbl2").show();
                 $("#incoterm")[0].required = true;
                 $("#equipment_type")[0].required = true;
             }
@@ -185,6 +205,8 @@ $(document).ready(function (){
                 $("#vessel_id").hide();
                 $("#vessel_lbl").hide();
                 $("#incoterm").hide();
+                $("#incoterm1").hide();
+//                $("#incoterm").next("br").remove();
                 $("#incoterm_lbl").hide();
                 $("#mawb").hide();
                 $("#mawb_lbl").hide();
@@ -202,7 +224,58 @@ $(document).ready(function (){
                 $("#airline_lbl").hide();
                 $("#incoterm")[0].required = false;
                 $("#equipment_type")[0].required = false;
+                $("#air_lbl1").hide();
+                $("#air_lbl2").hide();
+                $("#ocean_lbl1").hide();
+                $("#ocean_lbl2").hide();
             }
         });
+         $("#set_temperature").hide()
+         $("#set_temperature_lbl").hide()
+        $("#temperature").change(function(){
+            var sel = $("#temperature").val()
+            if(sel == ""){
+                $("#set_temperature").hide()
+                $("#set_temperature").next("br").remove();
+                $("#set_temperature").next("br").remove();
+                $("#set_temperature_lbl").hide()
+                $("#set_temperature_lbl").next("br").remove();
+                $("#set_temperature_lbl").next("br").remove();
+            }
+            else{
+                $("#set_temperature").show()
+                $("#set_temperature_lbl").show()
+                $("#set_temperature").after("<br/><br/>")
+                $("#set_temperature_lbl").after("<br/><br/>")
+            }
+        })
+
+//        $('input[type=checkbox][name=danger]').change(function() {
+//            var a = $('#danger').is(":checked");
+//            if ($('#danger').is(":checked")){
+//                $('#danger_info').show();
+//                $('#danger_class').show();
+//                $('#danger_class_info').show();
+//                $('#dangerous_goods_class_field').show();
+//                $('#dangerous_goods_class_lbl').show();
+//                $('#dng_info').show();
+//                $("#dg_bool").after("<br />");
+//                $("#dng_info").after("<br />");
+//                $("#danger").after("<br />");
+//                $("#danger_class_info").after("<br />");
+//            }
+//            else{
+//                $('#danger_info').hide();
+//                $('#danger_class').hide();
+//                $('#danger_class_info').hide();
+//                $('#dng_info').hide();
+//                $('#dangerous_goods_class_lbl').hide();
+//                $('#dangerous_goods_class_field').hide();
+//                $("#dng_info").next("br").remove();
+//                $("#dg_bool").next("br").remove();
+//                $("#danger").next("br").remove();
+//                $("#danger_class_info").next("br").remove();
+//            }
+//        });
 })
 })

@@ -892,18 +892,18 @@
                             <div id="ocean_lbl_2" style="display:none;">
                                 <br/>
                                 <label id="discharge_lbl"  for="ocean_destination_location_id">Discharge Port:</label><br/>
-<!--                                <label id="date_lbl" style="margin-top: 27px;" for="date_ocean">Shipment Ready Date:</label><br/>-->
+                                <label id="date_lbl" style="margin-top: 27px;" for="date_ocean">Shipment Ready Date:</label><br/>
                                 <br/>
                             </div>
                             <div id="land_lbl_2" style="display:none;">
                                 <br/>
                                 <label id="to_lbl" style="margin-top: 6px;" for="land_destination_location_id">To:</label><br/>
                                 <label id="date_lbl" style="margin-top: 26px;"  for="date_land">Shipment Ready Date:</label><br/>
-                                <label id="cmr_lbl" style="margin-top: 29px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
+                                <label id="cmr_lbl" style="margin-top: 14px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
                                 <label id="trucker_lbl"  style="margin-top: 29px;" for="trucker">Trucker:</label><br/>
                                 <label id="trucker_no_lbl"  style="margin-top: 36px;" for="trucker_number">Trucker No:</label><br/>
-                                <label class="vehicle_size"  style="margin-top: 26px;" for="vehicle_size">Vehicle Size:</label><br/><br/>
-                                <label class="vehicle_type"  style="margin-top: 26px;" for="vehicle_type">Vehicle Type:</label><br/><br/>
+                                <label class="vehicle_size"  style="margin-top: 26px;" for="vehicle_size">Vehicle Size:</label><br/>
+                                <label class="vehicle_type"  style="margin-top: 26px;" for="vehicle_type">Vehicle Type:</label><br/>
 
 <!--                                <label id="vehicle_size_lbl"  style="margin-top: 36px;" for="vehicle_size">Vehicle Size:</label><br/>-->
 <!--                                <label id="vehicle_type_lbl"  style="margin-top: 36px;" for="vehicle_type">Vehicle Type:</label><br/>-->
@@ -1029,7 +1029,7 @@
                                     <option t-att-value="state.id" t-esc="state.name"/></t>
                             </select><br/>
                             <input name="po_box" class="input-class form-control" id="po_box" /><br/>
-                            <input name="zip_code" class="input-class form-control" id="zip_code" /><br/>
+                            <input name="zip_code" class="input-class form-control" type="number" id="zip_code" /><br/>
                             <select id="country_id" name="country_id" required="True" class="form-control">
                                 <t t-foreach="countries" t-as="country">
                                     <option t-att-value="country.id" t-esc="country.name"/></t>
@@ -1061,7 +1061,7 @@
                                     <option t-att-value="state.id" t-esc="state.name"/></t>
                             </select><br/>
                             <input name="delivery_po_box" class="input-class form-control" id="delivery_po_box" /><br/>
-                            <input name="delivery_zip_code" class="input-class form-control" id="delivery_zip_code" /><br/>
+                            <input name="delivery_zip_code" type="number" class="input-class form-control" id="delivery_zip_code" /><br/>
                             <select id="delivery_country_id" name="delivery_country_id" required="True" class="form-control">
                                 <t t-foreach="countries" t-as="country">
                                     <option t-att-value="country.id" t-esc="country.name"/></t>
@@ -1078,7 +1078,7 @@
 
                         <div class="col-2">
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">General</span><br/><br/>
-                            <label for="job_type" style="margin-top: 10px;">Job Type:</label><br/><br/>
+                            <label for="job_type" style="margin-top: 2px;">Job Type:</label><br/><br/>
                             <label id="freight_hs_code_ids_lbl"  style="margin-top: 10px;" for="freight_hs_code_ids">Freight Hs-Codes:</label><br/><br/>
 <!--                            <label for="barcode" style="margin-top: 10px;">Barcode:</label><br/><br/>-->
                             <label for="agent_id" style="margin-top: 6px;">Customer:</label><br/><br/>
@@ -1088,17 +1088,18 @@
 <!--                            <label for="other_pc" style="margin-top: 4px;">Other PC:</label><br/><br/>-->
                             <label for="reefer_status" style="margin-top: 4px;">Reefer Status:</label><br/><br/>
                             <label for="temperature" style="margin-top: 4px;">Temperature:</label><br/><br/>
-                            <label for="set_temperature" style="margin-top: 4px;">Set Temperature:</label><br/><br/>
+                            <label id="set_temperature_lbl" for="set_temperature" style="margin-top: 4px;">Set Temperature:</label>
 
 
-                            <label for="target_transit_time" style="margin-top: 4px;">Target Transit Time (Days):</label><br/><br/>
-                            <label for="expected_free_time_at_origin" style="margin-top: 4px;">Expected Free Time at Origin (Days):</label><br/><br/>
-                            <label for="expected_free_time_at_destination" style="margin-top: 4px;">Expected Free Time at Destination (Days):</label><br/><br/>
+                            <label for="target_transit_time" style="margin-top: 0px;">Target Transit Time (Days):</label><br/><br/>
+                            <label for="expected_free_time_at_origin" style="margin-top: 0px;">Expected Free Time at Origin (Days):</label><br/><br/>
+                            <label for="expected_free_time_at_destination" style="margin-top: 0px;">Expected Free Time at Destination (Days):</label><br/><br/>
 <!--                            <label for="set_temperature" style="margin-top: 4px;">Set Temperature:</label><br/><br/>-->
 
 
-                            <label for="commodity_category" style="margin-top: 4px;">Commodity Category:</label><br/><br/>
-                            <label for="commodity_description" style="margin-top: 4px;">Commodity Description:</label><br/><br/>
+                            <label for="commodity_category" style="margin-top: 0px;">Commodity Category:</label><br/><br/>
+                            <label for="commodity_description" style="margin-top: 0px;">Commodity Description:</label><br/><br/>
+                            <label for="weight_type" style="margin-top: 0px;">Weight Type:</label><br/><br/>
                             <br/>
                         </div>
                         <div class="col-3">
@@ -1136,11 +1137,12 @@
                                 <option value="non_operate" >Non Operating Reefer</option>
                             </select><br/>
                             <select id="temperature" name="temperature" required="False" class="form-control">
+                                <option value="" ></option>
                                 <option value="celsius" >Celsius</option>
                                 <option value="fahrenheit" >Fahrenheit</option>
                             </select><br/>
 <!--                            <input name="set_temperature" class="input-class form-control" id="set_temperature" /><br/>-->
-                            <input id="set_temperature" name="set_temperature_value" type="number" class="input-class form-control"/><br/><br/>
+                            <input id="set_temperature" name="set_temperature_value" type="number" class="input-class form-control"/>
 <!--                            <input name="target_transit_time" class="input-class form-control" id="target_transit_time" /><br/>-->
                             <input id="target_transit_time" name="target_transit_time" type="number" class="input-class form-control" /><br/><br/>
 <!--                            <input name="expected_free_time_at_origin" class="input-class form-control" id="expected_free_time_at_origin" /><br/>-->
@@ -1163,20 +1165,27 @@
                             </select><br/>
 <!--                            <textarea id="notes" name="notes" class="form-control"/>-->
                             <textarea id="commodity_description" name="commodity_description" required="True" class="form-control"/><br/>
-                            <br/>
+                            
+                            <select id="weight_type" name="weight_type" required="True" class="form-control">
+                                <option value="estimated">Estimated</option>
+                                <option value="actual">Actual</option>
+                            </select><br/>
                         </div>
                         <div class="col-2">
                             <br/><br/><br/>
                             <label for="incoterm" style="margin-top: 6px;" id="incoterm_lbl">Incoterm:</label><br/>
 <!--                            <label for="attachment" style="margin-top: 8px;">Attachment:</label><br/><br/>-->
-                            <br/>
+                            <br id="air_lbl1"></br>
+                            <br id="air_lbl2"></br>
+                            <br id="ocean_lbl1"></br>
+                            <br id="ocean_lbl2"></br>
 
                             <label id="dg_bool" for="danger">Dangerous Goods:</label><br/>
 
 
 <!--                            <div class="row" id="dangerous_goods_class">-->
 
-                            <div class="dangerous_goods_class"><label id="dangerous_goods_class" class="dangerous_goods_class" for="dangerous_goods_class">Dangerous Goods Class:</label><br/><br/></div>
+                            <div id="dangerous_goods_class_lbl"><label id="dangerous_goods_class" class="dangerous_goods_class" for="dangerous_goods_class">Dangerous Goods Class:</label><br/><br/></div>
 
 <!--                            </div>-->
 
@@ -1187,17 +1196,17 @@
                             <div class="clearance_required"><label id="clearance_required" class="clearance_required" for="clearance_required">Clearance Required:</label><br/><br/></div>
                             <div class="warehousing_storage"><label id="warehousing_storage" class="warehousing_storage" for="warehousing_storage">Warehousing / Storage:</label><br/><br/></div>
 
-                            <div id="rate_in_usd"><label for="rate_in_usd" style="margin-top: 4px;">Target Rate in USD:</label><br/><br/></div>
+                            <div id="rate_in_usd"><label for="rate_in_usd" style="margin-top: 2px;">Target Rate in USD:</label><br/><br/></div>
 
 
-                            <div id="gross_weight_kg"><label for="gross_weight_kg" style="margin-top: 4px;">Gross weight (KG):</label><br/><br/></div>
+                            <div id="gross_weight_kg"><label for="gross_weight_kg" style="margin-top: 5px;">Gross weight (KG):</label><br/><br/></div>
 
                             <div id="number_of_packages_pallets"><label id="number_of_packages_pallets" for="number_of_packages_pallets">Number of packages / Pallets:</label><br/><br/></div>
 
                             <div id="stackability"><label id="stackability" for="stackability">Stackability:</label><br/><br/></div>
 
-                            <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 4px;">Additional Requirements:</label><br/><br/></div>
-                            <div id="additional_comments"><label for="additional_description" style="margin-top: 4px;">Additional Comments:</label><br/><br/></div>
+                            <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 1px;">Additional Requirements:</label><br/><br/></div>
+                            <div id="additional_comments"><label for="additional_description" style="margin-top: 1px;">Additional Comments:</label><br/><br/></div>
 
 <!--                            <label for="move_type">Move Type:</label><br/><br/>-->
 <!--                            <label for="trac_no">Tracking Number:</label><br/><br/>-->
@@ -1211,10 +1220,11 @@
                                     <option t-att-value="inc.id" t-esc="inc.name"/></t>
                             </select>
                             <br/>
+                            <br id="incoterm1"></br>
 
-                            <input  id="danger" name="danger" type="checkbox" /><br/>
+                            <input  id="danger" name="danger" type="checkbox" /><br/><br/>
 
-                            <select id="dangerous_goods_class" name="dangerous_goods_class" class="dangerous_goods_class form-control">
+                            <select id="dangerous_goods_class_field" name="dangerous_goods_class" class="dangerous_goods_class form-control">
                                     <option value="class_1" >Class 1</option>
                                     <option value="class_2" >Class 2</option>
                                     <option value="class_3" >Class 3</option>
@@ -1224,9 +1234,9 @@
                                     <option value="class_7" >Class 7</option>
                                     <option value="class_8" >Class 8</option>
                                     <option value="class_9" >Class 9</option>
-                                </select><br/>
+                                </select>
 
-                            <textarea id="danger_info" style="resize: none;" name="dangerous_goods_notes" class="form-control"/><br/>
+                            <textarea id="danger_info" style="resize: none;" name="dangerous_goods_notes" class="form-control"/>
 
 <!--                            <select id="move_type" name="move_type" required="True" class="form-control">-->
 <!--                                <t t-foreach="move_type" t-as="move">-->
