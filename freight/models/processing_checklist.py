@@ -19,9 +19,13 @@ class ProcessingChecklist(models.Model):
         checklist = super(ProcessingChecklist, self).create(values)
         return checklist
 
-    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport', required=True)
+    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport')
 
     state = fields.Selection([('draft', 'Draft'), ('done_partially', 'Done Partially'), ('confirm', 'Confirm')], default='draft', string='Status')
+
+    book_id = fields.Many2one('freight.booking', 'Freight Book')
+
+    show_create_shipment = fields.Boolean('show create shipment')
 
     #common fields
     booking_confirmed = fields.Boolean('Booking Confirmed')
@@ -103,6 +107,7 @@ class ProcessingChecklist(models.Model):
                     and rec.collect_original_documents_form_airport and rec.pass_bill_of_entry_customs and rec.book_collection_timing and rec.vehicle_collects_the_shipment \
                     and rec.driver_contact_consignee_to_arrange_delivery and rec.proof_of_delivery:
                     rec.state = 'confirm'
+                    rec.show_create_shipment = True
                 else:
                     raise ValidationError(_('Please Make sure all condition are True for Air Transport Mode.'))
 
@@ -116,6 +121,7 @@ class ProcessingChecklist(models.Model):
                     and rec.vessel_arrives and rec.apply_for_delivery_order and rec.pass_bill_of_entry and rec.prepare_lgp and rec.coordinate_with_consignee_for_delivery \
                     and rec.book_inspection_is_requiered and rec.apply_for_do_extention_if_needed and rec.final_delivery and rec.return_container_to_port:
                     rec.state = 'confirm'
+                    rec.show_create_shipment = True
                 else:
                     raise ValidationError(_('Please Make sure all condition are True for Ocean Transport Mode.'))
 
@@ -126,5 +132,6 @@ class ProcessingChecklist(models.Model):
                     and rec.truck_passes_origin_boarder and rec.truck_passes_transit_boarder_if_any and rec.truck_passes_final_boarder and rec.truck_reaches_consignee \
                     and rec.truck_off_loaded and rec.obtain_deliver_note_form_customer:
                     rec.state = 'confirm'
+                    rec.show_create_shipment = True
                 else:
                     raise ValidationError(_('Please Make sure all condition are True for Land Transport Mode.'))
