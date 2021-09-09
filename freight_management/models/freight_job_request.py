@@ -91,7 +91,7 @@ class FreightJobRequest(models.Model):
     street = fields.Char(string="Street")
     building = fields.Char(string="Building")
     po_box = fields.Char(string="PO Box")
-    zip_code = fields.Char(string="Zip Code")
+    zip_code = fields.Integer(string="Zip Code")
     delivery_country_id = fields.Many2one('res.country', string='Country')
     delivery_state_id = fields.Many2one('res.country.state', string='State',
                                         domain="[('country_id', '=', delivery_country_id)]")
@@ -100,7 +100,7 @@ class FreightJobRequest(models.Model):
     delivery_street = fields.Char(string="Street")
     delivery_building = fields.Char(string="Building")
     delivery_po_box = fields.Char(string="PO Box")
-    delivery_zip_code = fields.Char(string="Zip Code")
+    delivery_zip_code = fields.Integer(string="Zip Code")
     shipper_id = fields.Many2one('res.partner', string="Shipper", required=True)
     consignee_id = fields.Many2one('res.partner', string="Consignee", required=True)
     clearance_required = fields.Selection(([('yes', 'YES'),
