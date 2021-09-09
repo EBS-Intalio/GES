@@ -48,3 +48,26 @@ class FreightPricingCharges(models.Model):
             else:
                 charge_total_amount = line.charge_amount_price_3 + line.margin_amount
             line.charge_total_amount = charge_total_amount
+
+    @api.depends('charge_amount', 'margin_per','charge_amount_price_2','charge_amount_price_3')
+    def _compute_charge_amount(self):
+        for line in self:
+            if line.different_amount == 'price_1':
+                margin_amount = (line.charge_amount * line.margin_per) / 100
+            elif line.different_amount == 'price_2':
+                margin_amount = (line.charge_amount_price_2 * line.margin_per) / 100
+            else:
+                margin_amount = (line.charge_amount_price_3 * line.margin_per) / 100
+            line.margin_amount = margin_amount
+
+    @api.depends('charge_amount', 'margin_amount','charge_amount_price_2','charge_amount_price_3')
+    def _inverse_charge_amount(self):
+        for line in self:
+            margin_per = 0
+            if line.different_amount == 'price_1' and line.charge_amount:
+                margin_per = (line.margin_amount * 100) / line.charge_amount
+            elif line.different_amount == 'price_2' and line.charge_amount_price_2:
+                margin_per = (line.margin_amount * 100) / line.charge_amount_price_2
+            elif line.charge_amount_price_3 and line.different_amount == 'price_3':
+                margin_per = (line.margin_amount * 100) / line.charge_amount_price_3
+            line.margin_per = margin_per

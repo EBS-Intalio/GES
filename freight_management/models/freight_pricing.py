@@ -40,7 +40,7 @@ class FreightPricing(models.Model):
             'summary': 'Check Pricing',
             'activity_type_id': activity_type,
             'res_model_id': self.env['ir.model'].search([('model', '=', 'freight.pricing')], limit=1).id,
-            'res_id': self.create_uid.partner_id.id,
+            'res_id': self.id,
         })
         print("aaaaa", activity)
         return res

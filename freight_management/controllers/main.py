@@ -237,6 +237,7 @@ class RequestCustom(http.Controller):
         lead_id = lead_obj.sudo().create({
             'name': freight_request.name,
             'partner_id': freight_request.partner_id.id,
+            'type':'lead',
         })
         freight_request.lead_id = lead_id.id
 
