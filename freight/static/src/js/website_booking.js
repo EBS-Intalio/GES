@@ -95,12 +95,19 @@ $(document).ready(function ()
             }
         });
 
+        $('#dangerous_goods_class_lbl').hide();
+         $('#dangerous_goods_class_field').hide();
+
         $('input[type=checkbox][name=danger]').change(function() {
             var a = $('#danger').is(":checked");
             if ($('#danger').is(":checked")){
                 $('#danger_info').show();
                 $('#danger_class').show();
                 $('#danger_class_info').show();
+                $('#dangerous_goods_class_field').show();
+                $('#dangerous_goods_class_field').after("<br />");
+                $('#danger_info').after("<br />");
+                $('#dangerous_goods_class_lbl').show();
                 $('#dng_info').show();
                 $("#dg_bool").after("<br />");
                 $("#dng_info").after("<br />");
@@ -112,9 +119,14 @@ $(document).ready(function ()
                 $('#danger_class').hide();
                 $('#danger_class_info').hide();
                 $('#dng_info').hide();
+                $('#dangerous_goods_class_lbl').hide();
+                $('#dangerous_goods_class_lbl').next("br").remove();
+                $('#dangerous_goods_class_field').hide();
+                $('#dangerous_goods_class_field').next("br").remove();
                 $("#dng_info").next("br").remove();
                 $("#dg_bool").next("br").remove();
                 $("#danger").next("br").remove();
+                $("#danger_info").next("br").remove();
                 $("#danger_class_info").next("br").remove();
             }
         });
