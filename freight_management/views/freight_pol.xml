@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_freight_pol_form_view">
+            <field name="name">freight.pol.form.view</field>
+            <field name="model">freight.pol</field>
+            <field name="arch" type="xml">
+                <form string="POL">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_freight_pol_tree_view">
+            <field name="name">freight.pol.tree.view</field>
+            <field name="model">freight.pol</field>
+            <field name="arch" type="xml">
+                <tree string="Freight POL">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_freight_pol_action">
+            <field name="name">POL</field>
+            <field name="res_model">freight.pol</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new pol.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="POL" parent="freight.freight_configuration" id="menu_freight_pol_id"
+                  action="view_freight_pol_action" sequence="2"/>
+
+    </data>
+</odoo>
