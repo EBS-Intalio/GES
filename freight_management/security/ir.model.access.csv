@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_freight_hs_code_group_user,access_freight_hs_code_group_user,model_freight_hs_code,,1,1,1,1
 access_freight_job_request_group_user,access_freight_job_request_group_user,model_freight_job_request,,1,1,1,1
+access_freight_pod_group_user,access_freight_pod_group_user,freight_management.model_freight_pod,,1,1,1,1
+access_freight_pol_group_user,access_freight_pol_group_user,freight_management.model_freight_pol,,1,1,1,1
+access_freight_pofd_destination_group_user,access_freight_pofd_destination_group_user,freight_management.model_freight_pofd_destination,,1,1,1,1
+access_freight_por_origin_group_user,access_freight_por_origin_group_user,freight_management.model_freight_por_origin,,1,1,1,1

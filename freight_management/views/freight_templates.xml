@@ -366,7 +366,7 @@
                             <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Main Carriage</span><br/><br/>
                             <span><b>Loading Port:</b> <span t-field="f_request.origin_airport_id.name"/> </span><br/>
                             <span><b>Shipping Line:</b> <span t-field="f_request.shipping_line_id.display_name"/> </span><br/>
-                            <span><b>Voyage No:</b> <span t-field="f_request.voyage_no"/> </span><br/>
+<!--                            <span><b>Voyage No:</b> <span t-field="f_request.voyage_no"/> </span><br/>-->
                             <span><b>Vessel:</b> <span t-field="f_request.vessel_id.name"/> </span><br/>
 <!--                            <span><b>OBL:</b> <span t-field="request.obl"/> </span><br/>-->
 <!--                            <span><b>POR/Origin:</b> <span t-field="request.por_origin"/> </span><br/>-->
@@ -693,20 +693,20 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <div id="air_div">
-                                <b style="color:#7C7BAD;">Air Shipment Type:</b><br/><br/>
+<!--                            <div id="air_div">-->
+<!--                                <b style="color:#7C7BAD;">Air Shipment Type:</b><br/><br/>-->
 
-                                <label  class="cont" for="breakbulk" style="margin-right:10px;">Breakbulk
-                                    <input type="radio" id="breakbulk" name="air" value="breakbulk"/>
-                                    <span class="checkmark"></span>
-                                </label>
+<!--                                <label  class="cont" for="breakbulk" style="margin-right:10px;">Breakbulk-->
+<!--                                    <input type="radio" id="breakbulk" name="air" value="breakbulk"/>-->
+<!--                                    <span class="checkmark"></span>-->
+<!--                                </label>-->
 
-                                <label  class="cont" for="roro" style="margin-right:10px;">Roro
-                                    <input type="radio" id="roro" name="air" value="roro"/>
-                                    <span class="checkmark"></span>
-                                </label>
+<!--                                <label  class="cont" for="roro" style="margin-right:10px;">Roro-->
+<!--                                    <input type="radio" id="roro" name="air" value="roro"/>-->
+<!--                                    <span class="checkmark"></span>-->
+<!--                                </label>-->
 
-                            </div>
+<!--                            </div>-->
                         </div>
                         <div class="col-1">
 
@@ -769,7 +769,7 @@
                             <div id="ocean_lbl_1" style="display:none;">
                                 <label id="landing_lbl" style="margin-top: 12px;" for="ocean_source_location_id">Landing Port:</label><br/>
                                 <label id="shp_line_lbl" style="margin-top: 30px;"  for="shipping_line_id">Shipping Line:</label><br/>
-                                <label id="voyage_lbl" style="margin-top: 31px;"  for="voyage_no">Voyage No:</label><br/>
+<!--                                <label id="voyage_lbl" style="margin-top: 31px;"  for="voyage_no">Voyage No:</label><br/>-->
                                 <label id="vessel_lbl"  style="margin-top: 30px;" for="vessel_id">Vessel:</label><br/>
 <!--                                <label id="obl_lbl"  style="margin-top: 26px;" for="obl">OBL:</label><br/>-->
                                 <br /><br />
@@ -815,8 +815,8 @@
                                         <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
                                 </select>
                                 <br/>
-                                <input name="voyage_no" class="input-class form-control" id="voyage_no" />
-                                <br/>
+<!--                                <input name="voyage_no" class="input-class form-control" id="voyage_no" />-->
+<!--                                <br/>-->
                                 <select id="vessel_id" name="vessel_id" class="form-control">
                                     <t t-foreach="vessels" t-as="vess">
                                         <option t-att-value="vess.id" t-esc="vess.name"/></t>
@@ -886,6 +886,12 @@
                                 <label id="source_lbl" for="air_destination_location_id">Destination:</label><br/>
                                 <label id="airline_lbl" style="margin-top: 27px;" for="airline">Airline:</label><br/>
                                 <label id="flight_no_lbl" style="margin-top: 31px;" for="flight_no">Flight No:</label><br/>
+                                <label id="date_lbl" style="margin-top: 27px;" for="date_ocean">Shipment Ready Date:</label><br/>
+                                <label id="shipment_ready_asap_lbl" style="margin-top: 2px;" for="shipment_ready_asap">Shipment Ready ASAP:</label><br/>
+                                <label id="target_eta_lbl" style="margin-top: 11px;" for="target_eta">Target ETA:</label><br/>
+                                <label id="target_eta_asap_lbl" style="margin-top: 16px;" for="target_eta_asap">Target ETA ASAP:</label><br/>
+                                <label id="target_etd_lbl" style="margin-top: 24px;" for="target_etd">Target ETD:</label><br/>
+                                <label id="target_etd_asap_lbl" style="margin-top: 24px;" for="target_etd_asap">Target ETD ASAP:</label><br/>
 
 <!--                                <label id="date_lbl" style="margin-top: 33px;" for="date">Shipment Ready Date 1:</label><br/><br/>-->
                             </div>
@@ -893,13 +899,23 @@
                                 <br/>
                                 <label id="discharge_lbl"  for="ocean_destination_location_id">Discharge Port:</label><br/>
                                 <label id="date_lbl" style="margin-top: 27px;" for="date_ocean">Shipment Ready Date:</label><br/>
+                                <label id="shipment_ready_asap_lbl" style="margin-top: 2px;" for="shipment_ready_asap">Shipment Ready ASAP:</label><br/>
+                                <label id="target_eta_lbl" style="margin-top: 11px;" for="target_eta">Target ETA:</label><br/>
+                                <label id="target_eta_asap_lbl" style="margin-top: 16px;" for="target_eta_asap">Target ETA ASAP:</label><br/>
+                                <label id="target_etd_lbl" style="margin-top: 24px;" for="target_etd">Target ETD:</label><br/>
+                                <label id="target_etd_asap_lbl" style="margin-top: 24px;" for="target_etd_asap">Target ETD ASAP:</label><br/>
                                 <br/>
                             </div>
                             <div id="land_lbl_2" style="display:none;">
                                 <br/>
                                 <label id="to_lbl" style="margin-top: 6px;" for="land_destination_location_id">To:</label><br/>
                                 <label id="date_lbl" style="margin-top: 26px;"  for="date_land">Shipment Ready Date:</label><br/>
-                                <label id="cmr_lbl" style="margin-top: 14px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
+                                <label id="shipment_ready_asap_lbl" style="margin-top: 2px;" for="shipment_ready_asap">Shipment Ready ASAP:</label><br/>
+                                <label id="target_eta_lbl" style="margin-top: 11px;" for="target_eta">Target ETA:</label><br/>
+                                <label id="target_eta_asap_lbl" style="margin-top: 16px;" for="target_eta_asap">Target ETA ASAP:</label><br/>
+                                <label id="target_etd_lbl" style="margin-top: 24px;" for="target_etd">Target ETD:</label><br/>
+                                <label id="target_etd_asap_lbl" style="margin-top: 24px;" for="target_etd_asap">Target ETD ASAP:</label><br/>
+                                <label id="cmr_lbl" style="margin-top: 20px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
                                 <label id="trucker_lbl"  style="margin-top: 29px;" for="trucker">Trucker:</label><br/>
                                 <label id="trucker_no_lbl"  style="margin-top: 36px;" for="trucker_number">Trucker No:</label><br/>
                                 <label class="vehicle_size"  style="margin-top: 26px;" for="vehicle_size">Vehicle Size:</label><br/>
@@ -927,6 +943,13 @@
                                 <br/>
                                 <input name="flight_no" class="input-class form-control" id="flight_no" />
                                 <br/>
+                                <input name="shipment_ready_date" type="date" class="input-class form-control" id="date" /><br/>
+                                <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>
+                                <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
+                                <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>
+                                <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
+                                <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>
+
 <!--                                <input name="date" type="datetime-local" class="input-class form-control" id="date" />-->
 <!--                                <input type="text" style="display:none"   name="new_date" id="new_date"/>-->
 <!--                                <br/>-->
@@ -938,7 +961,12 @@
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
                                 <br/>
-                                <input name="date" type="datetime-local" class="input-class form-control" id="date" />
+                                <input name="shipment_ready_date" type="date" class="input-class form-control" id="date" /><br/>
+                                <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>
+                                <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
+                                <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>
+                                <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
+                                <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>
                                 <input type="text" style="display:none"   name="new_date" id="new_date"/>
                                 <br/>
                             </div>
@@ -949,7 +977,12 @@
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
                                 <br/>
-                                <input name="date" type="datetime-local" class="input-class form-control" id="date" />
+                                <input name="shipment_ready_date" type="date" class="input-class form-control" id="date" /><br/>
+                                <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>
+                                <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
+                                <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>
+                                <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
+                                <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>
                                 <input type="text" style="display:none"   name="new_date" id="new_date"/>
                                 <br/>
                                 <input name="truck_ref" class="input-class form-control" id="cmr_no"/>
@@ -1082,7 +1115,7 @@
                             <label id="freight_hs_code_ids_lbl"  style="margin-top: 10px;" for="freight_hs_code_ids">Freight Hs-Codes:</label><br/><br/>
 <!--                            <label for="barcode" style="margin-top: 10px;">Barcode:</label><br/><br/>-->
                             <label for="agent_id" style="margin-top: 6px;">Customer:</label><br/><br/>
-                            <label for="agent_id" style="margin-top: 6px;">Package Type:</label><br/><br/>
+                            <label for="agent_id" style="margin-top: 6px;">Packaging Type:</label><br/><br/>
 <!--                            <label for="operator_id" style="margin-top: 6px;">User:</label><br/><br/>-->
 <!--                            <label for="freight_pc" style="margin-top: 17px;">Freight PC:</label><br/><br/>-->
 <!--                            <label for="other_pc" style="margin-top: 4px;">Other PC:</label><br/><br/>-->
@@ -1100,6 +1133,7 @@
                             <label for="commodity_category" style="margin-top: 0px;">Commodity Category:</label><br/><br/>
                             <label for="commodity_description" style="margin-top: 0px;">Commodity Description:</label><br/><br/>
                             <label for="weight_type" style="margin-top: 0px;">Weight Type:</label><br/><br/>
+                            <label for="pol_id" style="margin-top: 0px;">POL:</label><br/><br/>
                             <br/>
                         </div>
                         <div class="col-3">
@@ -1170,6 +1204,11 @@
                                 <option value="estimated">Estimated</option>
                                 <option value="actual">Actual</option>
                             </select><br/>
+                             <select id="pol_id" name="pol_id" class="form-control">
+                                 <option></option>
+                                <t t-foreach="pols" t-as="pol">
+                                    <option t-att-value="pol.id" t-esc="pol.name"/></t>
+                            </select><br/>
                         </div>
                         <div class="col-2">
                             <br/><br/><br/>
@@ -1199,14 +1238,17 @@
                             <div id="rate_in_usd"><label for="rate_in_usd" style="margin-top: 2px;">Target Rate in USD:</label><br/><br/></div>
 
 
-                            <div id="gross_weight_kg"><label for="gross_weight_kg" style="margin-top: 5px;">Gross weight (KG):</label><br/><br/></div>
+                            <div id="gross_weight_kg"><label for="gross_weight_kg" style="margin-top: 8px;">Gross weight (KG):</label><br/><br/></div>
 
                             <div id="number_of_packages_pallets"><label id="number_of_packages_pallets" for="number_of_packages_pallets">Number of packages / Pallets:</label><br/><br/></div>
 
                             <div id="stackability"><label id="stackability" for="stackability">Stackability:</label><br/><br/></div>
 
-                            <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 1px;">Additional Requirements:</label><br/><br/></div>
-                            <div id="additional_comments"><label for="additional_description" style="margin-top: 1px;">Additional Comments:</label><br/><br/></div>
+                            <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 4px;">Additional Requirements:</label><br/><br/></div>
+                            <div id="additional_comments"><label for="additional_description" style="margin-top: 3px;">Additional Comments:</label><br/><br/></div>
+                            <div id="por_origin_id_lbl"><label for="por_origin_id" style="margin-top: 3px;">POR /Origin:</label><br/><br/></div>
+                            <div id="pofd_destination_id_lbl"><label for="pofd_destination_id" style="margin-top: 3px;">POFD /Destination:</label><br/><br/></div>
+                            <div id="pod_id_lbl"><label for="pod_id" style="margin-top: 1px;">POD:</label><br/><br/></div>
 
 <!--                            <label for="move_type">Move Type:</label><br/><br/>-->
 <!--                            <label for="trac_no">Tracking Number:</label><br/><br/>-->
@@ -1274,7 +1316,22 @@
 
                             <textarea id="additional_requirement" name="additional_requirement" class="form-control"/><br/>
 
-                            <textarea id="additional_description" name="additional_comments" class="form-control"/>
+                            <textarea id="additional_description" name="additional_comments" class="form-control"/><br/>
+                            <select id="por_origin_id" name="por_origin_id" class="form-control">
+                                 <option></option>
+                                <t t-foreach="origins" t-as="origin">
+                                    <option t-att-value="origin.id" t-esc="origin.name"/></t>
+                            </select><br/>
+                            <select id="pofd_destination_id" name="pofd_destination_id" class="form-control">
+                                 <option></option>
+                                <t t-foreach="pofd_destinations" t-as="pofd_destination">
+                                    <option t-att-value="pofd_destination.id" t-esc="pofd_destination.name"/></t>
+                            </select><br/>
+                            <select id="pod_id" name="pod_id" class="form-control">
+                                 <option></option>
+                                <t t-foreach="pods" t-as="pod">
+                                    <option t-att-value="pod.id" t-esc="pod.name"/></t>
+                            </select><br/>
 
 
 <!--                            <input type="file" name="file_booking" multiple="false"-->

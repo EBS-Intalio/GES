@@ -82,7 +82,7 @@ class FreightJobRequest(models.Model):
                                       ('no_stackable', 'No Stackable')]),
                                     string="Stackability")
     additional_requirements = fields.Text(string="Additional requirements")
-    package_type_id = fields.Many2one('freight.package', string="Package Type", required=True)
+    package_type_id = fields.Many2one('freight.package', string="Packaging Type", required=True)
     country_id = fields.Many2one('res.country', string='Country')
     state_id = fields.Many2one('res.country.state', string='State',
                                domain="[('country_id', '=?', country_id)]")
@@ -108,12 +108,22 @@ class FreightJobRequest(models.Model):
     warehousing = fields.Selection(([('yes', 'YES'),
                                      ('no', 'NO')]), default="yes", string="Warehousing / Storage", required=True)
     target_rate = fields.Float(string="Target Rate in USD")
-    # shipment_ready_date = fields.Date(string="Shipment Ready Date")
-    # shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
-    # target_eta = fields.Date(string="Target ETA")
-    # target_eta_asap = fields.Boolean(string="Target ETA SAP")
-    # target_etd = fields.Date(string="Target ETD")
-    # target_etd_asap = fields.Boolean(string="Target ETD SAP")
+
+    # Added
+    shipment_ready_date = fields.Date(string="Shipment Ready Date")
+    shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
+    target_eta = fields.Date(string="Target ETA")
+    target_eta_asap = fields.Boolean(string="Target ETA ASAP")
+    target_etd = fields.Date(string="Target ETD")
+    target_etd_asap = fields.Boolean(string="Target ETD ASAP")
+
+    por_origin_id = fields.Many2one('freight.por.origin', string="POR /Origin")
+    pol_id = fields.Many2one('freight.pol', string="POL")
+    pod_id = fields.Many2one('freight.pod', string="POD")
+    pofd_destination_id = fields.Many2one('freight.pofd.destination', string="POFD /Destination")
+
+    # End
+
     target_transit_time = fields.Integer(string="Target Transit Time")
     expected_free_time_at_origin = fields.Integer(string="Expected Free Time at Origin")
     expected_free_time_at_destination = fields.Integer(string="Expected Free Time at Destination")

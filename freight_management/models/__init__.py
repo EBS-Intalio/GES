@@ -7,3 +7,7 @@ from . import freight_pricing
 from . import freight_pricing_charge
 from . import booking_tracker
 from . import sale_order
+from . import freight_pod
+from . import freight_pol
+from . import freight_pofd_destination
+from . import freight_por_origin

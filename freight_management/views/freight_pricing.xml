@@ -13,7 +13,8 @@
                                 default_focus="1" class="oe_highlight"/>
                         <button name="reset_pricing" string="Reset" states="done" type="object" default_focus="1"
                                 class="oe_highlight"/>
-                        <button name="create_quotations" string="Create Quotations" states="done" type="object" class="oe_highlight"/>
+                        <field name="order_ids" invisible="1"/>
+                        <button name="create_quotations" string="Create Quotations"  type="object"  class="oe_highlight" attrs="{'invisible':['|',('sales_count','!=',0),('state','=','draft')]}"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -107,6 +108,19 @@
                 </form>
             </field>
         </record>
+
+
+        <record id="view_freight_booking_form_inherit_ebs_pricing" model="ir.ui.view">
+            <field name="name">freight.booking.form.inherit_new.inherit</field>
+            <field name="model">freight.booking</field>
+            <field name="inherit_id" ref="ebs_freight_pricing.view_freight_booking_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='create_booking_pricing']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
 
         <record model="ir.ui.view" id="freight_management_view_freight_pricing_tree">
             <field name="name">freight.pricing.tree</field>

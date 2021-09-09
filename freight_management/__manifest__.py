@@ -19,7 +19,11 @@
         "views/res_partner.xml",
         "views/crm_lead.xml",
         "views/freight_pricing.xml",
-        "views/freight_templates.xml"
+        "views/freight_templates.xml",
+        "views/freight_pod.xml",
+        "views/freight_pod_destination.xml",
+        "views/freight_pol.xml",
+        "views/freight_por_origin.xml"
 
     ],
     'installable': True,

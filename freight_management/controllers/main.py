@@ -44,9 +44,17 @@ class RequestCustom(http.Controller):
         packages = request.env['freight.package'].sudo().search([])
         countries = request.env['res.country'].sudo().search([])
         states = request.env['res.country.state'].sudo().search([])
+        origins = request.env['freight.por.origin'].sudo().search([])
+        pols = request.env['freight.pol'].sudo().search([])
+        pods = request.env['freight.pod'].sudo().search([])
+        pofd_destinations = request.env['freight.pofd.destination'].sudo().search([])
 
         values = {
             'countries':countries,
+            'pofd_destinations':pofd_destinations,
+            'pods':pods,
+            'pols':pols,
+            'origins':origins,
             'states': states,
             'partners':partners,
             'shipper': shippers,
@@ -130,8 +138,8 @@ class RequestCustom(http.Controller):
                 final_dict['mawb_no'] = post.get('mawb_no')
             if post.get('shipping_line_id'):
                 final_dict['shipping_line_id'] = int(post.get('shipping_line_id'))
-            if post.get('voyage_no'):
-                final_dict['voyage_no'] = post.get('voyage_no')
+            # if post.get('voyage_no'):
+            #     final_dict['voyage_no'] = post.get('voyage_no')
             if post.get('vessel_id'):
                 final_dict['vessel_id'] = int(post.get('vessel_id'))
             if post.get('equipment_type'):
@@ -190,6 +198,29 @@ class RequestCustom(http.Controller):
                 final_dict['stackability'] = post.get('stackability')
             # air_shipment
 
+            if post.get('shipment_ready_date'):
+                final_dict['shipment_ready_date'] = post.get('shipment_ready_date')
+            if post.get('target_eta'):
+                final_dict['target_eta'] = post.get('target_eta')
+            if post.get('target_etd'):
+                final_dict['target_etd'] = post.get('target_etd')
+            if 'shipment_ready_asap' in post.keys() and post.get('shipment_ready_asap') == 'on':
+                final_dict['shipment_ready_asap'] = True
+            if 'target_eta_asap' in post.keys() and post.get('target_eta_asap') == 'on':
+                final_dict['target_eta_asap'] = True
+            if 'target_etd_asap' in post.keys() and post.get('target_etd_asap') == 'on':
+                final_dict['target_etd_asap'] = True
+
+            if post.get('por_origin_id'):
+                final_dict['por_origin_id'] = int(post.get('por_origin_id'))
+            if post.get('pol_id'):
+                final_dict['pol_id'] = int(post.get('pol_id'))
+            if post.get('pod_id'):
+                final_dict['pod_id'] = int(post.get('pod_id'))
+            if post.get('pofd_destination_id'):
+                final_dict['pofd_destination_id'] = int(post.get('pofd_destination_id'))
+
+
 
             if post.get('mode_of_transport') == 'air':
                 final_dict['air_shipment'] = post.get('air')
@@ -242,7 +273,7 @@ class RequestCustom(http.Controller):
             'type':'lead',
         })
         freight_request.lead_id = lead_id.id
-
+        print("=======freight_requestfreight_requestfreight_request====================",freight_request.id)
         print("freight_requestfreight_requestfreight_request", freight_request)
         return request.render("freight_management.portal_my_request_thank_you")
 

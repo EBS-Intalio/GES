@@ -89,7 +89,12 @@ class FreightPricing(models.Model):
                 'order_line': vals
             }
             if self.currency_id:
-                vals.update({'currency_id': self.currency_id.id})
+                price_list_id = self.env['product.pricelist'].search([('currency_id','=',self.currency_id.id)])
+                if price_list_id:
+                    vals.update({'pricelist_id': price_list_id[0].id})
+                else:
+                    price_list_id = self.env['product.pricelist'].create({'name':'Default '+ self.currency_id.name+ ' Pricelist','currency_id':self.currency_id.id})
+                    vals.update({'pricelist_id': price_list_id.id})
             order_quotation = self.env['sale.order'].create(vals)
             # order_quotation.write({'order_line': vals})
             print("order_quotationorder_quotationorder_quotationorder_quotationorder_quotation", order_quotation)

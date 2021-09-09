@@ -5,7 +5,7 @@ $(document).ready(function (){
         $("#freight_hs_code_ids").select2();
        $('#ocean_div').hide();
         $('#land_div').hide();
-        $('#air_div').hide();
+//        $('#air_div').hide();
         $('#dng_info').hide();
         $("#trac_no").hide();
         $("#trac_no_lb").hide();
@@ -47,7 +47,7 @@ $(document).ready(function (){
                 console.log("AIR");
                 $('#ocean_div').hide();
 	            $('#land_div').hide();
-	            $('#air_div').show();
+//	            $('#air_div').show();
 
 
 
@@ -113,7 +113,7 @@ $(document).ready(function (){
                 console.log("OCEAN");
                 $('#ocean_div').show();
 	            $('#land_div').hide();
-	            $('#air_div').hide();
+//	            $('#air_div').hide();
 
 	            $("#vehicle_size")[0].required = false;
 	            $("#vehicle_type")[0].required = false;
@@ -174,7 +174,7 @@ $(document).ready(function (){
                 /*$('.vehicle_size').show();
                 $('.vehicle_type').show();*/
 
-                $('#air_div').hide();
+//                $('#air_div').hide();
 	            $('#land_div').show();
 
                 $("#vehicle_size")[0].required = true;
