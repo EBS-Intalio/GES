@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_freight_hs_code_group_user,access_freight_hs_code_group_user,model_freight_hs_code,,1,1,1,1
 access_freight_job_request_group_user,access_freight_job_request_group_user,model_freight_job_request,,1,1,1,1
+access_freight_incoterms_group_hr_freight_portal,freight.incoterms.group.freight.portal,freight.model_freight_incoterms,base.group_portal,1,1,1,1
