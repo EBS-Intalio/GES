@@ -29,21 +29,21 @@ _logger = logging.getLogger(__name__)
 class RequestCustom(http.Controller):
 
     @http.route(['/createrequest'], type='http', auth='user', website=True, cache=300, csrf=False)
-    def portal_my_bookings_create(self, redirect=None, **post):
-        partners = request.env['res.partner'].search([])
-        consignees = request.env['res.partner'].search([('freight_type', '=', 'consignee')])
-        shippers = request.env['res.partner'].search([('freight_type', '=', 'shipper')])
-        users = request.env['res.users'].search([])
-        incoterms = request.env['freight.incoterms'].search([])
+    def portal_my_request_create(self, redirect=None, **post):
+        partners = request.env['res.partner'].sudo().search([])
+        consignees = request.env['res.partner'].sudo().search([('freight_type', '=', 'consignee')])
+        shippers = request.env['res.partner'].sudo().search([('freight_type', '=', 'shipper')])
+        users = request.env['res.users'].sudo().search([])
+        incoterms = request.env['freight.incoterms'].sudo().search([])
         # move_type = request.env['freight.move.type'].search([])
-        gateways = request.env['freight.port'].search([])
-        airlines = request.env['freight.airline'].search([])
-        vessels = request.env['freight.vessel'].search([])
-        truckers = request.env['freight.trucker'].search([])
-        hs_codes = request.env['freight.hs.code'].search([])
-        packages = request.env['freight.package'].search([])
-        countries = request.env['res.country'].search([])
-        states = request.env['res.country.state'].search([])
+        gateways = request.env['freight.port'].sudo().search([])
+        airlines = request.env['freight.airline'].sudo().search([])
+        vessels = request.env['freight.vessel'].sudo().search([])
+        truckers = request.env['freight.trucker'].sudo().search([])
+        hs_codes = request.env['freight.hs.code'].sudo().search([])
+        packages = request.env['freight.package'].sudo().search([])
+        countries = request.env['res.country'].sudo().search([])
+        states = request.env['res.country.state'].sudo().search([])
 
         values = {
             'countries':countries,
@@ -234,7 +234,7 @@ class RequestCustom(http.Controller):
         freight_request = request_obj.sudo().create(final_dict)
 
         lead_obj = request.env['crm.lead']
-        lead_id = lead_obj.create({
+        lead_id = lead_obj.sudo().create({
             'name': freight_request.name,
             'partner_id': freight_request.partner_id.id,
         })
@@ -249,7 +249,7 @@ class RequestCustom(http.Controller):
         # make pager
         values = {}
         domain = ['|', ('create_uid', '=', False), ('create_uid', '=', request.env.user.id)]
-        freight_request = request_obj.search(domain)
+        freight_request = request_obj.sudo().search(domain)
         values.update({
             'freight_requests': freight_request.sudo(),
         })
