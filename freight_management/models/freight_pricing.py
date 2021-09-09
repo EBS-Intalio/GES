@@ -88,6 +88,8 @@ class FreightPricing(models.Model):
                 'partner_id': freight_request_id and freight_request_id.partner_id.id or False,
                 'order_line': vals
             }
+            if self.currency_id:
+                vals.update({'currency_id':self.currency_id.id})
             order_quotation = self.env['sale.order'].create(vals)
             # order_quotation.write({'order_line': vals})
             print("order_quotationorder_quotationorder_quotationorder_quotationorder_quotation", order_quotation)
