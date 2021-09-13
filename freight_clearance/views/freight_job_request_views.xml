@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="freight_job_request_view_form_inherit" model="ir.ui.view">
+            <field name="name">freight.job.request.form.inherit_new</field>
+            <field name="model">freight.job.request</field>
+            <field name="inherit_id" ref="freight_management.freight_management_freight_booking_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='clearance_required']" position="after">
+                    <field name="bl_copy" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
+                    <field name="shipping_documents" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
+                    <field name="original_copy" attrs="{'invisible': ['|', ('shipping_documents','!=',True), ('clearance_required','!=','yes')], 'required' : [('shipping_documents', '=', True), ('clearance_required', '=', 'yes')]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

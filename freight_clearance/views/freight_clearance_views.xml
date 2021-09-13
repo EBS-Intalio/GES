@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="freight_clearance_form_view">
+            <field name="name">freight.clearance.form.view</field>
+            <field name="model">freight.clearance</field>
+            <field name="arch" type="xml">
+                <form string="Clearance">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                        <button name="action_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <field name="clearance_type" style="width:30%" attrs="{'readonly': [('state','=','confirm')]}" />
+                        <group>
+                            <group>
+                                <field name="partner_id" attrs="{'readonly': [('state','=','confirm')]}" />
+                                <field name="consignee_id" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="freight_related" attrs="{'readonly': [('state','=','confirm')]}" />
+                                <field name="request_id" attrs="{'invisible': [('freight_related','!=',True)], 'required' : [('freight_related', '=', True)], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="shipping_documents" attrs="{'readonly': [('state','=','confirm')]}" />
+                                <field name="original_copy" attrs="{'invisible': [('shipping_documents','!=',True)], 'required' : [('shipping_documents', '=', True)], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="bl_copy" attrs="{'readonly': [('state','=','confirm')]}" />
+                                <br />
+                                <field name="transport" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}" widget="radio"/>
+                            </group>
+                            <group>
+                                <field name="pofd_destination_id" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="pol_id" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                <field name="pod_id" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                <field name="etd" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                <field name="eta" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                <field name="additional_comments" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="road_shipment_type" attrs="{'invisible': ['|',('clearance_type', '!=', 'indian'), ('transport', '!=', 'road')], 'required' : [('clearance_type', '=', 'indian'), ('transport', '=', 'road')],
+                                                                         'readonly': [('state','=','confirm')]}" widget="radio"/>
+                                <field name="shipment_type" attrs="{'invisible': ['|',('clearance_type', '!=', 'indian'), ('transport', 'not in', ['sea', 'sea_then_air', 'air_then_sea', 'rail'])],
+                                                                    'required' : [('clearance_type', '=', 'indian'), ('transport', 'in', ['sea', 'sea_then_air', 'air_then_sea', 'rail'])],
+                                                                    'readonly': [('state','=','confirm')]}" widget="radio"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Contact Person">
+                                <div>
+                                    <field name="first_name" placeholder="FirstName..." attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="family_name" placeholder="FamilyName..." attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="email" placeholder="Email..." widget="email" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="phone" placeholder="Phone" widget="phone" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                </div>
+                            </group>
+                            <group string="Delivery Address">
+                                <div class="o_address_format">
+                                    <field name="delivery_building" placeholder="Building..." class="o_address_street" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_area" placeholder="Area..." class="o_address_street" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_city" placeholder="City" class="o_address_city" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_po_box" placeholder="PO Box" class="o_address_zip" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_zip_code" placeholder="Zip Code" class="o_address_zip" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                    <field name="delivery_country_id" placeholder="Country" class="o_address_country" attrs="{'readonly': [('state','=','confirm')]}"/>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_clearance_tree_view">
+            <field name="name">freight.clearance.tree.view</field>
+            <field name="model">freight.clearance</field>
+            <field name="arch" type="xml">
+                <tree string="Clearance">
+                    <field name="name"/>
+                    <field name="clearance_type"/>
+                    <field name="partner_id"/>
+                    <field name="consignee_id" attrs="{'invisible': [('clearance_type','!=','indian')]}"/>
+                    <field name="freight_related" />
+                    <field name="request_id" attrs="{'invisible': [('freight_related','!=',True)]}"/>
+                    <field name="transport" attrs="{'invisible': [('clearance_type','!=','indian')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_freight_clearance">
+            <field name="name">Freight Clearance</field>
+            <field name="res_model">freight.clearance</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_freight_clearance_crm">
+            <field name="name">Freight Clearance</field>
+            <field name="res_model">freight.clearance</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Clearance" parent="freight.freight_operations" id="menu_freight_clearance"
+                  action="action_freight_clearance" sequence="10"/>
+
+        <menuitem name="Clearance" parent="crm.crm_menu_config"
+                  id="menu_freight_clearance_crm" action="action_freight_clearance_crm" sequence="10"/>
+    </data>
+</odoo>
