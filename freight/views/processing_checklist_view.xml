@@ -10,6 +10,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,done_partially,confirm"/>
                         <button name="action_done_partially" type="object" string="Done" states="draft" class="oe_highlight"/>
                         <button name="action_confirm" type="object" string="Confirm" states="draft,done_partially" class="oe_highlight"/>
+                        <button name="select_all" type="object" string="Select All" states="draft,done_partially" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <h1>
@@ -17,6 +18,12 @@
                                 <field name="name" readonly="1"/>
                             </div>
                         </h1>
+                        <div>
+                            <h6>
+                                <label for="book_id" string="Booking Reference" />
+                                <field name="book_id" invisible="0" readonly="1"/>
+                            </h6>
+                        </div>
                         <group string="Checklist" colspan="5" col="5">
                             <!--Air Fields-->
                             <field name="booking_confirmed" attrs="{'readonly': [('state','=','confirm')]}" />
@@ -81,11 +88,15 @@
                             <field name="truck_off_loaded" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
                             <field name="obtain_deliver_note_form_customer" attrs="{'readonly': [('state','=','confirm')], 'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
 
-                            <field name="book_id" invisible="0" readonly="1"/>
                             <field name="transport" invisible="1" force_save="1"/>
-                            <field name="show_create_shipment" invisible="1"/>
+<!--                            <field name="show_create_shipment" invisible="1"/>-->
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>

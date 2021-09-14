@@ -13,13 +13,13 @@ class FreightBooking(models.Model):
     _description = 'Freight Booking'
 
     pricing_id = fields.Many2one('freight.pricing', string='Shipment Pricing')
-    checklist_id = fields.Many2many('processing.checklist', string='Processing Checklist')
+    checklist_id = fields.Many2one('processing.checklist', string='Processing Checklist')
     state = fields.Selection(([('draft', 'Draft'),
-                               ('processing_checklist', 'Processing Checklist'),
+                               # ('processing_checklist', 'Processing Checklist'),
                                ('ship_order', 'Ship Order')]),
                              string='Status', default='draft')
 
-    show_create_shipment = fields.Boolean(related='checklist_id.show_create_shipment')
+    show_create_processing_checklist = fields.Boolean("Show create checklist", default=False)
 
 
     def create_processing_checklist(self):
@@ -30,7 +30,8 @@ class FreightBooking(models.Model):
 
         })
         if checklist_id:
-            self.state = 'processing_checklist'
+            # self.state = 'processing_checklist'
+            self.show_create_processing_checklist = True
             self.checklist_id = checklist_id.id,
 
     def button_processing_checklist(self):

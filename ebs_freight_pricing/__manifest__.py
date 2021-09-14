@@ -26,6 +26,7 @@
         'views/freight_pricing_views.xml',
         'views/booking_views.xml',
         'views/sales_views.xml',
+        'views/freight_operation_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
