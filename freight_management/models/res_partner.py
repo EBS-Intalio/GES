@@ -6,3 +6,4 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     freight_type = fields.Selection(([('shipper', 'Shipper'), ('consignee', 'Consignee')]), string='Freight Type')
+    is_carrier = fields.Boolean(string='Is Carrier?')

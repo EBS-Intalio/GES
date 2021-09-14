@@ -3,24 +3,35 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
-
 class FreightJobRequest(models.Model):
     _name = 'freight.job.request'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'utm.mixin']
     _description = 'Freight Job Request'
+    _order = 'name desc, id desc'
 
     lead_id = fields.Many2one('crm.lead', string="lead")
     name = fields.Char(string='Name', translate=True, copy=False)
-    # state = fields.Selection(([('draft', 'Draft'), ('converted', 'Converted')]), string='Status', default='draft')
     partner_id = fields.Many2one('res.partner', string="Customer")
-    mode_of_transport = fields.Selection(([('air', 'Air'),
-                                           ('ocean', 'Ocean'),
-                                           ('land', 'Land')]), default="air", string="Mode of Transport")
-    # ('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')
-    ocean_shipment = fields.Selection(([('fcl', 'FCL'), ('lcl', 'LCL')]), string='Ocean Shipment Type')
-    inland_shipment = fields.Selection(([('ftl', 'FTL'), ('ltl', 'LTL')]), string='Inland Shipment Type')
-    air_shipment = fields.Selection(([('breakbulk', 'Breakbulk'),
-                                      ('roro', 'Roro')]), string='Air Shipment Type')
+    mode_of_transport = fields.Selection([('air', 'Air'),
+                                           ('ocean', 'Sea'),
+                                           ('land', 'Road'),
+                                           ('sea_then_air', 'Sea then Air'),
+                                           ('air_then_sea', 'Air then Sea'),
+                                           ('rail', 'Rail'),
+                                           ('courier', 'Courier')], default="air", string="Mode of Transport")
+    rail_shipment_type = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                      ('breakbulk', 'Breakbulk'),
+                                      ('liquid', 'Liquid'),
+                                      ('bulk','Bulk'),
+                                      ('roro', 'Roro')], string='Rail Shipment Type')
+    ocean_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                      ('breakbulk', 'Breakbulk'),
+                                      ('liquid', 'Liquid'),
+                                      ('bulk', 'Bulk'),
+                                      ('roro', 'Roro')], string='Ocean Shipment Type')
+    inland_shipment = fields.Selection([('ftl', 'FTL'), ('ltl', 'LTL')], string='Road Shipment Type')
+    #air_shipment = fields.Selection([('breakbulk', 'Breakbulk'),
+                                      # ('roro', 'Roro')], string='Air Shipment Type')
     job_type = fields.Char(string="Job Type")
     #
     # por_origin = fields.Selection(([]), string="POR /Origin")
@@ -31,32 +42,36 @@ class FreightJobRequest(models.Model):
     freight_incoterm_id = fields.Many2one('freight.incoterms', string="Incoterm")
     origin_airport_id = fields.Many2one('freight.port', string="Origin")
     destination_airport_id = fields.Many2one('freight.port', string="Destination")
-    consider_origin_close = fields.Boolean("Consider close by Origin")
-    consider_destination_close = fields.Boolean("Consider close by Destination")
-    equipment_type = fields.Selection(([('20', '20'), ('20_open_top', '20 Open Top '), ('40', '40'),
+    # consider_origin_close = fields.Boolean("Consider close by Origin")
+    consider_origin_close = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+                                             string="Consider close by Origin", required=True)
+    # consider_destination_close = fields.Boolean("Consider close by Destination")
+    consider_destination_close = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+                                             string="Consider close by Destination", required=True)
+    equipment_type = fields.Selection([('20', '20'), ('20_open_top', '20 Open Top '), ('40', '40'),
                                         ('40_hc', '40 HC'), ('40_open_top', '40 OPEN TOP'), ('45', '45'),
                                         ('53', '53'), ('goh_single', 'GOH (Single)'), ('goh_double', 'GOH (Double)'),
                                         ('open_top_gauge', 'Open Top in-gauge'),
                                         ('open_top_out_gauge', 'Open Top out-of-gauge'), ('isotank', 'Isotank'),
                                         ('shipper_own', 'Shipper Owned Container'),
-                                        ('mafi_trailer', 'Mafi Trailer'), ('tank', 'Tank'), ('flexibag', 'Flexibag')]), string="Equipment Type")
-    vehicle_size = fields.Selection(([('3_ton', '3 Ton Truck'),
+                                        ('mafi_trailer', 'Mafi Trailer'), ('tank', 'Tank'), ('flexibag', 'Flexibag')], string="Equipment Type")
+    vehicle_size = fields.Selection([('3_ton', '3 Ton Truck'),
                                       ('7_ton', '7 Ton Truck'),
                                       ('10_ton', '10 Ton Truck'),
                                       ('12_ton', '12 Meter Trailer'),
-                                      ('15_ton', '15 Meter Trailer')]), string="Vehicle Size")
-    vehicle_type = fields.Selection(([('flat_bed', 'Flat Bed'),
+                                      ('15_ton', '15 Meter Trailer')], string="Vehicle Size")
+    vehicle_type = fields.Selection([('flat_bed', 'Flat Bed'),
                                       ('full_box', 'Full Box'),
                                       ('curtain_slider', 'Curtain Slider'),
                                       ('53', '53'),
                                       ('hot_shot', 'Hot Shot'),
-                                      ('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')]),
+                                      ('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')],
                                     string="Vehicle Type")
-    reefer_status = fields.Selection(([('yes', 'YES'), ('no', 'NO'), ('non_operate', 'Non Operating Reefer')]),
+    reefer_status = fields.Selection([('yes', 'YES'), ('no', 'NO'), ('non_operate', 'Non Operating Reefer')],
                                      string="Reefer Status", default="yes", required=True)
-    temperature = fields.Selection(([('celsius', 'Celsius'), ('fahrenheit', 'Fahrenheit')]), string="Temperature")
+    temperature = fields.Selection([('celsius', 'Celsius'), ('fahrenheit', 'Fahrenheit')], string="Temperature")
     temperature_value = fields.Float("Temp Set")
-    commodity_category = fields.Selection(([('food_perishable', 'Food Perishable'),
+    commodity_category = fields.Selection([('food_perishable', 'Food Perishable'),
                                             ('nonfood_perishable', 'Non food perishable'),
                                             ('non_perishable', 'Non perishable F&B'),
                                             ('furniture', 'Furniture'),
@@ -64,17 +79,19 @@ class FreightJobRequest(models.Model):
                                             ('automotive', 'Automotive'),
                                             ('pharmaceuticals', 'Pharmaceuticals'),
                                             ('petroleum_products', 'Petroleum Products'),
-                                            ('other_chemicals', 'Other Chemicals')]),
+                                            ('other_chemicals', 'Other Chemicals')],
                                           string="Commodity Category", default="food_perishable", required=True)
     commodity_description = fields.Text(string="Commodity Description", required=True)
-    is_dangerous_goods = fields.Boolean(string="Is Dangerous Goods?")
+    # is_dangerous_goods = fields.Boolean(string="Is Dangerous Goods?")
+    is_dangerous_goods = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+                                                  string="Is Dangerous Goods?", required=True)
     dangerous_goods_notes = fields.Text(string="Dangerous Goods Info")
-    dangerous_goods_class = fields.Selection(([('class_1', 'Class 1'), ('class_2 ', 'Class 2'), ('class_3', 'Class 3'),
+    dangerous_goods_class = fields.Selection([('class_1', 'Class 1'), ('class_2', 'Class 2'), ('class_3', 'Class 3'),
                                                ('class_4', 'Class 4'), ('class_5', 'Class 5'), ('class_6', 'Class 6'),
-                                               ('class_7', 'Class 7'), ('class_8', 'Class 8'), ('class_9', 'Class 9')]),
+                                               ('class_7', 'Class 7'), ('class_8', 'Class 8'), ('class_9', 'Class 9')],
                                              string="Dangerous Goods Class")
     # Many2many ned new model
-    freight_hs_code_ids = fields.Many2many('freight.hs.code', string="Freight Hs-Codes", required=True)
+    freight_hs_code_ids = fields.Many2many('freight.hs.code', string="HS-Codes", required=True)
     gross_weight = fields.Float(string="Gross weight (KG)", required=True)
     number_of_pallets_packages = fields.Integer(string="Number of packages / Pallets", required=True)
     # dimensions_of_package = Dimensions of each package / Pallets   dimensions
@@ -82,7 +99,14 @@ class FreightJobRequest(models.Model):
                                       ('no_stackable', 'No Stackable')]),
                                     string="Stackability")
     additional_requirements = fields.Text(string="Additional requirements")
-    package_type_id = fields.Many2one('freight.package', string="Packaging Type", required=True)
+    # package_type_id = fields.Many2one('freight.package', string="Packaging Type", required=True)
+    package_type_id = fields.Selection([('palatized', 'Palatized'),
+                                         ('cartons', 'Cartons'),
+                                         ('bulk', 'Bulk'),
+                                         ('drums', 'Drums'),
+                                         ('other', 'Others  (Please specify)')], string="Packaging Type", required=True)
+
+
     country_id = fields.Many2one('res.country', string='Country')
     state_id = fields.Many2one('res.country.state', string='State',
                                domain="[('country_id', '=?', country_id)]")
@@ -92,9 +116,13 @@ class FreightJobRequest(models.Model):
     building = fields.Char(string="Building")
     po_box = fields.Char(string="PO Box")
     zip_code = fields.Integer(string="Zip Code")
+
     delivery_country_id = fields.Many2one('res.country', string='Country')
     delivery_state_id = fields.Many2one('res.country.state', string='State',
-                                        domain="[('country_id', '=', delivery_country_id)]")
+                               domain="[('country_id', '=?', delivery_country_id)]")
+
+    # delivery_state_id = fields.Many2one('res.country.state', string='State',
+    #                                     domain="[('country_id', '=', delivery_country_id)]")
     delivery_city = fields.Char(string="City")
     delivery_area = fields.Char(string="Area")
     delivery_street = fields.Char(string="Street")
@@ -103,25 +131,33 @@ class FreightJobRequest(models.Model):
     delivery_zip_code = fields.Integer(string="Zip Code")
     shipper_id = fields.Many2one('res.partner', string="Shipper", required=True)
     consignee_id = fields.Many2one('res.partner', string="Consignee", required=True)
-    clearance_required = fields.Selection(([('yes', 'YES'),
-                                            ('no', 'NO')]), default="yes", string="Clearance Required", required=True)
-    warehousing = fields.Selection(([('yes', 'YES'),
-                                     ('no', 'NO')]), default="yes", string="Warehousing / Storage", required=True)
+    clearance_required = fields.Selection([('yes', 'YES'),
+                                            ('no', 'NO')], default="yes", string="Clearance Required", required=True)
+    warehousing = fields.Selection([('yes', 'YES'),
+                                     ('no', 'NO')], default="yes", string="Warehousing / Storage", required=True)
     target_rate = fields.Float(string="Target Rate in USD")
 
     # Added
     shipment_ready_date = fields.Date(string="Shipment Ready Date")
-    shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
+    # shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
+    shipment_ready_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+                                           string="Shipment Ready ASAP", required=True)
     target_eta = fields.Date(string="Target ETA")
-    target_eta_asap = fields.Boolean(string="Target ETA ASAP")
+    # target_eta_asap = fields.Boolean(string="Target ETA ASAP")
+    target_eta_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+                                       string="Target ETA ASAP", required=True)
     target_etd = fields.Date(string="Target ETD")
-    target_etd_asap = fields.Boolean(string="Target ETD ASAP")
+    # target_etd_asap = fields.Boolean(string="Target ETD ASAP")
+    target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+                                       string="Target ETD ASAP", required=True)
 
-    por_origin_id = fields.Many2one('freight.por.origin', string="POR /Origin")
+    # por_origin_id = fields.Many2one('freight.por.origin', string="POR /Origin")
     pol_id = fields.Many2one('freight.pol', string="POL")
     pod_id = fields.Many2one('freight.pod', string="POD")
-    pofd_destination_id = fields.Many2one('freight.pofd.destination', string="POFD /Destination")
-
+    # pofd_destination_id = fields.Many2one('freight.pofd.destination', string="POFD /Destination")
+    service_level = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
+                                       ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door')],
+                                     string="Service Level")
     # End
 
     target_transit_time = fields.Integer(string="Target Transit Time")
@@ -131,25 +167,25 @@ class FreightJobRequest(models.Model):
     # preferred_shipping_line = fields.Selection(([]), string="Preferred Shipping Line")
     preferred_airline_id = fields.Many2one('freight.airline', string="Preferred Airline")
     shipping_line_id = fields.Many2one('res.partner', 'Shipping Line')
-    vessel_id = fields.Many2one('freight.vessel', 'Vessel')
-    voyage_no = fields.Char('Voyage No')
-    mawb_no = fields.Char('MAWB No')
-    truck_ref = fields.Char('CMR/RWB#/PRO#:')
-    trucker = fields.Many2one('freight.trucker', 'Trucker')
-    trucker_number = fields.Char('Trucker No')
+    vessel_id = fields.Many2one('freight.vessel', string="Vessel")
+    voyage_no = fields.Char(string="Voyage No")
+    mawb_no = fields.Char(string="MAWB No")
+    truck_ref = fields.Char(string="CMR/RWB#/PRO#")
+    trucker = fields.Many2one('freight.trucker', string="Trucker")
+    trucker_number = fields.Char(string="Trucker No")
     pricing_id = fields.Many2one('freight.pricing', string='Shipment Pricing')
-    flight_no = fields.Char('Flight No')
-    state = fields.Selection(([('draft', 'Draft'),
+    flight_no = fields.Char(string="Flight No")
+    state = fields.Selection([('draft', 'Draft'),
                                ('pricing', 'Pricing Progress'),
-                               ('converted', 'Converted')]),
+                               ('converted', 'Converted')],
                              string='Status', default='draft')
 
     sales_count = fields.Integer(string='Total Orders', compute='_compute_freight_sales_orders')
     order_ids = fields.One2many('sale.order', 'freight_request_id', string='Orders', copy=False)
     booking_id = fields.Many2one('freight.booking','BookingId')
     is_booking_done = fields.Boolean('Booking Done')
-    weight_type = fields.Selection(([('estimated', 'Estimated'), ('actual', 'Actual')]), string="Weight Type")
-
+    is_web_request = fields.Boolean(string="Is Created From Website?", default=False)
+    weight_type = fields.Selection([('estimated', 'Estimated'), ('actual', 'Actual')], string="Weight Type")
 
     def action_view_sales_order(self):
         """
@@ -172,6 +208,10 @@ class FreightJobRequest(models.Model):
 
     @api.depends('order_ids')
     def _compute_freight_sales_orders(self):
+        """
+        Count total freight request sales order
+        :return:
+        """
         for pricing in self:
             pricing.sales_count = len(pricing.order_ids)
 
@@ -187,6 +227,10 @@ class FreightJobRequest(models.Model):
         return super(FreightJobRequest, self).create(values)
 
     def create_request_pricing(self):
+        """
+        Create request pricing
+        :return:
+        """
         sale_order_template_id = self.env['sale.order.template'].search([('transport', '=', self.mode_of_transport)], limit=1)
 
         pricing = self.env['freight.pricing'].create({
@@ -213,11 +257,12 @@ class FreightJobRequest(models.Model):
         }
 
     def button_pricing(self):
-
+        """
+        View freight request pricing
+        :return:
+        """
         ope = self.env['freight.pricing'].search([('freight_request_id', '=', self.id)])
-
         action = self.env.ref('freight_management.freight_management_view_freight_pricing_action').read()[0]
-
         if len(ope) > 1:
             action['domain'] = [('id', 'in', ope.ids)]
         elif ope:
@@ -261,28 +306,40 @@ class FreightJobRequest(models.Model):
                 'vehicle_size':self.vehicle_size, #mandatory
                 'vehicle_type':self.vehicle_type, #mandatory
             })
+        origin_close = False
+        if self.consider_origin_close == 'yes':
+            origin_close = True
+        destination_close = False
+        if self.consider_destination_close == 'yes':
+            destination_close = True
+        dangerous_goods = False
+        if self.is_dangerous_goods == 'yes':
+            dangerous_goods = True
         vals.update(
             {
                 'incoterm':self.freight_incoterm_id and self.freight_incoterm_id.id,
-                'air_shipment_type':self.air_shipment,
+                # 'air_shipment_type':self.air_shipment,
                 'job_type':self.job_type,
                 'source_location_id':self.origin_airport_id and self.origin_airport_id.id,
-                'origin_close':self.consider_origin_close,
+                # 'origin_close':self.consider_origin_close,
+                'origin_close': origin_close,
                 'destination_location_id':self.destination_airport_id and self.destination_airport_id.id,
-                'destination_close':self.consider_destination_close,
+                # 'destination_close':self.consider_destination_close,
+                'destination_close': destination_close,
                 'voyage_no':self.voyage_no,
                 'vessel_id':self.vessel_id and self.vessel_id.id,
                 'shipping_line_id':self.shipping_line_id and self.shipping_line_id.id,
                 'mawb_no':self.mawb_no,
                 'flight_no':self.flight_no,
-                'dangerous_goods':self.is_dangerous_goods,
+                'dangerous_goods': dangerous_goods,
+                # 'dangerous_goods':self.is_dangerous_goods,
                 'danger_class':self.dangerous_goods_class,
                 'temperature':self.temperature,
                 'hs_code':self.freight_hs_code_ids and self.freight_hs_code_ids.ids,
                 'stackability':self.stackability,
                 'additional_requirements':self.additional_requirements,
                 'target_rate':self.target_rate,
-                'package_type_id':self.package_type_id and self.package_type_id.id,
+                # 'package_type_id':self.package_type_id and self.package_type_id.id,
                 # 'shipment_ready_date':self.shipment_ready_date,
                 # 'target_eta':self.target_eta,
                 # 'target_etd':self.target_etd,
@@ -338,66 +395,3 @@ class FreightJobRequest(models.Model):
             'type': 'ir.actions.act_window',
             'res_id': self.booking_id.id,
         }
-
-    #
-    # def reset_book(self):
-    #     for rec in self:
-    #         rec.state = 'draft'
-    #         if rec.freight_id:
-    #             freight = rec.freight_id
-    #             freight.booking_id = False
-    #             rec.freight_id = False
-    #
-    # def button_shipping(self):
-    #     action = {
-    #         'name': _('Shipment'),
-    #         'type': 'ir.actions.act_window',
-    #         'res_model': 'freight.operation',
-    #         'target': 'current',
-    #     }
-    #     ope = self.env['freight.operation'].search([('booking_id', '=', self.id)], limit=1)
-    #     action['domain'] =[('id', '=', ope.id)]
-    #     action['res_id'] = ope.id
-    #     action['view_mode'] = 'form'
-    #     return action
-    #
-    # def convert_to_operation(self):
-    #     name_act = ''
-        # for book in self:
-        #     res = self.convert_fields_to_dict()
-        #     if res.get('operation') == 'master':
-        #         name_act = 'Master'
-        #         res['name'] = self.env['ir.sequence'].next_by_code('operation.master') or _('New')
-        #     elif res.get('operation') == 'house':
-        #         name_act = 'House'
-        #         res['name'] = self.env['ir.sequence'].next_by_code('operation.house') or _('New')
-        #     elif res.get('operation') == 'direct':
-        #         name_act = 'Direct'
-        #         res['name'] = self.env['ir.sequence'].next_by_code('operation.direct') or _('New')
-        #     form_view = self.env.ref('freight.view_freight_operation_form')
-        #     res.update({'default_booking_id': book.id})
-        #     book.write({'state':'converted'})
-        #     return {
-        #         'name': name_act,
-        #         'res_model': 'freight.operation',
-        #         'type': 'ir.actions.act_window',
-        #         'views': [(form_view and form_view.id, 'form')],
-        #         'context':res,
-        #     }
-
-#
-class FreightBooking(models.Model):
-    _inherit = 'freight.booking'
-
-    freight_request_id = fields.Many2one('freight.job.request','RequestID')
-    hs_code = fields.Many2many('freight.hs.code', string="Freight Hs-Codes")
-
-    def button_request(self):
-        return {
-            'name': _('Freight Request'),
-            'view_mode': 'form',
-            'res_model': 'freight.job.request',
-            'type': 'ir.actions.act_window',
-            'res_id': self.freight_request_id.id,
-        }
-

@@ -14,7 +14,8 @@
                         <button name="reset_pricing" string="Reset" states="done" type="object" default_focus="1"
                                 class="oe_highlight"/>
                         <field name="order_ids" invisible="1"/>
-                        <button name="create_quotations" string="Create Quotations"  type="object"  class="oe_highlight" attrs="{'invisible':['|',('sales_count','!=',0),('state','=','draft')]}"/>
+                        <field name="freight_request_id" invisible="1"/>
+                        <button name="create_quotations" string="Create Quotations"  type="object"  class="oe_highlight" attrs="{'invisible':['|','|',('sales_count','!=',0),('state','=','draft'), ('freight_request_id', '=', False)]}"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -25,13 +26,13 @@
 <!--                            </button>-->
                             <button class="oe_stat_button" name="button_request"
                                     attrs="{'invisible': [('freight_request_id','=',False)]}"
-                                    type="object" icon="fa-truck">
+                                    type="object" icon="fa-reorder">
                                 Request
                             </button>
                              <button name="action_view_sales_order"
                                 type="object"
                                 class="oe_stat_button"
-                                icon="fa-truck"
+                                icon="fa-reorder"
                                 attrs="{'invisible': [('sales_count', '=', 0)]}">
                             <field name="sales_count" widget="statinfo" string="Sales Order"/>
                         </button>
@@ -47,13 +48,12 @@
 <!--                                <field name="freight_id" invisible="1"/>-->
                                 <field name="freight_request_id" invisible="1"/>
 
-                                <field name="eta"/>
-                                <field name="etd"/>
+                                <field name="freight_target_eta"/>
+                                <field name="freight_target_etd"/>
                             </group>
                             <group>
-                                <field name="airline_id" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
-                                <field name="flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
-
+                                <field name="preferred_airline_id" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
+                                <field name="freight_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
                                 <field name="freight_shipping_line_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
                                 <field name="origin_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
                                 <field name="freight_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
@@ -67,14 +67,16 @@
                                 <field name="rout" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
                                 <field name="freight_trucker" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
                                 <field name="freight_trucker_number" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
+                                <field name="carrier_ids" widget="many2many_tags" attrs="{'invisible': [('state','!=','done')]}" domain="[('is_carrier', '=', True)]"/>
                             </group>
+
                         </group>
                         <group>
                             <group>
-                                <field name="additional_comments"/>
+                                <field name="freight_additional_comments"/>
                                 <field name="sale_order_template_id"/>
                                 <field name="currency_id"/>
-                                <field name="different_amount"/>
+                                <field name="different_amount" attrs="{'invisible': [('state','!=','done')]}"/>
                             </group>
                         </group>
 
@@ -84,10 +86,13 @@
                                     <tree string="Charges" editable="bottom">
                                         <field name="product_id" options="{'no_create_edit':1}"/>
                                         <field name="currency_id"/>
-                                        <field name="different_amount"/>
-                                        <field name="charge_amount"/>
-                                        <field name="charge_amount_price_2"/>
-                                        <field name="charge_amount_price_3"/>
+                                        <field name="different_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
+                                        <field name="charge_amount" attrs="{'column_invisible': [('parent.different_amount','!=','price_1'), ('parent.state','=','done')]}"/>
+
+                                        <field name="charge_amount_price_2" attrs="{'column_invisible': [('parent.different_amount','!=','price_2'), ('parent.state','=','done')]}"/>
+
+                                        <field name="charge_amount_price_3" attrs="{'column_invisible': [('parent.different_amount','!=','price_3'), ('parent.state','=','done')]}" />
+
                                         <field name="margin_per" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="margin_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="charge_total_amount"/>
@@ -98,6 +103,18 @@
                         </notebook>
                         <group class="oe_subtotal_footer oe_right">
                             <field name="total_charges"/>
+                        </group>
+
+                        <group class="oe_subtotal_footer oe_right" style="margin-right:20px">
+                            <field name="total_charges_amount_eur"/>
+                        </group>
+
+                        <group class="oe_subtotal_footer oe_right" style="margin-right:20px">
+                            <field name="total_charges_amount_usd"/>
+                        </group>
+
+                        <group class="oe_subtotal_footer oe_right" style="margin-right:20px">
+                            <field name="total_charges_amount_aed" />
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -136,11 +153,18 @@
             <field name="name">Freight pricing</field>
             <field name="res_model">freight.pricing</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('freight_management_view_freight_pricing_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('freight_management_freight_pricing_form_view')})]"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create a new Freight Pricing.
                 </p>
             </field>
+        </record>
+
+        <record model="ir.ui.menu" id="ebs_freight_pricing.freight_pricing_menuitem">
+            <field name="action" ref="freight_management_view_freight_pricing_action"/>
         </record>
 
 <!--        <menuitem name="Freight pricing" parent="freight_management.menu_freight_operations"-->

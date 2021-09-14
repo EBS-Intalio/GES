@@ -30,6 +30,12 @@ class RequestCustom(http.Controller):
 
     @http.route(['/createrequest'], type='http', auth='user', website=True, cache=300, csrf=False)
     def portal_my_request_create(self, redirect=None, **post):
+        """
+        Open Request Create Form and pass required data
+        :param redirect:
+        :param post:
+        :return:
+        """
         partners = request.env['res.partner'].sudo().search([])
         consignees = request.env['res.partner'].sudo().search([('freight_type', '=', 'consignee')])
         shippers = request.env['res.partner'].sudo().search([('freight_type', '=', 'shipper')])
@@ -44,17 +50,17 @@ class RequestCustom(http.Controller):
         packages = request.env['freight.package'].sudo().search([])
         countries = request.env['res.country'].sudo().search([])
         states = request.env['res.country.state'].sudo().search([])
-        origins = request.env['freight.por.origin'].sudo().search([])
+        # origins = request.env['freight.por.origin'].sudo().search([])
         pols = request.env['freight.pol'].sudo().search([])
         pods = request.env['freight.pod'].sudo().search([])
-        pofd_destinations = request.env['freight.pofd.destination'].sudo().search([])
+        # pofd_destinations = request.env['freight.pofd.destination'].sudo().search([])
 
         values = {
             'countries':countries,
-            'pofd_destinations':pofd_destinations,
+            # 'pofd_destinations':pofd_destinations,
             'pods':pods,
             'pols':pols,
-            'origins':origins,
+            # 'origins':origins,
             'states': states,
             'partners':partners,
             'shipper': shippers,
@@ -73,19 +79,39 @@ class RequestCustom(http.Controller):
 
     @http.route(['/submit_request'], type='http', auth='public', website=True, cache=300,  csrf=False)
     def portal_my_request_submit(self, **post):
-        final_dict = {}
+        """
+        Submit Request Detail and based on details create CRM Lead and Freight Request
+        :param post:
+        :return:
+        """
+        final_dict = {'is_web_request': True}
         dir = ''
         final_dict['gross_weight'] = 0
         if post:
             # Air Fields
             # if final_dict.get('mode_of_transport') == 'air':
             dir = post.get('mode_of_transport')
-            if 'origin_close' in post.keys() and post.get('origin_close') == 'on':
-                final_dict['consider_origin_close'] = True
-            if 'destination_close' in post.keys() and post.get('destination_close') == 'on':
-                final_dict['consider_destination_close'] = True
-            if 'danger' in post.keys() and post.get('danger') == 'on':
-                final_dict['is_dangerous_goods'] = True
+
+            # if 'origin_close' in post.keys() and post.get('origin_close') == 'yes':
+            #     final_dict['consider_origin_close'] = 'yes'
+
+            final_dict['consider_origin_close'] = 'no'
+            if post.get('consider_origin_close'):
+                final_dict['consider_origin_close'] = post.get('consider_origin_close')
+
+            # if 'destination_close' in post.keys() and post.get('destination_close') == 'yes':
+            #     final_dict['consider_destination_close'] = 'yes'
+            final_dict['consider_destination_close'] = 'no'
+            if post.get('consider_destination_close'):
+                final_dict['consider_destination_close'] = post.get('consider_destination_close')
+
+            final_dict['is_dangerous_goods'] = 'no'
+            if post.get('is_dangerous_goods'):
+                final_dict['is_dangerous_goods'] = post.get('is_dangerous_goods')
+
+            # final_dict['is_dangerous_goods'] = 'no'
+            # if 'is_dangerous_goods' in post.keys() and post.get('is_dangerous_goods') == 'on':
+            #     final_dict['is_dangerous_goods'] = 'yes'
 
             if post.get('building'):
                 final_dict['building'] = post.get('building')
@@ -156,12 +182,12 @@ class RequestCustom(http.Controller):
                 final_dict['trucker'] = post.get('trucker')
             if post.get('job_type'):
                 final_dict['job_type'] = post.get('job_type')
-            if post.get('partner_id'):
-                final_dict['partner_id'] = int(post.get('partner_id'))
+            if request.env.user:
+                final_dict['partner_id'] = request.env.user.partner_id.id
             # if post.get('freight_hs_code_ids'):
             # final_dict['freight_hs_code_ids'] = [(6,0, [1,2])],
             if post.get('package_type_id'):
-                final_dict['package_type_id'] = int(post.get('package_type_id'))
+                final_dict['package_type_id'] = post.get('package_type_id')
             if post.get('reefer_status'):
                 final_dict['reefer_status'] = post.get('reefer_status')
             if post.get('temperature'):
@@ -190,12 +216,16 @@ class RequestCustom(http.Controller):
                 final_dict['warehousing'] = post.get('warehousing')
             if post.get('target_rate'):
                 final_dict['target_rate'] = float(post.get('target_rate'))
+            final_dict['gross_weight'] = 0
             if post.get('gross_weight'):
                 final_dict['gross_weight'] = float(post.get('gross_weight'))
+            final_dict['number_of_pallets_packages'] = 0
             if post.get('number_of_pallets_packages'):
                 final_dict['number_of_pallets_packages'] = int(post.get('number_of_pallets_packages'))
             if post.get('stackability'):
                 final_dict['stackability'] = post.get('stackability')
+            if post.get('service_level'):
+                final_dict['service_level'] = post.get('service_level')
             # air_shipment
 
             if post.get('shipment_ready_date'):
@@ -204,30 +234,40 @@ class RequestCustom(http.Controller):
                 final_dict['target_eta'] = post.get('target_eta')
             if post.get('target_etd'):
                 final_dict['target_etd'] = post.get('target_etd')
-            if 'shipment_ready_asap' in post.keys() and post.get('shipment_ready_asap') == 'on':
-                final_dict['shipment_ready_asap'] = True
-            if 'target_eta_asap' in post.keys() and post.get('target_eta_asap') == 'on':
-                final_dict['target_eta_asap'] = True
-            if 'target_etd_asap' in post.keys() and post.get('target_etd_asap') == 'on':
-                final_dict['target_etd_asap'] = True
 
-            if post.get('por_origin_id'):
-                final_dict['por_origin_id'] = int(post.get('por_origin_id'))
+            final_dict['shipment_ready_asap'] = 'no'
+            if post.get('shipment_ready_asap'):
+                final_dict['shipment_ready_asap'] = post.get('shipment_ready_asap')
+
+            final_dict['target_eta_asap'] = 'no'
+            if post.get('target_eta_asap'):
+                final_dict['target_eta_asap'] = post.get('target_eta_asap')
+
+            final_dict['target_etd_asap'] = 'no'
+            if post.get('target_etd_asap'):
+                final_dict['target_etd_asap'] = post.get('target_etd_asap')
+            # if 'target_etd_asap' in post.keys() and post.get('target_etd_asap') == 'on':
+            #     final_dict['target_etd_asap'] = 'yes'
+
+            # if post.get('por_origin_id'):
+            #     final_dict['por_origin_id'] = int(post.get('por_origin_id'))
             if post.get('pol_id'):
                 final_dict['pol_id'] = int(post.get('pol_id'))
             if post.get('pod_id'):
                 final_dict['pod_id'] = int(post.get('pod_id'))
-            if post.get('pofd_destination_id'):
-                final_dict['pofd_destination_id'] = int(post.get('pofd_destination_id'))
+            # if post.get('pofd_destination_id'):
+            #     final_dict['pofd_destination_id'] = int(post.get('pofd_destination_id'))
 
 
 
-            if post.get('mode_of_transport') == 'air':
-                final_dict['air_shipment'] = post.get('air')
+            # if post.get('mode_of_transport') == 'air':
+            #     final_dict['air_shipment'] = post.get('air')
             if post.get('mode_of_transport') == 'ocean':
                 final_dict['ocean_shipment'] = post.get('ocean')
             if post.get('mode_of_transport') == 'land':
                 final_dict['inland_shipment'] = post.get('land')
+            if post.get('mode_of_transport') == 'rail':
+                final_dict['rail_shipment_type'] = post.get('rail')
             final_dict['vehicle_size'] = post.get('vehicle_size')
             final_dict['vehicle_type'] = post.get('vehicle_type')
 
@@ -243,8 +283,8 @@ class RequestCustom(http.Controller):
                 final_dict['additional_comments'] = post.get('additional_comments')
             if post.get('additional_requirement'):
                 final_dict['additional_requirements'] = post.get('additional_requirement')
-            if 'danger' in post.keys() and post.get('danger') == 'on':
-                final_dict['is_dangerous_goods'] = True
+            # if 'danger' in post.keys() and post.get('danger') == 'on':
+            #     final_dict['is_dangerous_goods'] = True
             if post.get('dangerous_goods_notes'):
                 final_dict['dangerous_goods_notes'] = post.get('dangerous_goods_notes')
             if dir == 'air' or not dir:
@@ -257,28 +297,27 @@ class RequestCustom(http.Controller):
                     final_dict['origin_airport_id']  = int(post.get('ocean_source_location_id'))
                 if post.get('ocean_destination_location_id'):
                     final_dict['destination_airport_id'] = int(post.get('ocean_destination_location_id'))
-            if dir == 'land':
-                if post.get('land_source_location_id'):
-                    final_dict['origin_airport_id'] = int(post.get('land_source_location_id'))
-                if post.get('land_destination_location_id'):
-                    final_dict['destination_airport_id'] = int(post.get('land_destination_location_id'))
+            # if dir == 'land':
+            #     if post.get('land_source_location_id'):
+            #         final_dict['origin_airport_id'] = int(post.get('land_source_location_id'))
+            #     if post.get('land_destination_location_id'):
+            #         final_dict['destination_airport_id'] = int(post.get('land_destination_location_id'))
 
         request_obj = request.env['freight.job.request']
         freight_request = request_obj.sudo().create(final_dict)
 
         lead_obj = request.env['crm.lead']
-        lead_id = lead_obj.sudo().create({
+        lead_vals = {
             'name': freight_request.name,
-            'partner_id': freight_request.partner_id.id,
-            'type':'lead',
-        })
+            'type': 'lead'}
+        if freight_request.partner_id:
+            lead_vals.update({'partner_id': freight_request.partner_id.id})
+        lead_id = lead_obj.sudo().create(lead_vals)
         freight_request.lead_id = lead_id.id
-        print("=======freight_requestfreight_requestfreight_request====================",freight_request.id)
-        print("freight_requestfreight_requestfreight_request", freight_request)
         return request.render("freight_management.portal_my_request_thank_you")
 
     @http.route(['/freight_request'], type='http', auth="user", website=True, cache=300)
-    def portal_my_bookings(self, **post):
+    def portal_my_request(self, **post):
         request_obj = request.env['freight.job.request']
         # make pager
         values = {}
@@ -290,7 +329,7 @@ class RequestCustom(http.Controller):
         return request.render("freight_management.portal_my_request", values)
 
     @http.route(['/freight_request/details/<model("freight.job.request"):f_request>'], type='http', auth="user", website=True, cache=300)
-    def portal_my_booking_detail(self, f_request):
+    def portal_my_request_detail(self, f_request):
         track_ids = request.env['booking.tracker'].sudo().search([('freight_request_id', '=', f_request.id)], order='id DESC')
         values = {
             'f_request': f_request.sudo(),
@@ -301,6 +340,11 @@ class RequestCustom(http.Controller):
 
     @http.route(['/post/request/comment'], type='http', auth="user", website=True)
     def post_comment(self, **kw):
+        """
+        Post comments on request
+        :param kw:
+        :return:
+        """
         freight_request_id = request.env['freight.job.request'].sudo().browse(int(kw['freight_request_id']))
         vals = {'name': tools.ustr(kw['comment']),
                 'user_id': request.env.user.id,

@@ -18,7 +18,7 @@ class FreightPricingCharges(models.Model):
 
     # Charges & Fees
     product_id = fields.Many2one('product.product', string='Charge', readonly=True)
-    charge_amount = fields.Monetary(currency_field='currency_id', string='Charge Amount')
+    charge_amount = fields.Monetary(currency_field='currency_id', string='Carrier 1')
     margin_per = fields.Float(string='Margin(%)', readonly=False)
     margin_amount = fields.Monetary(currency_field='currency_id', string='Margin Amount',
                                     compute="_compute_charge_amount", inverse="_inverse_charge_amount",

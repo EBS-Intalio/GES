@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<record id="sale_order_inherit_form_view" model="ir.ui.view">
+        <field name="name">sale.order.inherit.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='note_group']/group[@name='sale_total']" position="inside">
+                <field name="currency_name" invisible="1"/>
+                <field name="usd_total_price" attrs="{'invisible':[('currency_name','!=','AED')]}"/>
+                <field name="aed_total_price" attrs="{'invisible':[('currency_name','!=','USD')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="contact_id" domain="[('parent_id','=',partner_id)]"/>
+                <field name="customer_representative_id" domain="[('parent_id','=',False),('is_company','=',False)]"/>
+            </xpath>
+            <xpath expr="//group[@name='sale_info']" position="after">
+                <group name = 'freight_note' string="Freight Note">
+                    <field name="freight_note" placeholder="Freight Note"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

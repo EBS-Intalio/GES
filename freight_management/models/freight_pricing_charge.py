@@ -7,15 +7,17 @@ class FreightPricingCharges(models.Model):
     _description = 'Freight Pricing Charges'
 
     freight_request_id = fields.Many2one('freight.job.request', 'Freight Request')
-    # currency_type = fields.Selection(([('fc', 'FC'), ('lc', 'LC')]), string='Currency Type')
-    # currency_id = fields.Many2one('res.currency', string="Currency", domain="[('active', '=', True)]")
     different_amount = fields.Selection(related='pricing_id.different_amount')
-    charge_amount_price_2 = fields.Monetary(currency_field='currency_id', string='Charge Amount 2')
-    charge_amount_price_3 = fields.Monetary(currency_field='currency_id', string='Charge Amount 3')
+    charge_amount_price_2 = fields.Monetary(currency_field='currency_id', string='Carrier 2')
+    charge_amount_price_3 = fields.Monetary(currency_field='currency_id', string='Carrier 3')
     converted_amount = fields.Float(string='Charge Total Amount', compute="_compute_converted_amount")
 
     @api.onchange('currency_id')
     def onchange_currency_id(self):
+        """
+        Set converted amount based on currency
+        :return:
+        """
         for line in self:
             if line.pricing_id.currency_id != line.currency_id:
                 date = fields.Date.today()
@@ -28,6 +30,11 @@ class FreightPricingCharges(models.Model):
 
     @api.depends('charge_total_amount', 'different_amount', 'charge_amount_price_2', 'charge_amount_price_3')
     def _compute_converted_amount(self):
+        """
+        Convert amount in currency and set converted amount
+        :return:
+        """
+
         for line in self:
             if line.pricing_id.currency_id != line.currency_id:
                 date = fields.Date.today()
@@ -40,6 +47,10 @@ class FreightPricingCharges(models.Model):
 
     @api.depends('charge_amount', 'charge_amount_price_2', 'charge_amount_price_3', 'margin_amount', 'different_amount')
     def _compute_charge_total_amount(self):
+        """
+        Compute total charge amount
+        :return:
+        """
         for line in self:
             if line.different_amount == 'price_1':
                 charge_total_amount = line.charge_amount + line.margin_amount
@@ -51,6 +62,10 @@ class FreightPricingCharges(models.Model):
 
     @api.depends('charge_amount', 'margin_per','charge_amount_price_2','charge_amount_price_3')
     def _compute_charge_amount(self):
+        """
+        set margin amount based on percentage and charge amount
+        :return:
+        """
         for line in self:
             if line.different_amount == 'price_1':
                 margin_amount = (line.charge_amount * line.margin_per) / 100
@@ -62,6 +77,10 @@ class FreightPricingCharges(models.Model):
 
     @api.depends('charge_amount', 'margin_amount','charge_amount_price_2','charge_amount_price_3')
     def _inverse_charge_amount(self):
+        """
+        Set margin percentage based on margin amount
+        :return:
+        """
         for line in self:
             margin_per = 0
             if line.different_amount == 'price_1' and line.charge_amount:

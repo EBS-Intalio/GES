@@ -4,8 +4,8 @@
 
           <record id="sequence_pricing" model="ir.sequence">
             <field name="name">Pricing</field>
-            <field name="code">freight.Pricing</field>
-            <field name="prefix">PRICING/%(year)s/%(month)s/%(day)s/</field>
+            <field name="code">freight.pricing</field>
+            <field name="prefix">PRICING/</field>
             <field name="padding">5</field>
             <field name="number_next">1</field>
             <field name="number_increment">1</field>

@@ -21,9 +21,11 @@
         "views/freight_pricing.xml",
         "views/freight_templates.xml",
         "views/freight_pod.xml",
-        "views/freight_pod_destination.xml",
+        # "views/freight_pod_destination.xml",
         "views/freight_pol.xml",
-        "views/freight_por_origin.xml"
+        # "views/freight_por_origin.xml"
+        "views/sale_order.xml",
+        "report/sale_order_ges.xml",
 
     ],
     'installable': True,

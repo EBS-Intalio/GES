@@ -8,14 +8,5 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-
-<!--        <record id="sequence_pricing" model="ir.sequence">-->
-<!--            <field name="name">Pricing</field>-->
-<!--            <field name="code">freight.pricing</field>-->
-<!--            <field name="prefix">PRICING/</field>-->
-<!--            <field name="padding">5</field>-->
-<!--            <field name="company_id" eval="False"/>-->
-<!--        </record>-->
-
     </data>
 </odoo>

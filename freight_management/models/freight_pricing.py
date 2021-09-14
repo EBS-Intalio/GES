@@ -1,38 +1,80 @@
 # -*- coding: utf-8 -*"-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class FreightPricing(models.Model):
     _inherit = 'freight.pricing'
     _description = 'Freight Pricing'
+    _order = 'name desc, id desc'
 
     freight_request_id = fields.Many2one('freight.job.request', 'Freight Request')
 
     currency_id = fields.Many2one('res.currency', string="Currency", domain="[('active', '=', True)]")
-    different_amount = fields.Selection(([('price_1', 'Price 1'), ('price_2', 'Price 2'), ('price_3', 'Price 3')]),
-                                           string='Select Charge Amount', default='price_1')
+    different_amount = fields.Selection([('price_1', 'Carrier 1'), ('price_2', 'Carrier 2'), ('price_3', 'Carrier 3')],
+                                           string='Select Carrier')
 
-    freight_transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport',
-                                 related='freight_request_id.mode_of_transport')
+    freight_transport = fields.Selection(related='freight_request_id.mode_of_transport')
 
     # See Fields
-    freight_shipping_line_id = fields.Many2one('res.partner', 'Shipping Line', related='freight_request_id.shipping_line_id')
-    freight_vessel_id = fields.Many2one('freight.vessel', 'Vessel', related='freight_request_id.vessel_id')
+    freight_shipping_line_id = fields.Many2one(related='freight_request_id.shipping_line_id')
+    freight_vessel_id = fields.Many2one(related='freight_request_id.vessel_id')
 
     # Land Fields
-    freight_trucker = fields.Many2one('freight.trucker', 'Trucker', related='freight_request_id.trucker')
-    freight_trucker_number = fields.Char('Trucker No', related='freight_request_id.trucker_number')
+    freight_trucker = fields.Many2one(related='freight_request_id.trucker')
+    freight_trucker_number = fields.Char(related='freight_request_id.trucker_number')
+
+    preferred_airline_id = fields.Many2one(related='freight_request_id.preferred_airline_id')
+    freight_flight_no = fields.Char(related='freight_request_id.flight_no')
+
+    freight_additional_comments = fields.Text(related='freight_request_id.additional_comments')
+
+    freight_target_etd = fields.Date(related='freight_request_id.target_etd')
+    freight_target_eta = fields.Date(related='freight_request_id.target_eta')
 
     sales_count = fields.Integer(string='Total Orders', compute='_compute_sales_orders')
     order_ids = fields.One2many('sale.order', 'pricing_id', string='Orders', copy=False)
+
+    # carrier_ids = fields.Many2many('res.partner', 'Carrier')
+    carrier_ids = fields.Many2many('res.partner', string="Carrier")
+
+    total_charges_amount_usd = fields.Float(string='Total Charge Amount USD', compute='_compute_total_charges_usd_eur_aed')
+    total_charges_amount_aed = fields.Float(string='Total Charge Amount AED', compute='_compute_total_charges_usd_eur_aed')
+    total_charges_amount_eur = fields.Float(string='Total Charge Amount EUR', compute='_compute_total_charges_usd_eur_aed')
 
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         domain=lambda self: [(1, '=', 1)],
-        states={'draft': [('readonly', False)]}, )
+        states={'draft': [('readonly', False)]})
+
+    def _compute_total_charges_usd_eur_aed(self):
+        """
+        Compute total charge amount in USD, EUR and AED
+        :return:
+        """
+        for line in self:
+            if line.different_amount == 'price_1':
+                total_charges_amount_usd = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'USD').mapped('charge_amount'))
+                total_charges_amount_aed = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'AED').mapped('charge_amount'))
+                total_charges_amount_eur = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'EUR').mapped('charge_amount'))
+            elif line.different_amount == 'price_2':
+                total_charges_amount_usd = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'USD').mapped('charge_amount_price_2'))
+                total_charges_amount_aed = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'AED').mapped('charge_amount_price_2'))
+                total_charges_amount_eur = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'EUR').mapped('charge_amount_price_2'))
+            else:
+                total_charges_amount_usd = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'USD').mapped('charge_amount_price_3'))
+                total_charges_amount_aed = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'AED').mapped('charge_amount_price_3'))
+                total_charges_amount_eur = sum(line.charges_ids.filtered(lambda charge: charge.currency_id.name == 'EUR').mapped('charge_amount_price_3'))
+            line.total_charges_amount_usd = total_charges_amount_usd
+            line.total_charges_amount_aed = total_charges_amount_aed
+            line.total_charges_amount_eur = total_charges_amount_eur
 
     def action_done(self):
+        """
+        DOne Request and Create Mail Activity
+        :return:
+        """
         res = super(FreightPricing, self).action_done()
         activity_type = self.env.ref('mail.mail_activity_data_todo').id
 
@@ -42,7 +84,6 @@ class FreightPricing(models.Model):
             'res_model_id': self.env['ir.model'].search([('model', '=', 'freight.pricing')], limit=1).id,
             'res_id': self.id,
         })
-        print("aaaaa", activity)
         return res
 
     def action_view_sales_order(self):
@@ -66,16 +107,33 @@ class FreightPricing(models.Model):
 
     @api.depends('order_ids')
     def _compute_sales_orders(self):
+        """
+        Count total pricing sales order
+        :return:
+        """
         for pricing in self:
             pricing.sales_count = len(pricing.order_ids)
 
     def _compute_total_charges(self):
+        """
+        Compute total charges set based on Converted Amount (Currency Amount)
+        :return:
+        """
         self.total_charges = sum(self.charges_ids.mapped('converted_amount'))
 
     def create_quotations(self):
+        """
+        Create a sales Quotations
+        :return:
+        """
+        if not self.freight_request_id:
+            raise ValidationError('Request not found.')
+        if not self.freight_request_id.partner_id:
+            raise ValidationError('Customer Not set in the Request.')
         vals = []
-        for charges in self.charges_ids:
+        for charges in self.charges_ids.filtered(lambda x: x.product_id):
             description = self.env['sale.order.line'].get_sale_order_line_multiline_description_sale(charges.product_id)
+
             vals.append((0, 0, {'name': description,
                                 'product_id': charges.product_id.id,
                                 'product_uom_qty': 1,
@@ -101,6 +159,10 @@ class FreightPricing(models.Model):
         return True
 
     def button_request(self):
+        """
+        View Freight Request
+        :return:
+        """
         action = {
             'name': _('Request'),
             'type': 'ir.actions.act_window',

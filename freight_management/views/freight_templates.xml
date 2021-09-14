@@ -5,92 +5,8 @@
             <script type="text/javascript" src="/freight_management/static/src/js/website_request.js"></script>
         </xpath>
     </template>
-<!--    <template id="track_shipment" name="Track Shipment">-->
-<!--        <t t-call="website.layout">-->
-<!--            <div class="container mt8">-->
-<!--                <div class="row">-->
-<!--                    <h1 class="page-header">Track Your Shipment</h1>-->
-<!--                    <br/>-->
-<!--                    <br/>-->
-<!--                    <t t-call="portal.portal_table">-->
-<!--                        <form action="/track/shipment" method="post" enctype="multipart/form-data">-->
-<!--                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
-<!--                            <div class="modal-body">-->
-<!--                                <div class="row">-->
-<!--                                    <div class="col-md-6">-->
-<!--                                        <input type="text" style="margin: 166px;" class="form-control o_website_form_input" placeholder="Type Your Tracking Number, Example., DIRECT/2019/01/28/00001" name="tracking_number"/>-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-6">-->
-<!--                                        <button class="btn btn-success" style="margin: 166px;">Track</button>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </t>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </t>-->
-<!--    </template>-->
 
-<!--    <template id="freight_success">-->
-<!--        <t t-call="website.layout">-->
-<!--            <div class="container mt8">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-md-12 col-md-offset-3">-->
-<!--                        <table class="table table-bordered tenders-table" style="width: 100%;bordercolor:#875a7b">-->
-<!--                            <thead>-->
-<!--                                <tr align="center" bgcolor="#875a7b">-->
-<!--                                    <th colspan="3" style="color: #f9f9f9;" align="center">Shipment Details: <b><t class="badge badge-danger" t-esc="freight.name"/></b></th>-->
-<!--                                </tr>-->
-<!--                                <tr style="bgcolor:#ffad99">-->
-<!--                                    <th>Source Location</th>-->
-<!--                                    <th>Destination Location</th>-->
-<!--                                    <th>Main Carriage Transport</th>-->
-<!--                                </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                                <tr>-->
-<!--                                    <td><t t-esc="freight.source_location_id.name"/> </td>-->
-<!--                                    <td><t t-esc="freight.destination_location_id.name"/> </td>-->
-<!--                                    <td><span t-esc="freight.transport" style="font-size: 17px;" class="badge badge-success"/></td>-->
-<!--                                </tr>-->
-<!--                            </tbody>-->
-<!--                            <thead>-->
-<!--                                <tr  align="center" bgcolor="#875a7b">-->
-<!--                                    <th colspan="3" style="color: #f9f9f9;" align="center">Tracking</th>-->
-<!--                                </tr>-->
-<!--                                <tr style="bgcolor:#ffad99">-->
-<!--                                    <th>Date</th>-->
-<!--                                    <th>Location</th>-->
-<!--                                    <th>Activity</th>-->
-<!--                                </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                                <tr t-foreach="freight.freight_log" t-as="log">-->
-<!--                                    <td><t t-esc="log.date"/> </td>-->
-<!--                                    <td><t t-esc="log.location"/> </td>-->
-<!--                                    <td><t t-esc="log.description"/> </td>-->
-<!--                                </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </t>-->
-<!--    </template>-->
-
-<!--    <record id="page_shipment" model="website.page">-->
-<!--        <field name="website_published">True</field>-->
-<!--        <field name="url">/shipment</field>-->
-<!--        <field name="view_id" ref="track_shipment"/>-->
-<!--    </record>-->
-
-<!--    <record id="menu_shipment" model="website.menu">-->
-<!--        <field name="name">Track Shipment</field>-->
-<!--        <field name="page_id" ref="page_shipment" />-->
-<!--    </record>-->
-
-    <!--    Bookings Part-->
+    <!--    Request Part-->
     <template id="portal_my_request" name="My Request">
         <t t-call="portal.portal_layout">
             <style>
@@ -147,9 +63,7 @@
                             <thead style="background-color: #7C7BAD;color: white;">
                                 <tr class="active">
                                     <th style="width:25%;">Request #</th>
-<!--                                    <th class="text-right">Operation</th>-->
                                     <th class="text-right">Transport</th>
-<!--                                    <th class="text-right">Direction</th>-->
                                     <th class="text-right">Shipper</th>
                                     <th class="text-right">Consignee</th>
                                     <th class="text-right">Source</th>
@@ -164,10 +78,9 @@
                                                 <t t-esc="f_request.name"/>
                                             </a>
                                         </td>
-<!--                                        <td class="text-right"><span  t-field="request.operation"/></td>-->
                                         <td class="text-right">
                                             <t t-if="f_request.mode_of_transport == 'ocean'">
-                                                <span style="font-size:15px;" class="badge badge-primary" t-field="f_request.mode_of_transport"/>
+                                            <span style="font-size:15px;" class="badge badge-primary" t-field="f_request.mode_of_transport"/>
                                             </t>
                                             <t t-if="f_request.mode_of_transport == 'land'">
                                                 <span style="font-size:15px;" class="badge badge-success"  t-field="f_request.mode_of_transport"/>
@@ -175,8 +88,21 @@
                                             <t t-if="f_request.mode_of_transport == 'air'">
                                                 <span style="font-size:15px;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
                                             </t>
+
+                                            <t t-if="f_request.mode_of_transport == 'rail'">
+                                                <span style="font-size:15px;background-color: hotpink;" class="badge badge-primary" t-field="f_request.mode_of_transport"/>
+                                            </t>
+                                            <t t-if="f_request.mode_of_transport == 'sea_then_air'">
+                                                <span style="font-size:15px;background-color: sienna;" class="badge badge-success"  t-field="f_request.mode_of_transport"/>
+                                            </t>
+                                            <t t-if="f_request.mode_of_transport == 'air_then_sea'">
+                                                <span style="font-size:15px;background-color: brown;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
+                                            </t>
+                                            <t t-if="f_request.mode_of_transport == 'courier'">
+                                                <span style="font-size:15px;background-color: darkorange;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
+                                            </t>
+
                                         </td>
-<!--                                        <td class="text-right"><span t-field="request.direction"/></td>-->
                                         <td class="text-right">
                                             <span t-field="f_request.shipper_id.name"/>
                                         </td>
@@ -199,383 +125,229 @@
         </t>
     </template>
 
+    <!--    Request Details Parts-->
     <template id="portal_my_request_detail" name="My Request Details">
         <t t-call="website.layout">
             <div class="container">
-                <br/>
-                <br/>
-                <br/>
+                <br/><br/><br/>
                 <div class="col-12 row">
-                    <div class="col-1">
-
-                    </div>
+                    <div class="col-1"></div>
                     <div class="col-10">
                         <h1>
                             <span t-field="f_request.name"/>
                         </h1>
                     </div>
 
-                    <div class="col-1">
-
-                    </div>
-                </div>
-                <br/>
-                <br/>
+                    <div class="col-1"></div>
+                </div><br/><br/>
                 <div class="col-12 row">
-                    <div class="col-1">
-
-                    </div>
-<!--                    <div class="col-5">-->
-<!--                        <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Operation</span><br/><br/>-->
-<!--                        <span><b>Direction:</b> <span t-field="f_request.direction"/> </span>-->
-<!--                    </div>-->
-
+                    <div class="col-1"></div>
                     <div class="col-5">
                         <br/><br/>
                         <span><b>Transport:</b> <span t-field="f_request.mode_of_transport"/> </span>
-                        <br/>
-                        <br/>
-                        <t>
-                            <t t-if="f_request.mode_of_transport =='ocean'">
-                                <span><b>Ocean Shipment Type:</b> <span t-field="f_request.ocean_shipment"/> </span>
-                            </t>
-                            <t t-if="f_request.mode_of_transport =='land'">
-                                <span><b>Inland Shipment Type:</b> <span t-field="f_request.inland_shipment"/> </span>
-                            </t>
-                            <t t-if="f_request.mode_of_transport =='air'">
-                                <span><b>Air Shipment Type:</b> <span t-field="f_request.air_shipment"/> </span>
-                            </t>
-                        </t>
+                        <br/><br/>
                     </div>
-                    <div class="col-1">
 
+                    <div class="col-5">
+                        <br/><br/>
+                        <t t-if="f_request.mode_of_transport =='ocean'">
+                            <span><b>Sea Shipment Type:</b> <span t-field="f_request.ocean_shipment"/> </span>
+                        </t>
+                        <t t-if="f_request.mode_of_transport =='land'">
+                            <span><b>Road Shipment Type:</b> <span t-field="f_request.inland_shipment"/> </span>
+                        </t>
+                        <t t-if="f_request.mode_of_transport =='rail'">
+                            <span><b>Rail Shipment Type:</b> <span t-field="f_request.rail_shipment_type"/> </span>
+                        </t>
+                        <br/><br/>
                     </div>
+
+                    <div class="col-1"></div>
                 </div>
+
+                <div class="col-12 row">
+                    <div class="col-1"></div>
+                    <div class="col-5">
+                        <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Shipper</span><br/><br/>
+                        <span><b>Shipper:</b> <span t-field="f_request.shipper_id.display_name"/> </span><br/><br/>
+                        <span><b>Incoterm:</b> <span t-field="f_request.freight_incoterm_id.name"/> </span><br/>
+                    </div>
+                    <div class="col-5">
+                        <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Consignee</span><br/><br/>
+                        <span><b>Consignee:</b> <span t-field="f_request.consignee_id.display_name"/> </span>
+                    </div>
+                    <div class="col-1"></div><br/><br/>
+                </div>
+
+
                 <t t-if="f_request.mode_of_transport == 'air'">
                     <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
+                        <div class="col-1"></div>
                         <div class="col-5">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Shipper</span><br/><br/>
-                            <span><b>Shipper:</b> <span t-field="f_request.shipper_id.display_name"/> </span>
-                        </div>
-                        <div class="col-5">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Consignee</span><br/><br/>
-                            <span><b>Consignee:</b> <span t-field="f_request.consignee_id.display_name"/> </span>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
+                            <br/><br/>
                             <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Main Carriage</span><br/><br/>
-                            <span><b>Origin Airport:</b> <span t-field="f_request.origin_airport_id.name"/> </span><br/>
-                            <span><b>Origin Close:</b> <span t-field="f_request.consider_origin_close"/> </span><br/>
+                            <span><b>Origin Airport:</b> <span t-field="f_request.origin_airport_id.name"/> </span><br/><br/>
+                            <span><b>Consider Close by Origin Airports :</b> <span t-field="f_request.consider_origin_close"/> </span><br/><br/>
                             <span><b>MAWB No:</b> <span t-field="f_request.mawb_no"/> </span><br/>
                         </div>
                         <div class="col-5">
-                            <br/><br/>
-                            <span><b>Destination Airport:</b> <span t-field="f_request.destination_airport_id.name"/></span><br/>
-                            <span><b>Destination Close:</b> <span t-field="f_request.consider_destination_close"/></span><br/>
-<!--                            <span><b>Airline:</b> <span t-field="f_request.preferred_airline_id.name"/></span><br/>-->
+                            <br/><br/><br/><br/>
+                            <span><b>Destination Airport:</b> <span t-field="f_request.destination_airport_id.name"/></span><br/><br/>
+                            <span><b>Consider Close By Destination Airport:</b> <span t-field="f_request.consider_destination_close"/></span><br/><br/>
                             <span><b>Flight No:</b> <span t-field="f_request.flight_no"/></span><br/>
-<!--                            <span><b>Date:</b> <span t-field="request.datetime"/></span><br/>-->
                         </div>
-                        <div class="col-1">
-
-                        </div>
-                    </div>
-                    <br/>
-                    <br/>
-
-                    <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">General</span><br/><br/>
-<!--                            <span><b>Barcode:</b> <span t-field="request.barcode"/> </span><br/>-->
-                            <span><b>Agent:</b> <span t-field="f_request.partner_id.display_name"/> </span><br/>
-<!--                            <span><b>User:</b> <span t-field="request.operator_id.name"/> </span><br/>-->
-<!--                            <span><b>Freight PC:</b> <span t-field="request.freight_pc"/> </span><br/>-->
-<!--                            <span><b>Other PC:</b> <span t-field="request.other_pc"/> </span><br/>-->
-                            <span><b>Reefer Status:</b> <span t-field="f_request.reefer_status"/> </span><br/>
-                            <span><b>Temperature:</b> <span t-field="f_request.temperature"/> </span><br/>
-                            <span><b>Set Temperature:</b> <span t-field="f_request.temperature_value"/> </span><br/>
-                            <span><b>Commodity Category:</b> <span t-field="f_request.commodity_category"/> </span><br/>
-                            <span><b>Commodity Description:</b> <span t-field="f_request.commodity_description"/> </span><br/>
-<!--                            <span><b>Notes:</b> <span t-field="request.notes"/> </span><br/>-->
-                        </div>
-                        <div class="col-5">
-                            <br/><br/>
-                            <span><b>Dangerous Goods:</b>
-                                <t t-if="f_request.is_dangerous_goods == True">
-                                    <input  type="checkbox" checked="True" disabled="True"/>
-                                </t>
-                                <t t-else="f_request.is_dangerous_goods == False">
-                                    <input  type="checkbox" disabled="True"/>
-                                </t>
-                            </span><br/>
-
-                            <t t-if="f_request.is_dangerous_goods">
-                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.dangerous_goods_notes"/></span><br/>
-                            </t>
-<!--                            <span><b>Move Type:</b> <span t-field="request.move_type.name"/></span><br/>-->
-<!--                            <span><b>Tracking Numver:</b> <span t-field="request.tracking_number"/></span><br/>-->
-                            <span><b>Incoterm:</b> <span t-field="f_request.freight_incoterm_id.name"/></span><br/>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
+                        <div class="col-1"></div>
                     </div>
                 </t>
 
                 <t t-if="f_request.mode_of_transport == 'ocean'">
                     <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
+                        <div class="col-1"></div>
                         <div class="col-5">
-                            <br/>
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Shipper</span><br/><br/>
-                            <span><b>Shipper:</b> <span t-field="f_request.shipper_id.display_name"/> </span>
-                        </div>
-                        <div class="col-5">
-                            <br/>
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Consignee</span><br/><br/>
-                            <span><b>Consignee:</b> <span t-field="f_request.consignee_id.display_name"/> </span>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
+                            <br/><br/>
                             <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Main Carriage</span><br/><br/>
-                            <span><b>Loading Port:</b> <span t-field="f_request.origin_airport_id.name"/> </span><br/>
-                            <span><b>Shipping Line:</b> <span t-field="f_request.shipping_line_id.display_name"/> </span><br/>
-<!--                            <span><b>Voyage No:</b> <span t-field="f_request.voyage_no"/> </span><br/>-->
-                            <span><b>Vessel:</b> <span t-field="f_request.vessel_id.name"/> </span><br/>
-<!--                            <span><b>OBL:</b> <span t-field="request.obl"/> </span><br/>-->
-<!--                            <span><b>POR/Origin:</b> <span t-field="request.por_origin"/> </span><br/>-->
-<!--                            <span><b>POL:</b> <span t-field="request.pol"/> </span><br/>-->
-<!--                            <span><b>POD:</b> <span t-field="request.pod"/> </span><br/>-->
-<!--                            <span><b>Pofd Destination:</b> <span t-field="request.pofd_destination"/> </span><br/>-->
-                            <span><b>Equipment Type:</b> <span t-field="f_request.equipment_type"/> </span><br/>
+                            <span><b>POR /Origin:</b> <span t-field="f_request.origin_airport_id.name"/> </span><br/><br/>
+                            <span><b>Shipping Line:</b> <span t-field="f_request.shipping_line_id.display_name"/> </span><br/><br/>
+                            <span><b>Vessel:</b> <span t-field="f_request.vessel_id.name"/> </span><br/><br/>
+                            <span><b>Equipment Type:</b> <span t-field="f_request.equipment_type"/> </span><br/><br/>
                         </div>
                         <div class="col-5">
-                            <br/><br/>
-                            <span><b>Discharge Port :</b> <span t-field="f_request.destination_airport_id.name"/></span><br/>
-<!--                            <span><b>Date:</b> <span t-field="request.datetime"/></span><br/>-->
+                            <br/><br/><br/><br/>
+                            <span><b>POFD /Destination:</b> <span t-field="f_request.destination_airport_id.name"/></span><br/><br/>
+                            <span><b>POL:</b> <span t-field="f_request.pol_id.name"/> </span><br/><br/>
+                            <span><b>POD:</b> <span t-field="f_request.pod_id.display_name"/> </span><br/>
                         </div>
-                        <div class="col-1">
-
-                        </div>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">General</span><br/><br/>
-<!--                            <span><b>Barcode:</b> <span t-field="request.barcode"/> </span><br/>-->
-                            <span><b>Agent:</b> <span t-field="f_request.partner_id.display_name"/> </span><br/>
-<!--                            <span><b>User:</b> <span t-field="request.operator_id.name"/> </span><br/>-->
-<!--                            <span><b>Freight PC:</b> <span t-field="request.freight_pc"/> </span><br/>-->
-<!--                            <span><b>Other PC:</b> <span t-field="request.other_pc"/> </span><br/>-->
-                            <span><b>Reefer Status:</b> <span t-field="f_request.reefer_status"/> </span><br/>
-                            <span><b>Temperature:</b> <span t-field="f_request.temperature"/> </span><br/>
-                            <span><b>Set Temperature:</b> <span t-field="f_request.temperature_value"/> </span><br/>
-                            <span><b>Commodity Category:</b> <span t-field="f_request.commodity_category"/> </span><br/>
-                            <span><b>Commodity Description:</b> <span t-field="f_request.commodity_description"/> </span><br/>
-<!--                            <span><b>Notes:</b> <span t-field="request.notes"/> </span><br/>-->
-                        </div>
-                        <div class="col-5">
-                            <br/><br/>
-                            <span><b>Dangerous Goods:</b>
-                                <t t-if="f_request.is_dangerous_goods == True">
-                                    <input  type="checkbox" checked="True" disabled="True"/>
-                                </t>
-                                <t t-else="f_request.is_dangerous_goods == False">
-                                    <input  type="checkbox" disabled="True"/>
-                                </t>
-                            </span><br/>
-
-                            <t t-if="f_request.is_dangerous_goods">
-                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.is_dangerous_goods"/></span><br/>
-                            </t>
-<!--                            <span><b>Move Type:</b> <span t-field="request.move_type.name"/></span><br/>-->
-<!--                            <span><b>Tracking Numver:</b> <span t-field="request.tracking_number"/></span><br/>-->
-                            <span><b>Incoterm:</b> <span t-field="f_request.freight_incoterm_id.name"/></span><br/>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
+                        <div class="col-1"></div>
                     </div>
                 </t>
 
                 <t t-if="f_request.mode_of_transport == 'land'">
                     <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
-                            <br/>
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Shipper</span><br/><br/>
-                            <span><b>Shipper:</b> <span t-field="f_request.shipper_id.display_name"/> </span>
-                        </div>
-                        <div class="col-5">
-                            <br/>
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Consignee</span><br/><br/>
-                            <span><b>Consignee:</b> <span t-field="f_request.consignee_id.display_name"/> </span>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Main Carriage</span><br/><br/>
-                            <span><b>From:</b> <span t-field="f_request.origin_airport_id.name"/> </span><br/>
-                        </div>
+                        <div class="col-1"></div>
                         <div class="col-5">
                             <br/><br/>
-                            <span><b>To:</b> <span t-field="f_request.destination_airport_id.name"/></span><br/>
-<!--                            <span><b>Date:</b> <span t-field="request.datetime"/></span><br/>-->
-                            <span><b>CMR/RWB#/PRO#:</b> <span t-field="f_request.truck_ref"/></span><br/>
-                            <span><b>Trucker:</b> <span t-field="f_request.trucker.name"/></span><br/>
-                            <span><b>Trucker No:</b> <span t-field="f_request.trucker_number"/></span><br/>
-                            <span><b>Vehicle Size:</b> <span t-field="f_request.vehicle_size"/></span><br/>
+                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Main Carriage</span><br/><br/>
+                            <span><b>CMR/RWB#/PRO#:</b> <span t-field="f_request.truck_ref"/></span><br/><br/>
+                            <span><b>Trucker:</b> <span t-field="f_request.trucker.name"/></span><br/><br/>
+                            <span><b>Trucker No:</b> <span t-field="f_request.trucker_number"/></span><br/><br/>
+                            <span><b>Vehicle Size:</b> <span t-field="f_request.vehicle_size"/></span><br/><br/>
                             <span><b>Vehicle Type:</b> <span t-field="f_request.vehicle_type"/></span><br/>
                         </div>
-                        <div class="col-1">
-
-                        </div>
-                    </div>
-                    <br/>
-                    <br/>
-                    <div class="col-12 row">
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-5">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">General</span><br/><br/>
-<!--                            <span><b>Barcode:</b> <span t-field="request.barcode"/> </span><br/>-->
-                            <span><b>Job Type:</b> <span t-field="f_request.job_type"/> </span><br/>
-                            <span><b>Agent:</b> <span t-field="f_request.partner_id.display_name"/> </span><br/>
-<!--                            <span><b>User:</b> <span t-field="request.operator_id.name"/> </span><br/>-->
-<!--                            <span><b>Freight PC:</b> <span t-field="request.freight_pc"/> </span><br/>-->
-<!--                            <span><b>Other PC:</b> <span t-field="request.other_pc"/> </span><br/>-->
-                            <span><b>Reefer Status:</b> <span t-field="f_request.reefer_status"/> </span><br/>
-                            <span><b>Temperature:</b> <span t-field="f_request.temperature"/> </span><br/>
-                            <span><b>Set Temperature</b> <span t-field="f_request.temperature_value"/> </span><br/>
-                            <span><b>Commodity Category</b> <span t-field="f_request.commodity_category"/> </span><br/>
-                            <span><b>Commodity Description</b> <span t-field="f_request.commodity_description"/> </span><br/>
-<!--                            <span><b>Notes:</b> <span t-field="request.notes"/> </span><br/>-->
-                        </div>
-                        <div class="col-5">
-                            <br/><br/>
-                            <span><b>Dangerous Goods:</b>
-                                <t t-if="f_request.is_dangerous_goods == True">
-                                    <input  type="checkbox" checked="True" disabled="True"/>
-                                </t>
-                                <t t-else="f_request.is_dangerous_goods == False">
-                                    <input  type="checkbox" disabled="True"/>
-                                </t>
-                            </span><br/>
-
-                            <t t-if="f_request.is_dangerous_goods">
-                                <span><b>Dangerous Goods Info:</b> <span t-field="f_request.is_dangerous_goods"/></span><br/>
-                            </t>
-<!--                            <span><b>Move Type:</b> <span t-field="request.move_type.name"/></span><br/>-->
-<!--                            <span><b>Tracking Numver:</b> <span t-field="request.tracking_number"/></span><br/>-->
-                            <span><b>Incoterm:</b> <span t-field="f_request.freight_incoterm_id.name"/></span><br/>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
+                        <div class="col-1"></div>
                     </div>
                 </t>
-                <br/>
-                <br/>
-                <br/>
+
+
                 <div class="col-12 row">
-
-                    <form style="border:1px solid rgb(255, 255, 255)" id="comment" action="/post/request/comment" method="post" class="modal-content" enctype="multipart/form-data">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <div class="row">
-                            <div class="col-1">
-
-                            </div>
-                            <div class="col-10">
-                                <textarea rows="8" name="comment" style="margin-left: 0px;margin-top: 56px;" class="form-control" placeholder="Log a note..."></textarea>
-                                <input type="hidden" name="freight_request_id" t-att-value="f_request.id"/>
-                                <button type="submit" id="post_button" class="btn btn-primary mt16" style="position: relative; overflow: hidden;">Post</button>
-                            </div>
-                            <div class="col-1">
-
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-1">
-
+                    <div class="col-1"></div>
+                    <div class="col-5">
+                        <br/>
+                        <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">General</span><br/><br/>
+                        <span><b>Job Type:</b> <span t-field="f_request.job_type"/> </span><br/><br/>
+                        <span><b>Packaging Type:</b> <span t-field="f_request.package_type_id"/> </span><br/><br/>
+                        <span><b>Clearance Required:</b> <span t-field="f_request.clearance_required"/> </span><br/><br/>
+                        <span><b>Warehousing / Storage:</b> <span t-field="f_request.warehousing"/> </span><br/><br/>
+                        <span><b>Target Rate in USD:</b> <span t-field="f_request.target_rate"/> </span><br/><br/>
+                        <span><b>Target Transit Time (Days):</b> <span t-field="f_request.target_transit_time"/> </span><br/><br/>
+                        <span><b>Expected Free Time at Origin (Days):</b> <span t-field="f_request.expected_free_time_at_origin"/> </span><br/><br/>
+                        <span><b>Expected Free Time at Destination (Days):</b> <span t-field="f_request.expected_free_time_at_destination"/> </span><br/><br/>
+                        <span><b>Additional Comments:</b> <span t-field="f_request.additional_comments"/> </span><br/><br/>
+                        <span><b>Shipment Ready Date:</b> <span t-field="f_request.shipment_ready_date"/> </span><br/><br/>
+                        <span><b>Shipment Ready ASAP:</b> <span t-field="f_request.shipment_ready_asap"/> </span><br/><br/>
+                        <span><b>Target ETA:</b> <span t-field="f_request.target_eta"/> </span><br/><br/>
+                        <span><b>Target ETA ASAP:</b> <span t-field="f_request.target_eta_asap"/> </span><br/><br/>
+                        <span><b>Target ETD:</b> <span t-field="f_request.target_etd"/> </span><br/><br/>
+                        <span><b>Target ETD ASAP:</b> <span t-field="f_request.target_etd_asap"/> </span><br/><br/><br/>
                     </div>
-                    <t t-foreach="track_ids" t-as="track">
-                        <div class="col-md-8 col-md-offset-2">
-                            <div class="row mt16">
-                                <div class="col-xs-11">
-                                    <div>
-                                    </div>
-                                    <t t-if="track.name"><h6 class="mb4"><b>Note: </b><t t-esc="track.name"/></h6></t>
-                                    <div class="comment-date">
-                                        <span class="text-muted">by</span>
-                                        <span>
-                                            <span>
-                                                <address class="mb0">
-                                                    <div>
-                                                        <span><t t-esc="track.user_id.partner_id.name"/></span>
-                                                    </div>
-                                                    <div>
-                                                    </div>
-                                                </address>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                    <div class="col-1">
+                    <div class="col-5">
+                        <br/><br/><br/><br/>
+                        <span><b>Is Dangerous Goods?:</b> <span t-field="f_request.is_dangerous_goods"/> </span><br/><br/>
+                        <t t-if="f_request.is_dangerous_goods == 'yes'">
+                            <span><b>Dangerous Goods Class:</b> <span t-field="f_request.dangerous_goods_class"/> </span><br/><br/>
+                            <span><b>Dangerous Goods Info:</b> <span t-field="f_request.dangerous_goods_notes"/> </span><br/><br/>
+                        </t>
 
+                        <span><b>Reefer Status:</b> <span t-field="f_request.reefer_status"/> </span><br/><br/>
+
+                        <span><b>Temperature:</b> <span t-field="f_request.temperature"/> </span><br/><br/>
+                        <t t-if="f_request.temperature">
+                            <span><b>Temperature Value:</b> <span t-field="f_request.temperature_value"/> </span><br/><br/>
+                        </t>
+
+
+
+                        <span><b>Commodity Category:</b> <span t-field="f_request.commodity_category"/> </span><br/><br/>
+                        <span><b>Commodity Description:</b> <span t-field="f_request.commodity_description"/> </span><br/><br/>
+                        <span><b>HS-Codes:</b> <span t-field="f_request.freight_hs_code_ids"/> </span><br/><br/>
+                        <span><b>Gross weight (KG):</b> <span t-field="f_request.gross_weight"/> </span><br/><br/>
+                        <span><b>Weight Type:</b> <span t-field="f_request.weight_type"/> </span><br/><br/>
+                        <span><b>Number of packages / Pallets:</b> <span t-field="f_request.number_of_pallets_packages"/> </span><br/><br/>
+                        <span><b>Stackability:</b> <span t-field="f_request.stackability"/> </span><br/><br/>
+                        <span><b>Service Level:</b> <span t-field="f_request.service_level"/> </span><br/><br/>
+                        <span><b>Additional Requirements:</b> <span t-field="f_request.additional_requirements"/> </span><br/><br/>
                     </div>
+                    <div class="col-1"></div><br/><br/>
                 </div>
+
+<!--                <div class="col-12 row">-->
+
+<!--                    <form style="border:1px solid rgb(255, 255, 255)" id="comment" action="/post/request/comment" method="post" class="modal-content" enctype="multipart/form-data">-->
+<!--                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-1">-->
+
+<!--                            </div>-->
+<!--                            <div class="col-10">-->
+<!--                                <textarea rows="8" name="comment" style="margin-left: 0px;margin-top: 56px;" class="form-control" placeholder="Log a note..."></textarea>-->
+<!--                                <input type="hidden" name="freight_request_id" t-att-value="f_request.id"/>-->
+<!--                                <button type="submit" id="post_button" class="btn btn-primary mt16" style="position: relative; overflow: hidden;">Post</button>-->
+<!--                            </div>-->
+<!--                            <div class="col-1">-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--                <br/>-->
+<!--                <div class="row">-->
+<!--                    <div class="col-1">-->
+
+<!--                    </div>-->
+<!--                    <t t-foreach="track_ids" t-as="track">-->
+<!--                        <div class="col-md-8 col-md-offset-2">-->
+<!--                            <div class="row mt16">-->
+<!--                                <div class="col-xs-11">-->
+<!--                                    <div>-->
+<!--                                    </div>-->
+<!--                                    <t t-if="track.name"><h6 class="mb4"><b>Note: </b><t t-esc="track.name"/></h6></t>-->
+<!--                                    <div class="comment-date">-->
+<!--                                        <span class="text-muted">by</span>-->
+<!--                                        <span>-->
+<!--                                            <span>-->
+<!--                                                <address class="mb0">-->
+<!--                                                    <div>-->
+<!--                                                        <span><t t-esc="track.user_id.partner_id.name"/></span>-->
+<!--                                                    </div>-->
+<!--                                                    <div>-->
+<!--                                                    </div>-->
+<!--                                                </address>-->
+<!--                                            </span>-->
+<!--                                        </span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </t>-->
+<!--                    <div class="col-1">-->
+
+<!--                    </div>-->
+<!--                </div>-->
                 <br/>
             </div>
         </t>
     </template>
 
+    <!--    Request Create Parts-->
     <template id="portal_request_create" name="request Form">
         <t t-call="website.layout">
             <style>
@@ -640,15 +412,11 @@
             </style>
             <div class="container">
                 <form action="/submit_request"  method="post" enctype="multipart/form-data">
-                    <br/>
-                    <br/>
-                    <br/>
+                    <br/><br/><br/>
                     <div class="col-12 row row_hover">
                         <br/>
                         <div class="col-1">
-
                         </div>
-
                         <div class="col-5" style="margin-top:-5px;">
                             <br/><br/><br/><br/>
                             <b style="color:#7C7BAD;">Transport:</b><br/>
@@ -657,18 +425,80 @@
                                 <span class="checkmark"></span>
                             </label>
 
-                            <label  class="cont" for="ocean" style="margin-right:10px;">Ocean
+                            <label  class="cont" for="ocean" style="margin-right:10px;">Sea
                                 <input type="radio" id="ocean" name="mode_of_transport" value="ocean"/>
                                 <span class="checkmark"></span>
                             </label>
 
-                            <label class="cont"  for="land">Land
+<!--                            ADDED-->
+                            <label  class="cont" for="sea_then_air" style="margin-right:10px;">Sea then Air
+                                <input type="radio" id="sea_then_air" name="mode_of_transport" checked="checked"  value="sea_then_air"/>
+                                <span class="checkmark"></span>
+                            </label>
+
+                            <label  class="cont" for="air_then_sea" style="margin-right:10px;">Air then Sea
+                                <input type="radio" id="air_then_sea" name="mode_of_transport" value="air_then_sea"/>
+                                <span class="checkmark"></span>
+                            </label>
+
+                            <label  class="cont" for="rail" style="margin-right:10px;">Rail
+                                <input type="radio" id="rail" name="mode_of_transport" value="rail"/>
+                                <span class="checkmark"></span>
+                            </label>
+
+                            <label  class="cont" for="courier" style="margin-right:10px;">Courier
+                                <input type="radio" id="courier" name="mode_of_transport" value="courier"/>
+                                <span class="checkmark"></span>
+                            </label>
+<!--                            END-->
+
+                            <label class="cont"  for="land">Road
                                 <input type="radio" id="land" name="mode_of_transport" value="land"/>
                                 <span class="checkmark"></span>
-                            </label><br/><br/>
+                            </label><br/>
+                        </div>
 
-                            <div id="ocean_div" >
-                                <b style="color:#7C7BAD;">Ocean Shipment Type:</b><br/><br/>
+                        <div class="col-5" style="margin-top:-5px;" id="shipping_type_div">
+                            <br/><br/><br/><br/>
+
+                            <div id="req_rail_div" >
+                                <b style="color:#7C7BAD;">Rail Shipment Type:</b><br/><br/>
+
+                                <label class="cont"  for="rail_fcl" style="margin-right:10px;">FCL
+                                    <input type="radio" id="rail_fcl" name="rail" value="fcl"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="rail_lcl" style="margin-right:10px;">LCL
+                                    <input type="radio" id="rail_lcl" name="rail" value="lcl"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="rail_breakbulk" style="margin-right:10px;">Breakbulk
+                                    <input type="radio" id="rail_breakbulk" name="rail" value="breakbulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="rail_liquid" style="margin-right:10px;">Liquid
+                                    <input type="radio" id="rail_liquid" name="rail" value="liquid"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="rail_bulk" style="margin-right:10px;">Bulk
+                                    <input type="radio" id="rail_bulk" name="rail" value="bulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="rail_roro" style="margin-right:10px;">Roro
+                                    <input type="radio" id="rail_roro" name="rail" value="roro"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+
+                            </div>
+
+                            <div id="req_ocean_div" >
+                                <b style="color:#7C7BAD;">Sea Shipment Type:</b><br/><br/>
 
                                 <label class="cont"  for="fcl" style="margin-right:10px;">FCL
                                     <input type="radio" id="fcl" name="ocean" value="fcl"/>
@@ -679,9 +509,31 @@
                                     <input type="radio" id="lcl" name="ocean" value="lcl"/>
                                     <span class="checkmark"></span>
                                 </label>
+
+                                <label class="cont"  for="breakbulk" style="margin-right:10px;">Breakbulk
+                                    <input type="radio" id="breakbulk" name="ocean" value="breakbulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="liquid" style="margin-right:10px;">Liquid
+                                    <input type="radio" id="liquid" name="ocean" value="liquid"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="bulk" style="margin-right:10px;">Bulk
+                                    <input type="radio" id="bulk" name="ocean" value="bulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="roro" style="margin-right:10px;">Roro
+                                    <input type="radio" id="roro" name="ocean" value="roro"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+
                             </div>
-                            <div id="land_div">
-                                <b style="color:#7C7BAD;">Inland Shipment Type:</b><br/><br/>
+                            <div id="req_land_div">
+                                <b style="color:#7C7BAD;">Road Shipment Type:</b><br/><br/>
 
                                 <label class="cont"  for="ftl" style="margin-right:10px;">FTL
                                     <input type="radio" id="ftl" name="land" value="ftl"/>
@@ -693,29 +545,11 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-<!--                            <div id="air_div">-->
-<!--                                <b style="color:#7C7BAD;">Air Shipment Type:</b><br/><br/>-->
-
-<!--                                <label  class="cont" for="breakbulk" style="margin-right:10px;">Breakbulk-->
-<!--                                    <input type="radio" id="breakbulk" name="air" value="breakbulk"/>-->
-<!--                                    <span class="checkmark"></span>-->
-<!--                                </label>-->
-
-<!--                                <label  class="cont" for="roro" style="margin-right:10px;">Roro-->
-<!--                                    <input type="radio" id="roro" name="air" value="roro"/>-->
-<!--                                    <span class="checkmark"></span>-->
-<!--                                </label>-->
-
-<!--                            </div>-->
                         </div>
                         <div class="col-1">
-
-                        </div>
-                        <br/>
+                        </div><br/>
                     </div>
-                    <br/>
-
-                    <br/>
+                    <br/><br/>
                     <div class="col-12 row row_hover">
                         <br/>
                         <div class="col-1">
@@ -723,13 +557,22 @@
                         <div class="col-2">
                             <br/>
                             <label for="shipper">Shipper:</label><br/><br/><br/>
+                            <label id="incoterm_lbl" for="incoterm" >Incoterm:</label>
+                            <br/><br/><br/>
+
                         </div>
                         <div class="col-3">
                             <br/>
                             <select id="shippers" name="shipper_id" required="True" class="form-control">
                                 <t t-foreach="shipper" t-as="partner">
                                     <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
-                            </select>
+                            </select><br/>
+                            <select id="incoterm" name="freight_incoterm_id" class="form-control">
+                                <option></option>
+                                <t t-foreach="incoterms" t-as="inc">
+                                    <option t-att-value="inc.id" t-esc="inc.name"/></t>
+                            </select><br/>
+
                         </div>
                         <div class="col-2">
                             <br/>
@@ -743,112 +586,96 @@
                             </select>
                         </div>
                         <div class="col-1">
-
-                        </div>
-                        <br/>
+                        </div><br/>
                     </div>
-                    <br/>
-                    <br/>
-
-
-
+                    <br/><br/>
                     <div class="col-12 row row_hover" id="main_data">
                         <br/>
                         <div class="col-1">
-
                         </div>
                         <div class="col-2">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">Main Carriage</span><br/><br/>
+                            <span id="main_carriage" style="color:#7C7BAD;font-weight:bold;font-size: 147%">Main Carriage</span><br/><br/>
                             <div id="air_lbl_1">
-                                <label id="origin_airport_id"  for="origin_airport_id" style="margin-top: 10px;">Origin:</label><br/><br/>
-                                <label id="consider_origin_close"  for="consider_origin_close" style="margin-top: 10px;">Origin Close:</label><br/>
-                                <label id="consider_destination_close"  for="consider_destination_close" style="margin-top: 10px;">Destination Close:</label><br/>
-                                <label id="mawb_lbl" style="margin-top: 27px;" for="mawb">MAWB No:</label><br/>
+                                <br/>
+                                <label id="origin_airport_id" for="origin_airport_id" >Origin Airport:</label><br/><br/>
+                                <div class="consider_origin_close"><b>Consider Close by Origin Airports:</b><br/><br/><br/></div>
+                                <div class="consider_destination_close" ><b>Consider Close By Destination Airport:</b><br/><br/><br/></div>
+<!--                                <label id="consider_origin_close"  for="consider_origin_close" >Consider Close by Origin Airports:</label><br/>-->
+<!--                                <label id="consider_destination_close" style="margin-top: 5%;" for="consider_destination_close" >Consider Close By Destination Airport:</label><br/>-->
+                                <label id="mawb_lbl" style="margin-top: 5%;" for="mawb">MAWB No:</label><br/>
                                 <br/>
                             </div>
                             <div id="ocean_lbl_1" style="display:none;">
-                                <label id="landing_lbl" style="margin-top: 12px;" for="ocean_source_location_id">Landing Port:</label><br/>
-                                <label id="shp_line_lbl" style="margin-top: 30px;"  for="shipping_line_id">Shipping Line:</label><br/>
-<!--                                <label id="voyage_lbl" style="margin-top: 31px;"  for="voyage_no">Voyage No:</label><br/>-->
-                                <label id="vessel_lbl"  style="margin-top: 30px;" for="vessel_id">Vessel:</label><br/>
-<!--                                <label id="obl_lbl"  style="margin-top: 26px;" for="obl">OBL:</label><br/>-->
-                                <br /><br />
-<!--                                <label id="por_origin_lbl"  style="margin-top: 26px;" for="por_origin">POR/Origin:</label><br/>-->
-<!--                                <label id="pol_lbl"  style="margin-top: 26px;" for="pol">POL:</label><br/>-->
-<!--                                <label id="pod_lbl"  style="margin-top: 26px;" for="pod">POD:</label><br/>-->
-<!--                                <label id="pofd_destination_lbl"  style="margin-top: 26px;" for="pofd_destination">Pofd Destination:</label><br/>-->
-                                <label id="equipment_type_lbl"  style="margin-top: 26px;" for="equipment_type">Equipment Type:</label><br/>
+                                <br/>
+                                <label id="landing_lbl" for="ocean_source_location_id">POR /Origin:</label><br/><br/>
+                                <label id="shp_line_lbl"  for="shipping_line_id">Shipping Line:</label><br/><br/>
+                                <label id="vessel_lbl" style="margin-top: 5%;" for="vessel_id">Vessel:</label><br/><br/>
+                                <label id="equipment_type_lbl"  style="margin-top: 3%;" for="equipment_type">Equipment Type:</label><br/>
                                 <br/>
                             </div>
                             <div id="land_lbl_1" style="display:none;">
-                                <label id="from_lbl" style="margin-top: 14px;" for="land_source_location_id">From:</label><br/>
                                 <br/>
+                                <label id="cmr_lbl" for="cmr_no">CMR/RWB#/PRO#:</label><br/><br/>
+                                <label id="trucker_lbl" for="trucker">Trucker:</label><br/><br/>
+                                <label id="trucker_no_lbl" for="trucker_number">Trucker No:</label><br/>
                             </div>
-
                         </div>
-
                         <div class="col-3">
                             <br/><br/>
                             <div id="air_data_1">
                                 <br/>
                                 <select id="air_source_location_id" name="air_source_location_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="gateways" t-as="gate">
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
-                                <br />
-                                <input name="origin_close" id="origin_close" type="checkbox" checked="False" />
-                                <br /><br/>
-                                <input name="destination_close" id="destination_close" type="checkbox" checked="False" />
-                                <br /><br/>
+                                <br/>
+
+                                <label class="cont"  for="consider_origin_close_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="consider_origin_close_yes" name="consider_origin_close" value="yes"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="consider_origin_close_no" style="margin-right:10px;">No
+                                    <input type="radio" id="consider_origin_close_no" name="consider_origin_close" value="no" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+
+                                <label class="cont"  for="consider_destination_close_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="consider_destination_close_yes" name="consider_destination_close" value="yes"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="consider_destination_close_no" style="margin-right:10px;">No
+                                    <input type="radio" id="consider_destination_close_no" name="consider_destination_close" value="no" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+
+
+
                                 <input name="mawb_no" class="input-class form-control" id="mawb" /><br/>
                                 <br/>
                             </div>
                             <div id="ocean_data_1" style="display:none;">
                                 <br/>
                                 <select id="ocean_source_location_id" name="ocean_source_location_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="gateways" t-as="gate">
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
                                 <br/>
                                 <select id="shipping_line_id" name="shipping_line_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="partners" t-as="partner">
                                         <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
                                 </select>
                                 <br/>
-<!--                                <input name="voyage_no" class="input-class form-control" id="voyage_no" />-->
-<!--                                <br/>-->
                                 <select id="vessel_id" name="vessel_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="vessels" t-as="vess">
                                         <option t-att-value="vess.id" t-esc="vess.name"/></t>
                                 </select>
-<!--                                <br/>-->
-<!--                                <input name="obl" class="input-class form-control" id="obl" />-->
                                 <br/>
-                                <br />
-<!--                                <select id="por_origin" name="por_origin" class="form-control">-->
-<!--                                    <option value="value_a" >Value A</option>-->
-<!--                                    <option value="Value_b" >Value B</option>-->
-<!--                                </select>-->
-<!--                                <br/>-->
-<!--                                <select id="pol" name="pol" class="form-control">-->
-<!--                                    <option value="value_a" >Value A</option>-->
-<!--                                    <option value="Value_b" >Value B</option>-->
-<!--                                </select>-->
-<!--                                <br/>-->
-<!--                                <select id="pod" name="pod" class="form-control">-->
-<!--                                    <option value="value_a" >Value A</option>-->
-<!--                                    <option value="Value_b" >Value B</option>-->
-<!--                                </select>-->
-<!--                                <br/>-->
-<!--                                <select id="pofd_destination" name="pofd_destination" class="form-control">-->
-<!--                                    <option value="value_a" >Value A</option>-->
-<!--                                    <option value="Value_b" >Value B</option>-->
-<!--                                </select>-->
-<!--                                <br/>-->
-
-
-
-
                                 <select id="equipment_type" name="equipment_type" class="form-control">
                                     <option value="" ></option>
                                     <option value="20" >20</option>
@@ -871,10 +698,15 @@
                             </div>
                             <div id="land_data_1" style="display:none;">
                                 <br/>
-                                <select id="land_source_location_id" name="land_source_location_id" class="form-control">
-                                    <t t-foreach="gateways" t-as="gate">
-                                        <option t-att-value="gate.id" t-esc="gate.name"/></t>
+                                <input name="truck_ref" class="input-class form-control" id="cmr_no"/>
+                                <br/>
+                                <select id="trucker" name="trucker" class="form-control">
+                                    <option></option>
+                                    <t t-foreach="truckers" t-as="truck">
+                                        <option t-att-value="truck.id" t-esc="truck.name"/></t>
                                 </select>
+                                <br/>
+                                <input name="trucker_number" class="input-class form-control" id="trucker_number"/>
                                 <br/>
                             </div>
                         </div>
@@ -883,46 +715,21 @@
                             <br/><br/>
                             <div id="air_lbl_2">
                                 <br/>
-                                <label id="source_lbl" for="air_destination_location_id">Destination:</label><br/>
-                                <label id="airline_lbl" style="margin-top: 27px;" for="airline">Airline:</label><br/>
-                                <label id="flight_no_lbl" style="margin-top: 31px;" for="flight_no">Flight No:</label><br/>
-                                <label id="date_lbl" style="margin-top: 27px;" for="date_ocean">Shipment Ready Date:</label><br/>
-                                <label id="shipment_ready_asap_lbl" style="margin-top: 2px;" for="shipment_ready_asap">Shipment Ready ASAP:</label><br/>
-                                <label id="target_eta_lbl" style="margin-top: 11px;" for="target_eta">Target ETA:</label><br/>
-                                <label id="target_eta_asap_lbl" style="margin-top: 16px;" for="target_eta_asap">Target ETA ASAP:</label><br/>
-                                <label id="target_etd_lbl" style="margin-top: 24px;" for="target_etd">Target ETD:</label><br/>
-                                <label id="target_etd_asap_lbl" style="margin-top: 24px;" for="target_etd_asap">Target ETD ASAP:</label><br/>
-
-<!--                                <label id="date_lbl" style="margin-top: 33px;" for="date">Shipment Ready Date 1:</label><br/><br/>-->
+                                <label id="source_lbl" style="margin-top: 7%;" for="air_destination_location_id">Destination Airport:</label><br/><br/>
+                                <label id="airline_lbl" for="airline">Preferred Airline:</label><br/><br/>
+                                <label id="flight_no_lbl" style="margin-top: 7%;" for="flight_no">Flight No:</label><br/><br/>
                             </div>
                             <div id="ocean_lbl_2" style="display:none;">
                                 <br/>
-                                <label id="discharge_lbl"  for="ocean_destination_location_id">Discharge Port:</label><br/>
-                                <label id="date_lbl" style="margin-top: 27px;" for="date_ocean">Shipment Ready Date:</label><br/>
-                                <label id="shipment_ready_asap_lbl" style="margin-top: 2px;" for="shipment_ready_asap">Shipment Ready ASAP:</label><br/>
-                                <label id="target_eta_lbl" style="margin-top: 11px;" for="target_eta">Target ETA:</label><br/>
-                                <label id="target_eta_asap_lbl" style="margin-top: 16px;" for="target_eta_asap">Target ETA ASAP:</label><br/>
-                                <label id="target_etd_lbl" style="margin-top: 24px;" for="target_etd">Target ETD:</label><br/>
-                                <label id="target_etd_asap_lbl" style="margin-top: 24px;" for="target_etd_asap">Target ETD ASAP:</label><br/>
+                                <label id="discharge_lbl" style="margin-top: 7%;" for="ocean_destination_location_id">POFD /Destination:</label><br/><br/>
+                                <label for="pol_id" style="margin-top: 7%;" id="pol_lbl">POL:</label><br/><br/>
+                                <label for="pod_id" id="pod_lbl">POD:</label><br/>
                                 <br/>
                             </div>
                             <div id="land_lbl_2" style="display:none;">
                                 <br/>
-                                <label id="to_lbl" style="margin-top: 6px;" for="land_destination_location_id">To:</label><br/>
-                                <label id="date_lbl" style="margin-top: 26px;"  for="date_land">Shipment Ready Date:</label><br/>
-                                <label id="shipment_ready_asap_lbl" style="margin-top: 2px;" for="shipment_ready_asap">Shipment Ready ASAP:</label><br/>
-                                <label id="target_eta_lbl" style="margin-top: 11px;" for="target_eta">Target ETA:</label><br/>
-                                <label id="target_eta_asap_lbl" style="margin-top: 16px;" for="target_eta_asap">Target ETA ASAP:</label><br/>
-                                <label id="target_etd_lbl" style="margin-top: 24px;" for="target_etd">Target ETD:</label><br/>
-                                <label id="target_etd_asap_lbl" style="margin-top: 24px;" for="target_etd_asap">Target ETD ASAP:</label><br/>
-                                <label id="cmr_lbl" style="margin-top: 20px;"  for="cmr_no">CMR/RWB#/PRO#:</label><br/>
-                                <label id="trucker_lbl"  style="margin-top: 29px;" for="trucker">Trucker:</label><br/>
-                                <label id="trucker_no_lbl"  style="margin-top: 36px;" for="trucker_number">Trucker No:</label><br/>
-                                <label class="vehicle_size"  style="margin-top: 26px;" for="vehicle_size">Vehicle Size:</label><br/>
-                                <label class="vehicle_type"  style="margin-top: 26px;" for="vehicle_type">Vehicle Type:</label><br/>
-
-<!--                                <label id="vehicle_size_lbl"  style="margin-top: 36px;" for="vehicle_size">Vehicle Size:</label><br/>-->
-<!--                                <label id="vehicle_type_lbl"  style="margin-top: 36px;" for="vehicle_type">Vehicle Type:</label><br/>-->
+                                <label class="vehicle_size" style="margin-top: 7%;" for="vehicle_size">Vehicle Size:</label><br/><br/>
+                                <label class="vehicle_type"  for="vehicle_type">Vehicle Type:</label><br/>
                                 <br/>
                             </div>
                         </div>
@@ -932,67 +739,40 @@
                             <div id="air_data_2">
                                 <br/>
                                 <select id="air_destination_location_id" name="air_destination_location_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="gateways" t-as="gate">
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
                                 <br/>
                                 <select id="airline" name="preferred_airline_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="airlines" t-as="air">
                                         <option t-att-value="air.id" t-esc="air.name"/></t>
                                 </select>
                                 <br/>
                                 <input name="flight_no" class="input-class form-control" id="flight_no" />
                                 <br/>
-                                <input name="shipment_ready_date" type="date" class="input-class form-control" id="date" /><br/>
-                                <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>
-                                <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
-                                <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>
-                                <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
-                                <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>
-
-<!--                                <input name="date" type="datetime-local" class="input-class form-control" id="date" />-->
-<!--                                <input type="text" style="display:none"   name="new_date" id="new_date"/>-->
-<!--                                <br/>-->
                             </div>
                             <div id="ocean_data_2" style="display:none;">
                                 <br/>
                                 <select id="ocean_destination_location_id" name="ocean_destination_location_id" class="form-control">
+                                    <option></option>
                                     <t t-foreach="gateways" t-as="gate">
                                         <option t-att-value="gate.id" t-esc="gate.name"/></t>
                                 </select>
                                 <br/>
-                                <input name="shipment_ready_date" type="date" class="input-class form-control" id="date" /><br/>
-                                <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>
-                                <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
-                                <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>
-                                <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
-                                <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>
-                                <input type="text" style="display:none"   name="new_date" id="new_date"/>
-                                <br/>
+                                <select id="pol_id" name="pol_id" class="form-control">
+                                     <option></option>
+                                    <t t-foreach="pols" t-as="pol">
+                                        <option t-att-value="pol.id" t-esc="pol.name"/></t>
+                                </select><br/>
+                                <select id="pod_id" name="pod_id" class="form-control">
+                                     <option></option>
+                                    <t t-foreach="pods" t-as="pod">
+                                        <option t-att-value="pod.id" t-esc="pod.name"/></t>
+                                </select><br/>
                             </div>
                             <div id="land_data_2" style="display:none;">
-                                <br/>
-                                <select id="land_destination_location_id" name="land_destination_location_id" class="form-control">
-                                    <t t-foreach="gateways" t-as="gate">
-                                        <option t-att-value="gate.id" t-esc="gate.name"/></t>
-                                </select>
-                                <br/>
-                                <input name="shipment_ready_date" type="date" class="input-class form-control" id="date" /><br/>
-                                <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>
-                                <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
-                                <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>
-                                <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
-                                <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>
-                                <input type="text" style="display:none"   name="new_date" id="new_date"/>
-                                <br/>
-                                <input name="truck_ref" class="input-class form-control" id="cmr_no"/>
-                                <br/>
-                                <select id="trucker" name="trucker" class="form-control">
-                                    <t t-foreach="truckers" t-as="truck">
-                                        <option t-att-value="truck.id" t-esc="truck.name"/></t>
-                                </select>
-                                <br/>
-                                <input name="trucker_number" class="input-class form-control" id="trucker_number"/>
                                 <br/>
 
                                 <select id="vehicle_size" name="vehicle_size" class="form-control vehicle_size">
@@ -1016,9 +796,6 @@
                                     <option value="box_truck" >Box Truck w/Liftgate</option>
                                 </select>
                                 <br/>
-
-
-
                             </div>
                         </div>
 
@@ -1027,43 +804,38 @@
                         </div>
                         <br/>
                     </div>
-                    <br/>
-                    <br/>
-<!--                    DP ADDEDDDDDDDDDDDDDDDDDD-->
-
+                    <br/><br/>
                     <div class="col-12 row row_hover">
                         <br/>
                         <div class="col-1">
-
                         </div>
-
                         <div class="col-2">
                             <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Addresses</span><br/><br/>
-
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Delivery Address</span><br/><br/>
-                            <label for="building" style="margin-top: 10px;">Building:</label><br/><br/>
-                            <label for="area" style="margin-top: 10px;">Area:</label><br/><br/>
-                            <label for="street" style="margin-top: 10px;">Street:</label><br/><br/>
-                            <label for="city" style="margin-top: 10px;">City:</label><br/><br/>
-                            <label for="state_id" style="margin-top: 10px;">State:</label><br/><br/>
-                            <label for="po_box" style="margin-top: 10px;">PO Box:</label><br/><br/>
-                            <label for="zip_code" style="margin-top: 10px;">Zip Code:</label><br/><br/>
-                            <label for="country_id" style="margin-top: 10px;">Country:</label><br/><br/>
-
+                            <label for="building" >Building:</label><br/><br/>
+                            <label for="area" style="margin-top: 4%;">Area:</label><br/><br/>
+                            <label for="street" style="margin-top: 4%;">Street:</label><br/><br/>
+                            <label for="city" style="margin-top: 4%;">City:</label><br/><br/>
+                            <label for="state_id" style="margin-top: 4%;">State:</label><br/><br/>
+                            <label for="po_box" style="margin-top: 4%;">PO Box:</label><br/><br/>
+                            <label for="zip_code" style="margin-top: 4%;">Zip Code:</label><br/><br/>
+                            <label for="country_id" style="margin-top: 4%;">Country:</label><br/><br/>
                         </div>
                         <div class="col-3">
-                            <br/><br/><br/><br/><br/>
+                            <br/><br/><br/><br/>
                             <input name="building" class="input-class form-control" id="building" /><br/>
                             <input name="area" class="input-class form-control" id="area" /><br/>
                             <input name="street" class="input-class form-control" id="street" /><br/>
                             <input name="city" class="input-class form-control" id="city" /><br/>
-                            <select id="state_id" name="state_id" required="True" class="form-control">
+                            <select id="state_id" name="state_id" class="form-control">
+                                <option></option>
                                 <t t-foreach="states" t-as="state">
                                     <option t-att-value="state.id" t-esc="state.name"/></t>
                             </select><br/>
                             <input name="po_box" class="input-class form-control" id="po_box" /><br/>
                             <input name="zip_code" class="input-class form-control" type="number" id="zip_code" /><br/>
-                            <select id="country_id" name="country_id" required="True" class="form-control">
+                            <select id="country_id" name="country_id" class="form-control">
+                                <option></option>
                                 <t t-foreach="countries" t-as="country">
                                     <option t-att-value="country.id" t-esc="country.name"/></t>
                             </select><br/>
@@ -1072,37 +844,38 @@
                         <div class="col-2">
                             <br/><br/>
                             <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Loading Address</span><br/><br/>
-                            <label for="delivery_building" style="margin-top: 10px;">Building:</label><br/><br/>
-                            <label for="delivery_area" style="margin-top: 10px;">Area:</label><br/><br/>
-                            <label for="delivery_street" style="margin-top: 10px;">Street:</label><br/><br/>
-                            <label for="delivery_city" style="margin-top: 10px;">City:</label><br/><br/>
-                            <label for="delivery_state_id" style="margin-top: 10px;">State:</label><br/><br/>
-                            <label for="delivery_po_box" style="margin-top: 10px;">PO Box:</label><br/><br/>
-                            <label for="delivery_zip_code" style="margin-top: 10px;">Zip Code:</label><br/><br/>
-                            <label for="delivery_country_id" style="margin-top: 10px;">Country:</label><br/><br/>
-
+                            <label for="delivery_building">Building:</label><br/><br/>
+                            <label for="delivery_area" style="margin-top: 5%;">Area:</label><br/><br/>
+                            <label for="delivery_street" style="margin-top: 5%;">Street:</label><br/><br/>
+                            <label for="delivery_city" style="margin-top: 5%;">City:</label><br/><br/>
+                            <label for="delivery_state_id" style="margin-top: 5%;">State:</label><br/><br/>
+                            <label for="delivery_po_box" style="margin-top: 5%;">PO Box:</label><br/><br/>
+                            <label for="delivery_zip_code" style="margin-top: 5%;">Zip Code:</label><br/><br/>
+                            <label for="delivery_country_id" style="margin-top: 5%;">Country:</label><br/><br/>
                         </div>
                         <div class="col-3">
                             <br/><br/>
-                            <br/><br/><br/>
+                            <br/><br/>
                             <input name="delivery_building" class="input-class form-control" id="delivery_building" /><br/>
                             <input name="delivery_area" class="input-class form-control" id="delivery_area" /><br/>
                             <input name="delivery_street" class="input-class form-control" id="delivery_street" /><br/>
                             <input name="delivery_city" class="input-class form-control" id="delivery_city" /><br/>
-                            <select id="delivery_state_id" name="delivery_state_id" required="True" class="form-control">
+                            <select id="delivery_state_id" name="delivery_state_id" class="form-control">
+                                <option></option>
                                 <t t-foreach="states" t-as="state">
                                     <option t-att-value="state.id" t-esc="state.name"/></t>
                             </select><br/>
                             <input name="delivery_po_box" class="input-class form-control" id="delivery_po_box" /><br/>
                             <input name="delivery_zip_code" type="number" class="input-class form-control" id="delivery_zip_code" /><br/>
-                            <select id="delivery_country_id" name="delivery_country_id" required="True" class="form-control">
+                            <select id="delivery_country_id" name="delivery_country_id" class="form-control">
+                                <option></option>
                                 <t t-foreach="countries" t-as="country">
                                     <option t-att-value="country.id" t-esc="country.name"/></t>
                             </select><br/>
                         </div>
 
                     </div>
-<br/><br/>
+                    <br/><br/>
                     <div class="col-12 row row_hover">
                         <br/>
                         <div class="col-1">
@@ -1110,83 +883,55 @@
                         </div>
 
                         <div class="col-2">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">General</span><br/><br/>
-                            <label for="job_type" style="margin-top: 2px;">Job Type:</label><br/><br/>
-                            <label id="freight_hs_code_ids_lbl"  style="margin-top: 10px;" for="freight_hs_code_ids">Freight Hs-Codes:</label><br/><br/>
-<!--                            <label for="barcode" style="margin-top: 10px;">Barcode:</label><br/><br/>-->
-                            <label for="agent_id" style="margin-top: 6px;">Customer:</label><br/><br/>
-                            <label for="agent_id" style="margin-top: 6px;">Packaging Type:</label><br/><br/>
-<!--                            <label for="operator_id" style="margin-top: 6px;">User:</label><br/><br/>-->
-<!--                            <label for="freight_pc" style="margin-top: 17px;">Freight PC:</label><br/><br/>-->
-<!--                            <label for="other_pc" style="margin-top: 4px;">Other PC:</label><br/><br/>-->
-                            <label for="reefer_status" style="margin-top: 4px;">Reefer Status:</label><br/><br/>
-                            <label for="temperature" style="margin-top: 4px;">Temperature:</label><br/><br/>
-                            <label id="set_temperature_lbl" for="set_temperature" style="margin-top: 4px;">Set Temperature:</label>
+                            <span style="color:#7C7BAD;font-weight:bold;font-size: 147%">General</span><br/><br/><br/>
+                            <label for="job_type">Job Type:</label><br/><br/>
+                            <label id="freight_hs_code_ids_lbl" for="freight_hs_code_ids">HS-Codes:</label><br/><br/>
+                            <label for="package_type_id" style="margin-top: 6%;">Packaging Type:</label><br/><br/>
+                            <label for="reefer_status" style="margin-top: 9%;">Reefer Status:</label><br/><br/>
+                            <label for="target_transit_time" >Target Transit Time (Days):</label><br/>
+                            <label for="expected_free_time_at_origin" >Expected Free Time at Origin (Days):</label><br/><br/>
+                            <label for="expected_free_time_at_destination" >Expected Free Time at Destination (Days):</label><br/>
+                            <label for="commodity_category">Commodity Category:</label><br/>
+                            <label for="commodity_description" >Commodity Description:</label><br/><br/><br/>
+                            <div class="weight_type"><b>Weight Type:</b><br/><br/><br/><br/></div>
+                            <label for="service_level" >Service Level:</label><br/><br/>
 
+                            <div id="target_etd_lbl"><label style="margin-top: 3%;" for="target_etd" >Target ETD:</label><br/><br/></div>
 
-                            <label for="target_transit_time" style="margin-top: 0px;">Target Transit Time (Days):</label><br/><br/>
-                            <label for="expected_free_time_at_origin" style="margin-top: 0px;">Expected Free Time at Origin (Days):</label><br/><br/>
-                            <label for="expected_free_time_at_destination" style="margin-top: 0px;">Expected Free Time at Destination (Days):</label><br/><br/>
-<!--                            <label for="set_temperature" style="margin-top: 4px;">Set Temperature:</label><br/><br/>-->
+                            <div class="target_etd_asap" style="margin-top: 6%;"><b>Target ETD ASAP:</b><br/><br/><br/><br/></div>
 
+<!--                            <div id="target_etd_asap_lbl"><label for="target_etd_asap" >Target ETD ASAP:</label><br/><br/></div>-->
+<!--                            <div id="incoterm_lbl"><label for="incoterm" >Incoterm:</label><br/><br/><br/></div>-->
 
-                            <label for="commodity_category" style="margin-top: 0px;">Commodity Category:</label><br/><br/>
-                            <label for="commodity_description" style="margin-top: 0px;">Commodity Description:</label><br/><br/>
-                            <label for="weight_type" style="margin-top: 0px;">Weight Type:</label><br/><br/>
-                            <label for="pol_id" style="margin-top: 0px;">POL:</label><br/><br/>
+                            <label id="dg_bool" for="is_dangerous_goods">Dangerous Goods:</label><br/><br/><br/>
+                            <div id="dangerous_goods_class_lbl_req" style="margin-top:10px;"><label id="dangerous_goods_class" class="dangerous_goods_class" for="dangerous_goods_class">Dangerous Goods Class:</label><br/></div>
+                            <div id="goods_info"><label id="dng_info_req" for="danger_info_req">Dangerous Goods Info:</label><br/><br/></div>
                             <br/>
                         </div>
                         <div class="col-3">
-                            <br/><br/>
+                            <br/><br/><br/>
                             <input name="job_type" class="input-class form-control" id="job_type" /><br/>
                             <select id='freight_hs_code_ids' name="freight_hs_code_ids" required="True" class="form-control link-style" multiple='multiple'>
                                      <t t-foreach="codes" t-as="code">
                                         <option t-att-value="code.id" t-esc="code.name"/></t>
 						        </select>
-<!--                            <input type="hidden" name="freight_hs_code_ids_list" id="freight_hs_code_ids_list"/>-->
                                 <br/>
-                            <select id="partner_id" name="partner_id" required="True" class="form-control">
-                                <t t-foreach="partners" t-as="partner">
-                                    <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
-                            </select><br/>
                             <select id="package_id" name="package_type_id" required="True" class="form-control">
-                                <t t-foreach="packages" t-as="package">
-                                    <option t-att-value="package.id" t-esc="package.name"/></t>
+                                <option value="palatized">Palatized</option>
+                                <option value="cartons">Cartons</option>
+                                <option value="bulk">Bulk</option>
+                                <option value="drums">Drums</option>
+                                <option value="other">Others  (Please specify)</option>
                             </select><br/>
-<!--                            <select id="operator_id" name="operator_id" required="True" class="form-control">-->
-<!--                                <t t-foreach="users" t-as="user">-->
-<!--                                    <option t-att-value="user.id" t-esc="user.name"/></t>-->
-<!--                            </select><br/>-->
-<!--                            <select id="freight_pc" name="freight_pc" required="True" class="form-control">-->
-<!--                                <option value="collect" >Collect</option>-->
-<!--                                <option value="prepaid" >Prepaid</option>-->
-<!--                            </select><br/>-->
-<!--                            <select id="other_pc" name="other_pc" required="True" class="form-control">-->
-<!--                                <option value="collect" >Collect</option>-->
-<!--                                <option value="prepaid" >Prepaid</option>-->
-<!--                            </select><br/>-->
                             <select id="reefer_status" name="reefer_status" required="True" class="form-control">
                                 <option value="yes" >YES</option>
                                 <option value="no" >NO</option>
                                 <option value="non_operate" >Non Operating Reefer</option>
                             </select><br/>
-                            <select id="temperature" name="temperature" required="False" class="form-control">
-                                <option value="" ></option>
-                                <option value="celsius" >Celsius</option>
-                                <option value="fahrenheit" >Fahrenheit</option>
-                            </select><br/>
-<!--                            <input name="set_temperature" class="input-class form-control" id="set_temperature" /><br/>-->
-                            <input id="set_temperature" name="set_temperature_value" type="number" class="input-class form-control"/>
-<!--                            <input name="target_transit_time" class="input-class form-control" id="target_transit_time" /><br/>-->
-                            <input id="target_transit_time" name="target_transit_time" type="number" class="input-class form-control" /><br/><br/>
-<!--                            <input name="expected_free_time_at_origin" class="input-class form-control" id="expected_free_time_at_origin" /><br/>-->
+                            <input id="target_transit_time" name="target_transit_time" type="number" class="input-class form-control" /><br/>
                             <input id="expected_free_time_at_origin" name="expected_free_time_at_origin" type="number" class="input-class form-control" /><br/><br/>
-                            <input id="expected_free_time_at_destination" name="expected_free_time_at_destination" type="number" class="input-class form-control" /><br/><br/>
-
-<!--                            <input name="set_temperature" class="input-class form-control" id="set_temperature" /><br/>-->
-
-
-                            <select id="commodity_category" name="commodity_category" required="False" class="form-control">
+                            <input id="expected_free_time_at_destination" name="expected_free_time_at_destination" type="number" class="input-class form-control" /><br/>
+                            <select id="commodity_category" style="margin-top: 5%;" name="commodity_category" required="False" class="form-control">
                                 <option value="food_perishable">Food Perishable</option>
                                 <option value="nonfood_perishable">Non food perishable</option>
                                 <option value="non_perishable">Non perishable F and B</option>
@@ -1197,76 +942,57 @@
                                 <option value="petroleum_products">Products</option>
                                 <option value="other_chemicals">Other Chemicals</option>
                             </select><br/>
-<!--                            <textarea id="notes" name="notes" class="form-control"/>-->
                             <textarea id="commodity_description" name="commodity_description" required="True" class="form-control"/><br/>
-                            
-                            <select id="weight_type" name="weight_type" required="True" class="form-control">
-                                <option value="estimated">Estimated</option>
-                                <option value="actual">Actual</option>
+
+                            <label class="cont"  for="weight_type_yes" style="margin-right:10px;">Estimated
+                                    <input type="radio" id="weight_type_yes" name="weight_type" value="estimated"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                            <label class="cont"  for="weight_type_no" style="margin-right:10px;">Actual
+                                    <input type="radio" id="weight_type_no" name="weight_type" value="actual"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+
+                            <select id="service_level" name="service_level" class="form-control">
+                                <option></option>
+                                <option value="door_to_door">Door to Door</option>
+                                <option value="door_to_port">Door to Port</option>
+                                <option value="port_to_port">Port to Port</option>
+                                <option value="port_to_door">Port to Door</option>
                             </select><br/>
-                             <select id="pol_id" name="pol_id" class="form-control">
-                                 <option></option>
-                                <t t-foreach="pols" t-as="pol">
-                                    <option t-att-value="pol.id" t-esc="pol.name"/></t>
-                            </select><br/>
-                        </div>
-                        <div class="col-2">
-                            <br/><br/><br/>
-                            <label for="incoterm" style="margin-top: 6px;" id="incoterm_lbl">Incoterm:</label><br/>
-<!--                            <label for="attachment" style="margin-top: 8px;">Attachment:</label><br/><br/>-->
-                            <br id="air_lbl1"></br>
-                            <br id="air_lbl2"></br>
-                            <br id="ocean_lbl1"></br>
-                            <br id="ocean_lbl2"></br>
 
-                            <label id="dg_bool" for="danger">Dangerous Goods:</label><br/>
+                            <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>
+<!--                            <input  id="target_etd_asap" name="target_etd_asap" type="checkbox" /><br/><br/>-->
 
+                            <label class="cont"  for="target_etd_asap_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="target_etd_asap_yes" name="target_etd_asap" value="yes" />
+                                    <span class="checkmark"></span>
+                                </label>
 
-<!--                            <div class="row" id="dangerous_goods_class">-->
+                            <label class="cont"  for="target_etd_asap_no" style="margin-right:10px;">No
+                                    <input type="radio" id="target_etd_asap_no" name="target_etd_asap" value="no" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
 
-                            <div id="dangerous_goods_class_lbl"><label id="dangerous_goods_class" class="dangerous_goods_class" for="dangerous_goods_class">Dangerous Goods Class:</label><br/><br/></div>
+<!--                            <select id="incoterm" name="freight_incoterm_id" class="form-control">-->
+<!--                                <option></option>-->
+<!--                                <t t-foreach="incoterms" t-as="inc">-->
+<!--                                    <option t-att-value="inc.id" t-esc="inc.name"/></t>-->
+<!--                            </select><br/>-->
 
-<!--                            </div>-->
+                            <label class="cont"  for="is_dangerous_goods_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="is_dangerous_goods_yes" name="is_dangerous_goods" value="yes" />
+                                    <span class="checkmark"></span>
+                                </label>
 
-                            <div id="goods_info"><label id="dng_info" for="danger_info">Dangerous Goods Info:</label><br/><br/></div>
+                            <label class="cont"  for="is_dangerous_goods_no" style="margin-right:10px;">No
+                                    <input type="radio" id="is_dangerous_goods_no" name="is_dangerous_goods" value="no" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
 
-                             <div id="trac_no_lb"><label id="trac_no_lbl" for="trac_no">Trucker No:</label><br/><br/></div>
-
-                            <div class="clearance_required"><label id="clearance_required" class="clearance_required" for="clearance_required">Clearance Required:</label><br/><br/></div>
-                            <div class="warehousing_storage"><label id="warehousing_storage" class="warehousing_storage" for="warehousing_storage">Warehousing / Storage:</label><br/><br/></div>
-
-                            <div id="rate_in_usd"><label for="rate_in_usd" style="margin-top: 2px;">Target Rate in USD:</label><br/><br/></div>
-
-
-                            <div id="gross_weight_kg"><label for="gross_weight_kg" style="margin-top: 8px;">Gross weight (KG):</label><br/><br/></div>
-
-                            <div id="number_of_packages_pallets"><label id="number_of_packages_pallets" for="number_of_packages_pallets">Number of packages / Pallets:</label><br/><br/></div>
-
-                            <div id="stackability"><label id="stackability" for="stackability">Stackability:</label><br/><br/></div>
-
-                            <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 4px;">Additional Requirements:</label><br/><br/></div>
-                            <div id="additional_comments"><label for="additional_description" style="margin-top: 3px;">Additional Comments:</label><br/><br/></div>
-                            <div id="por_origin_id_lbl"><label for="por_origin_id" style="margin-top: 3px;">POR /Origin:</label><br/><br/></div>
-                            <div id="pofd_destination_id_lbl"><label for="pofd_destination_id" style="margin-top: 3px;">POFD /Destination:</label><br/><br/></div>
-                            <div id="pod_id_lbl"><label for="pod_id" style="margin-top: 1px;">POD:</label><br/><br/></div>
-
-<!--                            <label for="move_type">Move Type:</label><br/><br/>-->
-<!--                            <label for="trac_no">Tracking Number:</label><br/><br/>-->
-
-                        </div>
-
-                        <div class="col-3">
-                            <br/><br/><br/>
-                            <select id="incoterm" name="freight_incoterm_id" required="True" class="form-control">
-                                <t t-foreach="incoterms" t-as="inc">
-                                    <option t-att-value="inc.id" t-esc="inc.name"/></t>
-                            </select>
-                            <br/>
-                            <br id="incoterm1"></br>
-
-                            <input  id="danger" name="danger" type="checkbox" /><br/><br/>
-
-                            <select id="dangerous_goods_class_field" name="dangerous_goods_class" class="dangerous_goods_class form-control">
+<!--                            <input  id="is_dangerous_goods" name="is_dangerous_goods" type="checkbox" /><br/>-->
+                            <select id="dangerous_goods_class_field_req" name="dangerous_goods_class" class="dangerous_goods_class form-control">
                                     <option value="class_1" >Class 1</option>
                                     <option value="class_2" >Class 2</option>
                                     <option value="class_3" >Class 3</option>
@@ -1276,78 +1002,123 @@
                                     <option value="class_7" >Class 7</option>
                                     <option value="class_8" >Class 8</option>
                                     <option value="class_9" >Class 9</option>
-                                </select>
+                                </select><br/>
 
-                            <textarea id="danger_info" style="resize: none;" name="dangerous_goods_notes" class="form-control"/>
+                            <textarea id="danger_info_req" style="resize: none;" name="dangerous_goods_notes" class="form-control"/>
+                        </div>
+                        <div class="col-2">
+                            <br/><br/>
+                            <div class="clearance_required"><b>Clearance Required:</b><br/><br/><br/><br/></div>
+                            <div class="warehousing_storage"><b>Warehousing / Storage:</b><br/><br/><br/><br/></div>
+                            <div id="rate_in_usd"><label for="rate_in_usd" >Target Rate in USD:</label><br/><br/></div>
+                            <div id="gross_weight_kg"><label for="gross_weight_kg" >Gross weight (KG):</label><br/><br/></div>
+                            <div id="number_of_packages_pallets"><label id="number_of_packages_pallets" for="number_of_packages_pallets">Number of packages / Pallets:</label><br/><br/></div>
+                            <div class="stackability"><b>Stackable:</b><br/><br/><br/></div>
+                            <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 7%;">Additional Requirements:</label><br/><br/></div>
+                            <div id="additional_comments"><label for="additional_description" >Additional Comments:</label><br/><br/></div>
+                            <div id="shipment_ready_date"><label for="shipment_ready_date" >Shipment Ready Date:</label><br/></div>
+                            <div class="shipment_ready_asap" style="margin-top: 6%;"><b>Shipment Ready Date ASAP:</b><br/><br/><br/></div>
+<!--                            <div id="shipment_ready_asap_lbl"><label for="shipment_ready_asap" >Shipment Ready Date ASAP:</label><br/></div>-->
+                            <div id="target_eta_lbl"><label for="target_eta" style="margin-top: 7%;">Target ETA:</label><br/><br/></div>
+                            <div class="target_eta_asap" style="margin-top: 6%;"><b>Target ETA ASAP:</b><br/><br/><br/><br/></div>
+<!--                            <div id="target_eta_asap_lbl"><label for="target_eta_asap">Target ETA ASAP:</label><br/><br/></div>-->
+<!--                            <div id="incoterm_lbl"><label for="incoterm" >Incoterm:</label><br/><br/><br/></div>-->
+                            <label for="temperature">Temperature:</label><br/><br/><br/><br/>
+                            <label id="set_temperature_lbl" for="set_temperature">Set Temperature:</label>
+                        </div>
 
-<!--                            <select id="move_type" name="move_type" required="True" class="form-control">-->
-<!--                                <t t-foreach="move_type" t-as="move">-->
-<!--                                    <option t-att-value="move.id" t-esc="move.name"/></t>-->
-<!--                            </select><br/>-->
+                        <div class="col-3">
+                            <br/><br/>
+                            <label class="cont"  for="clearance_required_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="clearance_required_yes" name="clearance_required" value="yes" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label>
 
-                            <input name="trucker_number" class="input-class form-control" id="trac_no" /><br/>
+                            <label class="cont"  for="clearance_required_no" style="margin-right:10px;">No
+                                    <input type="radio" id="clearance_required_no" name="clearance_required" value="no"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
 
-                            <select id="clearance_required" name="clearance_required" class="clearance_required form-control">
-                                <option value="yes" >Yes</option>
-                                <option value="no" >No</option>
-                            </select><br/>
+                            <label class="cont"  for="warehousing_storage_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="warehousing_storage_yes" name="warehousing" value="yes" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label>
 
-                            <select id="warehousing_storage" name="warehousing" class="warehousing_storage form-control">
-                                <option value="yes" >Yes</option>
-                                <option value="no" >No</option>
-                            </select><br/>
+                            <label class="cont"  for="warehousing_storage_no" style="margin-right:10px;">No
+                                    <input type="radio" id="warehousing_storage_no" name="warehousing" value="no"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
 
-                            <input id="rate_in_usd" name="target_rate" type="number" class="input-class form-control" /><br/><br/>
-
+                            <input id="rate_in_usd" name="target_rate" type="number" class="input-class form-control" /><br/>
                             <input id="gross_weight_kg" name="gross_weight" type="number" requied="True" class="input-class form-control" /><br/>
+                            <input id="number_of_packages_pallets" name="number_of_pallets_packages" type="number" class="input-class form-control" /><br/>
 
-                            <input id="number_of_packages_pallets" required="True" name="number_of_pallets_packages" type="number" class="input-class form-control" /><br/>
 
-<!--                            <select id="number_of_packages_pallets" name="number_of_packages_pallets" class="number_of_packages_pallets form-control">-->
-<!--                                <option value="number_of_packages_pallets_yes">Yes</option>-->
-<!--                                <option value="number_of_packages_pallets_no">No</option>-->
-<!--                            </select><br/>-->
+                            <label class="cont"  for="stackability_stackable" style="margin-right:10px;">Stackable
+                                    <input type="radio" id="stackability_stackable" name="stackability" value="stackable"/>
+                                    <span class="checkmark"></span>
+                                </label>
 
-                            <select id="stackability" name="stackability" class="form-control">
-                                <option value="" ></option>
-                                <option value="stackable" >Stackable</option>
-                                <option value="no_stackable" >NO Stackable</option>
-                            </select><br/>
+                            <label class="cont"  for="stackability_stackable_no" style="margin-right:10px;">No Stackable
+                                    <input type="radio" id="stackability_stackable_no" name="stackability" value="no_stackable"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
 
                             <textarea id="additional_requirement" name="additional_requirement" class="form-control"/><br/>
-
                             <textarea id="additional_description" name="additional_comments" class="form-control"/><br/>
-                            <select id="por_origin_id" name="por_origin_id" class="form-control">
-                                 <option></option>
-                                <t t-foreach="origins" t-as="origin">
-                                    <option t-att-value="origin.id" t-esc="origin.name"/></t>
-                            </select><br/>
-                            <select id="pofd_destination_id" name="pofd_destination_id" class="form-control">
-                                 <option></option>
-                                <t t-foreach="pofd_destinations" t-as="pofd_destination">
-                                    <option t-att-value="pofd_destination.id" t-esc="pofd_destination.name"/></t>
-                            </select><br/>
-                            <select id="pod_id" name="pod_id" class="form-control">
-                                 <option></option>
-                                <t t-foreach="pods" t-as="pod">
-                                    <option t-att-value="pod.id" t-esc="pod.name"/></t>
-                            </select><br/>
 
 
-<!--                            <input type="file" name="file_booking" multiple="false"-->
-<!--                                   accept="image/*,application/pdf,video/*"/>-->
-<!--                            <br/>-->
+
+                            <input name="shipment_ready_date" type="date" class="input-class form-control" id="shipment_ready_date" /><br/>
+
+                            <label class="cont"  for="shipment_ready_asap_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="shipment_ready_asap_yes" name="shipment_ready_asap" value="yes" />
+                                    <span class="checkmark"></span>
+                                </label>
+
+                            <label class="cont"  for="shipment_ready_asap_no" style="margin-right:10px;">No
+                                    <input type="radio" id="shipment_ready_asap_no" name="shipment_ready_asap" value="no" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+
+<!--                            <input  id="shipment_ready_asap" name="shipment_ready_asap" type="checkbox" /><br/><br/>-->
+                            <input name="target_eta" type="date" class="input-class form-control" id="target_eta" /><br/>
+
+                            <label class="cont"  for="target_eta_asap_yes" style="margin-right:10px;">Yes
+                                    <input type="radio" id="target_eta_asap_yes" name="target_eta_asap" value="yes" />
+                                    <span class="checkmark"></span>
+                                </label>
+
+
+                            <label class="cont"  for="target_eta_asap_no" style="margin-right:10px;">No
+                                    <input type="radio" id="target_eta_asap_no" name="target_eta_asap" value="no" checked="checked"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+<!--                            <input  id="target_eta_asap" name="target_eta_asap" type="checkbox" /><br/><br/>-->
+
+<!--                            ADDED-->
+                            <label class="cont"  for="temperature_celsius" style="margin-right:10px;">Celsius
+                                    <input type="radio" id="temperature_celsius" name="temperature" value="celsius"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                            <label class="cont"  for="temperature_fahrenheit" style="margin-right:10px;">Fahrenheit
+                                    <input type="radio" id="temperature_fahrenheit" name="temperature" value="fahrenheit"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+<!--        END-->
+<!--                            <select id="temperature" name="temperature" class="form-control">-->
+<!--                                <option value="" ></option>-->
+<!--                                <option value="celsius" >Celsius</option>-->
+<!--                                <option value="fahrenheit" >Fahrenheit</option>-->
+<!--                            </select><br/>-->
+                            <input id="set_temperature" name="set_temperature_value" type="number" class="input-class form-control"/><br/>
                         </div>
                         <div class="col-1">
-
                         </div>
                         <br/>
                     </div>
-                    <br/>
-                    <br/>
-<!--                    -->
-<!--                    -->
-<!--                    ENDDDDDDDDDDDDDDD-->
+                    <br/><br/>
                     <div class="col-12 row">
                         <div class="col-1">
                         </div>
@@ -1367,7 +1138,7 @@
         </t>
     </template>
 
-
+    <!--    Thank You Page-->
     <template id="portal_my_request_thank_you" name="Thank You">
         <t t-call="website.layout">
             <div id="wrap">
@@ -1375,7 +1146,6 @@
                     <br/><br/><br/>
                     <div class="col-md-12 text-center">
                         <h1>Your Request has been created.</h1>
-<!--                        <h4><a href="/freight_bookings">Click Here to check your bookings.</a> </h4>-->
                     </div>
                 </div>
             </div>
