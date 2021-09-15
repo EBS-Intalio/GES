@@ -96,14 +96,14 @@
 
                                         <field name="margin_per" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="margin_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
-                                        <field name="charge_total_amount"/>
+                                        <field name="charge_total_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="converted_amount" invisible="1"/>
                                     </tree>
                                 </field>
                             </page>
                         </notebook>
                         <group class="oe_subtotal_footer oe_right">
-                            <field name="total_charges"/>
+                            <field name="total_charges" attrs="{'invisible': [('state','!=','done')]}"/>
                         </group>
 
                         <group class="oe_subtotal_footer oe_right" style="margin-right:20px">

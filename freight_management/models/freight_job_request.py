@@ -366,11 +366,10 @@ class FreightJobRequest(models.Model):
                 'delivery_building': self.delivery_building,
                 'delivery_po_box': self.delivery_po_box,
                 'delivery_zip_code': self.delivery_zip_code,
-                'ocean_shipment_type': self.ocean_shipment,
+                # 'ocean_shipment_type': self.ocean_shipment,
                 'truck_ref': self.truck_ref,
                 'trucker': self.trucker.id and self.trucker.id,
                 'trucker_number': self.trucker_number,
-                'ocean_shipment_type': self.ocean_shipment,
                 'freight_request_id':self.id,
             }
         )

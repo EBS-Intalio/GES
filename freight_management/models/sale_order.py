@@ -96,5 +96,5 @@ class SalesOrder(models.Model):
 class SalesOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    visible_in_report = fields.Boolean('Visible')
+    visible_in_report = fields.Boolean('Visible', default=True)
     section_total = fields.Float(string='Section Total')
