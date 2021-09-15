@@ -6,7 +6,8 @@ class FreightPricingCharges(models.Model):
     _inherit = 'freight.pricing.charges'
     _description = 'Freight Pricing Charges'
 
-    freight_request_id = fields.Many2one('freight.job.request', 'Freight Request')
+    freight_request_id = fields.Many2one('freight.job.request', string='Freight Request')
+    freight_line_section_id = fields.Many2one('order.line.section', string='Section')
     different_amount = fields.Selection(related='pricing_id.different_amount')
     charge_amount_price_2 = fields.Monetary(currency_field='currency_id', string='Carrier 2')
     charge_amount_price_3 = fields.Monetary(currency_field='currency_id', string='Carrier 3')

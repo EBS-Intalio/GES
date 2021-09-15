@@ -17,20 +17,20 @@ class FreightPricing(models.Model):
     freight_transport = fields.Selection(related='freight_request_id.mode_of_transport')
 
     # See Fields
-    freight_shipping_line_id = fields.Many2one(related='freight_request_id.shipping_line_id')
-    freight_vessel_id = fields.Many2one(related='freight_request_id.vessel_id')
+    freight_shipping_line_id = fields.Many2one(related='freight_request_id.shipping_line_id', readonly=False)
+    freight_vessel_id = fields.Many2one(related='freight_request_id.vessel_id', readonly=False)
 
     # Land Fields
-    freight_trucker = fields.Many2one(related='freight_request_id.trucker')
-    freight_trucker_number = fields.Char(related='freight_request_id.trucker_number')
+    freight_trucker = fields.Many2one(related='freight_request_id.trucker', readonly=False)
+    freight_trucker_number = fields.Char(related='freight_request_id.trucker_number', readonly=False)
 
-    preferred_airline_id = fields.Many2one(related='freight_request_id.preferred_airline_id')
-    freight_flight_no = fields.Char(related='freight_request_id.flight_no')
+    preferred_airline_id = fields.Many2one(related='freight_request_id.preferred_airline_id', readonly=False)
+    freight_flight_no = fields.Char(related='freight_request_id.flight_no', readonly=False)
 
-    freight_additional_comments = fields.Text(related='freight_request_id.additional_comments')
+    freight_additional_comments = fields.Text(related='freight_request_id.additional_comments', readonly=False)
 
-    freight_target_etd = fields.Date(related='freight_request_id.target_etd')
-    freight_target_eta = fields.Date(related='freight_request_id.target_eta')
+    freight_target_etd = fields.Date(related='freight_request_id.target_etd', readonly=False)
+    freight_target_eta = fields.Date(related='freight_request_id.target_eta', readonly=False)
 
     sales_count = fields.Integer(string='Total Orders', compute='_compute_sales_orders')
     order_ids = fields.One2many('sale.order', 'pricing_id', string='Orders', copy=False)
@@ -130,14 +130,35 @@ class FreightPricing(models.Model):
             raise ValidationError('Request not found.')
         if not self.freight_request_id.partner_id:
             raise ValidationError('Customer Not set in the Request.')
+
         vals = []
-        for charges in self.charges_ids.filtered(lambda x: x.product_id):
+        count = 10
+        for charges in self.charges_ids.filtered(lambda x: x.product_id and not x.freight_line_section_id):
             description = self.env['sale.order.line'].get_sale_order_line_multiline_description_sale(charges.product_id)
 
             vals.append((0, 0, {'name': description,
                                 'product_id': charges.product_id.id,
                                 'product_uom_qty': 1,
+                                'sequence': count,
                                 'price_unit': charges.converted_amount}))
+            count += 1
+
+        section_ids = self.charges_ids.filtered(lambda x: x.product_id).mapped('freight_line_section_id')
+        for section in section_ids:
+            vals.append((0, 0, {'name': '%s'%section.name,
+                                'sequence': count,
+                                'display_type': 'line_section'}))
+            count += 1
+
+            for charges in self.charges_ids.filtered(lambda x: x.product_id and x.freight_line_section_id.id == section.id):
+                description = self.env['sale.order.line'].get_sale_order_line_multiline_description_sale(charges.product_id)
+                vals.append((0, 0, {'name': description,
+                                    'product_id': charges.product_id.id,
+                                    'product_uom_qty': 1,
+                                    'sequence': count,
+                                    'price_unit': charges.converted_amount}))
+                count += 1
+
         freight_request_id = self.freight_request_id
         if freight_request_id:
             vals = {
@@ -154,7 +175,6 @@ class FreightPricing(models.Model):
                     price_list_id = self.env['product.pricelist'].create({'name':'Default '+ self.currency_id.name+ ' Pricelist','currency_id':self.currency_id.id})
                     vals.update({'pricelist_id': price_list_id.id})
             order_quotation = self.env['sale.order'].create(vals)
-            # order_quotation.write({'order_line': vals})
             print("order_quotationorder_quotationorder_quotationorder_quotationorder_quotation", order_quotation)
         return True
 

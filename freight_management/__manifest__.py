@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.0.4',
+    'version': '14.0.0.5',
     'category': 'Freight',
     'description': """
                 Freight Management
                """,
     'sequence': 51,
-    'depends': ['mail', 'freight', 'crm', 'base', 'ebs_freight_pricing', 'sale_management'],
+    'depends': ['account', 'mail', 'freight', 'crm', 'base', 'ebs_freight_pricing', 'sale_management', 'web'],
     'author': 'Ever Business Solutions',
     'website': "http://www.ever-bs.com/",
     'data': [
@@ -26,7 +26,8 @@
         # "views/freight_por_origin.xml"
         "views/sale_order.xml",
         "report/sale_order_ges.xml",
-
+        "report/sale_order_report.xml",
+        "views/order_line_section.xml",
     ],
     'installable': True,
     'application': True,

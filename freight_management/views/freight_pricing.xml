@@ -85,6 +85,7 @@
                                 <field name="charges_ids" nolabel="1" widget="one2many" mode="tree">
                                     <tree string="Charges" editable="bottom">
                                         <field name="product_id" options="{'no_create_edit':1}"/>
+                                        <field name="freight_line_section_id" />
                                         <field name="currency_id"/>
                                         <field name="different_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="charge_amount" attrs="{'column_invisible': [('parent.different_amount','!=','price_1'), ('parent.state','=','done')]}"/>

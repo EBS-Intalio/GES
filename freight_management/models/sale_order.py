@@ -43,3 +43,58 @@ class SalesOrder(models.Model):
         if self.freight_request_id:
             self.freight_request_id.create_booking()
         return res
+
+    # def get_section_total(self,line):
+    #     for rec in self:
+    #         total = 0
+    #         for order_line in rec.order_line:
+    #             if line.sequence < order_line.sequence:
+    #                 if order_line.display_type:
+    #                     break
+    #                 if order_line.visible_in_report:
+    #                     total+=order_line.price_subtotal
+    #         return total
+
+
+    @api.model
+    def create(self, vals):
+        res = super(SalesOrder, self).create(vals)
+        res._compute_section_total_amount()
+        return res
+
+    def write(self, vals):
+        res = super(SalesOrder, self).write(vals)
+        self._compute_section_total_amount()
+        return res
+
+    def _compute_section_total_amount(self):
+        """
+        Compute total section amount
+        :return:
+        """
+        for line in self.order_line:
+            section_total = 0
+            line_sequence = line.sequence
+            if line.display_type == 'line_section':
+                available_sequence_line = line.order_id.order_line.filtered(
+                                                lambda ln: ln.display_type == 'line_section'
+                                                           and ln.sequence > line_sequence
+                                                           and ln.sequence != line_sequence).mapped('sequence')
+                if available_sequence_line:
+                    line_min_sections = min(available_sequence_line)
+                    section_total = sum(line.order_id.order_line.filtered(
+                                                lambda ln: ln.display_type == False and ln.sequence < line_min_sections
+                                                           and ln.sequence > line_sequence).mapped('price_subtotal'))
+                else:
+                    section_total = sum(line.order_id.order_line.filtered(
+                        lambda ln: ln.display_type == False and ln.sequence > line_sequence).mapped('price_subtotal'))
+            line.section_total = section_total
+
+
+
+
+class SalesOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    visible_in_report = fields.Boolean('Visible')
+    section_total = fields.Float(string='Section Total')

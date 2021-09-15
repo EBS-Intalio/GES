@@ -9,6 +9,54 @@
                 <field name="freight_type"/>
                 <field name="is_carrier"/>
             </field>
+<!--            <field name="vat" position="after">-->
+<!--                <group name="organization_type" string="Organization Type">-->
+<!--                    <field name="is_active_client"/>-->
+<!--                    <field name="is_national_account"/>-->
+<!--                    <field name="is_global_supplier"/>-->
+<!--                    <field name="is_temporary_act"/>-->
+<!--                    <field name="is_receivable"/>-->
+<!--                    <field name="is_payable"/>-->
+<!--                    <field name="is_shipper"/>-->
+<!--                    <field name="is_consignee"/>-->
+<!--                    <field name="is_transport_client"/>-->
+<!--                    <field name="is_warehouse"/>-->
+<!--                    <field name="is_carrier"/>-->
+<!--                    <field name="is_forwarder_Agent"/>-->
+<!--                    <field name="is_broker"/>-->
+<!--                    <field name="is_services"/>-->
+<!--                    <field name="is_competitor"/>-->
+<!--                    <field name="is_sales"/>-->
+<!--                    <field name="is_controlling_agent"/>-->
+<!--                </group>-->
+<!--            </field>-->
+<!--            <xpath expr="//notebook/page[@name='sales_purchases']" position="after">-->
+<!--                    <page name="a_receivable" string="A/R" attrs = "{'invisible':[('is_receivable','=',False)]}"></page>-->
+<!--                    <page name="a_payable" string="A/P" attrs = "{'invisible':[('is_payable','=',False)]}"></page>-->
+<!--                    <page name="shipper" string="Shipper" attrs = "{'invisible':[('is_shipper','=',False)]}"></page>-->
+<!--                    <page name="consignee" string="Consignee" attrs = "{'invisible':[('is_consignee','=',False)]}"></page>-->
+<!--                    <page name="warehouse" string="Warehouse" attrs = "{'invisible':[('is_warehouse','=',False)]}"></page>-->
+<!--                    <page name="fwd_agent" string="FWD/Agent" attrs = "{'invisible':[('is_forwarder_Agent','=',False)]}"></page>-->
+<!--                    <page name="carrier" string="Carrier" attrs = "{'invisible':[('is_carrier','=',False)]}"></page>-->
+<!--                    <page name="services" string="Services" attrs = "{'invisible':[('is_services','=',False)]}"></page>-->
+<!--                    <page name="sales" string="Sales" attrs = "{'invisible':[('is_sales','=',False)]}"></page>-->
+<!--                    <page name="competitor" string="Competitor" attrs = "{'invisible':[('is_competitor','=',False)]}"></page>-->
+<!--                    <page name="workflow_training" string="Workflow &amp; Training" attrs = "{'invisible':[('is_controlling_agent','=',False)]}"></page>-->
+<!--                    <page name="custom" string="Custom"></page>-->
+<!--                    <page name="doc_data" string="DOC Data"></page>-->
+<!--                    <page name="e_doc" string="eDocs"></page>-->
+<!--                    <page name="notes_ges" string="Notes"></page>-->
+<!--                    <page name="logs" string="Logs"></page>-->
+<!--                    <page name="details" string="Details"></page>-->
+<!--                    <page name="staff_assignments" string="Staff Assignments"></page>-->
+<!--                    <page name="web_security" string="Web Security"></page>-->
+<!--                    <page name="rating" string="Rating"></page>-->
+<!--                    <page name="sup_ch_security" string="Supply Chain Security(AE)"></page>-->
+<!--                    <page name="config" string="Config"></page>-->
+<!--                    <page name="related_parties" string="Related Parties"></page>-->
+<!--                    <page name="web" string="Web"></page>-->
+<!--                    <page name="custom_fields" string="Custom Fields"></page>-->
+<!--            </xpath>-->
         </field>
     </record>
 </odoo>
