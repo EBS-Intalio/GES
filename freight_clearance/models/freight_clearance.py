@@ -54,5 +54,5 @@ class FreightClearance(models.Model):
 
     road_shipment_type = fields.Selection(([('ltl', 'LTL'), ('ftl', 'FTL')]), string='Road Shipment Type', track_visibility='onchange')
     shipment_type = fields.Selection(([('fcl', 'FCL'), ('roro', 'Roro'), ('liquid', 'Liquid'), ('bulk', 'Bulk'), ('breakbulk', 'Breakbulk')]), string='Ocean Shipment Type', track_visibility='onchange')
-    pofd_destination_id = fields.Many2one('freight.pofd.destination', string="Final Destination", track_visibility='onchange')
+    destination_airport_id = fields.Many2one('freight.port', string="Final Destination", track_visibility='onchange')
     additional_comments = fields.Text("Additional Comments", track_visibility='onchange')

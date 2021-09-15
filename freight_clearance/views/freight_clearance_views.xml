@@ -30,7 +30,7 @@
                                 <field name="transport" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}" widget="radio"/>
                             </group>
                             <group>
-                                <field name="pofd_destination_id" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="destination_airport_id" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}"/>
                                 <field name="pol_id" attrs="{'readonly': [('state','=','confirm')]}"/>
                                 <field name="pod_id" attrs="{'readonly': [('state','=','confirm')]}"/>
                                 <field name="etd" attrs="{'readonly': [('state','=','confirm')]}"/>
