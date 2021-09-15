@@ -104,7 +104,7 @@ class FreightJobRequest(models.Model):
                                          ('cartons', 'Cartons'),
                                          ('bulk', 'Bulk'),
                                          ('drums', 'Drums'),
-                                         ('other', 'Others  (Please specify)')], string="Packaging Type", required=True)
+                                         ('other', 'Others  (Please specify)')], string="Packaging Type")
 
 
     country_id = fields.Many2one('res.country', string='Country')
