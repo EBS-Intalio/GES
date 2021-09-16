@@ -24,7 +24,7 @@
                                 <field name="freight_related" attrs="{'readonly': [('state','=','confirm')]}" />
                                 <field name="request_id" attrs="{'invisible': [('freight_related','!=',True)], 'required' : [('freight_related', '=', True)], 'readonly': [('state','=','confirm')]}"/>
                                 <field name="shipping_documents" attrs="{'readonly': [('state','=','confirm')]}" />
-                                <field name="original_copy" attrs="{'invisible': [('shipping_documents','!=',True)], 'required' : [('shipping_documents', '=', True)], 'readonly': [('state','=','confirm')]}"/>
+                                <field name="original_copy" attrs="{'invisible': [('shipping_documents','!=',True)], 'required' : [('shipping_documents', '=', True)], 'readonly': [('state','=','confirm')]}" widget="radio"/>
                                 <field name="bl_copy" attrs="{'readonly': [('state','=','confirm')]}" />
                                 <br />
                                 <field name="transport" attrs="{'invisible': [('clearance_type','!=','indian')], 'required' : [('clearance_type', '=', 'indian')], 'readonly': [('state','=','confirm')]}" widget="radio"/>

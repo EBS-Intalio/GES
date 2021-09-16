@@ -7,4 +7,4 @@ class FreightJobRequestInherit(models.Model):
 
     bl_copy = fields.Boolean("BL Copy Available ?")
     shipping_documents = fields.Boolean("Shipping Documents")
-    original_copy = fields.Boolean("Original/Copy")
+    original_copy = fields.Selection(([('original', 'Original'), ('copy', 'Copy')]), string='Original/Copy')

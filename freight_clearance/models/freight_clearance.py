@@ -31,8 +31,7 @@ class FreightClearance(models.Model):
     etd = fields.Date("ETD", required=True, track_visibility='onchange')
     bl_copy = fields.Boolean("BL Copy Available ?", track_visibility='onchange')
     shipping_documents = fields.Boolean("Shipping Documents", track_visibility='onchange')
-    original_copy = fields.Boolean("Original/Copy", track_visibility='onchange')
-    #contact person
+    original_copy = fields.Selection(([('original', 'Original'), ('copy', 'Copy')]), string='Original/Copy', track_visibility='onchange')    #contact person
     first_name = fields.Char("First Name", required=True)
     family_name = fields.Char("Family Name", required=True)
     email = fields.Char("Email Address", required=True)
