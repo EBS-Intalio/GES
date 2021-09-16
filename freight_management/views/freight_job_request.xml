@@ -126,7 +126,7 @@
                                 <group>
                                     <field name="is_web_request" invisible="1"/>
                                     <field name="job_type"/>
-                                    <field name="partner_id" />
+                                    <field name="partner_id" required="1"/>
                                     <field name="service_level"/>
                                     <field name="package_type_id" />
                                     <field name="clearance_required" widget="radio"/>
@@ -171,7 +171,7 @@
                                     <field name="commodity_description"/>
                                     <field name="freight_hs_code_ids" widget="many2many_tags"/>
                                     <field name="gross_weight"/>
-                                    <field name="weight_type" widget="radio"/>
+                                    <field name="weight_type" widget="radio" required="1"/>
                                     <field name="number_of_pallets_packages"/>
                                     <field name="stackability" widget="radio"/>
                                     <field name="additional_requirements" />

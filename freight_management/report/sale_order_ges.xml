@@ -58,7 +58,7 @@
                                         </td>
                                         <td style="text-align:left;border:1px solid black">
 <!--                                            <t t-if = "o.freight_request_id.booking_id">-->
-                                                <span t-field="o.freight_request_id.booking_id and o.freight_request_id.booking_id.commodity_description"/>
+                                                <span t-field="o.freight_request_id and o.freight_request_id.commodity_description"/>
 <!--                                            </t>-->
                                         </td>
                                         <td style="text-align:left;border:1px solid black;background-color:#7d9fc8">
@@ -143,16 +143,28 @@
                                         style="width:100%;border:1px solid black">
                                     <tr style="background-color:#7d9fc8">
                                         <td colspan="5" style="text-align:center;border:1px solid black">
-                                            <t t-if="o.freight_request_id.booking_id and o.freight_request_id.booking_id.transport=='air'">
-                                                <span>AIR RATES AND SERVICES</span>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='air'">
+                                                <span>Air</span>
                                             </t>
-                                            <t t-if="o.freight_request_id.booking_id and o.freight_request_id.booking_id.transport=='ocean'">
-                                                <span>OCEAN RATES AND SERVICES</span>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='ocean'">
+                                                <span>Sea</span>
                                             </t>
-                                            <t t-if="o.freight_request_id.booking_id and o.freight_request_id.booking_id.transport=='land'">
-                                                <span>LAND RATES AND SERVICES</span>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='land'">
+                                                <span>Road</span>
                                             </t>
 
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='sea_then_air'">
+                                                <span>Sea then Air</span>
+                                            </t>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='air_then_sea'">
+                                                <span>Air then Sea</span>
+                                            </t>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='rail'">
+                                                <span>Rail</span>
+                                            </t>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='courier'">
+                                                <span>Courier</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr style="background-color:#838383">
@@ -165,13 +177,13 @@
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;border:1px solid black">
-                                            <span t-field="o.freight_request_id.booking_id and o.freight_request_id.booking_id.source_location_id.name"/>
+                                            <span t-field="o.freight_request_id and o.freight_request_id.origin_airport_id.name"/>
                                         </td>
                                         <td style="text-align:center;border:1px solid black">
-                                            <span t-field="o.freight_request_id.booking_id and o.freight_request_id.booking_id.destination_location_id.name"/>
+                                            <span t-field="o.freight_request_id and o.freight_request_id.destination_airport_id.name"/>
                                         </td>
                                         <td style="text-align:center;border:1px solid black">
-                                            <span t-field="o.freight_request_id.booking_id and o.freight_request_id.booking_id.package_type_id and o.freight_request_id.booking_id.package_type_id.name"/>
+                                            <span t-field="o.freight_request_id and o.freight_request_id.package_type_id"/>
                                         </td>
                                         <td style="text-align:center;border:1px solid black">Service Frequency</td>
                                         <td style="text-align:center;border:1px solid black"><span t-esc="o.amount_total"/></td>
@@ -183,21 +195,24 @@
                                 <table
                                         style="width:86%;border:1px solid black">
                                     <tr style="background-color:#7d9fc8">
-                                        <td colspan="4" style="text-align:center;border:1px solid black">
+                                        <td colspan="5" style="text-align:center;border:1px solid black">
                                             F/B Fees
                                         </td>
                                     </tr>
                                     <tr style="background-color:#838383">
                                         <td style="text-align:center;border:1px solid black">Type</td>
                                         <td style="text-align:center;border:1px solid black">Descriptionn</td>
+                                        <td style="text-align:center;border:1px solid black">Tax</td>
                                         <td style="text-align:center;border:1px solid black">Fee</td>
                                         <td style="text-align:center;border:1px solid black">Fee Type</td>
-
                                     </tr>
                                     <t t-foreach="o.order_line" t-as="line">
                                     <tr>
                                         <td style="text-align:center;border:1px solid black"><span t-esc="line.product_id.name"/></td>
                                         <td style="text-align:center;border:1px solid black"><span t-esc="line.name"/></td>
+                                        <td name="td_taxes" style="text-align:center;border:1px solid black" class="text-right">
+                                            <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
+                                        </td>
                                         <td style="text-align:center;border:1px solid black"><span t-esc="line.price_subtotal"/></td>
                                         <td style="text-align:center;border:1px solid black">Per Document</td>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-	<record id="freight_management_res_partner_form_view" model="ir.ui.view">
+    <record id="freight_management_res_partner_form_view" model="ir.ui.view">
         <field name="name">freight_management.res.partner.form.view</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
@@ -9,54 +9,175 @@
                 <field name="freight_type"/>
                 <field name="is_carrier"/>
             </field>
-<!--            <field name="vat" position="after">-->
-<!--                <group name="organization_type" string="Organization Type">-->
-<!--                    <field name="is_active_client"/>-->
-<!--                    <field name="is_national_account"/>-->
-<!--                    <field name="is_global_supplier"/>-->
-<!--                    <field name="is_temporary_act"/>-->
-<!--                    <field name="is_receivable"/>-->
-<!--                    <field name="is_payable"/>-->
-<!--                    <field name="is_shipper"/>-->
-<!--                    <field name="is_consignee"/>-->
-<!--                    <field name="is_transport_client"/>-->
-<!--                    <field name="is_warehouse"/>-->
-<!--                    <field name="is_carrier"/>-->
-<!--                    <field name="is_forwarder_Agent"/>-->
-<!--                    <field name="is_broker"/>-->
-<!--                    <field name="is_services"/>-->
-<!--                    <field name="is_competitor"/>-->
-<!--                    <field name="is_sales"/>-->
-<!--                    <field name="is_controlling_agent"/>-->
+<!--            <xpath expr="//form/sheet/group" position="inside">-->
+<!--                <group name="organization_type" string="Organization Type" style="width:100%;">-->
+<!--                    <group style="width:33%">-->
+<!--                        <field name="is_national_account" attrs="{'invisible':[('is_global_supplier','=',True)]}"/>-->
+<!--                        <field name="is_global_supplier" attrs="{'invisible':[('is_national_account','=',True)]}"/>-->
+<!--                        <field name="is_temporary_act"/>-->
+<!--                        <field name="is_receivable"/>-->
+<!--                        <field name="is_payable"/>-->
+<!--                        <field name="is_shipper"/>-->
+
+<!--                    </group>-->
+<!--                    <group style="width:33%">-->
+<!--                        <field name="is_consignee"/>-->
+<!--                        <field name="is_transport_client"/>-->
+<!--                        <field name="is_warehouse"/>-->
+<!--                        <field name="is_carrier"/>-->
+<!--                        <field name="is_forwarder_Agent"/>-->
+<!--                        <field name="is_broker"/>-->
+
+<!--                    </group>-->
+<!--                    <group style="width:33%">-->
+<!--                        <field name="is_services"/>-->
+<!--                        <field name="is_competitor"/>-->
+<!--                        <field name="is_sales"/>-->
+<!--                        <field name="is_controlling_agent"/>-->
+<!--                    </group>-->
+
+
 <!--                </group>-->
-<!--            </field>-->
-<!--            <xpath expr="//notebook/page[@name='sales_purchases']" position="after">-->
-<!--                    <page name="a_receivable" string="A/R" attrs = "{'invisible':[('is_receivable','=',False)]}"></page>-->
-<!--                    <page name="a_payable" string="A/P" attrs = "{'invisible':[('is_payable','=',False)]}"></page>-->
-<!--                    <page name="shipper" string="Shipper" attrs = "{'invisible':[('is_shipper','=',False)]}"></page>-->
-<!--                    <page name="consignee" string="Consignee" attrs = "{'invisible':[('is_consignee','=',False)]}"></page>-->
-<!--                    <page name="warehouse" string="Warehouse" attrs = "{'invisible':[('is_warehouse','=',False)]}"></page>-->
-<!--                    <page name="fwd_agent" string="FWD/Agent" attrs = "{'invisible':[('is_forwarder_Agent','=',False)]}"></page>-->
-<!--                    <page name="carrier" string="Carrier" attrs = "{'invisible':[('is_carrier','=',False)]}"></page>-->
-<!--                    <page name="services" string="Services" attrs = "{'invisible':[('is_services','=',False)]}"></page>-->
-<!--                    <page name="sales" string="Sales" attrs = "{'invisible':[('is_sales','=',False)]}"></page>-->
-<!--                    <page name="competitor" string="Competitor" attrs = "{'invisible':[('is_competitor','=',False)]}"></page>-->
-<!--                    <page name="workflow_training" string="Workflow &amp; Training" attrs = "{'invisible':[('is_controlling_agent','=',False)]}"></page>-->
-<!--                    <page name="custom" string="Custom"></page>-->
-<!--                    <page name="doc_data" string="DOC Data"></page>-->
-<!--                    <page name="e_doc" string="eDocs"></page>-->
-<!--                    <page name="notes_ges" string="Notes"></page>-->
-<!--                    <page name="logs" string="Logs"></page>-->
-<!--                    <page name="details" string="Details"></page>-->
-<!--                    <page name="staff_assignments" string="Staff Assignments"></page>-->
-<!--                    <page name="web_security" string="Web Security"></page>-->
-<!--                    <page name="rating" string="Rating"></page>-->
-<!--                    <page name="sup_ch_security" string="Supply Chain Security(AE)"></page>-->
-<!--                    <page name="config" string="Config"></page>-->
-<!--                    <page name="related_parties" string="Related Parties"></page>-->
-<!--                    <page name="web" string="Web"></page>-->
-<!--                    <page name="custom_fields" string="Custom Fields"></page>-->
 <!--            </xpath>-->
+<!--            <xpath expr="//notebook/page[@name='sales_purchases']" position="after">-->
+<!--                <page name="a_receivable" string="A/R" attrs="{'invisible':[('is_receivable','=',False)]}"></page>-->
+<!--                <page name="a_payable" string="A/P" attrs="{'invisible':[('is_payable','=',False)]}"></page>-->
+<!--                <page name="shipper" string="Shipper" attrs="{'invisible':[('is_shipper','=',False)]}"></page>-->
+<!--                <page name="consignee" string="Consignee" attrs="{'invisible':[('is_consignee','=',False)]}"></page>-->
+<!--                <page name="warehouse" string="Warehouse" attrs="{'invisible':[('is_warehouse','=',False)]}"></page>-->
+<!--                <page name="fwd_agent" string="FWD/Agent"-->
+<!--                      attrs="{'invisible':[('is_forwarder_Agent','=',False)]}"></page>-->
+<!--                <page name="carrier" string="Carrier" attrs="{'invisible':[('is_carrier','=',False)]}"></page>-->
+<!--                <page name="services" string="Services" attrs="{'invisible':[('is_services','=',False)]}"></page>-->
+<!--                <page name="sales" string="Sales" attrs="{'invisible':[('is_sales','=',False)]}"></page>-->
+<!--                <page name="competitor" string="Competitor" attrs="{'invisible':[('is_competitor','=',False)]}"></page>-->
+<!--                <page name="workflow_training" string="Workflow &amp; Training"-->
+<!--                      attrs="{'invisible':[('is_controlling_agent','=',False)]}"></page>-->
+<!--                <page name="custom" string="Custom"></page>-->
+<!--                <page name="doc_data" string="DOC Data"></page>-->
+<!--                <page name="e_doc" string="eDocs"></page>-->
+<!--                <page name="notes_ges" string="Notes"></page>-->
+<!--                <page name="logs" string="Logs"></page>-->
+<!--                <page name="details" string="Details"></page>-->
+<!--                <page name="staff_assignments" string="Staff Assignments"></page>-->
+<!--                <page name="web_security" string="Web Security"></page>-->
+<!--                <page name="rating" string="Rating"></page>-->
+<!--                <page name="sup_ch_security" string="Supply Chain Security(AE)"></page>-->
+<!--                <page name="config" string="Config"></page>-->
+<!--                <page name="related_parties" string="Related Parties"></page>-->
+<!--                <page name="web" string="Web"></page>-->
+<!--                <page name="custom_fields" string="Custom Fields"></page>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='child_ids']/form/sheet/group" position="after">-->
+<!--                <group string="Address Capabilities" style="width=100%">-->
+<!--                    <group style="width=50%">-->
+<!--                        <field name="account_pay_mail_addr"/>-->
+<!--                        <field name="account_rec_mail_addr"/>-->
+<!--                        <field name="awb_addr"/>-->
+<!--                        <field name="cust_addr_rec"/>-->
+<!--                        <field name="cons_del_addr"/>-->
+<!--                        <field name="misc_addrr"/>-->
+<!--                    </group>-->
+<!--                    <group style="width=50%">-->
+<!--                        <field name="office_addr"/>-->
+<!--                        <field name="cons_pick_del_addr"/>-->
+<!--                        <field name="cust_pick_rec"/>-->
+<!--                        <field name="postal_addr"/>-->
+<!--                        <field name="res_addr"/>-->
+<!--                        <field name="mailing_addr_sales_update"/>-->
+<!--                    </group>-->
+
+
+<!--                </group>-->
+<!--                <notebook>-->
+<!--                    <page string="Loading/Unloading Constraints" name="load_unload_constraints">-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field name="access_point"/>-->
+<!--                                <field name="communication"/>-->
+<!--                                <field name="dock_height"/>-->
+<!--                                <div class="oe_row" name="Service Duration">-->
+<!--                                    <label for="service_duration" string="Service Duration(minutes)"/>-->
+<!--                                    <label for="service_duration_default" string="Ovewrride Registry Default"/>-->
+<!--                                    <field name="service_duration_default" nolabel="1"/>-->
+<!--                                    <field name="service_duration" nolabel="1" style="width:20%"/>-->
+
+<!--                                </div>-->
+
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <field name="container_handling"/>-->
+<!--                                <field name="labour_required"/>-->
+<!--                                <field name="reports_own_vgm"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                        <field name="further_constraints" string="Further Constraints" /></group>-->
+<!--                    </page>-->
+<!--                    <page string="Warehouse Equipment" name="warehouse_equipment">-->
+<!--                        <group style="width:100%">-->
+<!--                            <group style="width:33%">-->
+<!--                                <field name="has_dock_leveler"/>-->
+<!--                            </group>-->
+<!--                            <group style="width:33%">-->
+<!--                                <field name="has_pallect_jack"/>-->
+<!--                            </group>-->
+<!--                            <group style="width:33%">-->
+<!--                                <field name="has_fork_lift"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                        <field name="other_warehouse_fac"/></group>-->
+<!--                    </page>-->
+<!--                    <page string="Drop Mode" name="drop_mode">-->
+<!--                        <group string="Port Transport Drop Mode">-->
+<!--                            <field name="air_freight" style="width:33%"/>-->
+<!--                            <field name="lcl_freight" style="width:33%"/>-->
+<!--                            <field name="fcl_freight" style="width:33%"/>-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                    <page string="Pickup &amp; Delivery" name="pickup_delivery">-->
+<!--                        <group string="Delivery">-->
+<!--                            <field name="auth_to_leave" style="width:33%"/>-->
+<!--                        </group>-->
+<!--                        <group string='Pickup and Delivery Times'>-->
+<!--                            <field name="pickup_and_delivery_times" widget="radio"/>-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                    <page string="GPS" name="gps">-->
+<!--                        <group string="Coordinates">-->
+<!--                            <field name="longitude" style="width:33%"/>-->
+<!--                            <field name="latitude" style="width:33%"/>-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                    <page string="Delivery Route" name="delivery_route">-->
+<!--                        <group>-->
+<!--                            <field name="delivery_route" style="width:33%"/>-->
+<!--                            <field name="route_seq" style="width:33%"/>-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                    <page string="Free Waiting" name="free_waiting">-->
+<!--                        <group>-->
+<!--                            <field name="use_cumulative" style="width:33%"/>-->
+<!--                            <field name="free_waiting_ids">-->
+<!--                                <tree editable="bottom">-->
+<!--                                    <field name="partner_id" invisible="1"/>-->
+<!--                                    <field name="container_type_id"/>-->
+<!--                                    <field name="drop_mode"/>-->
+<!--                                    <field name="cfs"/>-->
+<!--                                    <field name="cne"/>-->
+<!--                                    <field name="cnr"/>-->
+<!--                                    <field name="cto"/>-->
+<!--                                    <field name="cyd"/>-->
+<!--                                    <field name="other"/>-->
+<!--                                </tree>-->
+<!--                            </field>-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                </notebook>-->
+<!--            </xpath>-->
+
         </field>
     </record>
 </odoo>

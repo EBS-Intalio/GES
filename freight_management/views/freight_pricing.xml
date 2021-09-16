@@ -67,7 +67,8 @@
                                 <field name="rout" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
                                 <field name="freight_trucker" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
                                 <field name="freight_trucker_number" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
-                                <field name="carrier_ids" widget="many2many_tags" attrs="{'invisible': [('state','!=','done')]}" domain="[('is_carrier', '=', True)]"/>
+<!--                                <field name="carrier_ids" widget="many2many_tags" attrs="{'invisible': [('state','!=','done')]}" domain="[('is_carrier', '=', True)]"/>-->
+                                <field name="carrier_ids" widget="many2many_tags" domain="[('is_carrier', '=', True)]"/>
                             </group>
 
                         </group>

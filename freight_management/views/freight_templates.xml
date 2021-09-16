@@ -951,7 +951,7 @@
                             <textarea id="commodity_description" name="commodity_description" required="True" class="form-control"/><br/>
 
                             <label class="cont"  for="weight_type_yes" style="margin-right:10px;">Estimated
-                                    <input type="radio" id="weight_type_yes" name="weight_type" value="estimated"/>
+                                    <input type="radio" id="weight_type_yes" checked="checked"  name="weight_type" value="estimated"/>
                                     <span class="checkmark"></span>
                                 </label>
 

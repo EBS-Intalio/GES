@@ -1,0 +1,3 @@
+*.pyc 
+*.uuid
+.DS_Store

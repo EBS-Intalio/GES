@@ -8,7 +8,7 @@
 ###################################################################################
 {
     'name': 'Freight Management',
-    'version': '14.1',
+    'version': '14.2',
     'category': 'freight',
     'price': 790.00,
     'currency': 'EUR',

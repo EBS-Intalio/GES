@@ -185,7 +185,7 @@ class FreightJobRequest(models.Model):
     booking_id = fields.Many2one('freight.booking','BookingId')
     is_booking_done = fields.Boolean('Booking Done')
     is_web_request = fields.Boolean(string="Is Created From Website?", default=False)
-    weight_type = fields.Selection([('estimated', 'Estimated'), ('actual', 'Actual')], string="Weight Type")
+    weight_type = fields.Selection([('estimated', 'Estimated'), ('actual', 'Actual')], default="estimated", string="Weight Type")
 
     def action_view_sales_order(self):
         """

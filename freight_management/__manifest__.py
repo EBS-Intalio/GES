@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.0.7',
+    'version': '14.0.0.8',
     'category': 'Freight',
     'description': """
                 Freight Management
@@ -28,6 +28,7 @@
         "report/sale_order_ges.xml",
         "report/sale_order_report.xml",
         "views/order_line_section.xml",
+        # "views/container_type.xml",
     ],
     'installable': True,
     'application': True,
