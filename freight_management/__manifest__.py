@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.0.8',
+    'version': '14.0.0.9',
     'category': 'Freight',
     'description': """
                 Freight Management
