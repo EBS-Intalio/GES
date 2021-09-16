@@ -28,7 +28,7 @@
         "report/sale_order_ges.xml",
         "report/sale_order_report.xml",
         "views/order_line_section.xml",
-        # "views/container_type.xml",
+        "views/container_type.xml",
     ],
     'installable': True,
     'application': True,

@@ -11,8 +11,8 @@
                 <field name="aed_total_price" attrs="{'invisible':[('currency_name','!=','USD')]}"/>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="contact_id" domain="[('parent_id','=',partner_id)]"/>
-                <field name="customer_representative_id" domain="[('parent_id','=',False),('is_company','=',False)]"/>
+                <field name="contact_id" />
+                <field name="customer_representative_id"/>
             </xpath>
             <xpath expr="//group[@name='sale_info']" position="after">
                 <group name = 'freight_note' string="Freight Note">

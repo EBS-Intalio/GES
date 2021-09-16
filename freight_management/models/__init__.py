@@ -14,4 +14,4 @@ from . import sale_order
 # from . import freight_por_origin
 from . import freight_booking
 from . import sale_order_template
-# from . import container_type
+from . import container_type
