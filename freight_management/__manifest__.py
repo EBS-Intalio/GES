@@ -29,6 +29,7 @@
         "report/sale_order_report.xml",
         "views/order_line_section.xml",
         "views/container_type.xml",
+        "views/freight_package.xml"
     ],
     'installable': True,
     'application': True,

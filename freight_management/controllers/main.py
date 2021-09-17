@@ -268,6 +268,11 @@ class RequestCustom(http.Controller):
                 final_dict['inland_shipment'] = post.get('land')
             if post.get('mode_of_transport') == 'rail':
                 final_dict['rail_shipment_type'] = post.get('rail')
+            if post.get('mode_of_transport') == 'sea_then_air':
+                final_dict['sea_then_air_shipment'] = post.get('sea_then_air')
+            if post.get('mode_of_transport') == 'air_then_sea':
+                final_dict['air_then_sea_shipment'] = post.get('air_then_sea')
+
             final_dict['vehicle_size'] = post.get('vehicle_size')
             final_dict['vehicle_type'] = post.get('vehicle_type')
 

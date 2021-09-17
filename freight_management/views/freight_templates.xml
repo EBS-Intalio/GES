@@ -99,10 +99,10 @@
                                                 <span style="font-size:15px;background-color: hotpink;" class="badge badge-primary" t-field="f_request.mode_of_transport"/>
                                             </t>
                                             <t t-if="f_request.mode_of_transport == 'sea_then_air'">
-                                                <span style="font-size:15px;background-color: sienna;" class="badge badge-success"  t-field="f_request.mode_of_transport"/>
+                                                <span style="font-size:15px;background-color: #757575;" class="badge badge-success"  t-field="f_request.mode_of_transport"/>
                                             </t>
                                             <t t-if="f_request.mode_of_transport == 'air_then_sea'">
-                                                <span style="font-size:15px;background-color: brown;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
+                                                <span style="font-size:15px;background-color: #728C00;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
                                             </t>
                                             <t t-if="f_request.mode_of_transport == 'courier'">
                                                 <span style="font-size:15px;background-color: darkorange;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
@@ -165,6 +165,14 @@
                         <t t-if="f_request.mode_of_transport =='rail'">
                             <span><b>Rail Shipment Type:</b> <span t-field="f_request.rail_shipment_type"/> </span>
                         </t>
+
+                        <t t-if="f_request.mode_of_transport =='sea_then_air'">
+                            <span><b>Sea then Air Shipment Type:</b> <span t-field="f_request.sea_then_air_shipment"/> </span>
+                        </t>
+                        <t t-if="f_request.mode_of_transport =='air_then_sea'">
+                            <span><b>Air then Sea Shipment Type:</b> <span t-field="f_request.air_then_sea_shipment"/> </span>
+                        </t>
+
                         <br/><br/>
                     </div>
 
@@ -438,7 +446,7 @@
 
 <!--                            ADDED-->
                             <label  class="cont" for="sea_then_air" style="margin-right:10px;">Sea then Air
-                                <input type="radio" id="sea_then_air" name="mode_of_transport" checked="checked"  value="sea_then_air"/>
+                                <input type="radio" id="sea_then_air" name="mode_of_transport" value="sea_then_air"/>
                                 <span class="checkmark"></span>
                             </label>
 
@@ -538,6 +546,77 @@
 
 
                             </div>
+
+                            <div id="req_sea_then_air_div" >
+                                <b style="color:#7C7BAD;">Sea then Air Shipment Type:</b><br/><br/>
+
+                                <label class="cont"  for="sea_then_air_fcl" style="margin-right:10px;">FCL
+                                    <input type="radio" id="sea_then_air_fcl" name="sea_then_air" value="fcl"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="sea_then_air_lcl" style="margin-right:10px;">LCL
+                                    <input type="radio" id="sea_then_air_lcl" name="sea_then_air" value="lcl"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="sea_then_air_breakbulk" style="margin-right:10px;">Breakbulk
+                                    <input type="radio" id="sea_then_air_breakbulk" name="sea_then_air" value="breakbulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="sea_then_air_liquid" style="margin-right:10px;">Liquid
+                                    <input type="radio" id="sea_then_air_liquid" name="sea_then_air" value="liquid"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="sea_then_air_bulk" style="margin-right:10px;">Bulk
+                                    <input type="radio" id="sea_then_air_bulk" name="sea_then_air" value="bulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="sea_then_air_roro" style="margin-right:10px;">Roro
+                                    <input type="radio" id="sea_then_air_roro" name="sea_then_air" value="roro"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+
+                            </div>
+                            <div id="req_air_then_sea_div" >
+                                <b style="color:#7C7BAD;">Air then Sea Shipment Type:</b><br/><br/>
+
+                                <label class="cont"  for="air_then_sea_fcl" style="margin-right:10px;">FCL
+                                    <input type="radio" id="air_then_sea_fcl" name="air_then_sea" value="fcl"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="air_then_sea_lcl" style="margin-right:10px;">LCL
+                                    <input type="radio" id="air_then_sea_lcl" name="air_then_sea" value="lcl"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="air_then_sea_breakbulk" style="margin-right:10px;">Breakbulk
+                                    <input type="radio" id="air_then_sea_breakbulk" name="air_then_sea" value="breakbulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="air_then_sea_liquid" style="margin-right:10px;">Liquid
+                                    <input type="radio" id="air_then_sea_liquid" name="air_then_sea" value="liquid"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="air_then_sea_bulk" style="margin-right:10px;">Bulk
+                                    <input type="radio" id="air_then_sea_bulk" name="air_then_sea" value="bulk"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <label class="cont"  for="air_then_sea_roro" style="margin-right:10px;">Roro
+                                    <input type="radio" id="air_then_sea_roro" name="air_then_sea" value="roro"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                            </div>
+
                             <div id="req_land_div">
                                 <b style="color:#7C7BAD;">Road Shipment Type:</b><br/><br/>
 

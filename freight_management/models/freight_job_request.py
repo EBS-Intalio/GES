@@ -30,6 +30,19 @@ class FreightJobRequest(models.Model):
                                       ('bulk', 'Bulk'),
                                       ('roro', 'Roro')], string='Ocean Shipment Type')
     inland_shipment = fields.Selection([('ftl', 'FTL'), ('ltl', 'LTL')], string='Road Shipment Type')
+
+    sea_then_air_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                       ('breakbulk', 'Breakbulk'),
+                                       ('liquid', 'Liquid'),
+                                       ('bulk', 'Bulk'),
+                                       ('roro', 'Roro')], string='Sea then Air Shipment Type')
+
+    air_then_sea_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                       ('breakbulk', 'Breakbulk'),
+                                       ('liquid', 'Liquid'),
+                                       ('bulk', 'Bulk'),
+                                       ('roro', 'Roro')], string='Air then Sea Shipment Type')
+
     #air_shipment = fields.Selection([('breakbulk', 'Breakbulk'),
                                       # ('roro', 'Roro')], string='Air Shipment Type')
     job_type = fields.Char(string="Job Type")
@@ -95,6 +108,7 @@ class FreightJobRequest(models.Model):
     gross_weight = fields.Float(string="Gross weight (KG)", required=True)
     number_of_pallets_packages = fields.Integer(string="Number of packages / Pallets", required=True)
     # dimensions_of_package = Dimensions of each package / Pallets   dimensions
+    dimensions_of_package_id = fields.Many2one('freight.package', string="Dimensions of each package /Pallets dimensions")
     stackability = fields.Selection(([('stackable', 'Stackable'),
                                       ('no_stackable', 'No Stackable')]),
                                     string="Stackability")
@@ -177,6 +191,7 @@ class FreightJobRequest(models.Model):
     flight_no = fields.Char(string="Flight No")
     state = fields.Selection([('draft', 'Draft'),
                                ('pricing', 'Pricing Progress'),
+                               ('create_pricing', 'Create Pricing'),
                                ('converted', 'Converted')],
                              string='Status', default='draft')
 
@@ -185,7 +200,69 @@ class FreightJobRequest(models.Model):
     booking_id = fields.Many2one('freight.booking','BookingId')
     is_booking_done = fields.Boolean('Booking Done')
     is_web_request = fields.Boolean(string="Is Created From Website?", default=False)
+    is_create_pricing_request = fields.Boolean(string="Is Created Pricing Request?", default=False)
+    is_dimensions_visible = fields.Boolean(string="Is Dimensions Available?", default=False)
     weight_type = fields.Selection([('estimated', 'Estimated'), ('actual', 'Actual')], default="estimated", string="Weight Type")
+
+    @api.onchange('mode_of_transport')
+    def onchange_mode_of_transport(self):
+        """
+        Set shipment type false when mode of transport are change
+        Dimension Option available for LTL, LCL and Air
+        :return:
+        """
+        self.dimensions_of_package_id = False
+        is_dimensions_visible = False
+        if self.mode_of_transport == 'air':
+            is_dimensions_visible = True
+        self.write({'rail_shipment_type': False,
+                    'ocean_shipment': False,
+                    'inland_shipment': False,
+                    'sea_then_air_shipment': False,
+                    'air_then_sea_shipment': False,
+                    'is_dimensions_visible': is_dimensions_visible})
+
+        dimensions_lst = []
+        if self.mode_of_transport == 'air':
+            dimension_ids = self.env['freight.package'].search([('air', '=', True)])
+            dimensions_lst = dimension_ids.ids
+        if self.mode_of_transport in ['ocean', 'rail', 'sea_then_air', 'air_then_sea']:
+            dimension_ids = self.env['freight.package'].search([('is_lcl', '=', True)])
+            dimensions_lst = dimension_ids.ids
+        if self.mode_of_transport == 'land':
+            dimension_ids = self.env['freight.package'].search([('is_ltl', '=', True)])
+            dimensions_lst = dimension_ids.ids
+
+        return {'domain': {'dimensions_of_package_id': [('id', 'in', dimensions_lst)]}}
+
+    @api.onchange('rail_shipment_type', 'ocean_shipment', 'inland_shipment', 'sea_then_air_shipment', 'air_then_sea_shipment')
+    def onchange_freight_shipment_type(self):
+        """
+        Dimension Option available for LTL, LCL and Air
+        :return:
+        """
+        self.dimensions_of_package_id = False
+        if (not self.sea_then_air_shipment and not self.air_then_sea_shipment
+            and not self.inland_shipment and not self.ocean_shipment
+            and not self.rail_shipment_type and self.mode_of_transport != 'air') or (self.mode_of_transport == 'courier'):
+            self.is_dimensions_visible = False
+        elif (self.rail_shipment_type and self.rail_shipment_type == 'lcl') or (
+                self.ocean_shipment and self.ocean_shipment == 'lcl') or (
+                self.inland_shipment and self.inland_shipment == 'ltl') or (
+                self.air_then_sea_shipment and self.air_then_sea_shipment == 'lcl') or (
+                self.sea_then_air_shipment and self.sea_then_air_shipment == 'lcl') or (
+                self.mode_of_transport == 'air'):
+            self.is_dimensions_visible = True
+        else:
+            self.is_dimensions_visible = False
+
+    def freight_request_pricing(self):
+        """
+        Change state of the request
+        :return:
+        """
+        self.write({'is_create_pricing_request': True,
+                    'state': 'pricing'})
 
     def action_view_sales_order(self):
         """
@@ -245,16 +322,10 @@ class FreightJobRequest(models.Model):
                     'pricing_id': pricing.id,
                 }))
         pricing.update({'charges_ids': order_lines})
-        self.state = 'pricing'
-        self.pricing_id = pricing.id
-        return {
-            'name': _('Freight pricing'),
-            'view_mode': 'form',
-            'view_id': self.env.ref('freight_management.freight_management_freight_pricing_form_view').id,
-            'res_model': 'freight.pricing',
-            'type': 'ir.actions.act_window',
-            'res_id': pricing.id,
-        }
+        self.write({'is_create_pricing_request': True,
+                    'state': 'create_pricing',
+                    'pricing_id': pricing.id})
+        return True
 
     def button_pricing(self):
         """

@@ -48,6 +48,16 @@ class FreightPricing(models.Model):
         domain=lambda self: [(1, '=', 1)],
         states={'draft': [('readonly', False)]})
 
+    def reset_pricing(self):
+        if self.order_ids:
+            orders = self.order_ids.filtered(lambda x: x.state in ['sale', 'done'])
+            if orders:
+                raise ValidationError('Not allow "Back To Pricing" \n'
+                                      'Some Quotations are confirmed.')
+            for order in self.order_ids.filtered(lambda x: x.state not in ['sale', 'done', 'cancel']):
+                order.action_cancel()
+        return super(FreightPricing, self).reset_pricing()
+
     def _compute_total_charges_usd_eur_aed(self):
         """
         Compute total charge amount in USD, EUR and AED
@@ -131,9 +141,16 @@ class FreightPricing(models.Model):
         if not self.freight_request_id.partner_id:
             raise ValidationError('Customer Not set in the Request.')
 
+        orders = self.order_ids.filtered(lambda x: x.state in ['sale', 'done'])
+        if orders:
+            raise ValidationError('Not allow To Create a new Quotations \n'
+                                  'Some Quotations are confirmed.')
+        for order in self.order_ids.filtered(lambda x: x.state not in ['sale', 'done', 'cancel']):
+            order.action_cancel()
+
         vals = []
         count = 10
-        for charges in self.charges_ids.filtered(lambda x: x.product_id and not x.freight_line_section_id):
+        for charges in self.charges_ids.filtered(lambda x: x.product_id and not x.freight_line_section_id and x.converted_amount != 0):
             description = self.env['sale.order.line'].get_sale_order_line_multiline_description_sale(charges.product_id)
 
             vals.append((0, 0, {'name': description,
@@ -143,14 +160,14 @@ class FreightPricing(models.Model):
                                 'price_unit': charges.converted_amount}))
             count += 1
 
-        section_ids = self.charges_ids.filtered(lambda x: x.product_id).mapped('freight_line_section_id')
+        section_ids = self.charges_ids.filtered(lambda x: x.product_id and x.converted_amount != 0).mapped('freight_line_section_id')
         for section in section_ids:
             vals.append((0, 0, {'name': '%s'%section.name,
                                 'sequence': count,
                                 'display_type': 'line_section'}))
             count += 1
 
-            for charges in self.charges_ids.filtered(lambda x: x.product_id and x.freight_line_section_id.id == section.id):
+            for charges in self.charges_ids.filtered(lambda x: x.product_id and x.freight_line_section_id.id == section.id and x.converted_amount != 0):
                 description = self.env['sale.order.line'].get_sale_order_line_multiline_description_sale(charges.product_id)
                 vals.append((0, 0, {'name': description,
                                     'product_id': charges.product_id.id,
@@ -174,8 +191,7 @@ class FreightPricing(models.Model):
                 else:
                     price_list_id = self.env['product.pricelist'].create({'name':'Default '+ self.currency_id.name+ ' Pricelist','currency_id':self.currency_id.id})
                     vals.update({'pricelist_id': price_list_id.id})
-            order_quotation = self.env['sale.order'].create(vals)
-            print("order_quotationorder_quotationorder_quotationorder_quotationorder_quotation", order_quotation)
+            self.env['sale.order'].create(vals)
         return True
 
     def button_request(self):

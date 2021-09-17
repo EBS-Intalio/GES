@@ -2,6 +2,7 @@
 from . import freight_hs_code
 from . import freight_pod
 from . import freight_pol
+from . import freight_package
 from . import freight_job_request
 from . import res_partner
 from . import crm_lead

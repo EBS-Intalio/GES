@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<record id="freight_management_freight_package_form_view" model="ir.ui.view">
+        <field name="name">freight_management.freight.package.form.view</field>
+        <field name="model">freight.package</field>
+        <field name="inherit_id" ref="freight.view_freight_package_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group[2]" position="inside">
+                <field name="is_ltl"/>
+                <field name="is_lcl"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

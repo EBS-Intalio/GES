@@ -13,6 +13,7 @@
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="contact_id" />
                 <field name="customer_representative_id"/>
+                <field name="freight_request_id" invisible="1"/>
             </xpath>
             <xpath expr="//group[@name='sale_info']" position="after">
                 <group name = 'freight_note' string="Freight Note">
@@ -26,6 +27,12 @@
             <xpath expr="//field[@name='order_line']/tree" position="attributes">
                 <attribute name="section-subtotal-data-field">price_subtotal</attribute>
             </xpath>
+
+
+            <xpath expr="//page/field[@name='order_line']" position="attributes">
+               <attribute name="attrs">{'readonly': ['|', ('freight_request_id', '!=', False), ('state', 'in', ('done','cancel'))]}</attribute>
+            </xpath>
+
         </field>
     </record>
 </odoo>

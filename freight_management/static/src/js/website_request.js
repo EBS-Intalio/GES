@@ -5,6 +5,10 @@ $(document).ready(function (){
         $('#req_ocean_div').hide();
         $('#req_rail_div').hide()
 	    $('#req_land_div').hide();
+
+	    $('#req_sea_then_air_div').hide();
+	    $('#req_air_then_sea_div').hide();
+
 	    $('#dng_info_req').hide();
 	    $('#danger_info_req').hide();
 //	    $('#danger_class').hide();
@@ -47,6 +51,8 @@ $(document).ready(function (){
 	            $('#air_lbl_2').show()
 	            $('#air_data_2').show()
 	            $('#shipping_type_div').hide()
+	            $('#req_sea_then_air_div').hide();
+	            $('#req_air_then_sea_div').hide();
 
 //REQUIRED
 	            $("#air_source_location_id").attr('required', '');
@@ -82,6 +88,8 @@ $(document).ready(function (){
 	            $('#req_land_div').hide()
 	            $('#req_ocean_div').show()
 	            $('#req_rail_div').hide()
+	            $('#req_sea_then_air_div').hide();
+	            $('#req_air_then_sea_div').hide();
 
 	            $('#ocean_lbl_1').show()
 	            $('#ocean_data_1').show()
@@ -116,6 +124,8 @@ $(document).ready(function (){
 	            $('#req_land_div').show()
 	            $('#req_ocean_div').hide()
 	            $('#req_rail_div').hide()
+	            $('#req_sea_then_air_div').hide();
+	            $('#req_air_then_sea_div').hide();
 //REQUIRED
                 $("#vehicle_size").attr('required', '');
                 $("#vehicle_type").attr('required', '');
@@ -151,6 +161,8 @@ $(document).ready(function (){
 	            $('#req_land_div').hide()
 	            $('#req_ocean_div').hide()
 	            $('#req_rail_div').show()
+	            $('#req_sea_then_air_div').hide();
+	            $('#req_air_then_sea_div').hide();
 //REQUIRED
                 $("#vehicle_size").removeAttr('required');
                 $("#vehicle_type").removeAttr('required');
@@ -172,13 +184,51 @@ $(document).ready(function (){
 	            $('#land_lbl_2').show()
 	            $('#land_data_2').show()
             }
-            else{
+            else if (this.value == 'sea_then_air') {
                 $("#incoterm").attr('required', '');
 	            $("#incoterm").show()
                 $('#main_data').hide()
                 $('#req_land_div').hide()
 	            $('#req_ocean_div').hide()
 	            $('#req_rail_div').hide()
+	            $('#req_sea_then_air_div').show();
+	            $('#req_air_then_sea_div').hide();
+	            $('#shipping_type_div').show()
+                $("#vehicle_size").removeAttr('required');
+	            $("#vehicle_type").removeAttr('required');
+                $("#equipment_type").removeAttr('required');
+                $("#air_source_location_id").removeAttr('required');
+                $("#air_destination_location_id").removeAttr('required');
+                $("#ocean_source_location_id").removeAttr('required');
+                $("#ocean_destination_location_id").removeAttr('required');
+            }
+            else if (this.value == 'air_then_sea') {
+                console.log('air_then_sea air_then_sea air_then_sea')
+                $("#incoterm").attr('required', '');
+	            $("#incoterm").show()
+                $('#main_data').hide()
+                $('#req_land_div').hide()
+	            $('#req_ocean_div').hide()
+	            $('#req_rail_div').hide()
+	            $('#req_sea_then_air_div').hide();
+	            $('#req_air_then_sea_div').show();
+	            $('#shipping_type_div').show()
+                $("#vehicle_size").removeAttr('required');
+	            $("#vehicle_type").removeAttr('required');
+                $("#equipment_type").removeAttr('required');
+                $("#air_source_location_id").removeAttr('required');
+                $("#air_destination_location_id").removeAttr('required');
+                $("#ocean_source_location_id").removeAttr('required');
+                $("#ocean_destination_location_id").removeAttr('required');
+            }else{
+                $("#incoterm").attr('required', '');
+	            $("#incoterm").show()
+                $('#main_data').hide()
+                $('#req_land_div').hide()
+	            $('#req_ocean_div').hide()
+	            $('#req_rail_div').hide()
+	            $('#req_sea_then_air_div').hide();
+	            $('#req_land_div').hide();
                 $('#shipping_type_div').hide()
                 $("#vehicle_size").removeAttr('required');
 	            $("#vehicle_type").removeAttr('required');
