@@ -61,7 +61,7 @@ class ContainerType(models.Model):
     # Custom Container Codes
     country_data_ids = fields.One2many('country.data','container_type_id')
     #ISO Container Details
-    iso_type = fields.Many2one('iso.types.container', string='ISO Type')
+    # iso_type = fields.Many2one('iso.types.container', string='ISO Type')
     iso_off_cont_size = fields.Boolean('ISO Official Container Size')
     is_comm_Oversize = fields.Boolean('Is Commonly Oversize')
     Size = fields.Char('Size')
