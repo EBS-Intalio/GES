@@ -24,3 +24,4 @@ access_pickup_delivery,access_pickup_delivery,freight_management.model_pickup_de
 access_iso_types_container,access_iso_types_container,freight_management.model_iso_types_container,,1,1,1,1
 access_container_detention,access_container_detention,freight_management.model_container_detention,,1,1,1,1
 access_cto_storage,access_cto_storage,freight_management.model_cto_storage,,1,1,1,1
+access_freight_pricing_data,access_freight_pricing_data,freight_management.model_freight_pricing_data,,1,1,1,1

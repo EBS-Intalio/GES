@@ -48,6 +48,97 @@ class FreightPricing(models.Model):
         domain=lambda self: [(1, '=', 1)],
         states={'draft': [('readonly', False)]})
 
+    freight_pricing_data_ids = fields.One2many('freight.pricing.data','pricing_id','Pricing Data')
+
+    @api.model
+    def create(self,vals):
+        res = super(FreightPricing, self).create(vals)
+        for rec in res:
+            pricing_data = {
+                'pricing_id':res.id,
+                'freight_transport':rec.freight_transport,
+                'freight_target_eta':rec.freight_target_eta,
+                'freight_target_etd':rec.freight_target_etd,
+            }
+            if rec.freight_transport == 'air':
+                pricing_data.update(
+                    {
+                        'preferred_airline_id':rec.preferred_airline_id and rec.preferred_airline_id.id,
+                        'freight_flight_no':rec.freight_flight_no
+                    }
+                )
+            elif rec.freight_transport == 'ocean':
+                pricing_data.update(
+                    {
+                        'freight_shipping_line_id': rec.freight_shipping_line_id and rec.freight_shipping_line_id.id,
+                        'freight_vessel_id': rec.freight_vessel_id and rec.freight_vessel_id.id,
+                        'origin_days':rec.origin_days,
+                        'port_days':rec.Port_days
+                    }
+                )
+            elif rec.freight_transport == 'land':
+                pricing_data.update(
+                    {
+                        'origin_country': rec.origin_country and rec.origin_country.id,
+                        'origin_country_border': rec.origin_country_border and rec.origin_country_border.id,
+                        'transit_country': rec.transit_country and rec.transit_country.id,
+                        'transit_country_border': rec.transit_country_border and rec.transit_country_border.id,
+                        'rout': rec.rout ,
+                        'freight_trucker': rec.freight_trucker and rec.freight_trucker.id,
+                        'freight_trucker_number': rec.freight_trucker_number
+                    }
+                )
+            pricing_record = self.env['freight.pricing.data'].create(pricing_data)
+
+        return res
+
+    def write(self,vals):
+        res = super(FreightPricing, self).write(vals)
+        if 'from_history' not in self._context:
+            if vals.get('freight_target_eta') or vals.get('freight_target_etd')  or vals.get(
+                    'preferred_airline_id') or vals.get('freight_flight_no') or vals.get(
+                'freight_shipping_line_id') or vals.get('freight_vessel_id') or vals.get('origin_days') or vals.get(
+                'port_days') or vals.get('origin_country') or vals.get('origin_country_border') or vals.get(
+                'transit_country') or vals.get('transit_country_border') or vals.get('rout') or vals.get('freight_trucker')  or vals.get('freight_trucker_number'):
+                for rec in self:
+                    pricing_data = {
+                        'pricing_id': rec.id,
+                        'freight_transport': rec.freight_transport,
+                        'freight_target_eta': rec.freight_target_eta,
+                        'freight_target_etd': rec.freight_target_etd,
+                    }
+                    if rec.freight_transport == 'air':
+                        pricing_data.update(
+                            {
+                                'preferred_airline_id': rec.preferred_airline_id and rec.preferred_airline_id.id,
+                                'freight_flight_no': rec.freight_flight_no
+                            }
+                        )
+                    elif rec.freight_transport == 'ocean':
+                        pricing_data.update(
+                            {
+                                'freight_shipping_line_id': rec.freight_shipping_line_id and rec.freight_shipping_line_id.id,
+                                'freight_vessel_id': rec.freight_vessel_id and rec.freight_vessel_id.id,
+                                'origin_days': rec.origin_days,
+                                'port_days': rec.Port_days
+                            }
+                        )
+                    elif rec.freight_transport == 'land':
+                        pricing_data.update(
+                            {
+                                'origin_country': rec.origin_country and rec.origin_country.id,
+                                'origin_country_border': rec.origin_country_border and rec.origin_country_border.id,
+                                'transit_country': rec.transit_country and rec.transit_country.id,
+                                'transit_country_border': rec.transit_country_border and rec.transit_country_border.id,
+                                'rout': rec.rout,
+                                'freight_trucker': rec.freight_trucker and rec.freight_trucker.id,
+                                'freight_trucker_number': rec.freight_trucker_number
+                            }
+                        )
+                    pricing_record = self.env['freight.pricing.data'].create(pricing_data)
+
+        return res
+
     def reset_pricing(self):
         if self.order_ids:
             orders = self.order_ids.filtered(lambda x: x.state in ['sale', 'done'])

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.1.4',
+    'version': '14.0.1.5',
     'category': 'Freight',
     'description': """
                 Freight Management
@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "data/website_menu.xml",
         "data/ir_sequence.xml",
+        "data/data.xml",
         "views/freight_job_request.xml",
         "views/freight_hs_code.xml",
         "views/res_partner.xml",
@@ -33,7 +34,8 @@
         "views/unloco.xml",
         "views/partner_related_parties.xml",
         "views/service_level.xml",
-        "data/data.xml",
+        "views/freight_airline.xml",
+
     ],
     'installable': True,
     'application': True,

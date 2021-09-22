@@ -18,3 +18,5 @@ from . import sale_order_template
 from . import container_type
 from . import partner_related_parties
 from . import service_level
+from . import freight_pricing_data
+from . import freight_airline

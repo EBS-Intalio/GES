@@ -82,6 +82,30 @@
                         </group>
 
                         <notebook>
+                            <page name="pricing_data" string="History">
+                                <field name="freight_pricing_data_ids" nolabel="1" widget="one2many" mode="tree" readonly="1">
+                                    <tree>
+                                        <field name="pricing_id" invisible="1"/>
+                                        <field name="freight_transport" />
+                                        <field name="freight_target_eta" />
+                                        <field name="freight_target_etd" />
+                                        <field name="preferred_airline_id" />
+                                        <field name="freight_flight_no" />
+                                        <field name="freight_shipping_line_id" />
+                                        <field name="freight_vessel_id" />
+                                        <field name="origin_days" />
+                                        <field name="port_days" />
+                                        <field name="origin_country" />
+                                        <field name="origin_country_border" />
+                                        <field name="transit_country" />
+                                        <field name="transit_country_border" />
+                                        <field name="rout" />
+                                        <field name="freight_trucker" />
+                                        <field name="freight_trucker_number" />
+                                        <button name="send_data" string="Update Data" type="object"/>
+                                    </tree>
+                                </field>
+                            </page>
                             <page name='charges' string="Charges">
                                 <field name="charges_ids" nolabel="1" widget="one2many" mode="tree">
                                     <tree string="Charges" editable="bottom">
@@ -102,6 +126,7 @@
                                     </tree>
                                 </field>
                             </page>
+
                         </notebook>
                         <group class="oe_subtotal_footer oe_right">
                             <field name="total_charges" attrs="{'invisible': [('state','!=','done')]}"/>
