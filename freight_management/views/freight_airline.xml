@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="airline_inherit_form" model="ir.ui.view">
+        <field name="name">freight.airline.inherit.form</field>
+        <field name="model">freight.airline</field>
+        <field name="inherit_id" ref="freight.view_freight_airline_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet//group" position="replace">
+                <group>
+                    <group>
+                        <field name="code" />
+                        <field name="name" required="1" string="Airline Name 1"/>
+                        <field name="airline2"/>
+                        <field name="icao"/>
+                        <field name="active"/>
+                        <field name="cass_cont"/>
+
+                    </group>
+                    <group string="Address">
+                        <div class="o_address_format">
+                            <field name="addr_line_1" placeholder="Address Line1" class="o_address_street"/>
+                            <field name="addr_line_2" placeholder="Address Line2" class="o_address_street"/>
+                            <field name="airline_city" placeholder="City" class="o_address_city"/>
+                            <field name="airline_state" class="o_address_state" placeholder="State"
+                                   options='{"no_open": True}'/>
+                            <field name="zip" placeholder="Postcode" class="o_address_zip"/>
+                            <field name="country" placeholder="Country" class="o_address_country"
+                                   options='{"no_open": True, "no_create": True}'/>
+                        </div>
+
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="airline_inherit_tree" model="ir.ui.view">
+        <field name="name">freight.airline.inherit.tree</field>
+        <field name="model">freight.airline</field>
+        <field name="inherit_id" ref="freight.view_freight_airline_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree//field[@name='active']" position="after">
+                <field name="three_char"/>
+                <field name="two_char"/>
+                <field name="airline2"/>
+                <field name="addr_line_1"/>
+                <field name="addr_line_2"/>
+                <field name="airline_city"/>
+                <field name="airline_state"/>
+                <field name="zip"/>
+                <field name="cass_cont"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
