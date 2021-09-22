@@ -29,8 +29,28 @@
             </xpath>
 
 
-            <xpath expr="//page/field[@name='order_line']" position="attributes">
-               <attribute name="attrs">{'readonly': ['|', ('freight_request_id', '!=', False), ('state', 'in', ('done','cancel'))]}</attribute>
+<!--            <xpath expr="//page/field[@name='order_line']" position="attributes">-->
+<!--               <attribute name="attrs">{'readonly': ['|', ('freight_request_id', '!=', False), ('state', 'in', ('done','cancel'))]}</attribute>-->
+<!--            </xpath>-->
+
+            <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+               <attribute name="attrs">{'readonly': ['|', ('parent.freight_request_id', '!=', False), ('qty_invoiced', '&gt;', 0)]}</attribute>
+            </xpath>
+
+            <xpath expr="//page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+               <attribute name="attrs">{'readonly': ['|', ('parent.freight_request_id', '!=', False), ('qty_invoiced', '&gt;', 0)]}</attribute>
+            </xpath>
+
+            <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+               <attribute name="attrs">{'readonly': ['|', ('parent.freight_request_id', '!=', False), ('product_updatable', '=', False)]}</attribute>
+            </xpath>
+
+            <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
+               <attribute name="attrs">{'readonly': [('parent.freight_request_id', '!=', False)]}</attribute>
+            </xpath>
+
+            <xpath expr="//page/field[@name='order_line']/tree/field[@name='discount']" position="attributes">
+               <attribute name="attrs">{'readonly': [('parent.freight_request_id', '!=', False)]}</attribute>
             </xpath>
 
         </field>
