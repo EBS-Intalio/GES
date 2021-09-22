@@ -1,0 +1,16 @@
+/* label.o_required_modifier{
+ color:red !important;
+}
+*/
+
+label.o_required_modifier::after {
+  content: " * ";
+  color: red;
+  margin-left:2px;
+}
+
+div.o_required_modifier::before
+ {
+  content: "*";
+  color: red;
+}
