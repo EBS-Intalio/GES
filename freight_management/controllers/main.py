@@ -37,8 +37,8 @@ class RequestCustom(http.Controller):
         :return:
         """
         partners = request.env['res.partner'].sudo().search([])
-        consignees = request.env['res.partner'].sudo().search([('freight_type', '=', 'consignee')])
-        shippers = request.env['res.partner'].sudo().search([('freight_type', '=', 'shipper')])
+        consignees = request.env['res.partner'].sudo().search([('consignee', '=', True)])
+        shippers = request.env['res.partner'].sudo().search([('shipper', '=', True)])
         users = request.env['res.users'].sudo().search([])
         incoterms = request.env['freight.incoterms'].sudo().search([])
         # move_type = request.env['freight.move.type'].search([])
