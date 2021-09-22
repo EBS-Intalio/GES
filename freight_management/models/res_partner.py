@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import re
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class ResPartner(models.Model):
@@ -604,3 +606,26 @@ class ResPartner(models.Model):
     arr_loc = fields.Selection([('no_data','No Data')],string='Arr. Location')
     cust_ex_size = fields.Selection([('no_data','No Data')],string='Custom exam Site')
 
+    country_image_url = fields.Char(related='country_id.image_url')
+
+    @api.constrains('email')
+    def _check_partner_email_address(self):
+        """
+        To check partner Email is valid or not
+        """
+        for partner in self:
+            if partner.email:
+                # if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", partner.email) == None:
+                if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', partner.email) == None:
+                    raise ValidationError(_("%s is an invalid email") % partner.email.strip())
+
+    @api.onchange('country_id')
+    def onchange_partner_country(self):
+        """
+        Set country code before the phone and mobile
+        :return:
+        """
+        for partner in self:
+            partner.write({'phone': '', 'mobile': ''})
+            if partner.country_id and partner.country_id.phone_code:
+                partner.write({'phone': '+%s'%partner.country_id.phone_code, 'mobile': '+%s'%partner.country_id.phone_code})

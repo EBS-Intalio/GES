@@ -1,0 +1,7 @@
+/*main*/
+.o_form_view .oe_avatar_flag > img {
+    max-width: 35px;
+    max-height: 35px;
+    vertical-align: top;
+    border: 1px solid #a8a8a8;
+}

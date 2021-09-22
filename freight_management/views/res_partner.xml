@@ -38,6 +38,14 @@
                 <attribute name="required">1</attribute>
             </field>
 
+	    <field name="phone" position="before">
+                <field nolabel="1" name="country_image_url" widget="image_url" class="oe_avatar_flag"/>
+            </field>
+
+            <field name="mobile" position="before">
+                <field nolabel="1" name="country_image_url" widget="image_url" class="oe_avatar_flag"/>
+            </field>
+
             <xpath expr="//form/sheet/group" position="inside">
                 <group name="organization_type" string="Organization Type" style="width:100%;">
                     <group style="width:33%">
