@@ -45,7 +45,7 @@
                         </group>
                         <group string="ISO Container Details">
                             <group>
-<!--                                <field name="iso_type"/>-->
+                                <field name="iso_type"/>
                                 <field name="Size"/>
                                 <field name="description"/>
                             </group>
