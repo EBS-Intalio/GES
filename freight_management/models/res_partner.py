@@ -43,6 +43,8 @@ class ResPartner(models.Model):
     related_city = fields.Char('Related city/port')
     fax = fields.Char('Fax')
     language = fields.Many2one('res.lang',string='Language')
+    building = fields.Char('Building')
+    po_box = fields.Char('Po Box')
 
 
     #loading/unloading contraints

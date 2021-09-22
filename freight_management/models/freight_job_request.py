@@ -215,12 +215,16 @@ class FreightJobRequest(models.Model):
                 rec.street =  rec.shipper_addr.street2
                 rec.city =  rec.shipper_addr.city
                 rec.zip_code =  rec.shipper_addr.zip
+                rec.building =  rec.shipper_addr.building
+                rec.po_box =  rec.shipper_addr.po_box
                 rec.state_id =  rec.shipper_addr.state_id and rec.shipper_addr.state_id.id
                 rec.country_id =  rec.shipper_addr.country_id and rec.shipper_addr.country_id.id
             if rec.consignee_addr:
                 rec.delivery_area = rec.consignee_addr.street
                 rec.delivery_street = rec.consignee_addr.street2
                 rec.delivery_city = rec.consignee_addr.city
+                rec.delivery_building =  rec.consignee_addr.building
+                rec.delivery_po_box =  rec.consignee_addr.po_box
                 rec.delivery_zip_code = rec.consignee_addr.zip
                 rec.delivery_state_id = rec.consignee_addr.state_id and rec.consignee_addr.state_id.id
                 rec.delivery_country_id = rec.consignee_addr.country_id and rec.consignee_addr.country_id.id

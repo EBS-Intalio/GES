@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.0.9',
+    'version': '14.0.1.10',
     'category': 'Freight',
     'description': """
                 Freight Management
@@ -29,7 +29,7 @@
         "report/sale_order_report.xml",
         "views/order_line_section.xml",
         "views/container_type.xml",
-        "views/freight_package.xml"
+        "views/freight_package.xml",
         "views/unloco.xml",
         "views/partner_related_parties.xml",
         "views/service_level.xml",
