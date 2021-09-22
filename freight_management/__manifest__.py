@@ -30,6 +30,10 @@
         "views/order_line_section.xml",
         "views/container_type.xml",
         "views/freight_package.xml"
+        "views/unloco.xml",
+        "views/partner_related_parties.xml",
+        "views/service_level.xml",
+        "data/data.xml",
     ],
     'installable': True,
     'application': True,

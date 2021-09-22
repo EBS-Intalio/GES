@@ -203,6 +203,28 @@ class FreightJobRequest(models.Model):
     is_create_pricing_request = fields.Boolean(string="Is Created Pricing Request?", default=False)
     is_dimensions_visible = fields.Boolean(string="Is Dimensions Available?", default=False)
     weight_type = fields.Selection([('estimated', 'Estimated'), ('actual', 'Actual')], default="estimated", string="Weight Type")
+    shipper_addr = fields.Many2one('res.partner','Shipper Address')
+    consignee_addr = fields.Many2one('res.partner','Consignee Address')
+
+
+    @api.onchange('shipper_addr','consignee_addr')
+    def get_shipper_consignee_add(self):
+        for rec in self:
+            if rec.shipper_addr:
+                rec.area =  rec.shipper_addr.street
+                rec.street =  rec.shipper_addr.street2
+                rec.city =  rec.shipper_addr.city
+                rec.zip_code =  rec.shipper_addr.zip
+                rec.state_id =  rec.shipper_addr.state_id and rec.shipper_addr.state_id.id
+                rec.country_id =  rec.shipper_addr.country_id and rec.shipper_addr.country_id.id
+            if rec.consignee_addr:
+                rec.delivery_area = rec.consignee_addr.street
+                rec.delivery_street = rec.consignee_addr.street2
+                rec.delivery_city = rec.consignee_addr.city
+                rec.delivery_zip_code = rec.consignee_addr.zip
+                rec.delivery_state_id = rec.consignee_addr.state_id and rec.consignee_addr.state_id.id
+                rec.delivery_country_id = rec.consignee_addr.country_id and rec.consignee_addr.country_id.id
+
 
     @api.onchange('mode_of_transport')
     def onchange_mode_of_transport(self):

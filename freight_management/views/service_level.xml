@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_service_level_form_view">
+            <field name="name">service.level.form.view</field>
+            <field name="model">service.level</field>
+            <field name="arch" type="xml">
+                <form string="Service Level">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="service_level_code"/>
+                                <field name="service_agreement"/>
+                                <field name="difot"/>
+                                <field name="description"/>
+                                <field name="lang"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                                <field name="is_door_to_door"/>
+                                <field name="is_system"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_service_level_tree_view">
+            <field name="name">service.level.tree.view</field>
+            <field name="model">service.level</field>
+            <field name="arch" type="xml">
+                <tree string="Service Level">
+                    <field name="service_level_code"/>
+                    <field name="description"/>
+                    <field name="active" string="Is Published"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_service_level_action">
+            <field name="name">Service Level</field>
+            <field name="res_model">service.level</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Service Level.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

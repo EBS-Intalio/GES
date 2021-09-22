@@ -70,10 +70,15 @@
                         </group>
                         <group>
                             <group string="Shipper">
-                                <field name="shipper_id" domain="[('freight_type', '=', 'shipper')]" required="1"/>
+                                <field name="shipper_id" domain="[('shipper', '=', True)]" required="1"/>
+                                <field name="shipper_addr" domain="[('parent_id', '=', shipper_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
                             </group>
                             <group string="Consignee">
-                                <field name="consignee_id" domain="[('freight_type', '=', 'consignee')]" required="1"/>
+                                <field name="consignee_id" domain="[('consignee', '=', True)]" required="1"/>
+                                <field name="consignee_addr" domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
+                            </group>
+                            <group string="Customer">
+                                <field name="partner_id" required="1"/>
                             </group>
                         </group>
                         <group string="Main Carriage" attrs="{'invisible': [('mode_of_transport','not in', ['air', 'ocean', 'land'])]}">
@@ -135,7 +140,7 @@
                                 <group>
                                     <field name="is_web_request" invisible="1"/>
                                     <field name="job_type"/>
-                                    <field name="partner_id" required="1"/>
+
                                     <field name="service_level"/>
                                     <field name="package_type_id" />
                                     <field name="is_dimensions_visible" invisible="1"/>

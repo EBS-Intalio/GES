@@ -6,9 +6,38 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <field name="category_id" position="after">
-                <field name="freight_type"/>
+                <field name="freight_type" invisible="1"/>
 <!--                <field name="is_carrier"/>-->
             </field>
+            <field name="vat" position="after">
+                <field name="organization_code" required="1"/>
+                <field name="screening" required="1"/>
+                <field name="security"/>
+                <field name="unloco"/>
+                <field name="org_category"/>
+                <field name="controlling_branch"/>
+                <field name="lang_main"/>
+                <field name="vat_ges" widget="selection"/>
+            </field>
+            <field name="street" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="street2" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="city" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="state_id" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="country_id" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="zip" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+
             <xpath expr="//form/sheet/group" position="inside">
                 <group name="organization_type" string="Organization Type" style="width:100%;">
                     <group style="width:33%">
@@ -17,11 +46,11 @@
                         <field name="is_temporary_act"/>
                         <field name="is_receivable"/>
                         <field name="is_payable"/>
-                        <field name="is_shipper"/>
+                        <field name="shipper"/>
 
                     </group>
                     <group style="width:33%">
-                        <field name="is_consignee"/>
+                        <field name="consignee"/>
                         <field name="is_transport_client"/>
                         <field name="is_warehouse"/>
                         <field name="is_carrier"/>
@@ -40,10 +69,512 @@
                 </group>
             </xpath>
             <xpath expr="//notebook/page[@name='sales_purchases']" position="after">
-                <page name="a_receivable" string="A/R" attrs="{'invisible':[('is_receivable','=',False)]}"></page>
-                <page name="a_payable" string="A/P" attrs="{'invisible':[('is_payable','=',False)]}"></page>
-                <page name="shipper" string="Shipper" attrs="{'invisible':[('is_shipper','=',False)]}"></page>
-                <page name="consignee" string="Consignee" attrs="{'invisible':[('is_consignee','=',False)]}"></page>
+                <page name="a_receivable" string="A/R" attrs="{'invisible':[('is_receivable','=',False)]}">
+                    <notebook>
+                        <page name="config" string="Congfiguration">
+                            <group>
+                                <group string="Account Details">
+                                    <field name="account_group"/>
+                                    <field name="account_relationship"/>
+                                    <field name="conc_categ"/>
+                                    <field name="def_inv_curr_id"/>
+                                    <field name="not_acc_reg_details"/>
+                                    <field name="bank_to_account"/>
+                                    <field name="bank_detail_ids"  nolabel="1">
+                                        <tree editable="bottom" >
+                                            <field name="default_method" />
+                                            <field name="currency_id" />
+                                            <field name="name" />
+                                            <field name="bank" />
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Currency Uplift">
+                                    <field name="currency_uplift_ids" style="width:100%" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="source"/>
+                                            <field name="job_type"/>
+                                            <field name="direction"/>
+                                            <field name="transport"/>
+                                            <field name="currency_id"/>
+                                            <field name="cfx"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Tax details">
+                                    <field name="vat_recog"/>
+                                    <field name="with_hol_tax"/>
+                                    <field name="dont_hol_tax"/>
+                                </group>
+                                <group string="Quality Assurance">
+                                    <group>
+                                        <field name="quality_assured"/>
+                                    </group>
+                                    <group>
+                                        <field name="last_check"/>
+                                    </group>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="External System Debtor Code">
+                                    <field name="external_debt_code"/>
+                                </group>
+                                <group string="Authority to leave">
+                                    <field name="auth_to_leave_rec" nolabel="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Company Data">
+                                    <field name="all_mul_curr"/>
+                                    <field name="trans_cre_res"/>
+                                </group>
+                                <group string="Client Number">
+                                    <field name="client_num"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="cred_cont_sett" string="Credit Control and Settlement">
+                            <notebook>
+                                <page name="local" string="Local">
+                                    <group string="Credit Control">
+                                        <group>
+                                            <field name="cred_rete"/>
+                                            <div class="o_row" name="credit_limit">
+                                                <label for="credit_limit" string="Credit Limit" style="font-weight:bold"/>
+                                                <field name="credit_limit" />
+                                                <span>No credit Limit</span>
+                                            </div>
+<!--                                            <field name="credit_limit"/> <span>No credit Limit <Set></Set></span>-->
+                                            <field name="temp_cred_limit_inc"/>
+                                            <field name="temp_cred_limit"/>
+                                            <field name="expire_at"/>
+                                        </group>
+                                        <group>
+                                            <field name="acc_rev_due"/>
+                                            <field name="agreed_pay_meth"/>
+                                            <field name="use_sett"/>
+                                            <field name="cred_appr"/>
+                                            <field name="ar_cred_hold"/>
+                                            <field name="ar_not_check"/>
+                                        </group>
+                                    </group>
+                                    <group string="Settlement Details">
+                                        <field name="settle_grp"/>
+                                        <field name="terms_days_ids">
+                                            <tree editable="bottom">
+                                                <field name="job_type"/>
+                                                <field name="Branch"/>
+                                                <field name="depart"/>
+                                                <field name="direct"/>
+                                                <field name="trans_mod"/>
+                                                <field name="inv_term"/>
+                                                <field name="agree_paym"/>
+                                            </tree>
+                                        </field>
+
+
+                                    </group>
+                                    <group>
+                                        <group string="Credit Card Details">
+                                            <field name="card_num"/>
+                                            <field name="card_type"/>
+                                            <field name="card_hold"/>
+                                            <field name="expr_date_month"/>
+                                            <field name="expr_year"/>
+                                            <field name="add_info"/>
+                                        </group>
+                                        <group string="Account Fee">
+                                            <field name="set_att"/>
+                                            <field name="acc_fee_rule"/>
+                                            <field name="gl_acc" attrs="{'required':[('set_att','=',True)]}"/>
+                                            <field name="flat_ffe_am" attrs="{'required':[('set_att','=',True)]}"/>
+                                            <field name="flat_fee_curr"/>
+                                        </group>
+                                    </group>
+
+                                </page>
+                                <page name="global" string="Global">
+                                    <group string="Global Credit Group" style="width:50%">
+                                        <field name="gb_ced_partner_id"/>
+                                        <div class="oe_row" name="Service Duration">
+                                            <label for="gb_cred_limit" string="Global Credit Limit" style="font-weight: bold;"/>
+                                            <field name="gb_cred_limit" nolabel="1" style="width:15%"/>
+                                            <field name="gb_cred_curr_is" nolabel="1" placeholder="Currency" style="width:28%"/>
+                                        </div>
+
+                                        <field name="gb_cred_apprr"/>
+                                        <field name="gb_arr_cred_hold"/>
+                                        <field name="gb_not_chkoverdue_inv"/>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </page>
+                        <page name="invoicing" string="Invoicing">
+                            <group string="Invoice Details">
+                                <field name="enter_receipt_po"/>
+                                <field name="cust_se_bill"/>
+                                <field name="iss_stat_pack"/>
+                            </group>
+                            <group string="Charge Grouping / Roll Up">
+                                <field name="charge_group_ids">
+                                    <tree editable="bottom">
+                                        <field name="job"/>
+                                        <field name="direction_inv"/>
+                                        <field name="mode_inv"/>
+                                        <field name="display"/>
+                                        <field name="style"/>
+                                        <field name="invoice"/>
+                                        <field name="posting"/>
+                                        <field name="currency_id"/>
+                                    </tree>
+                                </field>
+
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="job_chrg"/>
+                                    <field name="direction_inv"/>
+                                    <field name="style_chrg"/>
+                                    <field name="invoice_chrg"/>
+                                    <field name="posting_chrg"/>
+                                    <field name="currency_chrg_id"/>
+                                </group>
+                                <group>
+                                    <field name="mode_inv"/>
+                                    <field name="display_chrg"/>
+                                </group>
+                            </group>
+                            <group string="Periodic Invoicing Configuration">
+                                <field name="periodic_invoice_ids">
+                                    <tree editable="bottom">
+                                        <field name="job_type"/>
+                                        <field name="serv_dir"/>
+                                        <field name="transport"/>
+                                        <field name="serv_lev"/>
+                                        <field name="bill"/>
+                                        <field name="comm"/>
+                                        <field name="layout"/>
+                                        <field name="lay_des"/>
+                                        <field name="sec_l"/>
+                                        <field name="sec_d"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="job_type_per"/>
+                                    <field name="bill_int"/>
+                                    <field name="trans"/>
+                                    <field name="serv_lev"/>
+                                </group>
+                                <group>
+                                    <field name="comm"/>
+                                    <field name="layout"/>
+                                    <field name="direct_per"/>
+                                    <field name="sec_lay"/>
+                                </group>
+                            </group>
+                            <group string="Specefic Charge Code Configuration">
+                                <field name="charge_code_ids">
+                                    <tree editable="bottom">
+                                        <field name="chrg_grp"/>
+                                        <field name="chrg_code"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Buyers Cosol Invoicing">
+                                <field name="buy_con_inv_sty"/>
+                            </group>
+                        </page>
+                        <page name="coll_call" string="Collection Calls"/>
+                        <page name="rec_claims_quer" string="Receivable Claims and Queries"/>
+                    </notebook>
+
+
+                </page>
+                <page name="a_payable" string="A/P" attrs="{'invisible':[('is_payable','=',False)]}">
+                    <group>
+                        <group string="Creditors Details">
+                            <field name="account_group_pay"/>
+                            <field name="account_relationship_pay"/>
+                            <field name="conc_categ_pay"/>
+                        </group>
+                        <group string="Defaults">
+                            <field name="currency_pay_id"/>
+                            <field name="bank_pay_id"/>
+                            <field name="charge_code"/>
+                            <field name="settle_grp_pay"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Credit Details">
+                            <field name="credit_limit_pay"/>
+                            <field name="agreed_pay_meth_payable"/>
+                        </group>
+                        <group string="Payment Terms">
+                            <field name="payment_terms"/>
+                            <field name="days"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Tax details">
+                            <field name="vat_recog_pay"/>
+                            <field name="with_hol_tax_pay"/>
+                        </group>
+                        <group string="Other Details">
+                            <field name="pay_inv_post_pay"/>
+                            <field name="iss_set_bil_inv"/>
+                        </group>
+                    </group>
+                    <group string="Account Details">
+                        <field name="account_bank_details_pay_ids">
+                            <tree editable="bottom">
+                                <field name="default_method"/>
+                                <field name="currency_id"/>
+                                <field name="name"/>
+                                <field name="bank"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <group string="Quality Asscurance">
+                            <field name="quality_assured_pay"/>
+                            <field name="last_check_pay"/>
+                        </group>
+                        <group string="External System Creditor Code">
+                            <field name="external_credit_code_pay"/>
+                        </group>
+                    </group>
+                    <group string="Company Data">
+                        <field name="trans_cre_res_pay"/>
+                    </group>
+
+                </page>
+                <page name="shipper" string="Shipper" attrs="{'invisible':[('shipper','=',False)]}">
+                    <notebook>
+                        <page name="shipper_details" string="Details">
+                            <group string="Related Parties">
+                                <field name="related_parties_ids" nolabel="1"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <span style="font-size: 19px;">Other Details</span>
+                                        <field name="approve_to_print_original_bill"/>
+                                        <field name="auto_create_parts_as_import_export"/>
+                                    <span style="font-size: 19px;">Currency Uplift</span>
+                                        <field name="house_bill_pre_allocation"/>
+                                    <span style="font-size: 19px;">House Bill Pre-Allocation</span>
+                                        <field name="house_bill_pre_allocation"/>
+                                    <notebook >
+                                        <page string="Container detection">
+                                            <field name="container_detention_ids" nolabel="1">
+                                                <tree editable="bottom">
+                                                    <field name="carrier" />
+                                                    <field name="detention" />
+                                                    <field name="container" />
+                                                    <field name="days"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                        <page string="CTO STorage">
+                                            <field name="cto_storage_ids" nolabel="1">
+                                                <tree editable="bottom">
+                                                    <field name="port_cont"/>
+                                                    <field name="class_cont"/>
+                                                    <field name="carrier"/>
+                                                    <field name="cto"/>
+                                                    <field name="credit_st"/>
+                                                    <field name="credit_st"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                    </notebook>
+                                </group>
+
+
+                                <group>
+                                    <notebook>
+                                        <page name="shipper_ex_consignor" string="Exporter /Consignor Defaults">
+                                            <group>
+                                                <field name="exporter_category"/>
+                                                <field name="shipper_country_id"/>
+                                                <field name="shipper_currency_id"/>
+                                                <field name="shipper_incoterm_id"/>
+                                                <field name="awb_address_defaults_to"/>
+                                                <field name="invoice_price_from_ls_cost"/>
+                                                <field name="service_level_id"/>
+                                                <field name="authority_to_leave"/>
+                                                <field name="unaudited_export_product"/>
+
+                                                <field name="required_order_no_on_doc"/>
+                                                <field name="required_link_order_tacking"/>
+                                                <field name="bill_agent_charges_direct"/>
+                                                <field name="always_own_product"/>
+                                                <field name="shipment_goods_description"/>
+                                                <field name="handling_instructions"/>
+                                            </group>
+                                        </page>
+                                        <page name="shipper_service_level" string="Service Levels">
+                                            <group>
+                                                <field name="override_system_default" string="Override System Default"/>
+                                            </group>
+                                            <field name="service_level_ids" nolabel="1"/>
+
+                                        </page>
+                                        <page name="shipper_docu_default" string="Export Documentation Defaults">
+                                            <group>
+                                                <field name="exporter_bank_name"/>
+                                                <field name="exporter_bank_account"/>
+                                                <field name="exporter_swift_code"/>
+                                                <field name="method_of_payment"/>
+                                                <field name="additional_information"/>
+                                            </group>
+                                        </page>
+                                    </notebook>
+                                </group>
+
+                            </group>
+                        </page>
+                        <page name="shipper_other_details" string="Consignee /Buyer /Importer Defaults">
+                            <group>
+                                <field name="shipper_consignee_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="code" domain="[('consignee','=',True)]" required="1"/>
+                                        <field name="unlco_id" readonly="1"/>
+                                        <field name="imp_ctry" />
+                                        <field name="currency_id"/>
+                                        <field name="notify"/>
+                                        <field name="fst_shp"/>
+                                        <field name="val_basis"/>
+                                        <field name="trans_rel"/>
+                                        <field name="val_basis_2"/>
+                                        <field name="ins_upl"/>
+                                        <field name="royalty"/>
+                                        <field name="vend_id"/>
+                                        <field name="e_fre_status"/>
+                                        <field name="atl"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group style="width:100%">
+                                <group style="width:33%">
+                                    <field name="code_ship"/>
+                                    <field name="imp_ctry"/>
+                                    <field name="curr_ship_id"/>
+                                </group>
+                                <group style="width:33%">
+                                    <field name="contr_cust_id"/>
+                                    <field name="import_brk" domain="[('is_broker','=',True)]"/>
+                                    <field name="curr_ship_id"/>
+                                </group>
+                                <group style="width:33%">
+                                   <field name="contr_cust_id"/>
+                                    <field name="auth_to_leave_ship"/>
+                                    <field name="e_freight_status"/>
+                                </group>
+                            </group>
+                            <group string='Custom Valuation defaults'>
+                                <group>
+                                    <field name="trans_rel_ship"/>
+                                    <field name="valu_basis"/>
+                                </group>
+                                <group>
+                                    <field name="ins_upl"/>
+                                    <field name="royalty"/>
+                                </group>
+
+                            </group>
+                            <notebook>
+                                <page name="modes" string="Modes">
+                                        <field name="shipper_mode_ids" nolabel="1">
+                                            <tree editable="bottom">
+                                            <field name="partner_id" invisible="1"/>
+                                            <field name="mode"/>
+                                            <field name="cont"/>
+                                            <field name="inco1"/>
+                                            <field name="inco2"/>
+                                            <field name="inco3"/>
+                                            <field name="service_lev"/>
+                                            <field name="over_deliv"/>
+                                            <field name="div_days"/>
+                                            <field name="org_bills"/>
+                                            <field name="cop_bills"/>
+                                            <field name="load_port"/>
+                                            <field name="org_port"/>
+                                            <field name="pckp_addr"/>
+                                            <field name="pckp_ctct"/>
+                                            <field name="pckp_ptrn"/>
+                                            <field name="disc"/>
+                                            <field name="dest"/>
+                                            <field name="div_add"/>
+                                            <field name="div_cont"/>
+                                            <field name="div_p_tm"/>
+                                            <field name="not_part"/>
+                                            <field name="arr_loc"/>
+                                            <field name="ex_site"/>
+                                            </tree>
+                                        </field>
+
+                                    <group string="Filters" style="width:50%">
+                                        <field name="trans"/>
+                                        <field name="Cont_mode"/>
+                                    </group>
+                                    <group >
+                                        <notebook>
+                                            <page string="Default Values">
+                                                <group style="width:100%">
+                                                    <group style="width:25%">
+                                                        <field name="incoterm"/>
+                                                        <field name="serv_lev_ship"/>
+                                                        <field name="orig_port_id"/>
+                                                        <field name="dest_port_id"/>
+                                                        <field name="incoterm"/>
+                                                    </group>
+                                                    <group style="width:25%">
+                                                        <field name="incoterm_mode"/>
+                                                        <field name="carrier"/>
+                                                        <field name="send_ag"/>
+                                                        <field name="rec_ag"/>
+                                                        <field name="contr_cust_def_id"/>
+                                                        <field name="imp_cust_brk"/>
+                                                        <field name="org_bill"/>
+                                                        <field name="cop_bill"/>
+                                                    </group>
+                                                    <group style="width:25%">
+                                                        <field name="inc_place"/>
+                                                        <field name="pkp_trm"/>
+                                                        <field name="div_add"/>
+                                                        <field name="div_cont"/>
+                                                        <field name="pckp_add"/>
+                                                        <field name="pckp_cont"/>
+                                                        <field name="ovd_del"/>
+                                                        <field name="del_day_est"/>
+                                                    </group>
+                                                    <group style="width:25%">
+                                                        <field name="not_part_contact"/>
+                                                        <field name="del_po_tran_con"/>
+                                                        <field name="arr_loc"/>
+                                                        <field name="cust_ex_size"/>
+                                                    </group>
+                                                </group>
+                                            </page>
+                                            <page string="Default Note Texts"></page>
+                                        </notebook>
+                                    </group>
+
+                                </page>
+                                <page name="doc_track" string="Dcoument Tracking"></page>
+                                <page name="pac_type_dimen" string="Pack Type Dimensions"></page>
+                                <page name="add_cust_det" string="Add Custom details"></page>
+                            </notebook>
+
+                        </page>
+                    </notebook>
+                </page>
+
+                <page name="consignee" string="Consignee" attrs="{'invisible':[('consignee','=',False)]}"></page>
                 <page name="warehouse" string="Warehouse" attrs="{'invisible':[('is_warehouse','=',False)]}"></page>
                 <page name="fwd_agent" string="FWD/Agent"
                       attrs="{'invisible':[('is_forwarder_Agent','=',False)]}"></page>
@@ -68,6 +599,31 @@
                 <page name="web" string="Web"></page>
                 <page name="custom_fields" string="Custom Fields"></page>
             </xpath>
+            <xpath expr="//field[@name='child_ids']//form//sheet//field[@name='name']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']//form//sheet//field[@name='street']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']//form/sheet//field[@name='street2']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']//form//sheet//field[@name='state_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']//form//sheet//field[@name='zip']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']//form//sheet//field[@name='country_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']//form//sheet//field[@name='mobile']" position="after">
+                <field name="fax"/>
+                <field name="related_city"/>
+                <field name="language"/>
+            </xpath>
+
+
 
             <xpath expr="//field[@name='child_ids']/form/sheet/group" position="after">
                 <group string="Address Capabilities" style="width=100%">
@@ -97,11 +653,12 @@
                                 <field name="access_point"/>
                                 <field name="communication"/>
                                 <field name="dock_height"/>
-                                <div class="oe_row" name="Service Duration">
-                                    <label for="service_duration" string="Service Duration(minutes)"/>
-                                    <label for="service_duration_default" string="Ovewrride Registry Default"/>
-                                    <field name="service_duration_default" nolabel="1"/>
-                                    <field name="service_duration" nolabel="1" style="width:20%"/>
+                                <label for="service_duration" string="Service Duration(minutes):" style="font-weight:bold" />
+                                <br/>
+                                <label for="service_duration_default" string="Override Registry Default" style="font-weight:bold"/>
+                                <div>
+                                    <field name="service_duration_default" nolabel="1" class="oe_inline" style="width:10%"/>
+                                    <field name="service_duration" nolabel="1" style="width:20%" class="oe_inline"/>
 
                                 </div>
 
@@ -142,7 +699,16 @@
                             <field name="auth_to_leave" style="width:33%"/>
                         </group>
                         <group string='Pickup and Delivery Times'>
-                            <field name="pickup_and_delivery_times" widget="radio"/>
+                            <field name="pickup_and_delivery_times" widget="radio" options="{'horizontal': true}"/>
+                            <field name="pickup_delivery_ids">
+                                <tree editable="bottom">
+                                    <field name="type"/>
+                                    <field name="desc"/>
+                                    <field name="from_date"/>
+                                    <field name="to_date"/>
+                                    <field name="day"/>
+                                </tree>
+                            </field>
                         </group>
                     </page>
                     <page string="GPS" name="gps">
@@ -180,4 +746,15 @@
 
         </field>
     </record>
+    <record id="view_partner_form_inherit_freight_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit_new.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="freight.view_partner_form_inherit_freight"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='shipper']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='consignee']" position="replace">
+                </xpath>
+            </field>
+        </record>
 </odoo>

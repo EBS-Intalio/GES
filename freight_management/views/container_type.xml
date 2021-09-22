@@ -19,7 +19,8 @@
                         <group string="Container Type Details">
                             <group>
                                 <field name="name"/>
-                                <field name="Description"/>
+                                <field name="description"/>
+                                <field name="lang_cont"/>
                                 <field name="has_tynes"/>
                                 <field name="high_cube"/>
                                 <field name="has_vents"/>
@@ -31,7 +32,7 @@
                             </group>
                         </group>
                         <group string="Custom Container Codes">
-                            <field name="country_data_ids">
+                            <field name="country_data_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name="container_type_id" invisible="1"/>
                                     <field name="country_id"/>
@@ -53,87 +54,101 @@
                                 <field name="is_comm_Oversize"/>
                             </group>
                         </group>
-                        <group>
-                            <group string="Container Dimensions" style="width:60%">
-                                <div class="oe_row" name="Length" string="Lenght">
-                                    <label for="lenght_in_foot" string="Lenght"/>
-                                    <field name="lenght_in_foot" style="width:15%"/>
-                                    <span>ft</span>
-                                    <field name="lenght_in_meter" nolabel="1" style="width:15%"/>
-                                    <span>m</span>
-                                    <field name="lenght_in_foot1" nolabel="1" style="width:15%"/>
-                                    <span>ft</span>
-                                    <field name="lenght_in_inch" nolabel="1" style="width:15%"/>
-                                    <span>in</span>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Container Width">
-                                    <label for="container_width_in_foot" string="Container Width"/>
-                                    <field name="container_width_in_foot" style="width:15%"/>
-                                    <span>ft</span>
-                                    <field name="container_width_in_meter" nolabel="1" style="width:15%"/>
-                                    <span>m</span>
-                                    <field name="container_width_in_inch" nolabel="1" style="width:15%"/>
-                                    <span>ft</span>
-                                    <field name="container_width_in_foot2" nolabel="1" style="width:15%"/>
-                                    <span>in</span>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Height">
-                                    <label for="height_width_in_foot" string="Height"/>
-                                    <field name="height_width_in_foot" style="width:15%"/>
-                                    <span>ft</span>
-                                    <field name="height_width_in_meter" nolabel="1" style="width:15%"/>
-                                    <span>m</span>
-                                    <field name="height_width_in_inch" nolabel="1" style="width:15%"/>
-                                    <span>ft</span>
-                                    <field name="height_width_in_foot2" nolabel="1" style="width:15%"/>
-                                    <span>in</span>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Teu Cunt">
-                                    <label for="teu_count" string="Teu Cunt"/>
-                                    <field name="teu_count" style="width:20%"/>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Max Gross">
-                                    <label for="max_gross_wt_lb" string="Max Gross Wt"/>
-                                    <field name="max_gross_wt_lb" style="width:20%"/>
-                                    <span>lb</span>
-                                    <field name="max_gross_wt_kg" nolabel="1" style="width:20%"/>
-                                    <span>Kg</span>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Tare weight">
-                                    <label for="tare_wt_lb" string="Tare Wgt"/>
-                                    <field name="tare_wt_lb" style="width:20%"/>
-                                    <span>lb</span>
-                                    <field name="tare_wt_kg" nolabel="1" style="width:20%"/>
-                                    <span>Kg</span>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Max Net">
-                                    <label for="max_net_wt_lb" string="Max Net Wgt"/>
-                                    <field name="max_net_wt_lb" style="width:20%"/>
-                                    <span>lb</span>
-                                    <field name="max_net_wt_kg" nolabel="1" style="width:20%"/>
-                                    <span>Kg</span>
-                                </div>
-                                <br/>
-                                <div class="oe_row" name="Capacity">
-                                    <label for="capacity_cf" string="Capacity"/>
-                                    <field name="capacity_cf" style="width:20%"/>
-                                    <span>cf</span>
-                                    <field name="capacity_m3" nolabel="1" style="width:20%"/>
-                                    <span>M3</span>
-                                </div>
-                            </group>
-                            <group string="Container Class" style="width:40%">
-                                <field name="cont_sto_class" />
-                                <field name="frei_charg_rate_class" />
-                                <field name="hand_charg_rate_class"/>
-                                <field name="eq_sz_ty_code" />
-                            </group>
+
+                        <group string="Container Dimensions" style="width:200%">
+                            <div style="width:200%">
+                                <label for="lenght_in_foot" string="Length:" style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                <field name="lenght_in_foot" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">ft</span>
+                                <field name="lenght_in_meter" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">m</span>
+                                <field name="lenght_in_foot1" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">ft</span>
+                                <field name="lenght_in_inch" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold" class="oe_inline">in</span>
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="lenght_in_foot" string="Container Width:" style="font-weight:bold;margin-right:10px" class="oe_inline"/>
+                                <field name="container_width_in_foot" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">ft</span>
+                                <field name="container_width_in_meter" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">m</span>
+                                <field name="container_width_in_inch" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">ft</span>
+                                <field name="container_width_in_foot2" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold" class="oe_inline">in</span>
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="height_width_in_foot" string="Height:"
+                                       style="font-weight:bold;margin-right:66px" class="oe_inline"/>
+                                <field name="height_width_in_foot" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">ft</span>
+                                <field name="height_width_in_meter" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">m</span>
+                                <field name="height_width_in_inch" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">ft</span>
+                                <field name="height_width_in_foot2" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold" class="oe_inline">in</span>
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="teu_count" string="Teu Cunt"
+                                       style="font-weight:bold;margin-right:56px" class="oe_inline"/>
+                                <field name="teu_count" style="width:17%" class="oe_inline"/>
+
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="max_gross_wt_lb" string="Max Gross Wt"
+                                       style="font-weight:bold;margin-right:27px" class="oe_inline"/>
+                                <field name="max_gross_wt_lb" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">lb</span>
+                                <field name="max_gross_wt_kg" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">kg</span>
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="tare_wt_lb" string="Tare weight"
+                                       style="font-weight:bold;margin-right:40px" class="oe_inline"/>
+                                <field name="tare_wt_lb" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">lb</span>
+                                <field name="tare_wt_kg" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">kg</span>
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="max_net_wt_lb" string="Max Net Wgt"
+                                       style="font-weight:bold;margin-right:33px" class="oe_inline"/>
+                                <field name="max_net_wt_lb" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">lb</span>
+                                <field name="max_net_wt_kg" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">kg</span>
+                            </div>
+
+                            <br/>
+                            <div style="width:200%">
+                                <label for="capacity_cf" string="Capacity"
+                                       style="font-weight:bold;margin-right:57px" class="oe_inline"/>
+                                <field name="capacity_cf" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">cf</span>
+                                <field name="capacity_m3" nolabel="1" style="width:17%" class="oe_inline"/>
+                                <span style="font-weight:bold;margin-right:20px" class="oe_inline">M3</span>
+                            </div>
+
+                        </group>
+                        <group string="Container Class">
+                            <field name="cont_sto_class"/>
+                            <field name="frei_charg_rate_class"/>
+                            <field name="hand_charg_rate_class"/>
+                            <field name="eq_sz_ty_code"/>
                         </group>
 
                     </sheet>
