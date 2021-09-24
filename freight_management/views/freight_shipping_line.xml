@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="freight_management_freight_shipping_line_form_view" model="ir.ui.view">
+            <field name="name">freight_management.freight.shipping.line.form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Shipping Lines">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <div class="oe_title">
+                            <field name="active" invisible="1"/>
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="scac_code"/>
+                                <field name="cw_code"/>
+                                <field name="is_system"/>
+                                <field name="is_nvo"/>
+                            </group>
+                            <group>
+                                <field name="is_ocean_carrier_messaging"/>
+                                <field name="is_global_sailing_schedule"/>
+                                <field name="is_container_automation"/>
+                                <field name="is_invoice"/>
+                            </group>
+
+                        </group>
+
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="freight_management_shipping_line_tree_view">
+            <field name="name">freight_management.freight.shipping.line.tree.view</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Shipping Line" import="true">
+                    <field name="name"/>
+                    <field name="scac_code"/>
+                    <field name="cw_code"/>
+                    <field name="is_system"/>
+                    <field name="is_nvo"/>
+                    <field name="is_ocean_carrier_messaging"/>
+                    <field name="is_global_sailing_schedule"/>
+                    <field name="is_container_automation"/>
+                    <field name="is_invoice"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_management_shipping_line_action">
+            <field name="name">Shipping Line</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_carrier','=', True)]</field>
+            <field name="context">{
+                    'default_is_carrier': True,
+                }</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('freight_management_shipping_line_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('freight_management_freight_shipping_line_form_view')})]"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Shipping Line.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Shipping Line" parent="freight.freight_configuration" id="menu_freight_management_shipping_line"
+                  action="freight_management_shipping_line_action" sequence="2"/>
+
+    </data>
+</odoo>

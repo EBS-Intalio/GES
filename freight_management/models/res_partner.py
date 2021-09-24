@@ -608,6 +608,16 @@ class ResPartner(models.Model):
 
     country_image_url = fields.Char(related='country_id.image_url')
 
+    # Shipping Line
+    scac_code = fields.Char(string='SCAC Code')
+    cw_code = fields.Char(string='CW1 Code')
+    is_system = fields.Boolean(string='Is System')
+    is_nvo = fields.Boolean(string='Is NVO')
+    is_ocean_carrier_messaging = fields.Boolean(string='Ocean Carrier Messaging')
+    is_global_sailing_schedule = fields.Boolean(string='Global Sailing Schedule')
+    is_container_automation = fields.Boolean(string='CargoSphere Rates')
+    is_invoice = fields.Boolean(string='Invoice')
+
     @api.constrains('email')
     def _check_partner_email_address(self):
         """
