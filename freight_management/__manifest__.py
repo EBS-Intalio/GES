@@ -7,7 +7,7 @@
                 Freight Management
                """,
     'sequence': 51,
-    'depends': ['account', 'mail', 'freight', 'crm', 'base', 'ebs_freight_pricing', 'sale_management', 'web'],
+    'depends': ['account', 'mail', 'freight', 'crm', 'base', 'ebs_freight_pricing', 'sale_management', 'web','account_asset'],
     'author': 'Ever Business Solutions',
     'website': "http://www.ever-bs.com/",
     'data': [
@@ -35,7 +35,10 @@
         "views/partner_related_parties.xml",
         "views/service_level.xml",
         "views/freight_airline.xml",
-        "views/freight_shipping_line.xml"
+        "views/freight_shipping_line.xml",
+        "views/account_asset.xml",
+        "wizard/account_asset_sell.xml",
+
     ],
     'installable': True,
     'application': True,

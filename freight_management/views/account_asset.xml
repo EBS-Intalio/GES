@@ -1,0 +1,13 @@
+<odoo>
+    <record model="ir.ui.view" id="view_account_asset_form_inherit">
+        <field name="name">wizard.asset.form.inherit</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='acquisition_date']" position="after">
+                <field name="asset_mode_ow_le"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
