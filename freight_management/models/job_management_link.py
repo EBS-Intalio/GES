@@ -6,7 +6,7 @@ class JobManagementLink(models.Model):
     _name = 'job.management.link'
     _rec_name = "order_ref"
 
-    order_ref = fields.Many2one('sale.order', string="Order Refs", required=True)
+    order_ref = fields.Char(string="Order Refs", required=True)
     job_management_link_line_ids = fields.One2many('job.management.link.line', 'job_management_link_id',
                                                    string='Job Management link Lines', copy=False)
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
