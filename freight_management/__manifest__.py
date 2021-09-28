@@ -42,7 +42,7 @@
         "views/job_management_link.xml",
         "views/freight_container.xml",
         "views/reference_number.xml",
-        "views/freight_commodity.xml",
+        #"views/freight_commodity.xml",
     ],
     'installable': True,
     'application': True,

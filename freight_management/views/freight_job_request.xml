@@ -455,9 +455,9 @@
                             </notebook>
                         </page>
 
-                        <page name="commodity_details" string="Commodity Details">
+                        <!--<page name="commodity_details" string="Commodity Details">
                             <field name="commodity_ids" nolabel="1"/>
-                        </page>
+                        </page>-->
 
                     </notebook>
                 </xpath>
