@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="loose_cargo_form_view">
+            <field name="name">freight.loose.cargo.form.view</field>
+            <field name="model">freight.loose.cargo</field>
+            <field name="arch" type="xml">
+                <form string="Loose Cargo">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="packs"/>
+                                <field name="weight"/>
+                                <field name="volume"/>
+                                <field name="length"/>
+                                <field name="width"/>
+                                <field name="height"/>
+                            </group>
+                            <group>
+                                <field name="uom_id"/>
+                                <field name="dep_container_id"/>
+                                <field name="dep_container_yard_id"/>
+                                <field name="arr_container_yard"/>
+                                <field name="arr_container_yard_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_loose_cargo_tree_view">
+            <field name="name">freight.loose.cargo.tree.view</field>
+            <field name="model">freight.loose.cargo</field>
+            <field name="arch" type="xml">
+                <tree string="Loose Cargo">
+                    <field name="packs"/>
+                    <field name="weight"/>
+                    <field name="volume"/>
+                    <field name="length"/>
+                    <field name="width"/>
+                    <field name="height"/>
+                    <field name="uom_id"/>
+                    <field name="dep_container_id"/>
+                    <field name="dep_container_yard_id"/>
+                    <field name="arr_container_yard"/>
+                    <field name="arr_container_yard_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_freight_loose_cargo_action">
+            <field name="name">Loose Cargo</field>
+            <field name="res_model">freight.loose.cargo</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Loose Cargo.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

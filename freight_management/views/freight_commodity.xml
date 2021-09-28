@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_commodity_form_view">
+            <field name="name">freight.commodity.form.view</field>
+            <field name="model">freight.commodity</field>
+            <field name="arch" type="xml">
+                <form string="Commodity">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="commodity_code"/>
+                                <field name="iata_commodity"/>
+                                <field name="commodity_description"/>
+                                <field name="expiry_date_commodity"/>
+                                <field name="reefer_min_temp"/>
+                                <field name="reefer_max_temp"/>
+                            </group>
+                            <group>
+                                <field name="lang"/>
+                                <field name="is_system"/>
+                                <field name="is_land_transport"/>
+                                <field name="is_shipping"/>
+                                <field name="is_forwarding"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group>
+                                <field name="is_this_commodity_code_active"/>
+                                <field name="is_this_commodity_pershable"/>
+                                <field name="is_this_commodity_timber"/>
+                            </group>
+                            <group>
+                                <field name="is_this_commodity_hazardous"/>
+                                <field name="is_this_commodity_flammable"/>
+                                <field name="is_con_v_req_commodity"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_commodity_tree_view">
+            <field name="name">freight.commodity.tree.view</field>
+            <field name="model">freight.commodity</field>
+            <field name="arch" type="xml">
+                <tree string="Commodity">
+                    <field name="commodity_code"/>
+                    <field name="iata_commodity"/>
+                    <field name="is_this_commodity_code_active"/>
+                    <field name="expiry_date_commodity"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_commodity_action">
+            <field name="name">Commodity</field>
+            <field name="res_model">freight.commodity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Commodity.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

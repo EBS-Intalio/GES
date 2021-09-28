@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_reference_number_form_view">
+            <field name="name">freight.reference.number.form.view</field>
+            <field name="model">freight.reference.number</field>
+            <field name="arch" type="xml">
+                <form string="Reference Number">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="type"/>
+                                <field name="country_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_reference_number_tree_view">
+            <field name="name">freight.reference.number.tree.view</field>
+            <field name="model">freight.reference.number</field>
+            <field name="arch" type="xml">
+                <tree string="Reference Number">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="country_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_reference_number_action">
+            <field name="name">Reference Number</field>
+            <field name="res_model">freight.reference.number</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Reference Number.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

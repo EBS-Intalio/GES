@@ -187,7 +187,7 @@ class FreightJobRequest(models.Model):
     truck_ref = fields.Char(string="CMR/RWB#/PRO#")
     trucker = fields.Many2one('freight.trucker', string="Trucker")
     trucker_number = fields.Char(string="Trucker No")
-    pricing_id = fields.Many2one('freight.pricing', string='Shipment Pricing')
+    pricing_id = fields.Many2one('freight.pricing', string='Shipment Pricing', copy=False)
     flight_no = fields.Char(string="Flight No")
     state = fields.Selection([('draft', 'Draft'),
                                ('pricing', 'Pricing Progress'),
@@ -197,7 +197,7 @@ class FreightJobRequest(models.Model):
 
     sales_count = fields.Integer(string='Total Orders', compute='_compute_freight_sales_orders')
     order_ids = fields.One2many('sale.order', 'freight_request_id', string='Orders', copy=False)
-    booking_id = fields.Many2one('freight.booking','BookingId')
+    booking_id = fields.Many2one('freight.booking','BookingId', copy=False)
     is_booking_done = fields.Boolean('Booking Done')
     is_web_request = fields.Boolean(string="Is Created From Website?", default=False)
     is_create_pricing_request = fields.Boolean(string="Is Created Pricing Request?", default=False)

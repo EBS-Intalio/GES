@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_container_form_view">
+            <field name="name">freight.container.form.view</field>
+            <field name="model">freight.container</field>
+            <field name="arch" type="xml">
+                <form string="Container">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="number"/>
+                                <field name="count"/>
+                                <field name="humidity_percentage"/>
+                                <field name="is_shipper_owned"/>
+                                <field name="delivery_mode"/>
+                            </group>
+                            <group>
+                                <field name="dep_container_id"/>
+                                <field name="dep_container_yard_id"/>
+                                <field name="arr_container_yard"/>
+                                <field name="arr_container_yard_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_container_tree_view">
+            <field name="name">freight.container.tree.view</field>
+            <field name="model">freight.container</field>
+            <field name="arch" type="xml">
+                <tree string="Container">
+                    <field name="number"/>
+                    <field name="count"/>
+                    <field name="humidity_percentage"/>
+                    <field name="delivery_mode"/>
+                    <field name="is_shipper_owned"/>
+                    <field name="dep_container_id"/>
+                    <field name="dep_container_yard_id"/>
+                    <field name="arr_container_yard"/>
+                    <field name="arr_container_yard_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_container_action">
+            <field name="name">Container</field>
+            <field name="res_model">freight.container</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Container.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
