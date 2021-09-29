@@ -14,7 +14,7 @@ class FreightPackageExt(models.Model):
     is_shipper_owned = fields.Boolean(string='Is Shipper Owned?')
     cont_type = fields.Many2one('container.type', string='Container Type')
     commodity = fields.Many2one('freight.commodity', string='Commodity')
-    Release = fields.Char(string='Release')
+    release = fields.Char(string='Release')
     delivery_mode = fields.Selection([('cfs_cfs', 'CFS/CFS'),
                                       ('cy_cy', 'CY/CY'),
                                       ('cy_cfs', 'CY/CFS'),

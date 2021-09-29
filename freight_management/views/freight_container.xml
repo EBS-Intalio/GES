@@ -23,7 +23,7 @@
                             </group>
                             <group>
                                 <field name="is_shipper_owned"/>
-                                <field name="Release"/>
+                                <field name="release"/>
                                 <field name="dep_container_id"/>
                                 <field name="arr_container_yard_id"/>
                             </group>
@@ -49,7 +49,7 @@
                     <field name="count"/>
                     <field name="cont_type"/>
                     <field name="commodity"/>
-                    <field name="Release"/>
+                    <field name="release"/>
                     <field name="humidity_percentage"/>
                     <field name="delivery_mode"/>
                     <field name="is_shipper_owned"/>
