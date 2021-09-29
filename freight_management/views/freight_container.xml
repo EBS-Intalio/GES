@@ -14,7 +14,7 @@
                             <group>
                                 <field name="name"/>
                                 <field name="code"/>
-                                <field name="number"/>
+                                <field name="number" required="1"/>
                                 <field name="count"/>
                                 <field name="cont_type"/>
                                 <field name="commodity"/>
@@ -45,7 +45,7 @@
             <field name="model">freight.package</field>
             <field name="arch" type="xml">
                 <tree string="Container">
-                    <field name="number"/>
+                    <field name="number" required="1"/>
                     <field name="count"/>
                     <field name="cont_type"/>
                     <field name="commodity"/>
