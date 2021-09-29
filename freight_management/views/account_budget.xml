@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="crossovered_budget_view_form_inherit">
+        <field name="name">crossovered.budget.view.form.inherit</field>
+        <field name="model">crossovered.budget</field>
+        <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="date_check_theoretcial_amount"/>
+            </field>
+            <field name="user_id" position="after">
+                <field name="partner_id"/>
+            </field>
+            <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='analytic_account_id']" position="after">
+            <field name="employee_id"/>
+            <field name="operating_unit_id"/>
+            <field name="partner_id"/>
+        </xpath>
+            <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='theoritical_amount']"
+                   position="after">
+                <field name="theoritical_amount_custom"/>
+            </xpath>
+        </field>
+
+    </record>
+    <record id="view_crossovered_budget_line_search_inherit" model="ir.ui.view">
+        <field name="name">account.budget.line.search.inherit</field>
+        <field name="model">crossovered.budget.lines</field>
+        <field name="inherit_id" ref="account_budget.view_crossovered_budget_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group//filter[@name='group_crossevered_budgdet_id']" position="after">
+                    <filter name="group_operating_unit_id" string="Operating Unit" domain="[]" context="{'group_by':'operating_unit_id'}"/>
+                    <filter name="group_employee_id" string="Employee" domain="[]" context="{'group_by':'employee_id'}"/>
+                    <filter name="group_partner_id" string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_analytic_account_id" string="Analytic Account" domain="[]" context="{'group_by':'analytic_account_id'}"/>
+            </xpath>
+        </field>
+
+    </record>
+        <record model="ir.actions.act_window" id="account_budget.act_crossovered_budget_lines_view">
+        <field name="name">Budgets Analysis</field>
+        <field name="res_model">crossovered.budget.lines</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="view_id" eval="False"/>
+        <field name="context">{'search_default_group_operating_unit_id': True}</field>
+    </record>
+
+</odoo>

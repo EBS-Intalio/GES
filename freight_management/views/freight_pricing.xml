@@ -89,19 +89,19 @@
                                         <field name="freight_transport" />
                                         <field name="freight_target_eta" />
                                         <field name="freight_target_etd" />
-                                        <field name="preferred_airline_id" />
-                                        <field name="freight_flight_no" />
-                                        <field name="freight_shipping_line_id" />
-                                        <field name="freight_vessel_id" />
-                                        <field name="origin_days" />
-                                        <field name="port_days" />
-                                        <field name="origin_country" />
-                                        <field name="origin_country_border" />
-                                        <field name="transit_country" />
-                                        <field name="transit_country_border" />
-                                        <field name="rout" />
-                                        <field name="freight_trucker" />
-                                        <field name="freight_trucker_number" />
+                                        <field name="preferred_airline_id" attrs="{'column_invisible': [('parent.freight_transport','!=','air')]}"/>
+                                        <field name="freight_flight_no" attrs="{'column_invisible': [('parent.freight_transport','!=','air')]}"/>
+                                        <field name="freight_shipping_line_id" attrs="{'column_invisible': [('parent.freight_transport','!=','ocean')]}"/>
+                                        <field name="freight_vessel_id" attrs="{'column_invisible': [('parent.freight_transport','!=','ocean')]}"/>
+                                        <field name="origin_days" attrs="{'column_invisible': [('parent.freight_transport','!=','ocean')]}"/>
+                                        <field name="port_days" attrs="{'column_invisible': [('parent.freight_transport','!=','ocean')]}"/>
+                                        <field name="origin_country" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
+                                        <field name="origin_country_border" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
+                                        <field name="transit_country" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
+                                        <field name="transit_country_border" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
+                                        <field name="rout" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
+                                        <field name="freight_trucker" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
+                                        <field name="freight_trucker_number" attrs="{'column_invisible': [('parent.freight_transport','!=','land')]}"/>
                                         <button name="send_data" string="Update Data" type="object"/>
                                     </tree>
                                 </field>

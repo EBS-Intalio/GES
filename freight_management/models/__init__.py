@@ -28,3 +28,5 @@ from . import service_level
 from . import freight_pricing_data
 from . import freight_airline
 from . import account_asset
+from . import account_budget
+from . import account_move
