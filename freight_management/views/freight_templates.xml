@@ -1007,7 +1007,7 @@
                                 <option value="cartons">Cartons</option>
                                 <option value="bulk">Bulk</option>
                                 <option value="drums">Drums</option>
-                                <option value="other">Others  (Please specify)</option>
+                                <option value="other">Others</option>
                             </select><br/>
                             <select id="reefer_status" name="reefer_status" required="True" class="form-control">
                                 <option value="yes" >YES</option>

@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <form string="Commodity">
                     <sheet>
+                        <field name="active" invisible="1"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <group>
                             <group>
                                 <field name="commodity_code"/>
@@ -18,7 +20,6 @@
                                 <field name="reefer_max_temp"/>
                             </group>
                             <group>
-                                <field name="lang"/>
                                 <field name="is_system"/>
                                 <field name="is_land_transport"/>
                                 <field name="is_shipping"/>
@@ -28,7 +29,6 @@
 
                         <group>
                             <group>
-                                <field name="is_this_commodity_code_active"/>
                                 <field name="is_this_commodity_pershable"/>
                                 <field name="is_this_commodity_timber"/>
                             </group>
@@ -49,9 +49,10 @@
             <field name="arch" type="xml">
                 <tree string="Commodity">
                     <field name="commodity_code"/>
-                    <field name="iata_commodity"/>
-                    <field name="is_this_commodity_code_active"/>
-                    <field name="expiry_date_commodity"/>
+                    <field name="is_system"/>
+                    <field name="is_land_transport"/>
+                    <field name="is_shipping"/>
+                    <field name="is_forwarding"/>
                 </tree>
             </field>
         </record>
@@ -66,6 +67,9 @@
                 </p>
             </field>
         </record>
+
+        <menuitem name="Commodity" parent="freight.freight_operations" id="menu_freight_commodity"
+                  action="freight_commodity_action" sequence="4"/>
 
     </data>
 </odoo>

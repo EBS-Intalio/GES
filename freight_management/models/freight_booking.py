@@ -6,7 +6,7 @@ class FreightBooking(models.Model):
     _inherit = 'freight.booking'
 
     freight_request_id = fields.Many2one('freight.job.request','RequestID')
-    hs_code = fields.Many2many('freight.hs.code', string="Freight Hs-Codes")
+    hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
 
     transport = fields.Selection([('air', 'Air'),
                                    ('ocean', 'Ocean'),
@@ -16,7 +16,13 @@ class FreightBooking(models.Model):
                                    ('rail', 'Rail'),
                                    ('courier', 'Courier')], string='Transport', required=False)
 
+    ocean_shipment_type = fields.Selection(selection_add=[('breakbulk', 'Breakbulk'),
+                                              ('liquid', 'Liquid'),
+                                              ('bulk', 'Bulk'),
+                                              ('roro', 'Roro')])
+
     # ADDED Field for booking cargo
+    marks_and_num = fields.Char(string='Marks & Nums')
     add_terms = fields.Char(string="Add. Terms")
     service_level = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
                                       ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door')],
@@ -73,7 +79,7 @@ class FreightBooking(models.Model):
 
     pickup_address_id = fields.Many2one('res.partner', string='Pickup Address')
     delivery_address_id = fields.Many2one('res.partner', string='Delivery Address')
-    client_address_id = fields.Many2one('res.partner', string='Client Address')
+    # client_address_id = fields.Many2one('res.partner', string='Client Address')
     shipper_address_id = fields.Many2one('res.partner', string='Shipper Address')
     consignee_address_id = fields.Many2one('res.partner', string='Consignee Address')
 
@@ -89,13 +95,90 @@ class FreightBooking(models.Model):
     weight_uom_id = fields.Many2one('uom.uom', string='Pk. Type')
     total_current_volume = fields.Float(string='Total current volume')
     volume_uom_id = fields.Many2one('uom.uom', string='Pk. Type')
-
-    container_ids = fields.One2many('freight.container', 'freight_booking_id', string='Container', copy=False)
-    loose_cargo_ids = fields.One2many('freight.loose.cargo', 'freight_booking_id', string='Loose Cargo', copy=False)
+    container_ids = fields.Many2many('freight.package', string='Container', copy=False)
+    loose_cargo_ids = fields.Many2many('freight.loose.cargo', string='Loose Cargo', copy=False)
     job_management_ids = fields.One2many('job.management.link', 'freight_booking_id', string='Job Management Link', copy=False)
     reference_ids = fields.One2many('freight.reference.number', 'freight_booking_id', string='Reference Number', copy=False)
-    commodity_ids = fields.One2many('freight.commodity', 'freight_booking_id', string='Commodity Details', copy=False)
     service_details_ids = fields.One2many('freight.service.details', 'freight_booking_id', string='Commodity Details', copy=False)
+    rail_shipment_type = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                           ('breakbulk', 'Breakbulk'),
+                                           ('liquid', 'Liquid'),
+                                           ('bulk', 'Bulk'),
+                                           ('roro', 'Roro')], string='Rail Shipment Type')
+
+    sea_then_air_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                              ('breakbulk', 'Breakbulk'),
+                                              ('liquid', 'Liquid'),
+                                              ('bulk', 'Bulk'),
+                                              ('roro', 'Roro')], string='Sea then Air Shipment Type')
+
+    air_then_sea_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                              ('breakbulk', 'Breakbulk'),
+                                              ('liquid', 'Liquid'),
+                                              ('bulk', 'Bulk'),
+                                              ('roro', 'Roro')], string='Air then Sea Shipment Type')
+    dimensions_of_package_id = fields.Many2one('freight.package',
+                                               string="Dimensions of each package /Pallets dimensions")
+
+    bl_copy = fields.Boolean("BL Copy Available ?")
+    shipping_documents = fields.Boolean("Shipping Documents")
+    original_copy = fields.Selection(([('original', 'Original'), ('copy', 'Copy')]), string='Original/Copy')
+
+    load_location_id = fields.Many2one('freight.port', 'Load', index=True)
+    discharge_location_id = fields.Many2one('freight.port', 'Discharge', index=True)
+    # hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
+
+    @api.onchange('consignee_id')
+    def onchange_consignee_id(self):
+        for rec in self:
+            rec.write({'consignee_address_id': False})
+
+    @api.onchange('shipper_id')
+    def onchange_shipper_id(self):
+        for rec in self:
+            rec.write({'shipper_address_id': False})
+
+    @api.onchange('shipper_address_id', 'consignee_address_id')
+    def set_loading_delivery_address(self):
+        for rec in self:
+            shipper_address_id = rec.shipper_address_id
+            consignee_address_id = rec.consignee_address_id
+            rec.write({'area': False, 'street': False, 'city': False, 'zip_code': False, 'building': False, 'po_box': False, 'state_id': False, 'country_id': False,
+                       'delivery_area': False, 'delivery_street': False, 'delivery_city': False, 'delivery_building': False,
+                       'delivery_po_box': False, 'delivery_zip_code': False, 'delivery_state_id': False, 'delivery_country_id': False})
+            if shipper_address_id:
+                rec.area = shipper_address_id.street
+                rec.street = shipper_address_id.street2
+                rec.city = shipper_address_id.city
+                rec.zip_code = shipper_address_id.zip
+                rec.building = shipper_address_id.building
+                rec.po_box = shipper_address_id.po_box
+                rec.state_id = shipper_address_id.state_id and shipper_address_id.state_id.id
+                rec.country_id = shipper_address_id.country_id and shipper_address_id.country_id.id
+            if consignee_address_id:
+                rec.delivery_area = consignee_address_id.street
+                rec.delivery_street = consignee_address_id.street2
+                rec.delivery_city = consignee_address_id.city
+                rec.delivery_building = consignee_address_id.building
+                rec.delivery_po_box = consignee_address_id.po_box
+                rec.delivery_zip_code = consignee_address_id.zip
+                rec.delivery_state_id = consignee_address_id.state_id and consignee_address_id.state_id.id
+                rec.delivery_country_id = consignee_address_id.country_id and consignee_address_id.country_id.id
+
+    @api.onchange('destination_location_id', 'source_location_id')
+    def onchange_origin_destination(self):
+        """
+        Set Load and discharge according to the origin and destination
+        :return:
+        """
+        load_location_id = False
+        discharge_location_id = False
+        if self.source_location_id:
+            load_location_id = self.source_location_id.id
+        if self.destination_location_id:
+            discharge_location_id = self.destination_location_id.id
+        self.write({'load_location_id': load_location_id,
+                    'discharge_location_id': discharge_location_id})
 
     def button_request(self):
         return {

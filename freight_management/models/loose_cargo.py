@@ -12,13 +12,15 @@ class FreightLooseCargo(models.Model):
     length = fields.Float(string='Length')
     width = fields.Float(string='Width')
     height = fields.Float(string='Height')
-    # uw = fields
-    # commodity = fields
-    # uv = fields
-    # ud = fields
-    uom_id = fields.Many2one('uom.uom', string='Pk. Type', required=True)
-    dep_container_id = fields.Many2one('freight.port', string='Dep. Container')
-    dep_container_yard_id = fields.Many2one('freight.port', string='Dep. Container Yard')
-    arr_container_yard = fields.Many2one('freight.port', string='Arr. Container')
-    arr_container_yard_id = fields.Many2one('freight.port', string='Arr. Container Yard')
-    freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
+
+    uw = fields.Many2one('uom.uom', string='UW')
+    package_type = fields.Selection([('palatized', 'Palatized'),
+                                        ('cartons', 'Cartons'),
+                                        ('bulk', 'Bulk'),
+                                        ('drums', 'Drums'),
+                                        ('other', 'Others')], default='palatized', required=True, string='Pk. Type')
+
+    uv = fields.Many2one('uom.uom', string='UV')
+    ud = fields.Many2one('uom.uom', string='UD')
+    commodity_id = fields.Many2one('freight.commodity', string='Commodity')
+    # freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')

@@ -11,18 +11,24 @@
                         <group>
                             <group>
                                 <field name="packs"/>
-                                <field name="weight"/>
-                                <field name="volume"/>
+                                <field name="package_type"/>
+                            </group>
+                            <group>
                                 <field name="length"/>
                                 <field name="width"/>
                                 <field name="height"/>
+                                <field name="ud"/>
+                                <field name="commodity_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="weight"/>
+                                <field name="uw"/>
                             </group>
                             <group>
-                                <field name="uom_id"/>
-                                <field name="dep_container_id"/>
-                                <field name="dep_container_yard_id"/>
-                                <field name="arr_container_yard"/>
-                                <field name="arr_container_yard_id"/>
+                                <field name="volume"/>
+                                <field name="uv"/>
                             </group>
                         </group>
                     </sheet>
@@ -36,16 +42,16 @@
             <field name="arch" type="xml">
                 <tree string="Loose Cargo">
                     <field name="packs"/>
+                    <field name="package_type"/>
                     <field name="weight"/>
+                    <field name="uw"/>
                     <field name="volume"/>
+                    <field name="uv"/>
                     <field name="length"/>
                     <field name="width"/>
                     <field name="height"/>
-                    <field name="uom_id"/>
-                    <field name="dep_container_id"/>
-                    <field name="dep_container_yard_id"/>
-                    <field name="arr_container_yard"/>
-                    <field name="arr_container_yard_id"/>
+                    <field name="ud"/>
+                    <field name="commodity_id"/>
                 </tree>
             </field>
         </record>
@@ -60,6 +66,9 @@
                 </p>
             </field>
         </record>
+
+        <menuitem name="Loose Cargo" parent="freight.freight_operations" id="menu_freight_loose_cargo"
+                  action="view_freight_loose_cargo_action" sequence="4"/>
 
     </data>
 </odoo>

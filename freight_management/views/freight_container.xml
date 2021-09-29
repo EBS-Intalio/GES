@@ -4,24 +4,36 @@
 
         <record model="ir.ui.view" id="freight_container_form_view">
             <field name="name">freight.container.form.view</field>
-            <field name="model">freight.container</field>
+            <field name="model">freight.package</field>
             <field name="arch" type="xml">
                 <form string="Container">
                     <sheet>
+                        <field name="active" invisible="1"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <group>
                             <group>
+                                <field name="name"/>
+                                <field name="code"/>
                                 <field name="number"/>
                                 <field name="count"/>
+                                <field name="cont_type"/>
+                                <field name="commodity"/>
                                 <field name="humidity_percentage"/>
-                                <field name="is_shipper_owned"/>
                                 <field name="delivery_mode"/>
                             </group>
                             <group>
+                                <field name="is_shipper_owned"/>
+                                <field name="Release"/>
                                 <field name="dep_container_id"/>
-                                <field name="dep_container_yard_id"/>
-                                <field name="arr_container_yard"/>
                                 <field name="arr_container_yard_id"/>
                             </group>
+                        </group>
+                        <group string="Used In">
+                            <field name="air"/>
+                            <field name="ocean"/>
+                            <field name="land"/>
+                            <field name="is_ltl"/>
+                            <field name="is_lcl"/>
                         </group>
                     </sheet>
                 </form>
@@ -30,17 +42,18 @@
 
         <record model="ir.ui.view" id="freight_container_tree_view">
             <field name="name">freight.container.tree.view</field>
-            <field name="model">freight.container</field>
+            <field name="model">freight.package</field>
             <field name="arch" type="xml">
                 <tree string="Container">
                     <field name="number"/>
                     <field name="count"/>
+                    <field name="cont_type"/>
+                    <field name="commodity"/>
+                    <field name="Release"/>
                     <field name="humidity_percentage"/>
                     <field name="delivery_mode"/>
                     <field name="is_shipper_owned"/>
                     <field name="dep_container_id"/>
-                    <field name="dep_container_yard_id"/>
-                    <field name="arr_container_yard"/>
                     <field name="arr_container_yard_id"/>
                 </tree>
             </field>
@@ -48,14 +61,22 @@
 
         <record model="ir.actions.act_window" id="freight_container_action">
             <field name="name">Container</field>
-            <field name="res_model">freight.container</field>
+            <field name="res_model">freight.package</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('container','=', True)]</field>
+            <field name="context">{'default_container': True}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('freight_container_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('freight_container_form_view')})]"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create a new Container.
                 </p>
             </field>
         </record>
+
+        <menuitem name="Container" parent="freight.freight_operations" id="menu_freight_container"
+                  action="freight_container_action" sequence="4"/>
 
     </data>
 </odoo>

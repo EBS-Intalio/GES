@@ -118,7 +118,7 @@ class FreightJobRequest(models.Model):
                                          ('cartons', 'Cartons'),
                                          ('bulk', 'Bulk'),
                                          ('drums', 'Drums'),
-                                         ('other', 'Others  (Please specify)')], string="Packaging Type")
+                                         ('other', 'Others')], string="Packaging Type")
 
 
     country_id = fields.Many2one('res.country', string='Country')
@@ -206,7 +206,6 @@ class FreightJobRequest(models.Model):
     shipper_addr = fields.Many2one('res.partner','Shipper Address')
     consignee_addr = fields.Many2one('res.partner','Consignee Address')
 
-
     @api.onchange('shipper_addr','consignee_addr')
     def get_shipper_consignee_add(self):
         for rec in self:
@@ -228,7 +227,6 @@ class FreightJobRequest(models.Model):
                 rec.delivery_zip_code = rec.consignee_addr.zip
                 rec.delivery_state_id = rec.consignee_addr.state_id and rec.consignee_addr.state_id.id
                 rec.delivery_country_id = rec.consignee_addr.country_id and rec.consignee_addr.country_id.id
-
 
     @api.onchange('mode_of_transport')
     def onchange_mode_of_transport(self):

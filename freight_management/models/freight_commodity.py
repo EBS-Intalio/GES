@@ -11,7 +11,8 @@ class FreightCommodity(models.Model):
     _name = 'freight.commodity'
     _rec_name = 'commodity_code'
 
-    commodity_code = fields.Char(string='Commodity Code', required=True)
+    # name = fields.Char(string='Name', required=True)
+    commodity_code = fields.Char(string='Code', required=True)
     iata_commodity = fields.Char(string='IATA Commodity')
     commodity_description = fields.Char(string='Commodity Description')
     lang = fields.Selection(_lang_get, string='Language')
@@ -21,7 +22,7 @@ class FreightCommodity(models.Model):
     is_land_transport = fields.Boolean(string='Is Land Transport')
     is_shipping = fields.Boolean(string='Is Shipping')
     is_forwarding = fields.Boolean(string='Is Forwarding')
-    is_this_commodity_code_active = fields.Boolean(string='Is This Commodity Code Active')
+    active = fields.Boolean(string='Is This Commodity Code Active', default=True)
     is_this_commodity_pershable = fields.Boolean(string='Is This Commodity Perishable')
     is_this_commodity_timber = fields.Boolean(string='Is This Commodity Timber')
     is_this_commodity_hazardous = fields.Boolean(string='Is This Commodity Hazardous')
