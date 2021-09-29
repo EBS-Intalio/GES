@@ -42,7 +42,7 @@ class AssetSellInherit(models.TransientModel):
                     last_depr_move = self.asset_id.depreciation_move_ids.filtered(lambda x: x.state == 'posted')[0]
                     last_dep_sate = last_depr_move.date
 
-                    days_diffr = (self.disposal_date - last_dep_sate + timedelta(days=1)).days
+                    days_diffr = (self.disposal_date - last_dep_sate ).days
                     if self.asset_id.method_period == '1':
                         amount = avg_amount_to_depr*days_diffr/month_days
                     if self.asset_id.method_period == '12':
@@ -57,7 +57,7 @@ class AssetSellInherit(models.TransientModel):
                     last_depr_move = self.asset_id.depreciation_move_ids.filtered(lambda x: x.state == 'posted')[0]
                     last_dep_sate = last_depr_move.date
                     avg_amount_dep = last_depr_move.asset_remaining_value*self.asset_id.method_progress_factor
-                    days_diffr = (self.disposal_date - last_dep_sate + timedelta(days=1)).days
+                    days_diffr = (self.disposal_date - last_dep_sate).days
                     if self.asset_id.method_period == '1':
                         amount = avg_amount_dep*days_diffr/month_days
                     if self.asset_id.method_period == '12':
@@ -73,7 +73,7 @@ class AssetSellInherit(models.TransientModel):
                     last_dep_sate = last_depr_move.date
                     avg_amount_dep_deg = last_depr_move.asset_remaining_value * self.asset_id.method_progress_factor
                     avg_amount_dep_linear = self.asset_id.original_value / self.asset_id.method_number
-                    days_diffr = (self.disposal_date - last_dep_sate + timedelta(days=1)).days
+                    days_diffr = (self.disposal_date - last_dep_sate).days
                     if avg_amount_dep_deg>avg_amount_dep_linear:
                         if self.asset_id.method_period == '1':
                             amount = avg_amount_dep_deg * days_diffr / month_days
@@ -178,4 +178,4 @@ class AssetSellInherit(models.TransientModel):
 
         invoice_line = self.env['account.move.line'] if self.action == 'dispose' else self.invoice_line_id or self.invoice_id.invoice_line_ids
 
-        return self.asset_id.set_to_close(invoice_line_id=invoice_line, date=invoice_line.move_id.invoice_date)
+        return self.asset_id.set_to_close(invoice_line_id=invoice_line, date=self.disposal_date or invoice_line.move_id.invoice_date)

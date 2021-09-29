@@ -9,6 +9,13 @@ class CrossoveredBudgetInherit(models.Model):
     date_check_theoretcial_amount = fields.Date('Theoretical Amount At', default = fields.Date.today())
     partner_id = fields.Many2one('res.partner','Customer')
 
+    @api.constrains('date_check_theoretcial_amount')
+    def check_date_check_theoretcial_amount(self):
+        for rec in self:
+            if rec.date_check_theoretcial_amount:
+                if not (rec.date_check_theoretcial_amount>=rec.date_from and rec.date_check_theoretcial_amount<=rec.date_to):
+                    raise ValidationError('Theoretical Amount At should be between The selected Period!')
+
 
 class CrossoveredBudgetLinesInherit(models.Model):
     _inherit = "crossovered.budget.lines"
