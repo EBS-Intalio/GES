@@ -19,7 +19,6 @@
                      <notebook>
                         <page name='accounts' string="Accounts">
                             <field name="account_ids" widget="many2many_tags">
-
                             </field>
                         </page>
                      </notebook>
