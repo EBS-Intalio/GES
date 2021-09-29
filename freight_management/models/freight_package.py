@@ -8,7 +8,7 @@ class FreightPackageExt(models.Model):
     is_ltl = fields.Boolean(string='LTL')
     is_lcl = fields.Boolean(string='LCL')
 
-    number = fields.Char(string='Container#', required=True)
+    number = fields.Char(string='Container#', required=False)
     count = fields.Integer(string='Count')
     humidity_percentage = fields.Float(string='Humidity Percentage')
     is_shipper_owned = fields.Boolean(string='Is Shipper Owned?')
