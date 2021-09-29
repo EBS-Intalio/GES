@@ -24,7 +24,7 @@ class AccountMoveLineInherit(models.Model):
                 'tag_ids': [(6, 0, move_line._get_analytic_tag_ids())],
                 'unit_amount': move_line.quantity,
                 'employee_id': move_line.employee_id and move_line.employee_id.id or False,
-                'operating_unit_id': move_line.operating_unit_id and move_line.operating_unit_id.id or False,
+                # 'operating_unit_id': move_line.operating_unit_id and move_line.operating_unit_id.id or False,
                 'product_id': move_line.product_id and move_line.product_id.id or False,
                 'product_uom_id': move_line.product_uom_id and move_line.product_uom_id.id or False,
                 'amount': amount,
@@ -41,4 +41,4 @@ class AccountAnalyticLineInherit(models.Model):
     _inherit = 'account.analytic.line'
 
     employee_id = fields.Many2one('hr.employee','Employee')
-    operating_unit_id = fields.Many2one('operating.unit','Operating Unit')
+    # operating_unit_id = fields.Many2one('operating.unit','Operating Unit')

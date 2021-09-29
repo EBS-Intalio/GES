@@ -7,7 +7,7 @@
                 Freight Management
                """,
     'sequence': 51,
-    'depends': ['account', 'mail', 'freight', 'crm', 'base', 'uom', 'ebs_freight_pricing', 'sale_management', 'web','account_asset','account_budget','operating_unit','analytic','account_operating_unit','hr'],
+    'depends': ['account', 'mail', 'freight', 'crm', 'base', 'uom', 'ebs_freight_pricing', 'sale_management', 'web','account_asset','account_budget','analytic','hr'],
     'author': 'Ever Business Solutions',
     'website': "http://www.ever-bs.com/",
     'data': [

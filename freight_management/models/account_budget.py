@@ -25,7 +25,7 @@ class CrossoveredBudgetLinesInherit(models.Model):
         help="Amount you are supposed to have earned/spent at this date.")
 
     employee_id = fields.Many2one('hr.employee','Employee')
-    operating_unit_id = fields.Many2one('operating.unit','Operating Unit')
+    # operating_unit_id = fields.Many2one('operating.unit','Operating Unit')
     partner_id = fields.Many2one(related='crossovered_budget_id.partner_id', store=True)
 
     @api.depends('date_from', 'date_to', 'crossovered_budget_id.date_check_theoretcial_amount')
@@ -76,8 +76,8 @@ class CrossoveredBudgetLinesInherit(models.Model):
                           ]
                 if line.employee_id:
                     domain.append(('employee_id','=',line.employee_id.id))
-                if line.operating_unit_id:
-                    domain.append(('operating_unit_id','=',line.operating_unit_id.id))
+                # if line.operating_unit_id:
+                #     domain.append(('operating_unit_id','=',line.operating_unit_id.id))
                 if line.partner_id:
                     domain.append(('partner_id','=',line.partner_id.id))
                 if acc_ids:
@@ -98,8 +98,8 @@ class CrossoveredBudgetLinesInherit(models.Model):
                           ]
                 if line.employee_id:
                     domain.append(('employee_id','=',line.employee_id.id))
-                if line.operating_unit_id:
-                    domain.append(('operating_unit_id','=',line.operating_unit_id.id))
+                # if line.operating_unit_id:
+                #     domain.append(('operating_unit_id','=',line.operating_unit_id.id))
                 if line.partner_id:
                     domain.append(('partner_id','=',line.partner_id.id))
                 where_query = aml_obj._where_calc(domain)
