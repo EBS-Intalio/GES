@@ -79,7 +79,7 @@ class FreightBooking(models.Model):
 
     pickup_address_id = fields.Many2one('res.partner', string='Pickup Address')
     delivery_address_id = fields.Many2one('res.partner', string='Delivery Address')
-    # client_address_id = fields.Many2one('res.partner', string='Client Address')
+    client_address_id = fields.Many2one('res.partner', string='Client Address')
     shipper_address_id = fields.Many2one('res.partner', string='Shipper Address')
     consignee_address_id = fields.Many2one('res.partner', string='Consignee Address')
 
