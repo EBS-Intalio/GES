@@ -7,16 +7,39 @@
             <field name="inherit_id" ref="freight_management.freight_management_freight_pricing_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='carrier_ids']" position="after">
-                    <field name="carrier_count" invisible="1"/>
+                    <label for="first_carrier_id" string="Carrier 1"/>
+                        <div>
+                            <field name="first_carrier_id" style="width:17%" class="oe_inline"/>
+                            <field name="first_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;" placeholder="Flight No.." class="oe_inline"/>
+                            <field name="first_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;" placeholder="Vessel.." class="oe_inline"/>
+                            <field name="first_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;" placeholder="Rout.." class="oe_inline"/>
+                        </div>
+                    <label for="second_carrier_id" string="Carrier 2"/>
+                        <div>
+                            <field name="second_carrier_id" style="width:50%" class="oe_inline"/>
+                            <field name="second_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;" placeholder="Flight No.." class="oe_inline"/>
+                            <field name="second_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;" placeholder="Vessel.." class="oe_inline"/>
+                            <field name="second_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;" placeholder="Rout.." class="oe_inline"/>
+                        </div>
+                    <label for="third_carrier_id" string="Carrier 3"/>
+                        <div>
+                            <field name="third_carrier_id" style="width:50%" class="oe_inline"/>
+                            <field name="third_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;" placeholder="Flight No.." class="oe_inline"/>
+                            <field name="third_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;" placeholder="Vessel.." class="oe_inline"/>
+                            <field name="third_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;" placeholder="Rout.." class="oe_inline"/>
+                        </div>
+                </xpath>
+                <xpath expr="//field[@name='carrier_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='charges_ids']/tree/field[@name='charge_amount']" position="attributes">
-                <attribute name="attrs">{'column_invisible': ['|', ('parent.carrier_count', '=', 0), '&amp;',('parent.different_amount','!=','price_1'), ('parent.state','=','done')]}</attribute>
+                <attribute name="attrs">{'column_invisible': ['|', ('parent.first_carrier_id', '=', False), '&amp;',('parent.different_amount','!=','price_1'), ('parent.state','=','done')]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='charges_ids']/tree/field[@name='charge_amount_price_2']" position="attributes">
-                <attribute name="attrs">{'column_invisible': ['|', ('parent.carrier_count', '&lt;', 2), '&amp;',('parent.different_amount','!=','price_2'), ('parent.state','=','done')]}</attribute>
+                <attribute name="attrs">{'column_invisible': ['|', ('parent.second_carrier_id', '=', False), '&amp;',('parent.different_amount','!=','price_2'), ('parent.state','=','done')]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='charges_ids']/tree/field[@name='charge_amount_price_3']" position="attributes">
-                <attribute name="attrs">{'column_invisible': ['|', ('parent.carrier_count', '&lt;', 3), '&amp;',('parent.different_amount','!=','price_3'), ('parent.state','=','done')]}</attribute>
+                <attribute name="attrs">{'column_invisible': ['|', ('parent.third_carrier_id', '=', False), '&amp;',('parent.different_amount','!=','price_3'), ('parent.state','=','done')]}</attribute>
                 </xpath>
             </field>
         </record>
