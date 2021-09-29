@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_financial_line_item_form_view" model="ir.ui.view">
+            <field name="name">account.financial.line.item.form</field>
+            <field name="model">account.financial.line.item</field>
+            <field name="arch" type="xml">
+                <form>
+                 <sheet>
+                    <group>
+                        <group>
+                            <field name="code" />
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="type" />
+                        </group>
+                    </group>
+                     <notebook>
+                        <page name='accounts' string="Accounts">
+                            <field name="account_ids" widget="many2many_tags">
+                            </field>
+                        </page>
+                     </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="account_financial_line_item_tree_view">
+            <field name="name">account.financial.line.item.tree</field>
+            <field name="model">account.financial.line.item</field>
+            <field name="arch" type="xml">
+                <tree string="Clearance">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="account_financial_line_item_action">
+            <field name="name">Account Financial Line Item</field>
+            <field name="res_model">account.financial.line.item</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Financial Line Item" parent="account.account_account_menu" id="menu_freight_clearance"
+                  action="account_financial_line_item_action" sequence="11"/>
+
+    </data>
+</odoo>
