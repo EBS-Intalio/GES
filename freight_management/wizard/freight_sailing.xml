@@ -1,0 +1,21 @@
+<odoo>
+    <record model="ir.ui.view" id="freight_sailing_form_view">
+        <field name="name">freight.sailing.form.view</field>
+        <field name="model">freight.sailing</field>
+        <field name="arch" type="xml">
+            <form string="Add New Sailing">
+                <group>
+                    <group>
+                        <field name="voyage_no"/>
+                        <field name="vessel_id"/>
+                        <field name="carrier_id"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="add_new_sailing" string="Add Sailing" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -134,9 +134,6 @@ class FreightJobRequest(models.Model):
     delivery_country_id = fields.Many2one('res.country', string='Country')
     delivery_state_id = fields.Many2one('res.country.state', string='State',
                                domain="[('country_id', '=?', delivery_country_id)]")
-
-    # delivery_state_id = fields.Many2one('res.country.state', string='State',
-    #                                     domain="[('country_id', '=', delivery_country_id)]")
     delivery_city = fields.Char(string="City")
     delivery_area = fields.Char(string="Area")
     delivery_street = fields.Char(string="Street")
@@ -374,20 +371,7 @@ class FreightJobRequest(models.Model):
         if not(self.mode_of_transport and self.shipper_id and self.consignee_id and self.partner_id and self.reefer_status and self.commodity_category and
                self.commodity_description and self.weight_type and self.clearance_required and self.warehousing):
             raise ValidationError('Either of the Transport, Shipper, Consignee, Customer, Reefer status, Commodity Category, Commodity Description, Weight Type, Clearance Required, Warehousing, Gross Weight, Number of packages are not filled please fill all the mandatory details before creating a booking.')
-        vals = {
-            'transport':self.mode_of_transport, #mandatory
-            'shipper_id':self.shipper_id.id, #mandatory
-            'consignee_id':self.consignee_id.id, #mandatory
-            'agent_id':self.partner_id.id, #mandatory
-            'reefer_status':self.reefer_status, #mandatory
-            'commodity_category':self.commodity_category, #mandatory
-            'commodity_description':self.commodity_description, #mandatory
-            'weight_type':self.weight_type, #mandatory
-            'clearance_required':self.clearance_required, #mandatory
-            'warehousing':self.warehousing, #mandatory
-            'gross_weight':self.gross_weight, #mandatory
-            'number_packages': self.number_of_pallets_packages,#mandatory
-        }
+        vals = {}
         if self.mode_of_transport == 'ocean':
             if not self.equipment_type:
                 raise ValidationError(
@@ -410,64 +394,79 @@ class FreightJobRequest(models.Model):
         dangerous_goods = False
         if self.is_dangerous_goods == 'yes':
             dangerous_goods = True
-        vals.update(
-            {
-                'incoterm':self.freight_incoterm_id and self.freight_incoterm_id.id,
-                # 'air_shipment_type':self.air_shipment,
-                'job_type':self.job_type,
-                'source_location_id':self.origin_airport_id and self.origin_airport_id.id,
-                # 'origin_close':self.consider_origin_close,
-                'origin_close': origin_close,
-                'destination_location_id':self.destination_airport_id and self.destination_airport_id.id,
-                # 'destination_close':self.consider_destination_close,
-                'destination_close': destination_close,
-                'voyage_no':self.voyage_no,
-                'vessel_id':self.vessel_id and self.vessel_id.id,
-                'shipping_line_id':self.shipping_line_id and self.shipping_line_id.id,
-                'mawb_no':self.mawb_no,
-                'flight_no':self.flight_no,
-                'dangerous_goods': dangerous_goods,
-                # 'dangerous_goods':self.is_dangerous_goods,
-                'danger_class':self.dangerous_goods_class,
-                'temperature':self.temperature,
-                'hs_code':self.freight_hs_code_ids and self.freight_hs_code_ids.ids,
-                'stackability':self.stackability,
-                'additional_requirements':self.additional_requirements,
-                'target_rate':self.target_rate,
-                # 'package_type_id':self.package_type_id and self.package_type_id.id,
-                # 'shipment_ready_date':self.shipment_ready_date,
-                # 'target_eta':self.target_eta,
-                # 'target_etd':self.target_etd,
-                'target_transit_time':self.target_transit_time,
-                'expected_free_time_at_origin':self.expected_free_time_at_origin,
-                'expected_free_time_at_destination':self.expected_free_time_at_destination,
-                'additional_comments':self.additional_comments,
-                'preferred_airline_id':self.preferred_airline_id and self.preferred_airline_id.id,
-                #Loading
-                'country_id':self.country_id and self.country_id.id,
-                'state_id':self.state_id and self.state_id.id,
-                'city':self.city,
-                'area':self.area,
-                'street':self.street,
-                'building':self.building,
-                'po_box': self.po_box,
-                'zip_code': self.zip_code,
-                #delivery
-                'delivery_country_id':self.delivery_country_id and  self.delivery_country_id.id,
-                'delivery_state_id':self.delivery_state_id and  self.delivery_state_id.id,
-                'delivery_city': self.delivery_city,
-                'delivery_area': self.delivery_area,
-                'delivery_street': self.delivery_street,
-                'delivery_building': self.delivery_building,
-                'delivery_po_box': self.delivery_po_box,
-                'delivery_zip_code': self.delivery_zip_code,
-                # 'ocean_shipment_type': self.ocean_shipment,
-                'truck_ref': self.truck_ref,
-                'trucker': self.trucker.id and self.trucker.id,
-                'trucker_number': self.trucker_number,
-                'freight_request_id':self.id,
-            }
-        )
+        vals.update({
+                    'shipper_id': self.shipper_id.id,
+                    'consignee_id': self.consignee_id.id,
+                    'reefer_status': self.reefer_status,
+                    'commodity_category': self.commodity_category,
+                    'commodity_description': self.commodity_description,
+                    'weight_type': self.weight_type,
+                    'clearance_required': self.clearance_required,
+                    'warehousing': self.warehousing,
+                    'gross_weight': self.gross_weight,
+                    'number_packages': self.number_of_pallets_packages,
+                    'equipment_type': self.equipment_type,
+                    'shipper_address_id': self.shipper_addr and self.shipper_addr.id or False,
+                    'consignee_address_id': self.consignee_addr and self.consignee_addr.id or False,
+                    'dimensions_of_package_id': self.dimensions_of_package_id and self.dimensions_of_package_id.id or False,
+                    'vehicle_size': self.vehicle_size,
+                    'set_temperature': self.temperature_value,
+                    'incoterm': self.freight_incoterm_id and self.freight_incoterm_id.id,
+                    'agent_id': self.partner_id and self.partner_id.id or False,
+                    'transport': self.mode_of_transport,
+                    'rail_shipment_type': self.rail_shipment_type,
+                    'sea_then_air_shipment': self.sea_then_air_shipment,
+                    'air_then_sea_shipment': self.air_then_sea_shipment,
+                    'inland_shipment_type': self.inland_shipment,
+                    'job_type': self.job_type,
+                    'source_location_id': self.origin_airport_id and self.origin_airport_id.id,
+                    'origin_close': origin_close,
+                    'destination_location_id': self.destination_airport_id and self.destination_airport_id.id,
+                    'destination_close': destination_close,
+                    'voyage_no': self.voyage_no,
+                    'vessel_id': self.vessel_id and self.vessel_id.id,
+                    'shipping_line_id': self.shipping_line_id and self.shipping_line_id.id,
+                    'mawb_no': self.mawb_no,
+                    'flight_no': self.flight_no,
+                    'dangerous_goods': dangerous_goods,
+                    'danger_class': self.dangerous_goods_class,
+                    'dangerous_goods_notes': self.dangerous_goods_notes,
+                    'temperature': self.temperature,
+                    'hs_code': self.freight_hs_code_ids and self.freight_hs_code_ids.ids,
+                    'stackability': self.stackability,
+                    'additional_requirements': self.additional_requirements,
+                    'target_rate': self.target_rate,
+                    'booked_date': self.shipment_ready_date,
+                    'est_pickup_date': self.target_eta,
+                    'est_delivery_date': self.target_etd,
+                    'target_transit_time': self.target_transit_time,
+                    'expected_free_time_at_origin': self.expected_free_time_at_origin,
+                    'expected_free_time_at_destination': self.expected_free_time_at_destination,
+                    'additional_comments': self.additional_comments,
+                    'preferred_airline_id': self.preferred_airline_id and self.preferred_airline_id.id,
+                    'service_level': self.service_level,
+                    'country_id': self.country_id and self.country_id.id,
+                    'state_id': self.state_id and self.state_id.id,
+                    'city': self.city,
+                    'area': self.area,
+                    'street': self.street,
+                    'building': self.building,
+                    'po_box': self.po_box,
+                    'zip_code': self.zip_code,
+                    'delivery_country_id': self.delivery_country_id and self.delivery_country_id.id,
+                    'delivery_state_id': self.delivery_state_id and self.delivery_state_id.id,
+                    'delivery_city': self.delivery_city,
+                    'delivery_area': self.delivery_area,
+                    'delivery_street': self.delivery_street,
+                    'delivery_building': self.delivery_building,
+                    'delivery_po_box': self.delivery_po_box,
+                    'delivery_zip_code': self.delivery_zip_code,
+                    'ocean_shipment_type': self.ocean_shipment,
+                    'truck_ref': self.truck_ref,
+                    'trucker': self.trucker.id and self.trucker.id,
+                    'trucker_number': self.trucker_number,
+                    'freight_request_id': self.id,
+                })
 
         booking = self.env['freight.booking'].create(vals)
         self.booking_id = booking.id

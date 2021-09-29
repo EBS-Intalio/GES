@@ -92,9 +92,9 @@ class FreightBooking(models.Model):
     estimated_arrival_date = fields.Date(string="Estimated Arrival date")
     estimated_departure_date = fields.Date(string="Estimated Departure date")
     total_current_weight = fields.Float(string='Total current weight')
-    weight_uom_id = fields.Many2one('uom.uom', string='Pk. Type')
+    weight_uom_id = fields.Many2one('uom.uom', string='Weight UOM')
     total_current_volume = fields.Float(string='Total current volume')
-    volume_uom_id = fields.Many2one('uom.uom', string='Pk. Type')
+    volume_uom_id = fields.Many2one('uom.uom', string='Volume UOM')
     container_ids = fields.Many2many('freight.package', string='Container', copy=False)
     loose_cargo_ids = fields.Many2many('freight.loose.cargo', string='Loose Cargo', copy=False)
     job_management_ids = fields.One2many('job.management.link', 'freight_booking_id', string='Job Management Link', copy=False)
@@ -126,20 +126,49 @@ class FreightBooking(models.Model):
 
     load_location_id = fields.Many2one('freight.port', 'Load', index=True)
     discharge_location_id = fields.Many2one('freight.port', 'Discharge', index=True)
+    inspection = fields.Selection([('unk', 'Unknown -No security Measures Taken'),
+                                   ('lfc', 'Exempt /Life-saving materials (Save Human Life)'),
+                                   ('trn', 'Transfer of Transshipment'),
+                                   ('nuc', 'Exempt /Nuclear Material'),
+                                   ('dip', 'Exempt /Diplomatic bags or diplomatic mails'),
+                                   ('bio', 'Exempt /Biomedical samples'),
+                                   ('mai', 'Exempt /Mail'),
+                                   ('smu', 'Exempt /Small undersized shipments'),
+                                   ('cmd', 'Cargo metal detection'),
+                                   ('etd', 'Explosives trace detection equipment - particles or vapor'),
+                                   ('edd', 'Explosives detection dogs'),
+                                   ('xry', 'X-Ray Equipment'),
+                                   ('vck', 'Visual Check'),
+                                   ('app', 'Approved /Known Shipper'),
+                                   ('phs', 'Physical Inspection and/or hand search'),
+                                   ('eds', 'Explosives detection system'),
+                                   ('aom', 'subjected to any other means')], string='Inspection')
     # hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
 
     @api.onchange('consignee_id')
     def onchange_consignee_id(self):
+        """
+        when change the consignee reset the consignee address
+        :return:
+        """
         for rec in self:
             rec.write({'consignee_address_id': False})
 
     @api.onchange('shipper_id')
     def onchange_shipper_id(self):
+        """
+        when change the shipper reset the shipper address
+        :return:
+        """
         for rec in self:
             rec.write({'shipper_address_id': False})
 
     @api.onchange('shipper_address_id', 'consignee_address_id')
     def set_loading_delivery_address(self):
+        """
+        Set loading and delivery address according to the consignee and shipper
+        :return:
+        """
         for rec in self:
             shipper_address_id = rec.shipper_address_id
             consignee_address_id = rec.consignee_address_id
@@ -190,12 +219,31 @@ class FreightBooking(models.Model):
         }
 
     def button_add_new_sailings(self):
-        return True
+        """
+        Open View for add sailing
+        :return:
+        """
+        return {
+            'name': _('Add New Sailing'),
+            'view_mode': 'form',
+            'res_model': 'freight.sailing',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'context': {
+                'active_model': 'freight.booking',
+                'active_ids': self.ids,
+            },
+        }
 
     def button_view_sailings(self):
         return True
 
     def button_clear_sailing(self):
+        """
+        Clear Sailing Details
+        :return:
+        """
+        self.write({'carrier_id': False, 'voyage_no': False, 'vessel_id': False})
         return True
 
     def button_lode_list(self):

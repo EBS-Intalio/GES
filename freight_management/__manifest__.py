@@ -46,6 +46,7 @@
         "views/reference_number.xml",
         "views/freight_commodity.xml",
         "views/freight_booking.xml",
+        "wizard/freight_sailing.xml",
     ],
     'installable': True,
     'application': True,

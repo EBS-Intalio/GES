@@ -31,4 +31,5 @@ access_freight_container,access_freight_container,freight_management.model_freig
 access_freight_loose_cargo,access_freight_loose_cargo,freight_management.model_freight_loose_cargo,,1,1,1,1
 access_freight_reference_number,access_freight_reference_number,freight_management.model_freight_reference_number,,1,1,1,1
 access_freight_commodity,access_freight_commodity,freight_management.model_freight_commodity,,1,1,1,1
+access_freight_sailing,access_freight_sailing,freight_management.model_freight_sailing,,1,1,1,1
 access_freight_service_details,access_freight_service_details,freight_management.model_freight_service_details,,1,1,1,1

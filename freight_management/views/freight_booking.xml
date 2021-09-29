@@ -115,6 +115,9 @@
                                 <group string="Brokerage Details">
                                     <field name="brokerage_type"/>
                                 </group>
+                                <group string="Security" attrs="{'invisible': [('transport','!=','air')]}">
+                                    <field name="inspection"/>
+                                </group>
                             </group>
                             <notebook>
                                 <page name="container" string="Containers">
@@ -132,10 +135,10 @@
                         </page>
                         <page name="additional_details" string="Additional Details">
                             <header>
-                                <button name="button_add_new_sailings" string="Add New Sailing" type="object" class="oe_highlight"/>
-                                <button name="button_view_sailings" string="View Sailings" type="object" class="oe_highlight"/>
-                                <button name="button_clear_sailing" string="Clear Sailing" type="object" class="oe_highlight"/>
-                                <button name="button_lode_list" string="Load List" type="object" class="oe_highlight"/>
+                                <button name="button_add_new_sailings" string="Add New Sailing"  attrs="{'invisible': [('transport', '!=', 'ocean')]}" type="object" class="oe_highlight"/>
+<!--                                <button name="button_view_sailings" string="View Sailings" type="object" class="oe_highlight"/>-->
+                                <button name="button_clear_sailing" string="Clear Sailing" type="object" class="oe_highlight" />
+<!--                                <button name="button_lode_list" string="Load List" type="object" class="oe_highlight"/>-->
                             </header>
                             <group>
                                 <group>
