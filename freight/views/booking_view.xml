@@ -98,7 +98,8 @@
                                 <field name="name" readonly="1"/>
                             </div>
                         </h1>
-			<group>
+<!--                        <group string="Operation">-->
+                        <group>
                             <group>
                                 <field name="operation" string="Type" widget="radio" invisible="1"/>
                                 <field name="freight_id" invisible="1"/>

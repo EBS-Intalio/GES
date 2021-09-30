@@ -114,18 +114,20 @@
                                 </group>
                                 <group string="Brokerage Details">
                                     <field name="brokerage_type"/>
+
+                                    <field name="cargo_container_visible" invisible="1"/>
+
                                 </group>
                                 <group string="Security" attrs="{'invisible': [('transport','!=','air')]}">
                                     <field name="inspection"/>
                                 </group>
                             </group>
                             <notebook>
-                                <page name="container" string="Containers">
-                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" domain="[('container', '=', True)]" nolabel="1"/>
-                                </page>
-
-                                <page name="loose_cargo" string="Loose Cargo">
+                                <page name="loose_cargo" string="Loose Cargo" attrs="{'invisible': [('cargo_container_visible','not in',['both','cargo'])]}">
                                     <field name="loose_cargo_ids" nolabel="1"/>
+                                </page>
+                                <page name="container" string="Containers" attrs="{'invisible': [('cargo_container_visible','!=','both')]}">
+                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" domain="[('container', '=', True)]" nolabel="1"/>
                                 </page>
 
 <!--                                <page name="job_management" string="Job Management Link">-->

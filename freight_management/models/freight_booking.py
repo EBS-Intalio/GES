@@ -122,7 +122,7 @@ class FreightBooking(models.Model):
 
     bl_copy = fields.Boolean("BL Copy Available ?")
     shipping_documents = fields.Boolean("Shipping Documents")
-    original_copy = fields.Selection(([('original', 'Original'), ('copy', 'Copy')]), string='Original/Copy')
+    original_copy = fields.Selection([('original', 'Original'), ('copy', 'Copy')], string='Original/Copy')
 
     load_location_id = fields.Many2one('freight.port', 'Load', index=True)
     discharge_location_id = fields.Many2one('freight.port', 'Discharge', index=True)
@@ -143,7 +143,56 @@ class FreightBooking(models.Model):
                                    ('phs', 'Physical Inspection and/or hand search'),
                                    ('eds', 'Explosives detection system'),
                                    ('aom', 'subjected to any other means')], string='Inspection')
-    # hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
+    #hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
+    cargo_container_visible = fields.Selection([('both', 'Both'), ('cargo', 'Cargo'), ('none', 'None')],
+                                               default='none', string='Cargo Container Visible')
+
+
+    @api.onchange('transport')
+    def onchange_freight_booking_transport(self):
+        """
+        Set shipment type false when transport are change
+        Loose Cargo available Air mode
+        :return:
+        """
+        cargo_container_visible = 'none'
+        if self.transport == 'air':
+            cargo_container_visible = 'cargo'
+        self.write({'rail_shipment_type': False,
+                    'ocean_shipment_type': False,
+                    'inland_shipment_type': False,
+                    'sea_then_air_shipment': False,
+                    'air_then_sea_shipment': False,
+                    'cargo_container_visible': cargo_container_visible})
+
+    @api.onchange('rail_shipment_type', 'ocean_shipment_type', 'inland_shipment_type', 'sea_then_air_shipment', 'air_then_sea_shipment')
+    def onchange_freight_booking_shipment_type(self):
+        """
+        => For FCL both (container and loose cargo) options available
+        => For LCL/FTL/Air only Loose cargo
+        => If out of the option select the Invisible both
+        :return:
+        """
+        self.cargo_container_visible = 'none'
+        if (not self.sea_then_air_shipment and not self.air_then_sea_shipment
+            and not self.inland_shipment_type and not self.ocean_shipment_type
+            and not self.rail_shipment_type and self.transport != 'air') or (
+                self.transport == 'courier'):
+            self.cargo_container_visible = 'none'
+        elif (self.ocean_shipment_type and self.ocean_shipment_type == 'fcl') or (
+                self.rail_shipment_type and self.rail_shipment_type == 'fcl') or (
+                self.air_then_sea_shipment and self.air_then_sea_shipment == 'fcl') or (
+                self.sea_then_air_shipment and self.sea_then_air_shipment == 'fcl'):
+            self.cargo_container_visible = 'both'
+        elif (self.rail_shipment_type and self.rail_shipment_type == 'lcl') or (
+                self.ocean_shipment_type and self.ocean_shipment_type == 'lcl') or (
+                self.inland_shipment_type and self.inland_shipment_type == 'ftl') or (
+                self.air_then_sea_shipment and self.air_then_sea_shipment == 'lcl') or (
+                self.sea_then_air_shipment and self.sea_then_air_shipment == 'lcl') or (
+                self.transport == 'air'):
+            self.cargo_container_visible = 'cargo'
+        else:
+            self.cargo_container_visible = 'none'
 
     @api.onchange('consignee_id')
     def onchange_consignee_id(self):
