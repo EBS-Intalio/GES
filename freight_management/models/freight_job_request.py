@@ -395,6 +395,11 @@ class FreightJobRequest(models.Model):
         if self.is_dangerous_goods == 'yes':
             dangerous_goods = True
         vals.update({
+                    'hs_code': [(6, 0, self.freight_hs_code_ids.ids)],
+                    'package_type_id':self.package_type_id,
+                    'preferred_shipping_line': self.shipping_line_id and self.shipping_line_id.id or False,
+                    'pol': self.pol_id and self.pol_id.id or False,
+                    'pod': self.pod_id and self.pod_id.id or False,
                     'shipper_id': self.shipper_id.id,
                     'consignee_id': self.consignee_id.id,
                     'reefer_status': self.reefer_status,

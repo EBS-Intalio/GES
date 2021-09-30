@@ -49,6 +49,7 @@
                 <xpath expr="//field[@name='hs_code']" position="replace">
                     <field name="hs_code" widget="many2many_tags"/>
                 </xpath>
+
                 <xpath expr="//form/sheet" position="inside">
                     <notebook>
                         <page name="details" string="Details">

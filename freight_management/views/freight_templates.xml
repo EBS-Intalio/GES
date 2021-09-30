@@ -288,9 +288,6 @@
                         <t t-if="f_request.temperature">
                             <span><b>Temperature Value:</b> <span t-field="f_request.temperature_value"/> </span><br/><br/>
                         </t>
-
-
-
                         <span><b>Commodity Category:</b> <span t-field="f_request.commodity_category"/> </span><br/><br/>
                         <span><b>Commodity Description:</b> <span t-field="f_request.commodity_description"/> </span><br/><br/>
                         <span><b>HS-Codes:</b> <span t-field="f_request.freight_hs_code_ids"/> </span><br/><br/>
@@ -303,60 +300,6 @@
                     </div>
                     <div class="col-1"></div><br/><br/>
                 </div>
-
-<!--                <div class="col-12 row">-->
-
-<!--                    <form style="border:1px solid rgb(255, 255, 255)" id="comment" action="/post/request/comment" method="post" class="modal-content" enctype="multipart/form-data">-->
-<!--                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-1">-->
-
-<!--                            </div>-->
-<!--                            <div class="col-10">-->
-<!--                                <textarea rows="8" name="comment" style="margin-left: 0px;margin-top: 56px;" class="form-control" placeholder="Log a note..."></textarea>-->
-<!--                                <input type="hidden" name="freight_request_id" t-att-value="f_request.id"/>-->
-<!--                                <button type="submit" id="post_button" class="btn btn-primary mt16" style="position: relative; overflow: hidden;">Post</button>-->
-<!--                            </div>-->
-<!--                            <div class="col-1">-->
-
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </form>-->
-<!--                </div>-->
-<!--                <br/>-->
-<!--                <div class="row">-->
-<!--                    <div class="col-1">-->
-
-<!--                    </div>-->
-<!--                    <t t-foreach="track_ids" t-as="track">-->
-<!--                        <div class="col-md-8 col-md-offset-2">-->
-<!--                            <div class="row mt16">-->
-<!--                                <div class="col-xs-11">-->
-<!--                                    <div>-->
-<!--                                    </div>-->
-<!--                                    <t t-if="track.name"><h6 class="mb4"><b>Note: </b><t t-esc="track.name"/></h6></t>-->
-<!--                                    <div class="comment-date">-->
-<!--                                        <span class="text-muted">by</span>-->
-<!--                                        <span>-->
-<!--                                            <span>-->
-<!--                                                <address class="mb0">-->
-<!--                                                    <div>-->
-<!--                                                        <span><t t-esc="track.user_id.partner_id.name"/></span>-->
-<!--                                                    </div>-->
-<!--                                                    <div>-->
-<!--                                                    </div>-->
-<!--                                                </address>-->
-<!--                                            </span>-->
-<!--                                        </span>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </t>-->
-<!--                    <div class="col-1">-->
-
-<!--                    </div>-->
-<!--                </div>-->
                 <br/>
             </div>
         </t>

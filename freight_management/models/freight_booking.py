@@ -143,10 +143,18 @@ class FreightBooking(models.Model):
                                    ('phs', 'Physical Inspection and/or hand search'),
                                    ('eds', 'Explosives detection system'),
                                    ('aom', 'subjected to any other means')], string='Inspection')
-    #hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
+
+    hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
     cargo_container_visible = fields.Selection([('both', 'Both'), ('cargo', 'Cargo'), ('none', 'None')],
                                                default='none', string='Cargo Container Visible')
-
+    package_type_id = fields.Selection([('palatized', 'Palatized'),
+                                     ('cartons', 'Cartons'),
+                                     ('bulk', 'Bulk'),
+                                     ('drums', 'Drums'),
+                                     ('other', 'Others')], string="Packaging Type")
+    pol = fields.Many2one('freight.pol', string="POL")
+    pod = fields.Many2one('freight.pod', string="POD")
+    preferred_shipping_line = fields.Many2one('res.partner', 'Preferred Shipping Line')
 
     @api.onchange('transport')
     def onchange_freight_booking_transport(self):
