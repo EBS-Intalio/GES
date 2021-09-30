@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_management_freight_vessel_form_view_inherit">
+            <field name="name">freight_management.freight.vessel.form.view.inherit</field>
+            <field name="model">freight.vessel</field>
+            <field name="inherit_id" ref="freight.view_freight_vessel_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group[1]/group[1]/field[@name='name']" position="after">
+                    <field name="screening_status"/>
+                    <field name="agent_vessel_number"/>
+                    <field name="imo_number" />
+                    <field name="radio_call_sign"/>
+                    <field name="vessel_consortium"/>
+                    <field name="shipping_provider_id"/>
+                    <field name="net_register_ton"/>
+                    <field name="vessel_ype"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

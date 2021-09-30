@@ -13,8 +13,7 @@ class FreightPricingCharges(models.Model):
     book_id = fields.Many2one('freight.booking', 'Freight Book')
 
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda x: x.env.company.currency_id)
-    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport',
-                                 related='pricing_id.transport')
+    transport = fields.Selection(related='pricing_id.transport')
 
     # Charges & Fees
     product_id = fields.Many2one('product.product', string='Charge', readonly=True)
@@ -74,8 +73,7 @@ class FreightPricing(models.Model):
     book_id = fields.Many2one('freight.booking', 'Freight Book')
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda x: x.env.company.currency_id)
 
-    transport = fields.Selection(([('air', 'Air'), ('ocean', 'Ocean'), ('land', 'Land')]), string='Transport',
-                                 related='book_id.transport')
+    transport = fields.Selection(related='book_id.transport')
 
     color = fields.Integer('Color')
 

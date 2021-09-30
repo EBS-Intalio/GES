@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.1.14',
+    'version': '14.0.1.15',
     'category': 'Freight',
     'description': """
                 Freight Management
@@ -47,6 +47,7 @@
         "views/freight_commodity.xml",
         "views/freight_booking.xml",
         "wizard/freight_sailing.xml",
+        "views/freight_vessel.xml",
     ],
     'installable': True,
     'application': True,
