@@ -9,28 +9,93 @@
                 <xpath expr="//field[@name='carrier_ids']" position="after">
                     <label for="first_carrier_id" string="Carrier 1"/>
                         <div>
-                            <field name="first_carrier_id" style="width:17%" class="oe_inline"/>
-                            <field name="first_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;" placeholder="Flight No.." class="oe_inline"/>
-                            <field name="first_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;" placeholder="Vessel.." class="oe_inline"/>
-                            <field name="first_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;" placeholder="Rout.." class="oe_inline"/>
+                            <!-- Air-->
+                            <field name="first_carrier_id" style="width:17%;margin-left:5px;" class="oe_inline"/>
+                            <field name="first_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;margin-left:5px;" placeholder="Flight No.." class="oe_inline"/>
+                            <!-- Sea-->
+                            <field name="first_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Vessel.." class="oe_inline"/>
+                            <field name="first_origin_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Free Days at Origin.." class="oe_inline"/>
+                            <field name="first_port_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Free Days at Port.." class="oe_inline"/>
+                            <!-- Land-->
+                            <field name="first_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Rout.." class="oe_inline"/>
+                            <field name="first_trucker" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Trucker.." class="oe_inline"/>
+                            <field name="first_origin_country" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="origin Country.." class="oe_inline"/>
+                            <field name="first_origin_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="origin Country border.." class="oe_inline"/>
+                            <field name="first_transit_country" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Transit Country.." class="oe_inline"/>
+                            <field name="first_transit_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Transit Country border.." class="oe_inline"/>
                         </div>
                     <label for="second_carrier_id" string="Carrier 2"/>
                         <div>
-                            <field name="second_carrier_id" style="width:50%" class="oe_inline"/>
-                            <field name="second_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;" placeholder="Flight No.." class="oe_inline"/>
-                            <field name="second_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;" placeholder="Vessel.." class="oe_inline"/>
-                            <field name="second_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;" placeholder="Rout.." class="oe_inline"/>
+                            <!-- Air-->
+                            <field name="second_carrier_id" style="width:50%;margin-left:5px;" class="oe_inline"/>
+                            <field name="second_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;margin-left:5px;" placeholder="Flight No.." class="oe_inline"/>
+                            <!-- Sea-->
+                            <field name="second_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Vessel.." class="oe_inline"/>
+                            <field name="second_origin_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Free Days at Origin.." class="oe_inline"/>
+                            <field name="second_port_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Free Days at Port.." class="oe_inline"/>
+                            <!-- Land-->
+                            <field name="second_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Rout.." class="oe_inline"/>
+                            <field name="second_trucker" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Trucker.." class="oe_inline"/>
+                            <field name="second_origin_country" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="origin Country.." class="oe_inline"/>
+                            <field name="second_origin_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="origin Country border.." class="oe_inline"/>
+                            <field name="second_transit_country" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Transit Country.." class="oe_inline"/>
+                            <field name="second_transit_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Transit Country border.." class="oe_inline"/>
                         </div>
                     <label for="third_carrier_id" string="Carrier 3"/>
                         <div>
-                            <field name="third_carrier_id" style="width:50%" class="oe_inline"/>
-                            <field name="third_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;" placeholder="Flight No.." class="oe_inline"/>
-                            <field name="third_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;" placeholder="Vessel.." class="oe_inline"/>
-                            <field name="third_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;" placeholder="Rout.." class="oe_inline"/>
-                        </div>
+                            <!-- Air-->
+                            <field name="third_carrier_id" style="width:50%;margin-left:5px;" class="oe_inline"/>
+                            <field name="third_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}" style="width:20%;margin-left:5px;" placeholder="Flight No.." class="oe_inline"/>
+                            <!-- Sea-->
+                            <field name="third_vessel_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Vessel.." class="oe_inline"/>
+                            <field name="third_origin_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Free Days at Origin.." class="oe_inline"/>
+                            <field name="third_port_days" attrs="{'invisible': [('freight_transport','!=','ocean')]}" style="width:20%;margin-left:5px;" placeholder="Free Days at Port.." class="oe_inline"/>
+                            <!-- Land-->
+                            <field name="third_rout" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Rout.." class="oe_inline"/>
+                            <field name="third_trucker" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Trucker.." class="oe_inline"/>
+                            <field name="third_origin_country" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="origin Country.." class="oe_inline"/>
+                            <field name="third_origin_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="origin Country border.." class="oe_inline"/>
+                            <field name="third_transit_country" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Transit Country.." class="oe_inline"/>
+                            <field name="third_transit_country_border" attrs="{'invisible': [('freight_transport','!=','land')]}" style="width:20%;margin-left:5px;" placeholder="Transit Country border.." class="oe_inline"/>                        </div>
                 </xpath>
                 <xpath expr="//field[@name='carrier_ids']" position="attributes">
                     <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='pricing_data']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='freight_flight_no']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='freight_shipping_line_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='freight_vessel_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin_days']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='Port_days']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin_country']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin_country_border']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='transit_country']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='transit_country_border']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='freight_trucker']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='rout']" position="attributes">
+                    <attribute name="readonly">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='charges_ids']/tree/field[@name='charge_amount']" position="attributes">
                 <attribute name="attrs">{'column_invisible': ['|', ('parent.first_carrier_id', '=', False), '&amp;',('parent.different_amount','!=','price_1'), ('parent.state','=','done')]}</attribute>
