@@ -100,7 +100,7 @@
                         </h1>
 			<group>
                             <group>
-                                <field name="operation" invisible="0" string="Type" widget="radio" invisible="1"/>
+                                <field name="operation" string="Type" widget="radio" invisible="1"/>
                                 <field name="freight_id" invisible="1"/>
                                 <field name="direction" widget="radio" invisible="1"/>
                             </group>
