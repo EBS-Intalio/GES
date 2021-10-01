@@ -11,7 +11,7 @@
                      <button name="action_view_customer_invoice"
                             type="object"
                             class="oe_stat_button"
-                            icon="fa-file-invoice"
+                            icon="fa-clipboard"
                             attrs="{'invisible': [('invoice_count', '=', 0)]}">
                         <field name="invoice_count" widget="statinfo" string="Customer Invoice"/>
                     </button>
@@ -102,7 +102,7 @@
                                         <field name="weight_uom_id" nolabel="1"/>
                                     </div>
                                     <div class="o_row" name="chargeable" style="margin-top: 4%;">
-                                        <span>Chargeable</span>
+                                        <span>Chargeable Weight</span>
                                         <field name="chargeable"/>
                                         <field name="chargeable_uom_id"/>
                                     </div>
