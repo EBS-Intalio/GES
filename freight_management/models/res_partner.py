@@ -47,6 +47,7 @@ class ResPartner(models.Model):
     language = fields.Many2one('res.lang',string='Language')
     building = fields.Char('Building')
     po_box = fields.Char('Po Box')
+    driver_id = fields.Char('Driver ID')
 
 
     #loading/unloading contraints

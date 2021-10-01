@@ -8,11 +8,22 @@
             <field name="inherit_id" ref="freight.view_freight_booking_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                     <button name="action_view_customer_invoice"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-file-invoice"
+                            attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                        <field name="invoice_count" widget="statinfo" string="Customer Invoice"/>
+                    </button>
+
                     <button class="oe_stat_button" name="button_request"
                                     attrs="{'invisible': [('freight_request_id','=',False)]}"
                                     type="object" icon="fa-address-book">
                                 Freight Request
                             </button>
+                </xpath>
+                <xpath expr="//button[@name='convert_to_operation']" position="after">
+                    <button name="action_create_new_invoice" string="Create Bill" type="object" class="oe_highlight"/>
                 </xpath>
 
                 <xpath expr="//form/sheet/group[1]/group[2]/field[@name='incoterm']" position="after">
@@ -55,7 +66,7 @@
                         <page name="details" string="Details">
                             <group>
                                 <group>
-                                    <field name="is_domestic"/>
+                                    <field name="is_domestic" readonly="1"/>
                                     <field name="marks_and_num"/>
                                     <field name="add_terms"/>
                                     <field name="service_level"/>
@@ -95,7 +106,21 @@
                                         <field name="chargeable"/>
                                         <field name="chargeable_uom_id"/>
                                     </div>
-
+                                </group>
+                                <group style="margin-top: 4%;">
+                                    <field name="pic_drop_id"/>
+                                    <field name="div_drop_id"/>
+                                </group>
+                                <group string="Brokerage Details">
+                                    <group>
+                                        <field name="brokerage_type" nolabel="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="brokerage_details" nolabel="1"/>
+                                    </group>
+                                    <field name="cargo_container_visible" invisible="1"/>
+                                </group>
+                                <group string="Monetary Values">
                                     <div class="o_row" name="goods_vals" style="margin-top: 4%;">
                                         <span>Goods Val</span>
                                         <field name="goods_vals"/>
@@ -106,21 +131,26 @@
                                         <field name="ins_vals"/>
                                         <field name="ins_vals_currency_id"/>
                                     </div>
-
+                                    <div class="o_row" name="is_insurance_required" style="margin-top: 4%;">
+                                        <span>Insurance Required</span>
+                                        <field name="is_insurance_required" widget="radio"/>
+                                    </div>
                                 </group>
-                                <group string="Goods Details">
-                                    <field name="pic_drop_id"/>
-                                    <field name="div_drop_id"/>
-                                    <field name="is_insurance_required"/>
+                                <group string="Job Management Link">
+                                    <field name="job_management_order_ref"/>
                                 </group>
-                                <group string="Brokerage Details">
-                                    <field name="brokerage_type"/>
-
-                                    <field name="cargo_container_visible" invisible="1"/>
-
+                                <group></group>
+                                <group>
+                                    <field name="job_management_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="job_number"/>
+                                            <field name="job_type"/>
+                                            <field name="job_description"/>
+                                        </tree>
+                                    </field>
                                 </group>
                                 <group string="Security" attrs="{'invisible': [('transport','!=','air')]}">
-                                    <field name="inspection"/>
+                                    <field name="inspection" />
                                 </group>
                             </group>
                             <notebook>
@@ -128,20 +158,30 @@
                                     <field name="loose_cargo_ids" nolabel="1"/>
                                 </page>
                                 <page name="container" string="Containers" attrs="{'invisible': [('cargo_container_visible','!=','both')]}">
-                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" domain="[('container', '=', True)]" nolabel="1"/>
+                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" nolabel="1">
+                                        <tree string="Container">
+                                            <field name="number" required="1"/>
+                                            <field name="count"/>
+                                            <field name="cont_type"/>
+                                            <field name="commodity"/>
+                                            <field name="release"/>
+                                            <field name="humidity_percentage"/>
+                                            <field name="delivery_mode"/>
+                                            <field name="is_shipper_owned"/>
+                                            <field name="dep_container_id"/>
+                                            <field name="arr_container_yard_id"/>
+                                        </tree>
+                                    </field>
                                 </page>
-
-<!--                                <page name="job_management" string="Job Management Link">-->
-<!--                                    <field name="job_management_ids" nolabel="1"/>-->
-<!--                                </page>-->
+                                <page name="vehicle_details" string="Vehicle Details">
+                                    <field name="vehicle_ids" nolabel="1"/>
+                                </page>
                             </notebook>
                         </page>
                         <page name="additional_details" string="Additional Details">
                             <header>
                                 <button name="button_add_new_sailings" string="Add New Sailing"  attrs="{'invisible': [('transport', '!=', 'ocean')]}" type="object" class="oe_highlight"/>
-<!--                                <button name="button_view_sailings" string="View Sailings" type="object" class="oe_highlight"/>-->
                                 <button name="button_clear_sailing" string="Clear Sailing" type="object" class="oe_highlight" />
-<!--                                <button name="button_lode_list" string="Load List" type="object" class="oe_highlight"/>-->
                             </header>
                             <group>
                                 <group>
@@ -161,7 +201,7 @@
                                     </div>
 
                                     <div class="o_row" name="discharge_location_id">
-                                        <span>Discharge</span>
+                                        <span>Discharge Weight</span>
                                         <field name="discharge_location_id"/>
                                     </div>
 
@@ -220,7 +260,7 @@
                                     <field name="import_broker_id"/>
                                     <field name="port_transport_id"/>
                                     <field name="controlling_customer_id"/>
-                                    <field name="controlling_agent_id"/>
+<!--                                    <field name="controlling_agent_id"/>-->
                                 </group>
                             </group>
                             <notebook>

@@ -20,6 +20,7 @@ from . import job_management_link
 from . import freight_service_details
 from . import loose_cargo
 from . import freight_containers
+from . import vehicle_details
 from . import freight_booking
 from . import sale_order_template
 from . import container_type

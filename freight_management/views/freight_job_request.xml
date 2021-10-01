@@ -81,7 +81,7 @@
                                 <field name="partner_id" required="1"/>
                             </group>
                         </group>
-                        <group string="Main Carriage" attrs="{'invisible': [('mode_of_transport','not in', ['air', 'ocean', 'land'])]}">
+                        <group attrs="{'invisible': [('mode_of_transport','not in', ['air', 'ocean', 'land'])]}">
                             <group>
                                 <field name="origin_airport_id" string="Origin Airport" attrs="{'invisible': [('mode_of_transport','!=','air')], 'required' : [('mode_of_transport', '=', 'air')]}"/>
                                 <field name="origin_airport_id" string="POR /Origin" attrs="{'invisible': [('mode_of_transport','!=','ocean')], 'required' : [('mode_of_transport', '=', 'ocean')]}"/>
@@ -164,18 +164,18 @@
                                         <span>Days</span>
                                     </div>
                                     <field name="additional_comments" />
-                                     <field name="shipment_ready_date"/>
                                     <field name="shipment_ready_asap" widget="radio"/>
-                                    <field name="target_eta"/>
+                                    <field name="shipment_ready_date" attrs="{'invisible': [('shipment_ready_asap','!=','no')]}"/>
                                     <field name="target_eta_asap" widget="radio"/>
-                                    <field name="target_etd"/>
+                                    <field name="target_eta" attrs="{'invisible': [('target_eta_asap','!=','no')]}"/>
                                     <field name="target_etd_asap" widget="radio"/>
+                                    <field name="target_etd" attrs="{'invisible': [('target_etd_asap','!=','no')]}"/>
                                 </group>
                                 <group>
                                     <field name="freight_incoterm_id" attrs="{'invisible': [('mode_of_transport','=','land')], 'required' : [('mode_of_transport', '!=', 'land')]}"/>
                                     <field name="is_dangerous_goods" widget="radio"/>
                                     <field name="dangerous_goods_class" attrs="{'invisible': [('is_dangerous_goods','!=','yes')], 'required' : [('is_dangerous_goods', '=', 'yes')]}" />
-                                    <field name="dangerous_goods_notes" attrs="{'invisible': [('is_dangerous_goods','!=','yes')]}"/>
+                                    <field name="dangerous_goods_notes" style="margin-top: -4%; border-color: red;" attrs="{'invisible': [('is_dangerous_goods','!=','yes')]}"/>
                                     <field name="reefer_status"/>
                                     <label for="temperature"/>
                                     <div class="o_row" name="temperature">

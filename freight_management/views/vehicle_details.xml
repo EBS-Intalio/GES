@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_vehicle_details_form_view">
+            <field name="name">vehicle.details.form.view</field>
+            <field name="model">vehicle.details</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle Details">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="count"/>
+                                <field name="vehicle_type"/>
+                                <field name="commodity_id"/>
+                            </group>
+                            <group>
+                                <field name="way_bill"/>
+                                <field name="transporter_id"/>
+                                <field name="partner_driver_id"/>
+                                <field name="driver_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_vehicle_details_tree_view">
+            <field name="name">vehicle.details.tree.view</field>
+            <field name="model">vehicle.details</field>
+            <field name="arch" type="xml">
+                <tree string="Vehicle Details">
+                    <field name="name" required="1"/>
+                    <field name="count"/>
+                    <field name="vehicle_type"/>
+                    <field name="commodity_id"/>
+                    <field name="way_bill"/>
+                    <field name="transporter_id"/>
+                    <field name="partner_driver_id"/>
+                    <field name="driver_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_vehicle_details_action">
+            <field name="name">Vehicle Details</field>
+            <field name="res_model">vehicle.details</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Vehicle Details.
+                </p>
+            </field>
+        </record>
+<!--        <menuitem name="POD" parent="freight.freight_configuration" id="menu_vehicle_details_id"-->
+<!--                  action="view_vehicle_details_action" sequence="2"/>-->
+
+    </data>
+</odoo>

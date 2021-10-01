@@ -1,5 +1,12 @@
 from odoo import api, models, _, fields
 
+
+class FreightAccountMove(models.Model):
+    _inherit = 'account.move'
+
+    freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
+
+
 class AccountMoveLineInherit(models.Model):
     _inherit = 'account.move.line'
 

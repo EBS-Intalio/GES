@@ -18,19 +18,19 @@
     </record>
 
 
-    <record model="ir.actions.act_window" id="freight.view_freight_package_action">
-            <field name="name">Packages</field>
-            <field name="res_model">freight.package</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('container','=', False)]</field>
-            <field name="context">{'default_container': False}</field>
-            <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'tree', 'view_id': ref('freight.view_freight_package_tree')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('freight.view_freight_package_form')})]"/>
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to create a new port.
-                </p>
-            </field>
-        </record>
+<!--    <record model="ir.actions.act_window" id="freight.view_freight_package_action">-->
+<!--            <field name="name">Packages</field>-->
+<!--            <field name="res_model">freight.package</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--            <field name="domain">[('container','=', False)]</field>-->
+<!--            <field name="context">{'default_container': False}</field>-->
+<!--            <field name="view_ids" eval="[(5, 0, 0),-->
+<!--                (0, 0, {'view_mode': 'tree', 'view_id': ref('freight.view_freight_package_tree')}),-->
+<!--                (0, 0, {'view_mode': 'form', 'view_id': ref('freight.view_freight_package_form')})]"/>-->
+<!--            <field name="help" type="html">-->
+<!--                <p class="oe_view_nocontent_create">-->
+<!--                    Click to create a new port.-->
+<!--                </p>-->
+<!--            </field>-->
+<!--        </record>-->
 </odoo>

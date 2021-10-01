@@ -154,16 +154,16 @@
         </record>
 
 
-        <record id="view_freight_booking_form_inherit_ebs_pricing" model="ir.ui.view">
-            <field name="name">freight.booking.form.inherit_new.inherit</field>
-            <field name="model">freight.booking</field>
-            <field name="inherit_id" ref="ebs_freight_pricing.view_freight_booking_form_inherit"/>
-            <field name="arch" type="xml">
-                <xpath expr="//button[@name='create_booking_pricing']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-            </field>
-        </record>
+<!--        <record id="view_freight_booking_form_inherit_ebs_pricing" model="ir.ui.view">-->
+<!--            <field name="name">freight.booking.form.inherit_new.inherit</field>-->
+<!--            <field name="model">freight.booking</field>-->
+<!--            <field name="inherit_id" ref="ebs_freight_pricing.view_freight_booking_form_inherit"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//button[@name='create_booking_pricing']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
 
 
         <record model="ir.ui.view" id="freight_management_view_freight_pricing_tree">

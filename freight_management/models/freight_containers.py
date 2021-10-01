@@ -8,6 +8,7 @@ class FreightContainer(models.Model):
 
     number = fields.Char(string='Container#', required=True)
     count = fields.Integer(string='Count')
+    active = fields.Boolean(default=True, string="Active")
     humidity_percentage = fields.Float(string='Humidity Percentage')
     is_shipper_owned = fields.Boolean(string='Is Shipper Owned?')
     cont_type = fields.Many2one('container.type', string='Container Type')
@@ -20,6 +21,6 @@ class FreightContainer(models.Model):
                                       ('dr_cy', 'DR/CY'),
                                       ('cy_dr', 'CY/DR'),
                                       ('fcl_fcl', 'FCL/FCL')], string='Delivery Mode')
-    dep_container_id = fields.Many2one('res.partner', string='Dep. Container')
-    arr_container_yard_id = fields.Many2one('res.partner', string='Arr. Container')
+    dep_container_id = fields.Many2one('res.partner', string='Dep. Container Yard')
+    arr_container_yard_id = fields.Many2one('res.partner', string='Arr. Container Yard')
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')

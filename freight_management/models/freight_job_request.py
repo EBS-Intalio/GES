@@ -151,15 +151,15 @@ class FreightJobRequest(models.Model):
     # Added
     shipment_ready_date = fields.Date(string="Shipment Ready Date")
     # shipment_ready_asap = fields.Boolean(string="Shipment Ready ASAP")
-    shipment_ready_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+    shipment_ready_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
                                            string="Shipment Ready ASAP", required=True)
     target_eta = fields.Date(string="Target ETA")
     # target_eta_asap = fields.Boolean(string="Target ETA ASAP")
-    target_eta_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+    target_eta_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
                                        string="Target ETA ASAP", required=True)
     target_etd = fields.Date(string="Target ETD")
     # target_etd_asap = fields.Boolean(string="Target ETD ASAP")
-    target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
+    target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
                                        string="Target ETD ASAP", required=True)
 
     # por_origin_id = fields.Many2one('freight.por.origin', string="POR /Origin")

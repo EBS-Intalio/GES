@@ -5,6 +5,16 @@ from odoo import api, fields, models, _
 class FreightBooking(models.Model):
     _inherit = 'freight.booking'
 
+    @api.depends('invoice_ids')
+    def _compute_freight_customer_invoice(self):
+        """
+        Count total booking Customer Invoice
+        :return:
+        """
+        for booking in self:
+            booking.invoice_count = len(booking.invoice_ids)
+
+
     freight_request_id = fields.Many2one('freight.job.request','RequestID')
     hs_code = fields.Many2many('freight.hs.code', string="Hs-Codes")
 
@@ -49,19 +59,21 @@ class FreightBooking(models.Model):
                                     ('hsl', 'Haulier Supplies Lift'),
                                     ('hul', 'Hand Upload /Load by Premise'),
                                     ('hwl', 'Hand Upload/ Load by Haulier'),
-                                    ('psl', 'Premise Supplier Lift')], string='Pic. Drop')
+                                    ('psl', 'Premise Supplier Lift')], string='Goods Pickup')
     div_drop_id = fields.Selection([('any', 'Any'),
                                     ('hsl', 'Haulier Supplies Lift'),
                                     ('hul', 'Hand Upload /Load by Premise'),
                                     ('hwl', 'Hand Upload/ Load by Haulier'),
-                                    ('psl', 'Premise Supplier Lift')], string='Dlv. Drop')
+                                    ('psl', 'Premise Supplier Lift')], string='Goods Delivery')
 
-    brokerage_type = fields.Selection([('pmt', 'Customers Permit /Clearance Number',),
-                                       ('tsn', 'Transhipment Number',),
-                                       ('ata', 'ATA Carnet Number',)], string='Div. Drop')
+    brokerage_type = fields.Selection([('pmt', 'PMT',),
+                                       ('tsn', 'TSN',),
+                                       ('ata', 'ATA',)], default='pmt', string='Type')
+    brokerage_details = fields.Char(string="Details")
 
-    is_domestic = fields.Boolean(string='Is Domestic')
-    is_insurance_required = fields.Boolean(string='Insurance Required')
+    is_domestic = fields.Boolean(string='Is Domestic', compute="_compute_is_domestic")
+    is_insurance_required = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no", string="Insurance Required")
+    # is_insurance_required = fields.Boolean(string='Insurance Required')
     est_pickup_date = fields.Date(string="Est. Pickup")
     pickup_required_by_date = fields.Date(string="Required By")
     est_delivery_date = fields.Date(string="Est. Delivery")
@@ -95,9 +107,10 @@ class FreightBooking(models.Model):
     weight_uom_id = fields.Many2one('uom.uom', string='Weight UOM')
     total_current_volume = fields.Float(string='Total current volume')
     volume_uom_id = fields.Many2one('uom.uom', string='Volume UOM')
-    container_ids = fields.Many2many('freight.package', string='Container', copy=False)
+    container_ids = fields.Many2many('freight.container', string='Container', copy=False)
     loose_cargo_ids = fields.Many2many('freight.loose.cargo', string='Loose Cargo', copy=False)
-    job_management_ids = fields.One2many('job.management.link', 'freight_booking_id', string='Job Management Link', copy=False)
+    job_management_order_ref = fields.Char(string="Order Refs", required=True)
+    job_management_ids = fields.One2many('job.management.link.line', 'freight_booking_id', string='Job Management Lines', copy=False)
     reference_ids = fields.One2many('freight.reference.number', 'freight_booking_id', string='Reference Number', copy=False)
     service_details_ids = fields.One2many('freight.service.details', 'freight_booking_id', string='Commodity Details', copy=False)
     rail_shipment_type = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
@@ -155,6 +168,70 @@ class FreightBooking(models.Model):
     pol = fields.Many2one('freight.pol', string="POL")
     pod = fields.Many2one('freight.pod', string="POD")
     preferred_shipping_line = fields.Many2one('res.partner', 'Preferred Shipping Line')
+    invoice_count = fields.Integer(string='Total Customer Invoice', compute='_compute_freight_customer_invoice')
+    invoice_ids = fields.One2many('account.move', 'freight_booking_id', string='Customer Invoice', copy=False)
+    vehicle_ids = fields.Many2many('vehicle.details', string="Vehicle Details", copy=False)
+
+    def action_create_new_invoice(self):
+        """
+        Create a new Customer Invoice
+        :return:
+        """
+        ctx = self._context.copy()
+        ctx['default_freight_booking_id'] = self.id
+        ctx['default_partner_id'] = self.agent_id and self.agent_id.id or False
+        ctx['default_move_type'] = 'out_invoice'
+        return {
+            'name': _('Create invoice'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'account.move',
+            'view_id': self.env.ref('account.view_move_form').id,
+            'context': ctx,
+        }
+
+    def action_view_customer_invoice(self):
+        """
+        Prepare a action for the display the Customer Invoice
+        :return:
+        """
+        action = self.env.ref('account.action_move_out_invoice_type').read()[0]
+        invoice = self.invoice_ids
+        if len(invoice) > 1:
+            action['domain'] = [('id', 'in', invoice.ids)]
+        elif invoice:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoice.id
+
+        return action
+
+    @api.depends('country_id', 'delivery_country_id')
+    def _compute_is_domestic(self):
+        """
+        Is Domestic field readonly based on country and delivery country
+        :return:
+        """
+        for req in self:
+            if (req.delivery_country_id and not req.country_id) or (req.country_id and not req.delivery_country_id):
+                is_domestic_readonly = True
+            elif req.delivery_country_id and req.country_id and req.delivery_country_id.id != req.country_id.id:
+                is_domestic_readonly = True
+            else:
+                is_domestic_readonly = False
+            req.is_domestic = is_domestic_readonly
+
+    @api.onchange('gross_weight', 'weight_uom_id')
+    def onchange_gross_weight_and_weight_uom(self):
+        """
+        Set Chargeable Weight and Chargeable UOM according to the gross weight and gross uom
+        :return:
+        """
+        self.write({'chargeable_uom_id': self.weight_uom_id and self.weight_uom_id.id or False,
+                    'chargeable': self.gross_weight})
 
     @api.onchange('transport')
     def onchange_freight_booking_transport(self):
