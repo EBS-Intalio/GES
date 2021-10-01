@@ -131,7 +131,7 @@ class FreightBooking(models.Model):
                                               ('bulk', 'Bulk'),
                                               ('roro', 'Roro')], string='Air then Sea Shipment Type')
     dimensions_of_package_id = fields.Many2one('freight.package',
-                                               string="Dimensions of each package /Pallets dimensions")
+                                               string="Dimensions of each package /Pallets")
 
     bl_copy = fields.Boolean("BL Copy Available ?")
     shipping_documents = fields.Boolean("Shipping Documents")
@@ -171,6 +171,17 @@ class FreightBooking(models.Model):
     invoice_count = fields.Integer(string='Total Customer Invoice', compute='_compute_freight_customer_invoice')
     invoice_ids = fields.One2many('account.move', 'freight_booking_id', string='Customer Invoice', copy=False)
     vehicle_ids = fields.Many2many('vehicle.details', string="Vehicle Details", copy=False)
+
+    is_dimensions_visible = fields.Boolean(string="Is Dimensions Available?", default=False)
+
+    shipment_ready_date = fields.Date(string="Shipment Ready Date")
+
+    shipment_ready_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
+                                           string="Shipment Ready ASAP", required=True)
+    target_eta_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
+                                       string="Target ETA ASAP", required=True)
+    target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
+                                       string="Target ETD ASAP", required=True)
 
     def action_create_new_invoice(self):
         """
@@ -238,17 +249,37 @@ class FreightBooking(models.Model):
         """
         Set shipment type false when transport are change
         Loose Cargo available Air mode
+
+        Set shipment type false when mode of transport are change
+        Dimension Option available for LTL, LCL and Air
         :return:
         """
         cargo_container_visible = 'none'
+        is_dimensions_visible = False
         if self.transport == 'air':
             cargo_container_visible = 'cargo'
+            is_dimensions_visible = True
         self.write({'rail_shipment_type': False,
                     'ocean_shipment_type': False,
                     'inland_shipment_type': False,
                     'sea_then_air_shipment': False,
                     'air_then_sea_shipment': False,
-                    'cargo_container_visible': cargo_container_visible})
+                    'cargo_container_visible': cargo_container_visible,
+                    'dimensions_of_package_id': False,
+                    'is_dimensions_visible': is_dimensions_visible})
+
+        dimensions_lst = []
+        if self.transport == 'air':
+            dimension_ids = self.env['freight.package'].search([('air', '=', True)])
+            dimensions_lst = dimension_ids.ids
+        if self.transport in ['ocean', 'rail', 'sea_then_air', 'air_then_sea']:
+            dimension_ids = self.env['freight.package'].search([('is_lcl', '=', True)])
+            dimensions_lst = dimension_ids.ids
+        if self.transport == 'land':
+            dimension_ids = self.env['freight.package'].search([('is_ltl', '=', True)])
+            dimensions_lst = dimension_ids.ids
+
+        return {'domain': {'dimensions_of_package_id': [('id', 'in', dimensions_lst)]}}
 
     @api.onchange('rail_shipment_type', 'ocean_shipment_type', 'inland_shipment_type', 'sea_then_air_shipment', 'air_then_sea_shipment')
     def onchange_freight_booking_shipment_type(self):
@@ -278,6 +309,22 @@ class FreightBooking(models.Model):
             self.cargo_container_visible = 'cargo'
         else:
             self.cargo_container_visible = 'none'
+
+        self.dimensions_of_package_id = False
+        if (not self.sea_then_air_shipment and not self.air_then_sea_shipment
+            and not self.inland_shipment_type and not self.ocean_shipment_type
+            and not self.rail_shipment_type and self.transport != 'air') or (
+                self.transport == 'courier'):
+            self.is_dimensions_visible = False
+        elif (self.rail_shipment_type and self.rail_shipment_type == 'lcl') or (
+                self.ocean_shipment_type and self.ocean_shipment_type == 'lcl') or (
+                self.inland_shipment_type and self.inland_shipment_type == 'ltl') or (
+                self.air_then_sea_shipment and self.air_then_sea_shipment == 'lcl') or (
+                self.sea_then_air_shipment and self.sea_then_air_shipment == 'lcl') or (
+                self.transport == 'air'):
+            self.is_dimensions_visible = True
+        else:
+            self.is_dimensions_visible = False
 
     @api.onchange('consignee_id')
     def onchange_consignee_id(self):

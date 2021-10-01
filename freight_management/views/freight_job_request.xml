@@ -9,7 +9,6 @@
                 <form string="Operations">
                     <header>
                         <field name="state" widget="statusbar"/>
-<!--                        <field name="is_booking_done" invisible="1"/>-->
                         <field name="is_create_pricing_request" invisible="1"/>
 
                         <button name="freight_request_pricing" string="Request Pricing" type="object"
@@ -17,8 +16,6 @@
                         <button name="create_request_pricing" string="Create Pricing" type="object"
                             default_focus="1" class="oe_highlight"
                                 attrs="{'invisible':['|',('is_create_pricing_request','!=',True),('state','!=','pricing')]}"/>
-<!--                        <button name="create_booking" string="Create Booking" states="draft" type="object"-->
-<!--                            default_focus="1" class="oe_highlight" attrs="{'invisible':[('is_booking_done','=',True)]}" invisible="1"/>-->
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -187,7 +184,7 @@
                                     <field name="commodity_description"/>
                                     <field name="freight_hs_code_ids" widget="many2many_tags"/>
                                     <field name="gross_weight"/>
-                                    <field name="weight_type" widget="radio" required="1"/>
+                                    <field name="weight_type" widget="radio" default="estimated"/>
                                     <field name="number_of_pallets_packages"/>
                                     <field name="stackability" widget="radio"/>
                                     <field name="additional_requirements" />

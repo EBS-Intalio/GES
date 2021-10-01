@@ -13,6 +13,14 @@
         </xpath>
     </template>
 
+
+    <template id="freight_management_portal_my_bookings_inherit" name="Freight Create Booking" inherit_id="freight.portal_my_bookings" >
+           <xpath expr="//div[hasclass('container')]//div[1]" position="replace">
+               <div class="row" style="margin-left: 1px;">
+               </div>
+           </xpath>
+   </template>
+
     <!--    Request Part-->
     <template id="portal_my_request" name="My Request">
         <t t-call="portal.portal_layout">

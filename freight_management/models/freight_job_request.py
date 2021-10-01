@@ -395,6 +395,11 @@ class FreightJobRequest(models.Model):
         if self.is_dangerous_goods == 'yes':
             dangerous_goods = True
         vals.update({
+                    'is_dimensions_visible': self.is_dimensions_visible,
+                    'shipment_ready_date': self.shipment_ready_date,
+                    'shipment_ready_asap': self.shipment_ready_asap,
+                    'target_eta_asap': self.target_eta_asap,
+                    'target_etd_asap': self.target_etd_asap,
                     'hs_code': [(6, 0, self.freight_hs_code_ids.ids)],
                     'package_type_id':self.package_type_id,
                     'preferred_shipping_line': self.shipping_line_id and self.shipping_line_id.id or False,
@@ -476,7 +481,8 @@ class FreightJobRequest(models.Model):
         booking = self.env['freight.booking'].create(vals)
         self.booking_id = booking.id
         self.is_booking_done = True
-
+        booking.onchange_origin_destination()
+        booking.onchange_gross_weight_and_weight_uom()
         return {
             'name': _('Freight Booking'),
             'view_mode': 'form',

@@ -11,11 +11,15 @@
                     <button name="create_booking_pricing" string="Create Pricing" states="draft" type="object"
                             default_focus="1" class="oe_highlight" invisible="1"/>
                 </xpath>
-                <xpath expr="//field[@name='transport']" position="after">
+<!--                DP ADDED-->
+<!--                <xpath expr="//field[@name='transport']" position="after">-->
+<!--                    <field name="show_create_processing_checklist" force_save="1" invisible="1"/>-->
+<!--                    <field name="checklist_id" invisible="1"/>-->
+<!--                </xpath>-->
+<!--                END-->
+                <xpath expr="header" position="inside">
                     <field name="show_create_processing_checklist" force_save="1" invisible="1"/>
                     <field name="checklist_id" invisible="1"/>
-                </xpath>
-                <xpath expr="header" position="inside">
                     <button name="create_processing_checklist" string="Create Checklist" type="object"
                             default_focus="1" class="oe_highlight" attrs="{'invisible':[('show_create_processing_checklist','=',True)]}" />
                 </xpath>
@@ -31,24 +35,30 @@
 <!--                            <button class="oe_stat_button" name="button_services_quotes" type="object" icon="fa-bars">-->
 <!--                                <field name="service_quote_count" string="Quotations" widget="statinfo" icon="fa-usd"/>-->
 <!--                            </button>-->
-                <xpath expr="//sheet/div[@name='button_box']" position="inside">
-                    <button class="oe_stat_button" name="button_processing_checklist"
-                            attrs="{'invisible': [('show_create_processing_checklist','!=',True)]}"
-                            type="object" icon="fa-gear">
-                        Checklist
-                    </button>
-                </xpath>
 
-                <xpath expr="//sheet/div[@name='button_box']" position="inside">
-<!--                    <button class="oe_stat_button" name="button_pricing"-->
-<!--                            attrs="{'invisible': ['|', ('pricing_id','=',False), ('state','=','draft')]}"-->
-<!--                            type="object" icon="fa-money">-->
-<!--                        Book Pricing-->
+<!--                DP ADDED-->
+<!--                <xpath expr="//sheet/div[@name='button_box']" position="inside">-->
+<!--                    <button class="oe_stat_button" name="button_processing_checklist"-->
+<!--                            attrs="{'invisible': [('show_create_processing_checklist','!=',True)]}"-->
+<!--                            type="object" icon="fa-gear">-->
+<!--                        Checklist-->
 <!--                    </button>-->
-                    <field name="pricing_id" invisible="1"/>
-                </xpath>
+<!--                </xpath>-->
+<!--                END -->
+
+<!--                DP ADDED-->
+<!--                <xpath expr="//sheet/div[@name='button_box']" position="inside">-->
+<!--&lt;!&ndash;                    <button class="oe_stat_button" name="button_pricing"&ndash;&gt;-->
+<!--&lt;!&ndash;                            attrs="{'invisible': ['|', ('pricing_id','=',False), ('state','=','draft')]}"&ndash;&gt;-->
+<!--&lt;!&ndash;                            type="object" icon="fa-money">&ndash;&gt;-->
+<!--&lt;!&ndash;                        Book Pricing&ndash;&gt;-->
+<!--&lt;!&ndash;                    </button>&ndash;&gt;-->
+<!--                    <field name="pricing_id" invisible="1"/>-->
+<!--                </xpath>-->
+<!--                END -->
 
             </field>
         </record>
+
     </data>
 </odoo>
