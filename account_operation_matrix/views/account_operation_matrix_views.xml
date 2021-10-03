@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_operation_matrix_form_view" model="ir.ui.view">
+            <field name="name">account.operation.matrix.form</field>
+            <field name="model">account.operation.matrix</field>
+            <field name="arch" type="xml">
+                <form>
+                 <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="shipment_department" />
+                            <br />
+                            <br />
+                            <field name="income_account" options="{'no_open':True,'no_create': True}"/>
+                            <field name="expense_account" options="{'no_open':True,'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="transport"  widget="radio"/>
+                            <field name="direction"  widget="radio"/>
+                            <field name="service_type"  widget="radio"/>
+                        </group>
+                    </group>
+                     <notebook>
+                        <page name='lines' string="Lines">
+                             <field name="matrix_line_ids">
+                                <tree editable="bottom">
+                                    <field name="charge_code" options="{'no_open':True,'no_create': True}" />
+                                    <field name="income_account" options="{'no_open':True,'no_create': True}" />
+                                    <field name="expense_account" options="{'no_open':True,'no_create': True}" />
+                                    <field name="operation_matrix_id" invisible="1" />
+                                </tree>
+                             </field>
+                        </page>
+                     </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="account_operation_matrix_tree_view">
+            <field name="name">account.operation.matrix.tree</field>
+            <field name="model">account.operation.matrix</field>
+            <field name="arch" type="xml">
+                <tree string="Clearance">
+                    <field name="name"/>
+                    <field name="shipment_department"/>
+                    <field name="transport"/>
+                    <field name="direction"/>
+                    <field name="income_account"/>
+                    <field name="expense_account"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="account_operation_matrix_action">
+            <field name="name">Operation Matrix</field>
+            <field name="res_model">account.operation.matrix</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_operation_matrix_action">
+            <field name="name">Operation Matrix</field>
+            <field name="res_model">account.operation.matrix</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Operation Matrix" parent="account.account_account_menu" id="menu_operation_matrix"
+                  action="freight_operation_matrix_action" sequence="12"/>
+
+
+        <menuitem name="Operation Matrix" parent="freight.freight_configuration" id="menu_freight_operation_matrix"
+                  action="freight_operation_matrix_action" sequence="12"/>
+
+    </data>
+</odoo>
