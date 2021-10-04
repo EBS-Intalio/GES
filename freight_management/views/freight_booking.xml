@@ -167,7 +167,7 @@
                                     <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', '!=', 'land')]}"/>
                                     <field name="dangerous_goods"/>
                                     <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)], 'required' : [('dangerous_goods', '=', True)]}" />
-                                    <field name="dangerous_goods_notes" style="margin-top: -4%; border-color: red;" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                    <field name="dangerous_goods_notes" style="border-color: black;" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
                                     <field name="reefer_status"/>
                                     <label for="temperature"/>
                                     <div class="o_row" name="temperature">
@@ -329,12 +329,12 @@
                                         <field name="discharge_location_id"/>
                                     </div>
 
-                                    <div class="o_row" name="est_pickup_date" style="margin-top: 4%;">
+                                    <div class="o_row" name="est_pickup_date" attrs="{'invisible': [('target_eta_asap','!=','no')]}" style="margin-top: 4%;">
                                         <span>ETA</span>
                                         <field name="est_pickup_date"/>
                                     </div>
 
-                                    <div class="o_row" name="est_delivery_date" style="margin-top: 4%;">
+                                    <div class="o_row" name="est_delivery_date" attrs="{'invisible': [('target_etd_asap','!=','no')]}" style="margin-top: 4%;">
                                         <span>ETD</span>
                                         <field name="est_delivery_date"/>
                                     </div>

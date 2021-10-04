@@ -228,11 +228,11 @@ class FreightBooking(models.Model):
         """
         for req in self:
             if (req.delivery_country_id and not req.country_id) or (req.country_id and not req.delivery_country_id):
-                is_domestic_readonly = True
-            elif req.delivery_country_id and req.country_id and req.delivery_country_id.id != req.country_id.id:
-                is_domestic_readonly = True
-            else:
                 is_domestic_readonly = False
+            elif req.delivery_country_id and req.country_id and req.delivery_country_id.id != req.country_id.id:
+                is_domestic_readonly = False
+            else:
+                is_domestic_readonly = True
             req.is_domestic = is_domestic_readonly
 
     @api.onchange('gross_weight', 'weight_uom_id')

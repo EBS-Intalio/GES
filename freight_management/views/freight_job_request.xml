@@ -172,7 +172,7 @@
                                     <field name="freight_incoterm_id" attrs="{'invisible': [('mode_of_transport','=','land')], 'required' : [('mode_of_transport', '!=', 'land')]}"/>
                                     <field name="is_dangerous_goods" widget="radio"/>
                                     <field name="dangerous_goods_class" attrs="{'invisible': [('is_dangerous_goods','!=','yes')], 'required' : [('is_dangerous_goods', '=', 'yes')]}" />
-                                    <field name="dangerous_goods_notes" style="margin-top: -4%; border-color: red;" attrs="{'invisible': [('is_dangerous_goods','!=','yes')]}"/>
+                                    <field name="dangerous_goods_notes" style="border-color: black;" attrs="{'invisible': [('is_dangerous_goods','!=','yes')]}"/>
                                     <field name="reefer_status"/>
                                     <label for="temperature"/>
                                     <div class="o_row" name="temperature">
