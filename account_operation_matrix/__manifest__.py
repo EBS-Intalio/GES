@@ -13,6 +13,7 @@
     'data': [
         "security/ir.model.access.csv",
         "views/account_operation_matrix_views.xml",
+        "views/account_move_views.xml",
     ],
     'installable': True,
     'application': True,

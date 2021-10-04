@@ -25,6 +25,6 @@ class AccountOperationMatrixLine(models.Model):
     _name = 'account.operation.matrix.line'
 
     operation_matrix_id = fields.Many2one('account.operation.matrix', "Operation Matrix")
-    charge_code = fields.Many2one('product.template', 'Charge Code',required=True)
+    charge_code = fields.Many2one('product.product', 'Charge Code',required=True)
     income_account = fields.Many2one('account.account', 'Income Account', required=True)
     expense_account = fields.Many2one('account.account', 'Expense Account', required=True)
