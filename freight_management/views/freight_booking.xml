@@ -167,7 +167,7 @@
                                     <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', '!=', 'land')]}"/>
                                     <field name="dangerous_goods"/>
                                     <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)], 'required' : [('dangerous_goods', '=', True)]}" />
-                                    <field name="dangerous_goods_notes" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                    <field name="dangerous_goods_notes" style="margin-top: -4%; border-color: red;" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
                                     <field name="reefer_status"/>
                                     <label for="temperature"/>
                                     <div class="o_row" name="temperature">
