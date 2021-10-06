@@ -36,7 +36,7 @@
                 <xpath expr="//form/sheet/group[1]" position="replace">
                     <group>
                         <group>
-                            <field name="is_admin" />
+<!--                            <field name="is_admin" />-->
 <!--                            attrs="{'readonly':[('id','!=',False)]}"-->
                             <field name="transport" widget="radio" />
                         </group>
