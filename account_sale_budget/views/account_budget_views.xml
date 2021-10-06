@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="crossovered_budget_view_form_inherited">
+        <field name="name">crossovered.budget.view.form.inherited</field>
+        <field name="model">crossovered.budget</field>
+        <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='percentage']" position="after">
+            <field name="sale_budget_line" readonly="1" optional="hide" string="Budget Line"/>
+        </xpath>
+        </field>
+    </record>
+</odoo>
