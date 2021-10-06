@@ -110,7 +110,7 @@ class FreightBooking(models.Model):
     container_ids = fields.Many2many('freight.container', string='Container', copy=False)
     loose_cargo_ids = fields.Many2many('freight.loose.cargo', string='Loose Cargo', copy=False)
     job_management_order_ref = fields.Char(string="Order Refs", required=False)
-    job_management_ids = fields.One2many('job.management.link.line', 'freight_booking_id', string='Job Management Lines', copy=False)
+    job_management_ids = fields.Many2many('job.management.link.line', string='Job Management Lines', copy=False)
     reference_ids = fields.One2many('freight.reference.number', 'freight_booking_id', string='Reference Number', copy=False)
     service_details_ids = fields.One2many('freight.service.details', 'freight_booking_id', string='Commodity Details', copy=False)
     rail_shipment_type = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),

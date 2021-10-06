@@ -12,6 +12,7 @@
                         <div class="oe_button_box" name="button_box" >
                             <field name="pricing_id" invisible="1"/>
                             <field name="freight_id" invisible="1"/>
+                            <field name="show_create_processing_checklist" force_save="1" invisible="1"/>
                             <field name="freight_request_id" invisible="1"/>
                             <button class="oe_stat_button" name="button_shipping"
                                     attrs="{'invisible': ['|', ('freight_id','=',False),('state','=','draft')]}"
@@ -79,7 +80,7 @@
                             <group attrs="{'invisible': [('transport','not in', ['air', 'ocean', 'land'])]}">
                                 <group>
                                     <field name="source_location_id" string="Origin Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
-                                    <field name="destination_location_id" string="POR /Origin" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
+                                    <field name="source_location_id" string="POR /Origin" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
     
                                     <field name="origin_close" string="Consider Close by Origin Airports" style="margin-bottom: 5%;margin-top: 5%;" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pol" attrs="{'invisible': [('transport','!=','ocean')]}"/>
@@ -260,19 +261,19 @@
                                         <field name="is_insurance_required" widget="radio"/>
                                     </div>
                                 </group>
-                                <group string="Job Management Link">
-                                    <field name="job_management_order_ref"/>
-                                </group>
-                                <group></group>
-                                <group>
-                                    <field name="job_management_ids" nolabel="1">
-                                        <tree editable="bottom">
-                                            <field name="job_number"/>
-                                            <field name="job_type"/>
-                                            <field name="job_description"/>
-                                        </tree>
-                                    </field>
-                                </group>
+<!--                                <group string="Job Management Link">-->
+<!--                                    <field name="job_management_order_ref"/>-->
+<!--                                </group>-->
+<!--                                <group></group>-->
+<!--                                <group>-->
+<!--                                    <field name="job_management_ids" nolabel="1">-->
+<!--                                        <tree editable="bottom">-->
+<!--                                            <field name="job_number"/>-->
+<!--                                            <field name="job_type"/>-->
+<!--                                            <field name="job_description"/>-->
+<!--                                        </tree>-->
+<!--                                    </field>-->
+<!--                                </group>-->
                                 <group string="Security" attrs="{'invisible': [('transport','!=','air')]}">
                                     <field name="inspection" />
                                 </group>
@@ -281,24 +282,23 @@
                                 <page name="loose_cargo" string="Loose Cargo" attrs="{'invisible': [('cargo_container_visible','not in',['both','cargo'])]}">
                                     <field name="loose_cargo_ids" nolabel="1"/>
                                 </page>
-                                <page name="container" string="Containers" attrs="{'invisible': [('cargo_container_visible','!=','both')]}">
-                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" nolabel="1">
-<!--                                        <tree string="Container">-->
-<!--                                            <field name="number" required="1"/>-->
-<!--                                            <field name="count"/>-->
-<!--                                            <field name="cont_type"/>-->
-<!--                                            <field name="commodity"/>-->
-<!--                                            <field name="release"/>-->
-<!--                                            <field name="humidity_percentage"/>-->
-<!--                                            <field name="delivery_mode"/>-->
-<!--                                            <field name="is_shipper_owned"/>-->
-<!--                                            <field name="dep_container_id"/>-->
-<!--                                            <field name="arr_container_yard_id"/>-->
-<!--                                        </tree>-->
-                                    </field>
+                                <page name="container" string="Containers" attrs="{'invisible': [('transport','not in',['air', 'courier'])]}">
+                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" nolabel="1"/>
                                 </page>
                                 <page name="vehicle_details" string="Vehicle Details">
                                     <field name="vehicle_ids" nolabel="1"/>
+                                </page>
+                                <page name="order_management_link" string="Order Management Link">
+                                    <group>
+                                        <field name="job_management_order_ref"/>
+                                    </group>
+                                    <field name="job_management_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="job_number"/>
+                                            <field name="job_type"/>
+                                            <field name="job_description"/>
+                                        </tree>
+                                    </field>
                                 </page>
                             </notebook>
                         </page>

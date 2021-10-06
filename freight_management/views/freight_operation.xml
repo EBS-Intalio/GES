@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="freight_management_freight_operation_form_view">
+            <field name="name">freight_management.freight.operation.form.inherit</field>
+            <field name="model">freight.operation</field>
+            <field name="inherit_id" ref="freight.view_freight_operation_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tracking_number']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//form/sheet/notebook" position="inside">
+                    <page name="loose_cargo" string="Loose Cargo" >
+                        <field name="loose_cargo_ids" nolabel="1"/>
+                    </page>
+                    <page name="container" string="Containers">
+                        <field name="container_ids" nolabel="1"/>
+                    </page>
+                    <page name="vehicle_details" string="Vehicle Details">
+                        <field name="vehicle_ids" nolabel="1"/>
+                    </page>
+                    <page name="order_management_link" string="Order Management Link">
+                        <group>
+                            <field name="job_management_order_ref"/>
+                        </group>
+                        <field name="job_management_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="job_number"/>
+                                <field name="job_type"/>
+                                <field name="job_description"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                <xpath expr="//form/sheet/group[1]" position="replace">
+                    <group>
+                        <group>
+                            <field name="transport" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="ocean_shipment_type" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
+                            <field name="rail_shipment_type" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')]}"/>
+                            <field name="inland_shipment_type" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}"/>
+                            <field name="sea_then_air_shipment" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')]}"/>
+                            <field name="air_then_sea_shipment" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')]}"/>
+                            <field name="operation" invisible="1"/>
+                            <field name="direction" widget="radio" />
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
