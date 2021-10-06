@@ -13,9 +13,12 @@
             </field>
             <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='analytic_account_id']" position="after">
             <field name="employee_id"/>
-<!--            <field name="operating_unit_id"/>-->
+            <field name="operating_unit_id"/>
             <field name="partner_id"/>
         </xpath>
+            <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']" position="attributes">
+                <attribute name="context">{'default_partner_id':partner_id}</attribute>
+            </xpath>
             <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='theoritical_amount']"
                    position="after">
                 <field name="theoritical_amount_custom"/>
@@ -29,7 +32,7 @@
         <field name="inherit_id" ref="account_budget.view_crossovered_budget_line_search"/>
         <field name="arch" type="xml">
             <xpath expr="//group//filter[@name='group_crossevered_budgdet_id']" position="after">
-<!--                    <filter name="group_operating_unit_id" string="Operating Unit" domain="[]" context="{'group_by':'operating_unit_id'}"/>-->
+                    <filter name="group_operating_unit_id" string="Operating Unit" domain="[]" context="{'group_by':'operating_unit_id'}"/>
                     <filter name="group_employee_id" string="Employee" domain="[]" context="{'group_by':'employee_id'}"/>
                     <filter name="group_partner_id" string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter name="group_analytic_account_id" string="Analytic Account" domain="[]" context="{'group_by':'analytic_account_id'}"/>

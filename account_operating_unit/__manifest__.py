@@ -5,14 +5,14 @@
     "name": "Accounting with Operating Units",
     "summary": "Introduces Operating Unit (OU) in invoices and "
     "Accounting Entries with clearing account",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "author": "ForgeFlow, "
     "Serpent Consulting Services Pvt. Ltd.,"
     "WilldooIT Pty Ltd,"
     "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/operating-unit",
     "category": "Accounting & Finance",
-    "depends": ["account", "analytic_operating_unit"],
+    "depends": ["account", "analytic_operating_unit","account_extended"],
     "license": "LGPL-3",
     "data": [
         "security/account_security.xml",
