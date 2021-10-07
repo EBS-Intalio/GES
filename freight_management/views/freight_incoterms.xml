@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="freight_management_freight_incoterms_form_view" model="ir.ui.view">
+        <field name="name">freight_management.freight.incoterms.form.view</field>
+        <field name="model">freight.incoterms</field>
+        <field name="inherit_id" ref="freight.view_freight_incoterms_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group" position="replace">
+                <group>
+                    <group>
+                        <field name="code" required="1" string="Name"/>
+                    </group>
+                    <group>
+                        <field name="name" required="1" string="Code"/>
+                        <field name="active"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

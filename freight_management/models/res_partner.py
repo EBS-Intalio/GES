@@ -626,7 +626,6 @@ class ResPartner(models.Model):
         """
         for partner in self:
             if partner.email:
-                # if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", partner.email) == None:
                 if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', partner.email) == None:
                     raise ValidationError(_("%s is an invalid email") % partner.email.strip())
 

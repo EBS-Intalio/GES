@@ -10,7 +10,7 @@ class FreightOperation(models.Model):
     vehicle_ids = fields.Many2many('vehicle.details', string="Vehicle Details", copy=False)
     transport = fields.Selection([('air', 'Air'),
                                   ('ocean', 'Ocean'),
-                                  ('land', 'Land'),
+                                  ('land', 'Road'),
                                   ('sea_then_air', 'Sea then Air'),
                                   ('air_then_sea', 'Air then Sea'),
                                   ('rail', 'Rail'),
@@ -52,3 +52,5 @@ class FreightOperation(models.Model):
     #         rec.is_admin = False
     #         if self.env.user.has_group('base.group_erp_manager') or self.env.user.has_group('base.group_system'):
     #             rec.is_admin = True
+    incotearm_name = fields.Char(related='incoterm.code')
+    add_terms = fields.Char(string="Add. Terms")

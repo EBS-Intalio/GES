@@ -45,36 +45,46 @@
                         </h1>
                         </div>
                         <div>
-                            <group string="Operation">
+                            <group>
                                 <group>
-                                    <field name="transport" widget="radio"/>
-<!--                                    <field name="show_create_processing_checklist" force_save="1" invisible="1"/>-->
-<!--                                    <field name="checklist_id" invisible="1"/>-->
+                                    <field name="transport" options="{'horizontal': true}" widget="radio"/>
                                 </group>
                                 <group>
-                                    <field name="ocean_shipment_type" widget="radio"
+                                    <field name="ocean_shipment_type" options="{'horizontal': true}" widget="radio"
                                            attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
-                                    <field name="rail_shipment_type" widget="radio"
+                                    <field name="rail_shipment_type" options="{'horizontal': true}" widget="radio"
                                            attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')]}"/>
-                                    <field name="inland_shipment_type" widget="radio"
+                                    <field name="inland_shipment_type" options="{'horizontal': true}" widget="radio"
                                            attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}"/>
-                                    <field name="sea_then_air_shipment" widget="radio"
+                                    <field name="sea_then_air_shipment" options="{'horizontal': true}" widget="radio"
                                            attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')]}"/>
-                                    <field name="air_then_sea_shipment" widget="radio"
+                                    <field name="air_then_sea_shipment" options="{'horizontal': true}" widget="radio"
                                            attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')]}"/>
                                 </group>
                             </group>
                             <group>
-                                <group string="Shipper">
-                                    <field name="shipper_id" domain="[('shipper', '=', True)]" required="1"/>
-                                    <field name="shipper_address_id" domain="[('parent_id', '=', shipper_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
+                                <group>
+                                    <field name="direction" options="{'horizontal': true}" widget="radio"/>
                                 </group>
-                                <group string="Consignee">
-                                    <field name="consignee_id" domain="[('consignee', '=', True)]" required="1"/>
-                                    <field name="consignee_address_id" domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
+                                <group>
+                                    <field name="job_type"/>
                                 </group>
-                                <group string="Customer">
+                            </group>
+                            <group>
+                                <group>
                                     <field name="agent_id" required="1"/>
+                                </group>
+                                <group></group>
+                                <group>
+                                    <field name="shipper_id" domain="[('shipper', '=', True)]" required="1"/>
+                                    <field name="shipper_address_id" domain="[('parent_id', '=', shipper_id),('parent_id','!=',False)]"
+                                           context="{'default_parent_id': shipper_id, 'default_type': 'other'}"
+                                           options="{'no_create_edit':1}"/>
+                                </group>
+                                <group>
+                                    <field name="consignee_id" domain="[('consignee', '=', True)]" required="1"/>
+                                    <field name="consignee_address_id" context="{'default_parent_id': consignee_id, 'default_type': 'other'}"
+                                           domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
                                 </group>
                             </group>
                             <group attrs="{'invisible': [('transport','not in', ['air', 'ocean', 'land'])]}">
@@ -85,6 +95,8 @@
                                     <field name="origin_close" string="Consider Close by Origin Airports" style="margin-bottom: 5%;margin-top: 5%;" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pol" attrs="{'invisible': [('transport','!=','ocean')]}"/>
                                     <field name="equipment_type" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                                    <field name="equipment_count" attrs="{'invisible': [('transport','!=','ocean')]}" />
+
                                     <field name="shipping_line_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
                                     <field name="voyage_no" attrs="{'invisible': [('transport','!=','ocean')]}" invisible="1"/>
                                     <field name="vessel_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
@@ -100,46 +112,51 @@
                                     <field name="destination_location_id" string="POFD /Destination" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
                                     <field name="destination_close" style="margin-bottom: 5%;margin-top: 5%;" string="Consider Close By Destination Airport" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pod" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                    <field name="preferred_airline_id" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                    <field name="preferred_airline_id" string="Airline" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="flight_no" attrs="{'invisible': [('transport','!=','air')]}"/>
                                 </group>
                             </group>
-                            <group string="General">
-                                <group string="Loading Address">
-                                    <div class="o_address_format">
-                                        <field name="building" placeholder="Building..." class="o_address_street"/>
-                                        <field name="area" placeholder="Area..." class="o_address_street"/>
-                                        <field name="street" placeholder="Street..." class="o_address_street"/>
-                                        <field name="city" placeholder="City" class="o_address_city"/>
-                                        <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>
-                                        <field name="po_box" placeholder="PO Box" class="o_address_zip" />
-                                        <field name="zip_code" placeholder="Zip Code" class="o_address_zip" />
-                                        <field name="country_id" placeholder="Country" class="o_address_country" />
-                                    </div>
-                                </group>
-                                <group string="Delivery Address">
-                                    <div class="o_address_format">
-                                        <field name="delivery_building" placeholder="Building..." class="o_address_street"/>
-                                        <field name="delivery_area" placeholder="Area..." class="o_address_street"/>
-                                        <field name="delivery_street" placeholder="Street..." class="o_address_street"/>
-                                        <field name="delivery_city" placeholder="City" class="o_address_city"/>
-                                        <field name="delivery_state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>
-                                        <field name="delivery_po_box" placeholder="PO Box" class="o_address_zip" />
-                                        <field name="delivery_zip_code" placeholder="Zip Code" class="o_address_zip" />
-                                        <field name="delivery_country_id" placeholder="Country" class="o_address_country" />
-                                    </div>
-                                </group>
-                            </group>
-
+<!--                            <group string="General">-->
+<!--                                <group string="Loading Address">-->
+<!--                                    <div class="o_address_format">-->
+<!--                                        <field name="building" placeholder="Building..." class="o_address_street"/>-->
+<!--                                        <field name="area" placeholder="Area..." class="o_address_street"/>-->
+<!--                                        <field name="street" placeholder="Street..." class="o_address_street"/>-->
+<!--                                        <field name="city" placeholder="City" class="o_address_city"/>-->
+<!--                                        <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>-->
+<!--                                        <field name="po_box" placeholder="PO Box" class="o_address_zip" />-->
+<!--                                        <field name="zip_code" placeholder="Zip Code" class="o_address_zip" />-->
+<!--                                        <field name="country_id" placeholder="Country" class="o_address_country" />-->
+<!--                                    </div>-->
+<!--                                </group>-->
+<!--                                <group string="Delivery Address">-->
+<!--                                    <div class="o_address_format">-->
+<!--                                        <field name="delivery_building" placeholder="Building..." class="o_address_street"/>-->
+<!--                                        <field name="delivery_area" placeholder="Area..." class="o_address_street"/>-->
+<!--                                        <field name="delivery_street" placeholder="Street..." class="o_address_street"/>-->
+<!--                                        <field name="delivery_city" placeholder="City" class="o_address_city"/>-->
+<!--                                        <field name="delivery_state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>-->
+<!--                                        <field name="delivery_po_box" placeholder="PO Box" class="o_address_zip" />-->
+<!--                                        <field name="delivery_zip_code" placeholder="Zip Code" class="o_address_zip" />-->
+<!--                                        <field name="delivery_country_id" placeholder="Country" class="o_address_country" />-->
+<!--                                    </div>-->
+<!--                                </group>-->
+<!--                            </group>-->
+                            <group></group>
                             <group>
                                 <group>
-                                    <field name="job_type"/>
                                     <field name="service_level"/>
                                     <field name="package_type_id" />
+                                    <field name="number_packages"/>
                                     <field name="is_dimensions_visible" invisible="1"/>
                                     <field name="dimensions_of_package_id" context="{'is_dimensions_of_package': True}" attrs="{'invisible': [('is_dimensions_visible','!=', True)]}"/>
                                     <field name="clearance_required"/>
-                                    <field name="warehousing" widget="radio"/>
+
+                                    <field name="bl_copy" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
+                                    <field name="shipping_documents" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
+                                    <field name="original_copy" attrs="{'invisible': ['|', ('shipping_documents','!=',True), ('clearance_required','!=','yes')], 'required' : [('shipping_documents', '=', True), ('clearance_required', '=', 'yes')]}" options="{'horizontal': true}" widget="radio"/>
+
+                                    <field name="warehousing" widget="radio" options="{'horizontal': true}"/>
                                     <field name="target_rate" />
                                     <label for="target_transit_time"/>
                                     <div class="o_row" name="target_transit_time">
@@ -157,15 +174,13 @@
                                         <span>Days</span>
                                     </div>
                                     <field name="additional_comments" />
-                                    <field name="shipment_ready_asap" widget="radio"/>
+                                    <field name="shipment_ready_asap" widget="radio" options="{'horizontal': true}"/>
                                     <field name="shipment_ready_date" attrs="{'invisible': [('shipment_ready_asap','!=','no')]}"/>
-                                    <field name="target_eta_asap" widget="radio"/>
-<!--                                    <field name="est_pickup_date" attrs="{'invisible': [('target_eta_asap','!=','no')]}"/>-->
-                                    <field name="target_etd_asap" widget="radio"/>
-<!--                                    <field name="est_delivery_date" attrs="{'invisible': [('target_etd_asap','!=','no')]}"/>-->
                                 </group>
                                 <group>
                                     <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', '!=', 'land')]}"/>
+                                    <field name="incotearm_name" string="Incoterm Name"/>
+                                    <br/>
                                     <field name="dangerous_goods"/>
                                     <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)], 'required' : [('dangerous_goods', '=', True)]}" />
                                     <field name="dangerous_goods_notes" style="border-color: black;" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
@@ -179,9 +194,6 @@
                                     <field name="commodity_category"/>
                                     <field name="commodity_description"/>
                                     <field name="hs_code" widget="many2many_tags"/>
-                                    <field name="weight_type" widget="radio" default="estimated"/>
-                                    <field name="number_packages"/>
-                                    <field name="stackability" widget="radio"/>
                                     <field name="additional_requirements" />
                                 </group>
                             </group>
@@ -194,7 +206,6 @@
                                     <field name="is_domestic" readonly="1"/>
                                     <field name="marks_and_num"/>
                                     <field name="add_terms"/>
-                                    <field name="service_level"/>
                                     <field name="shippers_ref"/>
                                     <field name="carrier_id" domain="[('is_carrier', '=', True)]"/>
                                 </group>
@@ -236,6 +247,12 @@
                                     <field name="pic_drop_id"/>
                                     <field name="div_drop_id"/>
                                 </group>
+                                <group>
+                                    <field name="weight_type" widget="radio" options="{'horizontal': true}" default="estimated"/>
+                                    <field name="stackability" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="number_packages"/>
+                                </group>
+                                <group></group>
                                 <group string="Brokerage Details">
                                     <group>
                                         <field name="brokerage_type" nolabel="1"/>
@@ -258,7 +275,7 @@
                                     </div>
                                     <div class="o_row" name="is_insurance_required" style="margin-top: 4%;">
                                         <span>Insurance Required</span>
-                                        <field name="is_insurance_required" widget="radio"/>
+                                        <field name="is_insurance_required" widget="radio" options="{'horizontal': true}"/>
                                     </div>
                                 </group>
 <!--                                <group string="Job Management Link">-->
@@ -279,10 +296,10 @@
                                 </group>
                             </group>
                             <notebook>
-                                <page name="loose_cargo" string="Loose Cargo" attrs="{'invisible': [('cargo_container_visible','not in',['both','cargo'])]}">
+                                <page name="loose_cargo" string="Loose Cargo">
                                     <field name="loose_cargo_ids" nolabel="1"/>
                                 </page>
-                                <page name="container" string="Containers" attrs="{'invisible': [('transport','not in',['air', 'courier'])]}">
+                                <page name="container" string="Containers" attrs="{'invisible': [('cargo_container_visible','!=','both')]}">
                                     <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" nolabel="1"/>
                                 </page>
                                 <page name="vehicle_details" string="Vehicle Details">
@@ -329,12 +346,12 @@
                                         <field name="discharge_location_id"/>
                                     </div>
 
-                                    <div class="o_row" name="est_pickup_date" attrs="{'invisible': [('target_eta_asap','!=','no')]}" style="margin-top: 4%;">
+                                    <div class="o_row" name="est_pickup_date" style="margin-top: 4%;">
                                         <span>ETA</span>
                                         <field name="est_pickup_date"/>
                                     </div>
 
-                                    <div class="o_row" name="est_delivery_date" attrs="{'invisible': [('target_etd_asap','!=','no')]}" style="margin-top: 4%;">
+                                    <div class="o_row" name="est_delivery_date" style="margin-top: 4%;">
                                         <span>ETD</span>
                                         <field name="est_delivery_date"/>
                                     </div>

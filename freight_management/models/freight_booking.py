@@ -20,7 +20,7 @@ class FreightBooking(models.Model):
 
     transport = fields.Selection([('air', 'Air'),
                                    ('ocean', 'Ocean'),
-                                   ('land', 'Land'),
+                                   ('land', 'Road'),
                                    ('sea_then_air', 'Sea then Air'),
                                    ('air_then_sea', 'Air then Sea'),
                                    ('rail', 'Rail'),
@@ -183,6 +183,10 @@ class FreightBooking(models.Model):
     target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
                                        string="Target ETD ASAP", required=True)
 
+    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State')])
+    incotearm_name = fields.Char(related='incoterm.code')
+    equipment_count = fields.Integer(string='Equipment Count')
+
     def action_create_new_invoice(self):
         """
         Create a new Customer Invoice
@@ -257,7 +261,6 @@ class FreightBooking(models.Model):
         cargo_container_visible = 'none'
         is_dimensions_visible = False
         if self.transport == 'air':
-            cargo_container_visible = 'cargo'
             is_dimensions_visible = True
         self.write({'rail_shipment_type': False,
                     'ocean_shipment_type': False,
@@ -268,18 +271,18 @@ class FreightBooking(models.Model):
                     'dimensions_of_package_id': False,
                     'is_dimensions_visible': is_dimensions_visible})
 
-        dimensions_lst = []
-        if self.transport == 'air':
-            dimension_ids = self.env['freight.package'].search([('air', '=', True)])
-            dimensions_lst = dimension_ids.ids
-        if self.transport in ['ocean', 'rail', 'sea_then_air', 'air_then_sea']:
-            dimension_ids = self.env['freight.package'].search([('is_lcl', '=', True)])
-            dimensions_lst = dimension_ids.ids
-        if self.transport == 'land':
-            dimension_ids = self.env['freight.package'].search([('is_ltl', '=', True)])
-            dimensions_lst = dimension_ids.ids
-
-        return {'domain': {'dimensions_of_package_id': [('id', 'in', dimensions_lst)]}}
+        # dimensions_lst = []
+        # if self.transport == 'air':
+        #     dimension_ids = self.env['freight.package'].search([('air', '=', True)])
+        #     dimensions_lst = dimension_ids.ids
+        # if self.transport in ['ocean', 'rail', 'sea_then_air', 'air_then_sea']:
+        #     dimension_ids = self.env['freight.package'].search([('is_lcl', '=', True)])
+        #     dimensions_lst = dimension_ids.ids
+        # if self.transport == 'land':
+        #     dimension_ids = self.env['freight.package'].search([('is_ltl', '=', True)])
+        #     dimensions_lst = dimension_ids.ids
+        #
+        # return {'domain': {'dimensions_of_package_id': [('id', 'in', dimensions_lst)]}}
 
     @api.onchange('rail_shipment_type', 'ocean_shipment_type', 'inland_shipment_type', 'sea_then_air_shipment', 'air_then_sea_shipment')
     def onchange_freight_booking_shipment_type(self):
@@ -291,22 +294,14 @@ class FreightBooking(models.Model):
         """
         self.cargo_container_visible = 'none'
         if (not self.sea_then_air_shipment and not self.air_then_sea_shipment
-            and not self.inland_shipment_type and not self.ocean_shipment_type
-            and not self.rail_shipment_type and self.transport != 'air') or (
-                self.transport == 'courier'):
+            and not self.ocean_shipment_type
+            and not self.rail_shipment_type):
             self.cargo_container_visible = 'none'
         elif (self.ocean_shipment_type and self.ocean_shipment_type == 'fcl') or (
                 self.rail_shipment_type and self.rail_shipment_type == 'fcl') or (
                 self.air_then_sea_shipment and self.air_then_sea_shipment == 'fcl') or (
                 self.sea_then_air_shipment and self.sea_then_air_shipment == 'fcl'):
             self.cargo_container_visible = 'both'
-        elif (self.rail_shipment_type and self.rail_shipment_type == 'lcl') or (
-                self.ocean_shipment_type and self.ocean_shipment_type == 'lcl') or (
-                self.inland_shipment_type and self.inland_shipment_type == 'ftl') or (
-                self.air_then_sea_shipment and self.air_then_sea_shipment == 'lcl') or (
-                self.sea_then_air_shipment and self.sea_then_air_shipment == 'lcl') or (
-                self.transport == 'air'):
-            self.cargo_container_visible = 'cargo'
         else:
             self.cargo_container_visible = 'none'
 

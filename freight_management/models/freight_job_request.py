@@ -202,6 +202,8 @@ class FreightJobRequest(models.Model):
     weight_type = fields.Selection([('estimated', 'Estimated'), ('actual', 'Actual')], default="estimated", string="Weight Type")
     shipper_addr = fields.Many2one('res.partner','Shipper Address')
     consignee_addr = fields.Many2one('res.partner','Consignee Address')
+    incotearm_name = fields.Char(related='freight_incoterm_id.code')
+    equipment_count = fields.Integer(string='Equipment Count')
 
     @api.onchange('shipper_addr','consignee_addr')
     def get_shipper_consignee_add(self):
