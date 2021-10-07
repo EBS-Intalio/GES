@@ -26,3 +26,5 @@ class FreightPackageExt(models.Model):
     dep_container_id = fields.Many2one('res.partner', string='Dep. Container')
     arr_container_yard_id = fields.Many2one('res.partner', string='Arr. Container')
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
+    marks_and_num = fields.Char(string='Marks & Nums')
+

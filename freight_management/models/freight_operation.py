@@ -41,16 +41,31 @@ class FreightOperation(models.Model):
     move_type = fields.Many2one('freight.move.type', 'Service Type')
     job_management_order_ref = fields.Char(string="Order Refs", required=False)
     job_management_ids = fields.Many2many('job.management.link.line', string='Job Management Lines', copy=False)
-    # is_admin = fields.Boolean('Is Admin',compute='check_admin')
+    is_admin = fields.Boolean('Is Admin',compute='check_admin')
     direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State')])
-
-    # def check_admin(self):
-    #     """
-    #     checks whether the user is admin or not
-    #     """
-    #     for rec in self:
-    #         rec.is_admin = False
-    #         if self.env.user.has_group('base.group_erp_manager') or self.env.user.has_group('base.group_system'):
-    #             rec.is_admin = True
     incotearm_name = fields.Char(related='incoterm.code')
     add_terms = fields.Char(string="Add. Terms")
+    ata = fields.Date('ATA')
+    atd = fields.Date('ATD')
+    iss_date = fields.Date('Issue Date')
+    exp_date = fields.Date('Expiry Date')
+    release_type = fields.Selection([('no_data','No data')], string='Release Type')
+    house_bill_type = fields.Selection([('no_data','No data')], string='House Bill Type')
+    on_board = fields.Selection([('no_data','No data')], string='Onboard')
+    on_board_date = fields.Date()
+    hbl_div_mode = fields.Selection([('no_data','No data')], string='HBL Div.Mode')
+    iss_date_1 = fields.Date('Issue Date')
+    org_bill = fields.Integer('Original Bills')
+    copy_bill = fields.Integer('Copy Bills')
+    charges_apply = fields.Selection([('no_data','No Data')],string='Charges Apply')
+    phase = fields.Selection([('no_data','No Data')],string='Phase')
+    e_freight_status = fields.Selection([('no_data','No Data')],string='e-Freight Status')
+
+    def check_admin(self):
+        """
+        checks whether the user is admin or not
+        """
+        for rec in self:
+            rec.is_admin = False
+            if self.env.user.has_group('base.group_erp_manager') or self.env.user.has_group('base.group_system'):
+                rec.is_admin = True

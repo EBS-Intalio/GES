@@ -204,7 +204,7 @@
                             <group>
                                 <group>
                                     <field name="is_domestic" readonly="1"/>
-                                    <field name="marks_and_num"/>
+<!--                                    <field name="marks_and_num"/>-->
                                     <field name="add_terms"/>
                                     <field name="shippers_ref"/>
                                     <field name="carrier_id" domain="[('is_carrier', '=', True)]"/>

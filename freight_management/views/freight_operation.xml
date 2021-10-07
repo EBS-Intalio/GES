@@ -33,30 +33,62 @@
                         </field>
                     </page>
                 </xpath>
+
+                <xpath expr="//form/sheet/group[3]/group[1]/field[@name='shipping_line_id']" position="before">
+                    <field name="atd"/>
+                </xpath>
+                <xpath expr="//form/sheet/group[3]/group[2]/field[@name='airline_id']" position="before">
+                    <field name="ata"/>
+                </xpath>
                 <xpath expr="//form/sheet/group[4]/group[2]/field[@name='incoterm']" position="after">
                     <field name="incotearm_name" string="Incoterm Name"/>
                     <field name="add_terms"/>
                 </xpath>
+                <xpath expr="//form/sheet/group[4]" position="after">
+                    <group>
+                        <group>
+                            <field name="iss_date"/>
+                            <field name="release_type"/>
+                             <label for="on_board"/>
+                                <div class="o_row">
+                                    <field name="on_board"/>
+                                    <field name="on_board_date"/>
+                                </div>
+                            <field name="iss_date_1"/>
+                            <field name="org_bill"/>
+                            <field name="phase"/>
+                        </group>
+                        <group>
+                            <field name="exp_date"/>
+                            <field name="house_bill_type"/>
+                            <field name="hbl_div_mode"/>
+                            <field name="charges_apply"/>
+                            <field name="copy_bill"/>
+                            <field name="e_freight_status"/>
+
+                        </group>
+                    </group>
+                </xpath>
                 <xpath expr="//form/sheet/group[1]" position="replace">
                     <group>
                         <group>
-<!--                            <field name="is_admin" />-->
-<!--                            attrs="{'readonly':[('id','!=',False)]}"-->
-                            <field name="transport" widget="radio" />
+                            <field name="is_admin" invisible="1" />
+
+                            <field name="transport" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                         </group>
                         <group>
                             <field name="ocean_shipment_type" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
+                                   attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                             <field name="rail_shipment_type" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')]}"/>
+                                   attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                             <field name="inland_shipment_type" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}"/>
+                                   attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                             <field name="sea_then_air_shipment" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')]}"/>
+                                   attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                             <field name="air_then_sea_shipment" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')]}"/>
+                                   attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                             <field name="operation" invisible="1"/>
-                            <field name="direction" widget="radio" />
+                            <field name="direction" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                         </group>
                     </group>
                 </xpath>
