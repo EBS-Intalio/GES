@@ -842,80 +842,79 @@
                         </div>
                         <br/>
                     </div>
-                    <br/><br/>
-                    <div class="col-12 row row_hover">
-                        <br/>
-                        <div class="col-1">
-                        </div>
-                        <div class="col-2">
-                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Addresses</span><br/><br/>
-                            <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Delivery Address</span><br/><br/>
-                            <label for="building" >Building:</label><br/><br/>
-                            <label for="area" style="margin-top: 4%;">Area:</label><br/><br/>
-                            <label for="street" style="margin-top: 4%;">Street:</label><br/><br/>
-                            <label for="city" style="margin-top: 4%;">City:</label><br/><br/>
-                            <label for="state_id" style="margin-top: 4%;">State:</label><br/><br/>
-                            <label for="po_box" style="margin-top: 4%;">PO Box:</label><br/><br/>
-                            <label for="zip_code" style="margin-top: 4%;">Zip Code:</label><br/><br/>
-                            <label for="country_id" style="margin-top: 4%;">Country:</label><br/><br/>
-                        </div>
-                        <div class="col-3">
-                            <br/><br/><br/><br/>
-                            <input name="building" class="input-class form-control" id="building" /><br/>
-                            <input name="area" class="input-class form-control" id="area" /><br/>
-                            <input name="street" class="input-class form-control" id="street" /><br/>
-                            <input name="city" class="input-class form-control" id="city" /><br/>
-                            <select id="state_id" name="state_id" class="form-control">
-                                <option></option>
-                                <t t-foreach="states" t-as="state">
-                                    <option t-att-value="state.id" t-esc="state.name"/></t>
-                            </select><br/>
-                            <input name="po_box" class="input-class form-control" id="po_box" /><br/>
-                            <input name="zip_code" class="input-class form-control" type="number" id="zip_code" /><br/>
-                            <select id="country_id" name="country_id" class="form-control">
-                                <option></option>
-                                <t t-foreach="countries" t-as="country">
-                                    <option t-att-value="country.id" t-esc="country.name"/></t>
-                            </select><br/>
-                        </div>
+<!--                    <br/><br/>-->
+<!--                    <div class="col-12 row row_hover">-->
+<!--                        <br/>-->
+<!--                        <div class="col-1">-->
+<!--                        </div>-->
+<!--                        <div class="col-2">-->
+<!--                            <span style="color:#7C7BAD;font-weight:bold;font-size:21px;">Addresses</span><br/><br/>-->
+<!--                            <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Delivery Address</span><br/><br/>-->
+<!--                            <label for="building" >Building:</label><br/><br/>-->
+<!--                            <label for="area" style="margin-top: 4%;">Area:</label><br/><br/>-->
+<!--                            <label for="street" style="margin-top: 4%;">Street:</label><br/><br/>-->
+<!--                            <label for="city" style="margin-top: 4%;">City:</label><br/><br/>-->
+<!--                            <label for="state_id" style="margin-top: 4%;">State:</label><br/><br/>-->
+<!--                            <label for="po_box" style="margin-top: 4%;">PO Box:</label><br/><br/>-->
+<!--                            <label for="zip_code" style="margin-top: 4%;">Zip Code:</label><br/><br/>-->
+<!--                            <label for="country_id" style="margin-top: 4%;">Country:</label><br/><br/>-->
+<!--                        </div>-->
+<!--                        <div class="col-3">-->
+<!--                            <br/><br/><br/><br/>-->
+<!--                            <input name="building" class="input-class form-control" id="building" /><br/>-->
+<!--                            <input name="area" class="input-class form-control" id="area" /><br/>-->
+<!--                            <input name="street" class="input-class form-control" id="street" /><br/>-->
+<!--                            <input name="city" class="input-class form-control" id="city" /><br/>-->
+<!--                            <select id="state_id" name="state_id" class="form-control">-->
+<!--                                <option></option>-->
+<!--                                <t t-foreach="states" t-as="state">-->
+<!--                                    <option t-att-value="state.id" t-esc="state.name"/></t>-->
+<!--                            </select><br/>-->
+<!--                            <input name="po_box" class="input-class form-control" id="po_box" /><br/>-->
+<!--                            <input name="zip_code" class="input-class form-control" type="number" id="zip_code" /><br/>-->
+<!--                            <select id="country_id" name="country_id" class="form-control">-->
+<!--                                <option></option>-->
+<!--                                <t t-foreach="countries" t-as="country">-->
+<!--                                    <option t-att-value="country.id" t-esc="country.name"/></t>-->
+<!--                            </select><br/>-->
+<!--                        </div>-->
 
-                        <div class="col-2">
-                            <br/><br/>
-                            <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Loading Address</span><br/><br/>
-                            <label for="delivery_building">Building:</label><br/><br/>
-                            <label for="delivery_area" style="margin-top: 5%;">Area:</label><br/><br/>
-                            <label for="delivery_street" style="margin-top: 5%;">Street:</label><br/><br/>
-                            <label for="delivery_city" style="margin-top: 5%;">City:</label><br/><br/>
-                            <label for="delivery_state_id" style="margin-top: 5%;">State:</label><br/><br/>
-                            <label for="delivery_po_box" style="margin-top: 5%;">PO Box:</label><br/><br/>
-                            <label for="delivery_zip_code" style="margin-top: 5%;">Zip Code:</label><br/><br/>
-                            <label for="delivery_country_id" style="margin-top: 5%;">Country:</label><br/><br/>
-                        </div>
-                        <div class="col-3">
-                            <br/><br/>
-                            <br/><br/>
-                            <input name="delivery_building" class="input-class form-control" id="delivery_building" /><br/>
-                            <input name="delivery_area" class="input-class form-control" id="delivery_area" /><br/>
-                            <input name="delivery_street" class="input-class form-control" id="delivery_street" /><br/>
-                            <input name="delivery_city" class="input-class form-control" id="delivery_city" /><br/>
-                            <select id="delivery_state_id" name="delivery_state_id" class="form-control">
-                                <option></option>
-                                <t t-foreach="states" t-as="state">
-                                    <option t-att-value="state.id" t-esc="state.name"/></t>
-                            </select><br/>
-                            <input name="delivery_po_box" class="input-class form-control" id="delivery_po_box" /><br/>
-                            <input name="delivery_zip_code" type="number" class="input-class form-control" id="delivery_zip_code" /><br/>
-                            <select id="delivery_country_id" name="delivery_country_id" class="form-control">
-                                <option></option>
-                                <t t-foreach="countries" t-as="country">
-                                    <option t-att-value="country.id" t-esc="country.name"/></t>
-                            </select><br/>
-                        </div>
+<!--                        <div class="col-2">-->
+<!--                            <br/><br/>-->
+<!--                            <span style="color:#7C7BAD;font-weight:bold;font-size: 110%">Loading Address</span><br/><br/>-->
+<!--                            <label for="delivery_building">Building:</label><br/><br/>-->
+<!--                            <label for="delivery_area" style="margin-top: 5%;">Area:</label><br/><br/>-->
+<!--                            <label for="delivery_street" style="margin-top: 5%;">Street:</label><br/><br/>-->
+<!--                            <label for="delivery_city" style="margin-top: 5%;">City:</label><br/><br/>-->
+<!--                            <label for="delivery_state_id" style="margin-top: 5%;">State:</label><br/><br/>-->
+<!--                            <label for="delivery_po_box" style="margin-top: 5%;">PO Box:</label><br/><br/>-->
+<!--                            <label for="delivery_zip_code" style="margin-top: 5%;">Zip Code:</label><br/><br/>-->
+<!--                            <label for="delivery_country_id" style="margin-top: 5%;">Country:</label><br/><br/>-->
+<!--                        </div>-->
+<!--                        <div class="col-3">-->
+<!--                            <br/><br/>-->
+<!--                            <br/><br/>-->
+<!--                            <input name="delivery_building" class="input-class form-control" id="delivery_building" /><br/>-->
+<!--                            <input name="delivery_area" class="input-class form-control" id="delivery_area" /><br/>-->
+<!--                            <input name="delivery_street" class="input-class form-control" id="delivery_street" /><br/>-->
+<!--                            <input name="delivery_city" class="input-class form-control" id="delivery_city" /><br/>-->
+<!--                            <select id="delivery_state_id" name="delivery_state_id" class="form-control">-->
+<!--                                <option></option>-->
+<!--                                <t t-foreach="states" t-as="state">-->
+<!--                                    <option t-att-value="state.id" t-esc="state.name"/></t>-->
+<!--                            </select><br/>-->
+<!--                            <input name="delivery_po_box" class="input-class form-control" id="delivery_po_box" /><br/>-->
+<!--                            <input name="delivery_zip_code" type="number" class="input-class form-control" id="delivery_zip_code" /><br/>-->
+<!--                            <select id="delivery_country_id" name="delivery_country_id" class="form-control">-->
+<!--                                <option></option>-->
+<!--                                <t t-foreach="countries" t-as="country">-->
+<!--                                    <option t-att-value="country.id" t-esc="country.name"/></t>-->
+<!--                            </select><br/>-->
+<!--                        </div>-->
 
-                    </div>
-                    <br/><br/>
+<!--                    </div>-->
+<!--                    <br/><br/>-->
                     <div class="col-12 row row_hover">
-                        <br/>
                         <div class="col-1">
 
                         </div>

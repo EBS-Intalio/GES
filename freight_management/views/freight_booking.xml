@@ -345,7 +345,7 @@
                                     </div>
 
                                     <div class="o_row" name="discharge_location_id">
-                                        <span>Discharge Weight</span>
+                                        <span>Discharge</span>
                                         <field name="discharge_location_id"/>
                                     </div>
 
