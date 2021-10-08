@@ -153,7 +153,7 @@
                                     <field name="number_packages"/>
                                     <field name="is_dimensions_visible" invisible="1"/>
                                     <field name="dimensions_of_package_id" context="{'is_dimensions_of_package': True}" attrs="{'invisible': [('is_dimensions_visible','!=', True)]}"/>
-                                    <field name="clearance_required"/>
+                                    <field name="clearance_required" widget="radio" options="{'horizontal': true}"/>
 
                                     <field name="bl_copy" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
                                     <field name="shipping_documents" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
@@ -197,6 +197,7 @@
                                     <field name="commodity_category"/>
                                     <field name="commodity_description"/>
                                     <field name="hs_code" widget="many2many_tags"/>
+                                    <field name="gross_weight"/>
                                     <field name="additional_requirements" />
                                 </group>
                             </group>
