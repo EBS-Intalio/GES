@@ -32,7 +32,7 @@ class FreightBookingData(models.Model):
     transit_country_border = fields.Many2one('res.country', 'Transit Country Border')
     rout = fields.Char('Rout')
     freight_trucker = fields.Many2one('freight.trucker', String='Trucker')
-    freight_trucker_number = fields.Char('Trucker No')
+    freight_trucker_number = fields.Char('Trucker Count')
 
 
     def send_data(self):

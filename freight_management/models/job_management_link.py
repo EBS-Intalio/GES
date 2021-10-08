@@ -16,7 +16,7 @@ class JobManagementLinkLine(models.Model):
     _name = 'job.management.link.line'
 
     # job_management_link_id = fields.Many2one('job.management.link', string="Job Management link")
-    job_number = fields.Char(string="Job Number")
+    job_number = fields.Char(string="Job Number", required=True)
     job_type = fields.Char(string="Job Type")
     # service_id = fields.Many2one('freight.service.details', string="Service")
     job_description = fields.Char(string="Job Description")

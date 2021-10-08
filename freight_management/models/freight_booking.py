@@ -24,7 +24,7 @@ class FreightBooking(models.Model):
                                    ('sea_then_air', 'Sea then Air'),
                                    ('air_then_sea', 'Air then Sea'),
                                    ('rail', 'Rail'),
-                                   ('courier', 'Courier')], string='Transport', required=False)
+                                   ('courier', 'Courier')], string='Transport', default='air', required=False)
 
     ocean_shipment_type = fields.Selection(selection_add=[('breakbulk', 'Breakbulk'),
                                               ('liquid', 'Liquid'),
@@ -183,7 +183,7 @@ class FreightBooking(models.Model):
     target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
                                        string="Target ETD ASAP", required=True)
 
-    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State')])
+    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State')], default='cross_state')
     incotearm_name = fields.Char(related='incoterm.code')
     equipment_count = fields.Integer(string='Equipment Count')
 
@@ -224,20 +224,70 @@ class FreightBooking(models.Model):
 
         return action
 
-    @api.depends('country_id', 'delivery_country_id')
+    def convert_to_operation(self):
+        name_act = ''
+        for book in self:
+            res = self.convert_fields_to_dict()
+            if res.get('operation') == 'master':
+                name_act = 'Master'
+                res['name'] = self.env['ir.sequence'].next_by_code('operation.master') or _('New')
+            elif res.get('operation') == 'house':
+                name_act = 'House'
+                res['name'] = self.env['ir.sequence'].next_by_code('operation.house') or _('New')
+            elif res.get('operation') == 'direct':
+                name_act = 'Direct'
+                res['name'] = self.env['ir.sequence'].next_by_code('operation.direct') or _('New')
+            form_view = self.env.ref('freight.view_freight_operation_form')
+            res.update({'default_booking_id': book.id, 'default_job_management_order_ref': self.job_management_order_ref,
+                        'default_loose_cargo_ids': [(6, 0, self.loose_cargo_ids.ids)],
+                        'default_job_management_ids': [(6, 0, self.job_management_ids.ids)],
+                        'default_vehicle_ids': [(6, 0, self.vehicle_ids.ids)],
+                        'default_target_rate': self.target_rate,
+                        'default_container_ids': [(6, 0, self.container_ids.ids)]}),
+            book.write({'state':'ship_order'})
+            return {
+                'name': name_act,
+                'res_model': 'freight.operation',
+                'type': 'ir.actions.act_window',
+                'views': [(form_view and form_view.id, 'form')],
+                'context':res,
+            }
+
+    @api.depends('source_location_id', 'destination_location_id')
     def _compute_is_domestic(self):
         """
         Is Domestic field readonly based on country and delivery country
         :return:
         """
         for req in self:
-            if (req.delivery_country_id and not req.country_id) or (req.country_id and not req.delivery_country_id):
-                is_domestic_readonly = False
-            elif req.delivery_country_id and req.country_id and req.delivery_country_id.id != req.country_id.id:
-                is_domestic_readonly = False
-            else:
+            if not req.source_location_id and not req.destination_location_id:
                 is_domestic_readonly = True
+            elif (req.source_location_id and req.destination_location_id and (
+                    req.destination_location_id.country.id == req.source_location_id.country.id)):
+                is_domestic_readonly = True
+            else:
+                is_domestic_readonly = False
             req.is_domestic = is_domestic_readonly
+
+    @api.onchange('source_location_id', 'destination_location_id')
+    def onchange_source_destination_location(self):
+        """
+        Set Given Value according to the origin and destination
+        1) Import, Export, Cross Border State
+        2) Is Domestic
+        :return:
+        """
+        for req in self:
+            direction = 'cross_state'
+            if (req.source_location_id and not req.destination_location_id and req.source_location_id.country.id == self.env.company.country_id.id) or (
+                    req.source_location_id and req.source_location_id.country and req.source_location_id.country.id == self.env.company.country_id.id and
+                    (not req.destination_location_id or (req.destination_location_id and req.destination_location_id.country.id != self.env.company.country_id.id))):
+                direction = 'export'
+            elif (req.destination_location_id and not req.source_location_id.country and req.destination_location_id.country.id == self.env.company.country_id.id) or (
+                    req.destination_location_id and req.destination_location_id.country and req.destination_location_id.country.id == self.env.company.country_id.id and
+                    (not req.source_location_id or (req.source_location_id and req.source_location_id.country.id != self.env.company.country_id.id))):
+                direction = 'import'
+            req.direction = direction
 
     @api.onchange('gross_weight', 'weight_uom_id')
     def onchange_gross_weight_and_weight_uom(self):
@@ -270,19 +320,6 @@ class FreightBooking(models.Model):
                     'cargo_container_visible': cargo_container_visible,
                     'dimensions_of_package_id': False,
                     'is_dimensions_visible': is_dimensions_visible})
-
-        # dimensions_lst = []
-        # if self.transport == 'air':
-        #     dimension_ids = self.env['freight.package'].search([('air', '=', True)])
-        #     dimensions_lst = dimension_ids.ids
-        # if self.transport in ['ocean', 'rail', 'sea_then_air', 'air_then_sea']:
-        #     dimension_ids = self.env['freight.package'].search([('is_lcl', '=', True)])
-        #     dimensions_lst = dimension_ids.ids
-        # if self.transport == 'land':
-        #     dimension_ids = self.env['freight.package'].search([('is_ltl', '=', True)])
-        #     dimensions_lst = dimension_ids.ids
-        #
-        # return {'domain': {'dimensions_of_package_id': [('id', 'in', dimensions_lst)]}}
 
     @api.onchange('rail_shipment_type', 'ocean_shipment_type', 'inland_shipment_type', 'sea_then_air_shipment', 'air_then_sea_shipment')
     def onchange_freight_booking_shipment_type(self):
@@ -320,6 +357,150 @@ class FreightBooking(models.Model):
             self.is_dimensions_visible = True
         else:
             self.is_dimensions_visible = False
+
+    def convert_fields_to_dict(self):
+        final_dict  = {}
+        if self.operation:
+            final_dict['operation'] = self.operation
+        if self.direction:
+            final_dict['direction'] = self.direction
+        if self.transport:
+            final_dict['transport'] = self.transport
+        if self.ocean_shipment_type:
+            final_dict['ocean_shipment_type'] = self.ocean_shipment_type
+        if self.inland_shipment_type:
+            final_dict['inland_shipment_type'] = self.inland_shipment_type
+        if self.air_shipment_type:
+            final_dict['air_shipment_type'] = self.air_shipment_type
+        if self.rail_shipment_type:
+            final_dict['rail_shipment_type'] = self.rail_shipment_type
+        if self.sea_then_air_shipment:
+            final_dict['sea_then_air_shipment'] = self.sea_then_air_shipment
+        if self.air_then_sea_shipment:
+            final_dict['air_then_sea_shipment'] = self.air_then_sea_shipment
+        if self.shipper_id:
+            final_dict['shipper_id'] = self.shipper_id and self.shipper_id.id or False
+        if self.consignee_id:
+            final_dict['consignee_id'] = self.consignee_id and self.consignee_id.id or False
+        if self.source_location_id:
+            final_dict['source_location_id'] = self.source_location_id and self.source_location_id.id or False
+        if self.destination_location_id:
+            final_dict['destination_location_id'] = self.destination_location_id and self.destination_location_id.id or False
+        if self.mawb_no:
+            final_dict['mawb_no'] = self.mawb_no
+        if self.flight_no:
+            final_dict['flight_no'] = self.flight_no
+        if self.airline_id:
+            final_dict['airline_id'] = self.airline_id and self.airline_id.id or False
+        # Ocean Fields
+        if self.add_terms:
+            final_dict['add_terms'] = self.add_terms
+        if self.shipping_line_id:
+            final_dict['shipping_line_id'] =self.shipping_line_id and self.shipping_line_id.id or False
+        if self.vessel_id:
+            final_dict['vessel_id'] = self.vessel_id and self.vessel_id.id or False
+        if self.voyage_no:
+            final_dict['voyage_no'] = self.voyage_no
+        if self.obl:
+            final_dict['obl'] = self.obl
+        # Inland Fields
+        if self.truck_ref:
+            final_dict['truck_ref'] = self.truck_ref
+        if self.trucker_number:
+            final_dict['trucker_number'] = self.trucker_number
+        if self.vehicle_size:
+            final_dict['vehicle_size'] = self.vehicle_size
+        if self.vehicle_type:
+            final_dict['vehicle_type'] = self.vehicle_type
+        if self.trucker:
+            final_dict['trucker'] = self.trucker and self.trucker.id or False
+        # Air Fields
+        if self.origin_close:
+            final_dict['origin_close'] = True
+        if self.destination_close:
+            final_dict['destination_close'] = True
+        # General Data
+        if self.job_type:
+            final_dict['job_type'] = self.job_type
+        if self.por_origin:
+            final_dict['por_origin'] = self.por_origin
+        if self.pol:
+            final_dict['pol'] = self.pol and self.pol.id or False
+        if self.pod:
+            final_dict['pod'] = self.pod and self.pod.id or False
+        if self.pofd_destination:
+            final_dict['pofd_destination'] = self.pofd_destination
+        if self.equipment_type:
+            final_dict['equipment_type'] = self.equipment_type
+        if self.barcode:
+            final_dict['barcode'] = self.barcode
+        if self.notes:
+            final_dict['notes'] = self.notes
+        if self.freight_pc:
+            final_dict['freight_pc'] = self.freight_pc
+        if self.other_pc:
+            final_dict['other_pc'] = self.other_pc
+        if self.reefer_status:
+            final_dict['reefer_status'] = self.reefer_status
+        if self.hs_code:
+            final_dict['hs_code'] = [(6, 0, self.hs_code.ids)]
+        if self.gross_weight:
+            final_dict['gross_weight'] = self.gross_weight
+        if self.weight_type:
+            final_dict['weight_type'] = self.weight_type
+        if self.number_packages:
+            final_dict['number_packages'] = self.number_packages
+        if self.stackability:
+            final_dict['stackability'] = self.stackability
+        if self.clearance_required:
+            final_dict['clearance_required'] = self.clearance_required
+        if self.warehousing:
+            final_dict['warehousing'] = self.warehousing
+        if self.target_rate:
+            final_dict['target_rate'] = self.target_rate
+        if self.expected_free_time_at_origin:
+            final_dict['expected_free_time_at_origin'] = self.expected_free_time_at_origin
+        if self.expected_free_time_at_destination:
+            final_dict['expected_free_time_at_destination'] = self.expected_free_time_at_destination
+        if self.target_transit_time:
+            final_dict['target_transit_time'] = self.target_transit_time
+        if self.additional_requirements:
+            final_dict['additional_requirements'] = self.additional_requirements
+        if self.temperature:
+            final_dict['temperature'] = self.temperature
+        if self.set_temperature:
+            final_dict['set_temperature'] = self.set_temperature
+        if self.commodity_category:
+            final_dict['commodity_category'] = self.commodity_category
+        if self.commodity_description:
+            final_dict['commodity_description'] = self.commodity_description
+        if self.tracking_number:
+            final_dict['tracking_number'] = self.tracking_number
+        if self.dangerous_goods:
+            final_dict['dangerous_goods'] = True
+            if self.dangerous_goods_notes:
+                final_dict['dangerous_goods_notes'] = self.dangerous_goods_notes
+            if self.danger_class:
+                final_dict['danger_class'] = self.danger_class
+        if self.agent_id:
+            final_dict['agent_id'] = self.agent_id and self.agent_id.id or False
+        if self.operator_id:
+            final_dict['operator_id'] = self.operator_id and self.operator_id.id or False
+        if self.move_type:
+            final_dict['move_type'] = self.move_type and self.move_type.id or False
+        if self.incoterm:
+            final_dict['incoterm'] = self.incoterm and self.incoterm.id or False
+        if self.package_type_id:
+            final_dict['package_type_id'] = self.package_type_id or False
+        if self.datetime:
+            final_dict['datetime'] = self.datetime
+        res = {}
+        for key, val in final_dict.items():
+            if key != 'name':
+                res.update({
+                    'default_' + key: val
+                })
+        return res
 
     @api.onchange('consignee_id')
     def onchange_consignee_id(self):

@@ -6,46 +6,143 @@
             <field name="model">freight.operation</field>
             <field name="inherit_id" ref="freight.view_freight_operation_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='tracking_number']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-
-                <xpath expr="//form/sheet/notebook" position="inside">
-                    <page name="loose_cargo" string="Loose Cargo" >
-                        <field name="loose_cargo_ids" nolabel="1"/>
-                    </page>
-                    <page name="container" string="Containers">
-                        <field name="container_ids" nolabel="1"/>
-                    </page>
-                    <page name="vehicle_details" string="Vehicle Details">
-                        <field name="vehicle_ids" nolabel="1"/>
-                    </page>
-                    <page name="order_management_link" string="Order Management Link">
+                <xpath expr="//form/sheet" position="replace">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="button_services_quotes"
+                                    type="object" icon="fa-bars">
+                                <field name="service_quote_count" string="Quotations"  widget="statinfo" icon="fa-usd"/>
+                            </button>
+                            <button class="oe_stat_button" name="button_services_bookings"
+                                    type="object" icon="fa-bars">
+                                <field name="service_booking_count" string="Booking"  widget="statinfo" icon="fa-usd"/>
+                            </button>
+                            <button class="oe_stat_button" name="button_services"
+                                    type="object" icon="fa-bars">
+                                <field name="service_count" string="Services"  widget="statinfo" icon="fa-usd"/>
+                            </button>
+                            <button class="oe_stat_button" name="button_customer_invoices"
+                                    type="object" icon="fa-money">
+                                <field name="invoice_count" string="Invoices"  widget="statinfo" icon="fa-usd"/>
+                            </button>
+                            <button class="oe_stat_button" name="button_vendor_bills"
+                                    type="object" icon="fa-money">
+                                <field name="vendor_bill_count" string="Vendor Bills"  widget="statinfo" icon="fa-usd"/>
+                            </button>
+                            <field name="show_create_processing_checklist" invisible="1"/>
+                            <button class="oe_stat_button" name="button_processing_checklist" attrs="{'invisible': [('show_create_processing_checklist','!=',True)]}" type="object" icon="fa-gear">
+                                Checklist
+                            </button>
+                        </div>
+                        <h1>
+                            <div>
+                                <field name="name" readonly="1"/>
+                            </div>
+                        </h1>
                         <group>
-                            <field name="job_management_order_ref"/>
+                            <group>
+                                <field name="is_admin" invisible="1" />
+                                <field name="transport" options="{'horizontal': true}" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                            </group>
+                            <group>
+                            <field name="ocean_shipment_type" options="{'horizontal': true}" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')], 'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                            <field name="rail_shipment_type" options="{'horizontal': true}" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')], 'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                            <field name="inland_shipment_type" options="{'horizontal': true}" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')], 'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                            <field name="sea_then_air_shipment" options="{'horizontal': true}" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')], 'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                            <field name="air_then_sea_shipment" options="{'horizontal': true}" widget="radio"
+                                   attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')], 'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                            <field name="operation" invisible="1"/>
+<!--                            <field name="direction" options="{'horizontal': true}" widget="radio" />-->
                         </group>
-                        <field name="job_management_ids" nolabel="1">
-                            <tree editable="bottom">
-                                <field name="job_number"/>
-                                <field name="job_type"/>
-                                <field name="job_description"/>
-                            </tree>
-                        </field>
-                    </page>
-                </xpath>
+                        </group>
 
-                <xpath expr="//form/sheet/group[3]/group[1]/field[@name='shipping_line_id']" position="before">
-                    <field name="atd"/>
-                </xpath>
-                <xpath expr="//form/sheet/group[3]/group[2]/field[@name='airline_id']" position="before">
-                    <field name="ata"/>
-                </xpath>
-                <xpath expr="//form/sheet/group[4]/group[2]/field[@name='incoterm']" position="after">
-                    <field name="incotearm_name" string="Incoterm Name"/>
-                    <field name="add_terms"/>
-                </xpath>
-                <xpath expr="//form/sheet/group[4]" position="after">
-                    <group>
+                        <group>
+                                <group>
+                                    <field name="direction" readonly="1" options="{'horizontal': true}" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                                </group>
+                                <group>
+                                    <field name="move_type"/>
+                                </group>
+                        </group>
+
+                        <group>
+                            <group>
+                                <field name="agent_id"/>
+                            </group>
+                            <group></group>
+                            <group>
+                                <field name="shipper_id" domain="[('shipper', '=', True)]" required="1"/>
+                                <field name="shipper_address_id" domain="[('parent_id', '=', shipper_id),('parent_id','!=',False)]"
+                                           context="{'default_parent_id': shipper_id, 'default_type': 'other'}"
+                                           options="{'no_create_edit':1}"/>
+                            </group>
+                            <group>
+                                <field name="consignee_id" domain="[('consignee', '=', True)]" required="1"/>
+                                <field name="consignee_address_id" context="{'default_parent_id': consignee_id, 'default_type': 'other'}"
+                                           domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group>
+                                <field name="source_location_id" string="Loading Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="source_location_id" string="Gateway" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                <field name="source_location_id" string="Origin" attrs="{'invisible': [('transport','in',['ocean', 'air'])]}"/>
+                                <field name="pol" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
+                                <field name="atd"/>
+                                <field name="equipment_type" attrs="{'invisible': [('transport','!=','ocean')]}" />
+                                <field name="equipment_count" attrs="{'invisible': [('transport','!=','ocean')]}" />
+                                <field name="shipping_line_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="voyage_no" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="vessel_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="mawb_no" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                <field name="obl" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+
+                            </group>
+                            <group>
+                                <field name="destination_location_id" string="Discharge Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                <field name="destination_location_id" string="Destination" attrs="{'invisible': [('transport','=','ocean')]}"/>
+                                <field name="pod" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
+                                <field name="ata"/>
+                                <field name="airline_id" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                <field name="flight_no" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                <field name="datetime"/>
+                                <field name="truck_ref"  attrs="{'invisible': [('transport','!=','land')]}"/>
+<!--                                <field name="trucker"  attrs="{'invisible': [('transport','!=','land')]}"/>-->
+<!--                                <field name="trucker_number"  attrs="{'invisible': [('transport','!=','land')]}"/>-->
+                            </group>
+                        </group>
+
+                        <group></group>
+
+                        <group>
+                            <group>
+                                <field name="barcode"/>
+                                <field name="operator_id"/>
+                                <field name="freight_pc"/>
+                                <field name="other_pc"/>
+                                <field name="notes"/>
+                            </group>
+                            <group>
+                                <field name="dangerous_goods"/>
+                                <field name="weight_type" options="{'horizontal': true}" widget="radio" default="estimated"/>
+                                <field name="number_packages"/>
+                                <field name="stackability" options="{'horizontal': true}" widget="radio"/>
+
+                                <field name="dangerous_goods_notes" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                <field name="move_type"/>
+                                <field name="tracking_number" invisible="1"/>
+                                <field name="incoterm"/>
+                                <field name="incotearm_name" string="Incoterm Name"/>
+                                <field name="add_terms"/>
+                            </group>
+                        </group>
+
+                        <group>
                         <group>
                             <field name="iss_date"/>
                             <field name="release_type"/>
@@ -68,29 +165,342 @@
 
                         </group>
                     </group>
-                </xpath>
-                <xpath expr="//form/sheet/group[1]" position="replace">
-                    <group>
-                        <group>
-                            <field name="is_admin" invisible="1" />
 
-                            <field name="transport" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                        </group>
-                        <group>
-                            <field name="ocean_shipment_type" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                            <field name="rail_shipment_type" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                            <field name="inland_shipment_type" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                            <field name="sea_then_air_shipment" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                            <field name="air_then_sea_shipment" widget="radio"
-                                   attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')],'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                            <field name="operation" invisible="1"/>
-                            <field name="direction" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
-                        </group>
+                        <notebook>
+                        <page string="Accounting">
+                            <div>
+                                <table width="100%" style="margin-top:25px" class="table table-bordered">
+                                    <tr bgcolor="#f2f2f3">
+                                        <th style="padding:10px;color:#0c0c0c;">#</th>
+                                        <th style="padding:10px;color:#0c0c0c;">Customer Invoices(Receivables)</th>
+                                        <th style="padding:10px;color:#0c0c0c;">Vendor Bills(Payables)</th>
+                                        <th style="padding:10px;color:#0c0c0c;">Margin</th>
+                                    </tr>
+                                    <tr>
+                                        <td bgcolor="#f2f2f3"> <font color="#0c0c0c">Expected Bills</font></td>
+                                        <td><field name="total_invoiced"/></td>
+                                        <td><field name="total_bills"/></td>
+                                        <td><field name="margin"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td bgcolor="#f2f2f3"> <font color="#0c0c0c">Actual Payments</font></td>
+                                        <td><field name="invoice_paid_amount"/></td>
+                                        <td><field name="bills_paid_amount"/></td>
+                                        <td><field name="actual_margin"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td bgcolor="#f2f2f3"><font color="#0c0c0c">Amounts Due</font></td>
+                                        <td><field name="invoice_residual"/></td>
+                                        <td><field name="bills_residual"/></td>
+                                        <td>#</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <group>
+                                <group>
+                                    <field name="target_rate" string="Quotation Amount"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Orders">
+                            <field name="freight_orders" nolabel="1" widget="one2many_list">
+                                <tree string="Orders">
+                                    <field name="name"/>
+                                    <field name="package"/>
+                                    <field name="qty"/>
+                                    <field name="type"/>
+                                    <field name="volume" sum="Total Volume"/>
+                                    <field name="gross_weight" sum="Total Gross"/>
+                                </tree>
+                                <form string="Orders">
+                                    <group>
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="package"/>
+                                            <field name="qty"/>
+                                            <field name="type"/>
+                                        </group>
+                                        <group>
+                                            <field name="volume"/>
+                                            <field name="gross_weight"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Package">
+                            <button string="Generate from orders" name="generate_from_the_orders" type="object"/>
+                            <field name="freight_packages" nolabel="1" widget="one2many_list">
+                                <tree string="Package">
+                                    <field name="name"/>
+                                    <field name="package"/>
+                                    <field name="qty"/>
+                                    <field name="type"/>
+                                    <field name="volume" sum="Total Volume"/>
+                                    <field name="gross_weight" sum="Total Gross"/>
+                                </tree>
+                                <form string="Package">
+                                    <group>
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="package"/>
+                                            <field name="qty"/>
+                                            <field name="type"/>
+                                            <field name="volume" sum="Total Volume"/>
+                                            <field name="gross_weight" sum="Total Gross"/>
+                                            <field name="dangerous_goods"/>
+                                            <field name="class_number" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                            <field name="un_number" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                            <field name="Package_group" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                            <field name="imdg_code" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                            <field name="flash_point" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                            <field name="material_description" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
+                                        </group>
+                                        <group>
+                                            <field name="harmonize"/>
+                                            <field name="temperature"/>
+                                            <field name="vgm"/>
+                                            <field name="carrier_seal"/>
+                                            <field name="shipper_seal"/>
+                                            <field name="reference"/>
+                                        </group>
+                                    </group>
+                                    <notebook>
+                                        <page string="Items">
+                                            <field name="freight_item_lines" nolabel="1" editable="top" widget="one2many_list">
+                                                <tree string="Items">
+                                                    <field name="name"/>
+                                                    <field name="package"/>
+                                                    <field name="qty"/>
+                                                    <field name="type"/>
+                                                    <field name="volume" sum="Total Volume"/>
+                                                    <field name="gross_weight" sum="Total Gross"/>
+                                                </tree>
+                                                <form string="Items">
+                                                    <group>
+                                                        <group>
+                                                            <field name="name"/>
+                                                            <field name="package"/>
+                                                            <field name="qty"/>
+                                                        </group>
+                                                        <group>
+                                                            <field name="type"/>
+                                                            <field name="volume"/>
+                                                            <field name="gross_weight"/>
+                                                        </group>
+                                                    </group>
+                                                </form>
+                                            </field>
+                                        </page>
+                                    </notebook>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Routes">
+                            <field name="freight_routes" nolabel="1" widget="one2many_list">
+                                <form string="Routes">
+                                    <sheet>
+                                        <group string="Operation">
+                                            <group>
+                                                <field name="main_carriage" invisible="1"/>
+                                                <field name="type" widget="radio" attrs="{'invisible': [('main_carriage','=',True)]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="transport" widget="radio"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <group string="From">
+                                                <label for="source_location_id" string="From" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                                <div attrs="{'invisible': [('transport','!=','land')]}">
+                                                    <field name="source_location_id" attrs="{'readonly': [('type','=','oncarriage')]}"/>
+                                                </div>
+                                                <label for="source_location_id" string="Loading Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                                <div attrs="{'invisible': [('transport','!=','ocean')]}">
+                                                    <field name="source_location_id" attrs="{'readonly': [('type','=','oncarriage')]}"/>
+                                                </div>
+                                                <label for="source_location_id" string="Gateway" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                                <div attrs="{'invisible': [('transport','!=','air')]}">
+                                                    <field name="source_location_id" attrs="{'readonly': [('type','=','oncarriage')]}"/>
+                                                </div>
+                                                <field name="shipping_line_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                                <field name="voyage_no" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                                <field name="vessel_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                                <field name="mawb_no" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                                <field name="obl" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                            </group>
+                                            <group string="To">
+                                                <label for="source_location_id" string="To" attrs="{'invisible': [('transport','!=','land')]}"/>
+                                                <div attrs="{'invisible': [('transport','!=','land')]}">
+                                                    <field name="destination_location_id" attrs="{'readonly': [('type','=','precarriage')]}"/>
+                                                </div>
+                                                <label for="source_location_id" string="Discharge Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                                <div attrs="{'invisible': [('transport','!=','ocean')]}">
+                                                    <field name="destination_location_id" attrs="{'readonly': [('type','=','precarriage')]}"/>
+                                                </div>
+                                                <label for="source_location_id" string="Destination" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                                <div attrs="{'invisible': [('transport','!=','air')]}">
+                                                    <field name="destination_location_id" attrs="{'readonly': [('type','=','precarriage')]}"/>
+                                                </div>
+                                                <field name="airline_id" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                                <field name="flight_no" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                                <field name="datetime"/>
+                                                <field name="truck_ref"  attrs="{'invisible': [('transport','!=','land')]}"/>
+                                                <field name="trucker"  attrs="{'invisible': [('transport','!=','land')]}"/>
+                                                <field name="trucker_number"  attrs="{'invisible': [('transport','!=','land')]}"/>
+                                            </group>
+                                        </group>
+                                        <group string="Follow up">
+                                            <group>
+                                                <field name="etd"/>
+                                                <field name="atd"/>
+                                            </group>
+                                            <group>
+                                                <field name="eta"/>
+                                                <field name="ata"/>
+                                                <field name="shipment_id" invisible="1"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                            <page string="Packages">
+                                                <field name="package_ids" nolabel="1" domain="[('shipment_id', '=', shipment_id)]" widget="many2many">
+                                                    <tree string="Items" editable="bottom">
+                                                        <field name="shipment_id" invisible="1"/>
+                                                        <field name="route_id" invisible="1"/>
+                                                        <field name="name"/>
+                                                        <field name="package"/>
+                                                        <field name="qty"/>
+                                                        <field name="type"/>
+                                                        <field name="volume"/>
+                                                        <field name="gross_weight"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                            <page string="Services">
+                                                <field name="freight_services" nolabel="1" widget="one2many_list">
+                                                    <tree>
+                                                        <field name="partner_id"/>
+                                                        <field name="service_id"/>
+                                                        <field name="name"/>
+                                                        <field name="currency_id"/>
+                                                        <field name="qty"/>
+                                                        <field name="cost"/>
+                                                        <field name="sale"/>
+                                                    </tree>
+                                                    <form>
+                                                        <sheet>
+                                                            <group>
+                                                                <group>
+                                                                    <field name="partner_id"/>
+                                                                    <field name="service_id"/>
+                                                                    <field name="name" required="1"/>
+                                                                    <field name="qty" required="1"/>
+                                                                </group>
+                                                                <group>
+                                                                    <field name="currency_id"/>
+                                                                    <field name="sale"/>
+                                                                    <field name="cost"/>
+                                                                </group>
+                                                            </group>
+                                                        </sheet>
+                                                    </form>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                                <tree>
+                                    <field name="name" string="Route Operation"/>
+                                    <field name="source_location_id"/>
+                                    <field name="destination_location_id"/>
+                                    <field name="transport"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Services">
+                            <field name="freight_services" nolabel="1" widget="one2many_list">
+                                <tree create="false">
+                                    <field name="partner_id"/>
+                                    <field name="service_id"/>
+                                    <field name="name"/>
+                                    <field name="qty"/>
+                                    <field name="currency_id"/>
+                                    <field name="cost"/>
+                                    <field name="sale"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="partner_id"/>
+                                                <field name="service_id"/>
+                                                <field name="name"/>
+                                                <field name="qty"/>
+                                            </group>
+                                            <group>
+                                                <field name="currency_id"/>
+                                                <field name="sale"/>
+                                                <field name="cost"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Shipments" attrs="{'invisible': [('operation', '!=', 'master')]}">
+                            <field name="shipments_ids" nolabel="1" domain="[('operation', '=', 'house')]" widget="many2many">
+                                <tree string="House" editable="bottom">
+                                    <field name="direction"/>
+                                    <field name="shipper_id"/>
+                                    <field name="consignee_id"/>
+                                    <field name="source_location_id"/>
+                                    <field name="destination_location_id"/>
+                                    <field name="ocean_shipment_type"/>
+                                    <field name="agent_id"/>
+                                    <field name="transport"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Customs">
+                            <group>
+                                <field name="declaration_number"/>
+                                <field name="declaration_date" />
+                                <field name="custom_clearnce_date"/>
+                            </group>
+                        </page>
+                        <page string="Tracking">
+                            <field name="freight_log" nolabel="1"  widget="one2many_list">
+                                <tree string="House" editable="bottom">
+                                    <field name="location"/>
+                                    <field name="description"/>
+                                    <field name="date"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="loose_cargo" string="Loose Cargo" >
+                    <field name="loose_cargo_ids" nolabel="1"/>
+                </page>
+                        <page name="container" string="Containers">
+                            <field name="container_ids" nolabel="1"/>
+                        </page>
+                        <page name="vehicle_details" string="Vehicle Details">
+                            <field name="vehicle_ids" nolabel="1"/>
+                        </page>
+                        <page name="order_management_link" string="Order Management Link">
+                    <group>
+                        <field name="job_management_order_ref"/>
                     </group>
+                    <field name="job_management_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="job_number"/>
+                            <field name="job_type"/>
+                            <field name="job_description"/>
+                        </tree>
+                    </field>
+                </page>
+                    </notebook>
+                    </sheet>
                 </xpath>
             </field>
         </record>

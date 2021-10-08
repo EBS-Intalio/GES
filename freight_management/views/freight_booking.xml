@@ -64,7 +64,7 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="direction" options="{'horizontal': true}" widget="radio"/>
+                                    <field name="direction" readonly="1" options="{'horizontal': true}" widget="radio"/>
                                 </group>
                                 <group>
                                     <field name="job_type"/>
@@ -87,13 +87,14 @@
                                            domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
                                 </group>
                             </group>
-                            <group attrs="{'invisible': [('transport','not in', ['air', 'ocean', 'land'])]}">
+                            <group>
                                 <group>
                                     <field name="source_location_id" string="Origin Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
                                     <field name="source_location_id" string="POR /Origin" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
+                                    <field name="source_location_id" string="Origin" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air'])]}"/>
     
                                     <field name="origin_close" string="Consider Close by Origin Airports" style="margin-bottom: 5%;margin-top: 5%;" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                    <field name="pol" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                    <field name="pol" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
                                     <field name="equipment_type" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
                                     <field name="equipment_count" attrs="{'invisible': [('transport','!=','ocean')]}" />
 
@@ -102,16 +103,18 @@
                                     <field name="vessel_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
                                     <field name="mawb_no" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="truck_ref"  attrs="{'invisible': [('transport','!=','land')]}"/>
-                                    <field name="trucker"  attrs="{'invisible': [('transport','!=','land')]}"/>
-                                    <field name="trucker_number"  attrs="{'invisible': [('transport','!=','land')]}"/>
+<!--                                    <field name="trucker"  attrs="{'invisible': [('transport','!=','land')]}"/>-->
+<!--                                    <field name="trucker_number"  attrs="{'invisible': [('transport','!=','land')]}"/>-->
                                     <field name="vehicle_size" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
                                     <field name="vehicle_type" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
                                 </group>
                                 <group>
                                     <field name="destination_location_id" string="Destination Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
                                     <field name="destination_location_id" string="POFD /Destination" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
+                                    <field name="destination_location_id" string="Destination" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air'])]}"/>
+
                                     <field name="destination_close" style="margin-bottom: 5%;margin-top: 5%;" string="Consider Close By Destination Airport" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                    <field name="pod" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                    <field name="pod" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
                                     <field name="preferred_airline_id" string="Airline" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="flight_no" attrs="{'invisible': [('transport','!=','air')]}"/>
                                 </group>
@@ -157,7 +160,7 @@
                                     <field name="original_copy" attrs="{'invisible': ['|', ('shipping_documents','!=',True), ('clearance_required','!=','yes')], 'required' : [('shipping_documents', '=', True), ('clearance_required', '=', 'yes')]}" options="{'horizontal': true}" widget="radio"/>
 
                                     <field name="warehousing" widget="radio" options="{'horizontal': true}"/>
-                                    <field name="target_rate" />
+                                    <field name="target_rate" string="Quotation Amount"/>
                                     <label for="target_transit_time"/>
                                     <div class="o_row" name="target_transit_time">
                                         <field name="target_transit_time" nolabel="1"/>

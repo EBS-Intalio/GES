@@ -86,13 +86,14 @@
                                        domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
                             </group>
                         </group>
-                        <group attrs="{'invisible': [('mode_of_transport','not in', ['air', 'ocean', 'land'])]}">
+                        <group>
                             <group>
                                 <field name="origin_airport_id" string="Origin Airport" attrs="{'invisible': [('mode_of_transport','!=','air')], 'required' : [('mode_of_transport', '=', 'air')]}"/>
                                 <field name="origin_airport_id" string="POR /Origin" attrs="{'invisible': [('mode_of_transport','!=','ocean')], 'required' : [('mode_of_transport', '=', 'ocean')]}"/>
+                                <field name="origin_airport_id" string="Origin" attrs="{'invisible': [('mode_of_transport','in',['ocean', 'air'])], 'required' : [('mode_of_transport', 'not in',['ocean', 'air'])]}"/>
 
                                 <field name="consider_origin_close" options="{'horizontal': true}" widget="radio" string="Consider Close by Origin Airports" attrs="{'invisible': [('mode_of_transport','!=','air')]}"/>
-                                <field name="pol_id" attrs="{'invisible': [('mode_of_transport','!=','ocean')]}"/>
+                                <field name="pol_id" attrs="{'invisible': [('mode_of_transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
                                 <field name="equipment_type" attrs="{'invisible': [('mode_of_transport','!=','ocean')], 'required' : [('mode_of_transport', '=', 'ocean')]}" />
                                 <field name="equipment_count" attrs="{'invisible': [('mode_of_transport','!=','ocean')]}" />
 
@@ -109,8 +110,11 @@
                             <group>
                                 <field name="destination_airport_id" string="Destination Airport" attrs="{'invisible': [('mode_of_transport','!=','air')], 'required' : [('mode_of_transport', '=', 'air')]}"/>
                                 <field name="destination_airport_id" string="POFD /Destination" attrs="{'invisible': [('mode_of_transport','!=','ocean')], 'required' : [('mode_of_transport', '=', 'ocean')]}"/>
+                                <field name="destination_airport_id" string="Destination" attrs="{'invisible': [('mode_of_transport','in',['ocean', 'air'])], 'required' : [('mode_of_transport', 'not in',['ocean', 'air'])]}"/>
+
+
                                 <field name="consider_destination_close" options="{'horizontal': true}" widget="radio" string="Consider Close By Destination Airport" attrs="{'invisible': [('mode_of_transport','!=','air')]}"/>
-                                <field name="pod_id" attrs="{'invisible': [('mode_of_transport','!=','ocean')]}"/>
+                                <field name="pod_id" attrs="{'invisible': [('mode_of_transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
                                 <field name="preferred_airline_id" attrs="{'invisible': [('mode_of_transport','!=','air')]}"/>
                                 <field name="flight_no" attrs="{'invisible': [('mode_of_transport','!=','air')]}"/>
                             </group>

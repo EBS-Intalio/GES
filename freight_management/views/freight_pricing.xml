@@ -44,7 +44,19 @@
                         </h1>
                         <group string="Operation">
                             <group>
-                                <field name="freight_transport" widget="radio"/>
+                                <field name="freight_transport" options="{'horizontal': true}" widget="radio"/>
+
+                                <field name="ocean_shipment" options="{'horizontal': true}" widget="radio"
+                                   attrs="{'invisible': [('freight_transport','!=','ocean')], 'required': [('freight_transport', '=', 'ocean')]}"/>
+                                <field name="rail_shipment_type" options="{'horizontal': true}" widget="radio"
+                                       attrs="{'invisible': [('freight_transport','!=','rail')], 'required': [('freight_transport', '=', 'rail')]}"/>
+                                <field name="inland_shipment" options="{'horizontal': true}" widget="radio"
+                                       attrs="{'invisible': [('freight_transport','!=','land')], 'required': [('freight_transport', '=', 'land')]}"/>
+                                <field name="sea_then_air_shipment" options="{'horizontal': true}" widget="radio"
+                                       attrs="{'invisible': [('freight_transport','!=','sea_then_air')], 'required': [('freight_transport', '=', 'sea_then_air')]}"/>
+                                <field name="air_then_sea_shipment" options="{'horizontal': true}" widget="radio"
+                                       attrs="{'invisible': [('freight_transport','!=','air_then_sea')], 'required': [('freight_transport', '=', 'air_then_sea')]}"/>
+
 <!--                                <field name="freight_id" invisible="1"/>-->
                                 <field name="freight_request_id" invisible="1"/>
 
@@ -52,6 +64,8 @@
                                 <field name="freight_target_etd"/>
                             </group>
                             <group>
+                                <field name="equipment_type" attrs="{'invisible': [('freight_transport','!=','ocean')]}" />
+                                <field name="equipment_count" attrs="{'invisible': [('freight_transport','!=','ocean')]}" />
                                 <field name="preferred_airline_id" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
                                 <field name="freight_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
                                 <field name="freight_shipping_line_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>

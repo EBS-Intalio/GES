@@ -16,6 +16,13 @@ class FreightPricing(models.Model):
 
     freight_transport = fields.Selection(related='freight_request_id.mode_of_transport')
 
+    rail_shipment_type = fields.Selection(related='freight_request_id.rail_shipment_type')
+    ocean_shipment = fields.Selection(related='freight_request_id.ocean_shipment')
+    inland_shipment = fields.Selection(related='freight_request_id.inland_shipment')
+
+    sea_then_air_shipment = fields.Selection(related='freight_request_id.sea_then_air_shipment')
+
+    air_then_sea_shipment = fields.Selection(related='freight_request_id.air_then_sea_shipment')
     # See Fields
     freight_shipping_line_id = fields.Many2one(related='freight_request_id.shipping_line_id', readonly=False)
     freight_vessel_id = fields.Many2one(related='freight_request_id.vessel_id', readonly=False)
@@ -41,7 +48,6 @@ class FreightPricing(models.Model):
     total_charges_amount_usd = fields.Float(string='Total Charge Amount USD', compute='_compute_total_charges_usd_eur_aed')
     total_charges_amount_aed = fields.Float(string='Total Charge Amount AED', compute='_compute_total_charges_usd_eur_aed')
     total_charges_amount_eur = fields.Float(string='Total Charge Amount EUR', compute='_compute_total_charges_usd_eur_aed')
-
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
@@ -49,6 +55,8 @@ class FreightPricing(models.Model):
         states={'draft': [('readonly', False)]})
 
     freight_pricing_data_ids = fields.One2many('freight.pricing.data','pricing_id','Pricing Data')
+    equipment_type = fields.Selection(related='freight_request_id.equipment_type', readonly=False)
+    equipment_count = fields.Integer(related='freight_request_id.equipment_count', readonly=False)
 
     @api.model
     def create(self,vals):

@@ -183,7 +183,7 @@ class FreightJobRequest(models.Model):
     mawb_no = fields.Char(string="MAWB No")
     truck_ref = fields.Char(string="CMR/RWB#/PRO#")
     trucker = fields.Many2one('freight.trucker', string="Trucker")
-    trucker_number = fields.Char(string="Trucker No")
+    trucker_number = fields.Char(string="Trucker Count")
     pricing_id = fields.Many2one('freight.pricing', string='Shipment Pricing', copy=False)
     flight_no = fields.Char(string="Flight No")
     state = fields.Selection([('draft', 'Draft'),
@@ -369,7 +369,7 @@ class FreightJobRequest(models.Model):
 
         return action
 
-    def create_booking(self):
+    def create_booking(self, amount_total=0):
         if not(self.mode_of_transport and self.shipper_id and self.consignee_id and self.partner_id and self.reefer_status and self.commodity_category and
                self.commodity_description and self.weight_type and self.clearance_required and self.warehousing):
             raise ValidationError('Either of the Transport, Shipper, Consignee, Customer, Reefer status, Commodity Category, Commodity Description, Weight Type, Clearance Required, Warehousing, Gross Weight, Number of packages are not filled please fill all the mandatory details before creating a booking.')
@@ -403,7 +403,8 @@ class FreightJobRequest(models.Model):
                     'target_eta_asap': self.target_eta_asap,
                     'target_etd_asap': self.target_etd_asap,
                     'hs_code': [(6, 0, self.freight_hs_code_ids.ids)],
-                    'package_type_id':self.package_type_id,
+                    'package_type_id': self.package_type_id,
+                    'target_rate': amount_total,
                     'preferred_shipping_line': self.shipping_line_id and self.shipping_line_id.id or False,
                     'pol': self.pol_id and self.pol_id.id or False,
                     'pod': self.pod_id and self.pod_id.id or False,
@@ -447,7 +448,6 @@ class FreightJobRequest(models.Model):
                     'hs_code': self.freight_hs_code_ids and self.freight_hs_code_ids.ids,
                     'stackability': self.stackability,
                     'additional_requirements': self.additional_requirements,
-                    'target_rate': self.target_rate,
                     'booked_date': self.shipment_ready_date,
                     'est_pickup_date': self.target_eta,
                     'est_delivery_date': self.target_etd,

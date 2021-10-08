@@ -41,20 +41,8 @@ class SalesOrder(models.Model):
         """
         res = super(SalesOrder, self).action_confirm()
         if self.freight_request_id:
-            self.freight_request_id.create_booking()
+            self.freight_request_id.create_booking(amount_total=self.amount_total)
         return res
-
-    # def get_section_total(self,line):
-    #     for rec in self:
-    #         total = 0
-    #         for order_line in rec.order_line:
-    #             if line.sequence < order_line.sequence:
-    #                 if order_line.display_type:
-    #                     break
-    #                 if order_line.visible_in_report:
-    #                     total+=order_line.price_subtotal
-    #         return total
-
 
     @api.model
     def create(self, vals):
@@ -89,8 +77,6 @@ class SalesOrder(models.Model):
                     section_total = sum(line.order_id.order_line.filtered(
                         lambda ln: ln.display_type == False and ln.sequence > line_sequence).mapped('price_subtotal'))
             line.section_total = section_total
-
-
 
 
 class SalesOrderLine(models.Model):
