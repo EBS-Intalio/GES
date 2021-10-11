@@ -40,6 +40,7 @@ class FreightBooking(models.Model):
     shippers_ref = fields.Char(string="Shipper's Ref")
     carrier_id = fields.Many2one('res.partner', string='Carrier')
     goods_vals = fields.Float(string='Goods Val')
+    booking_gross_weight = fields.Float(string='Weight')
     goods_vals_currency_id = fields.Many2one('res.currency', string='Goods Vals Currency')
     ins_vals = fields.Float(string='Ins Val')
     ins_vals_currency_id = fields.Many2one('res.currency', string='Ins Vals Currency')
@@ -289,14 +290,14 @@ class FreightBooking(models.Model):
                 direction = 'import'
             req.direction = direction
 
-    @api.onchange('gross_weight', 'weight_uom_id')
-    def onchange_gross_weight_and_weight_uom(self):
+    @api.onchange('booking_gross_weight', 'weight_uom_id')
+    def onchange_booking_gross_weight_and_weight_uom(self):
         """
         Set Chargeable Weight and Chargeable UOM according to the gross weight and gross uom
         :return:
         """
         self.write({'chargeable_uom_id': self.weight_uom_id and self.weight_uom_id.id or False,
-                    'chargeable': self.gross_weight})
+                    'chargeable': self.booking_gross_weight})
 
     @api.onchange('transport')
     def onchange_freight_booking_transport(self):

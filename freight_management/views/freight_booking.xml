@@ -236,9 +236,9 @@
                                         <field name="volume"/>
                                         <field name="volume_uom_id" nolabel="1"/>
                                     </div>
-                                    <div class="o_row" name="gross_weight" style="margin-top: 4%;">
+                                    <div class="o_row" name="booking_gross_weight" style="margin-top: 4%;">
                                         <span>Weight</span>
-                                        <field name="gross_weight"/>
+                                        <field name="booking_gross_weight"/>
                                         <field name="weight_uom_id" nolabel="1"/>
                                     </div>
                                     <div class="o_row" name="chargeable" style="margin-top: 4%;">
