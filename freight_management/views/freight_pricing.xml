@@ -189,7 +189,7 @@
                 <tree string="Operations">
                     <field name="name"/>
                     <field name="freight_transport"/>
-                    <field name="ocean_shipment"/>
+<!--                    <field name="ocean_shipment"/>-->
                 </tree>
             </field>
         </record>
