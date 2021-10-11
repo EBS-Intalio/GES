@@ -484,7 +484,7 @@ class FreightJobRequest(models.Model):
         self.booking_id = booking.id
         self.is_booking_done = True
         booking.onchange_origin_destination()
-        booking.onchange_gross_weight_and_weight_uom()
+        booking.onchange_booking_gross_weight_and_weight_uom()
         return {
             'name': _('Freight Booking'),
             'view_mode': 'form',

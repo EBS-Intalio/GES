@@ -359,7 +359,7 @@ class FreightOperation(models.Model):
 
 
     @api.onchange('gross_weight', 'weight_uom_id')
-    def onchange_booking_gross_weight_and_weight_uom(self):
+    def onchange_gross_weight_and_weight_uom(self):
         """
         Set Chargeable Weight and Chargeable UOM according to the gross weight and gross uom
         :return:
