@@ -183,7 +183,7 @@ class FreightJobRequest(models.Model):
     mawb_no = fields.Char(string="MAWB No")
     truck_ref = fields.Char(string="CMR/RWB#/PRO#")
     trucker = fields.Many2one('freight.trucker', string="Trucker")
-    trucker_number = fields.Char(string="Trucker Count")
+    trucker_number = fields.Char(string="Truck Count")
     pricing_id = fields.Many2one('freight.pricing', string='Shipment Pricing', copy=False)
     flight_no = fields.Char(string="Flight No")
     state = fields.Selection([('draft', 'Draft'),
