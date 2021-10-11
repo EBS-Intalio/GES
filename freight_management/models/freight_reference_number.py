@@ -25,3 +25,4 @@ class FreightReferenceNumber(models.Model):
                            ('ucr', 'External (3rd Party) unique Consignment Reference')], string='Type')
     country_id = fields.Many2one('res.country', string='Country Of Issue')
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
+    shipment_id = fields.Many2one('freight.operation', string='Shipment')

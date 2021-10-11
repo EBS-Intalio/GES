@@ -65,7 +65,7 @@
                                     <field name="direction" readonly="1" options="{'horizontal': true}" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                                 </group>
                                 <group>
-                                    <field name="move_type"/>
+                                    <field name="service_level"/>
                                 </group>
                         </group>
 
@@ -134,37 +134,44 @@
                                 <field name="stackability" options="{'horizontal': true}" widget="radio"/>
 
                                 <field name="dangerous_goods_notes" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
-                                <field name="move_type"/>
+                                <field name="service_level"/>
                                 <field name="tracking_number" invisible="1"/>
                                 <field name="incoterm"/>
                                 <field name="incotearm_name" string="Incoterm Name"/>
-                                <field name="add_terms"/>
                             </group>
                         </group>
 
                         <group>
-                        <group>
-                            <field name="iss_date"/>
-                            <field name="release_type"/>
-                             <label for="on_board"/>
-                                <div class="o_row">
-                                    <field name="on_board"/>
-                                    <field name="on_board_date"/>
-                                </div>
-                            <field name="iss_date_1"/>
-                            <field name="org_bill"/>
-                            <field name="phase"/>
-                        </group>
-                        <group>
-                            <field name="exp_date"/>
-                            <field name="house_bill_type"/>
-                            <field name="hbl_div_mode"/>
-                            <field name="charges_apply"/>
-                            <field name="copy_bill"/>
-                            <field name="e_freight_status"/>
 
+                            <group>
+
+                                <field name="house_bill"/>
+                                <field name="hbl_div_mode"/>
+                                <field name="iss_date"/>
+                                 <label for="on_board"/>
+                                    <div class="o_row">
+                                        <field name="on_board"/>
+                                        <field name="on_board_date"/>
+                                    </div>
+                                <field name="iss_date_1"/>
+                                <field name="phase"/>
+                            </group>
+                            <group>
+
+                                <field name="house_bill_type"/>
+                                <field name="release_type"/>
+                                <field name="exp_date"/>
+                                <field name="charges_apply"/>
+                                <label for="org_bill"/>
+                                    <div class="o_row">
+                                        <field name="org_bill"/>
+                                        <label for="copy_bill" style="font-weight:bold"/>
+                                        <field name="copy_bill"/>
+                                    </div>
+                                <field name="e_freight_status"/>
+
+                            </group>
                         </group>
-                    </group>
 
                         <notebook>
                         <page string="Accounting">
@@ -478,27 +485,327 @@
                                 </tree>
                             </field>
                         </page>
-                        <page name="loose_cargo" string="Loose Cargo" >
-                    <field name="loose_cargo_ids" nolabel="1"/>
-                </page>
-                        <page name="container" string="Containers">
-                            <field name="container_ids" nolabel="1"/>
+                        <page name="details" string="Details">
+                            <group>
+                                <group>
+                                    <field name="is_domestic" readonly="1"/>
+<!--                                    <field name="marks_and_num"/>-->
+                                    <field name="add_terms"/>
+                                    <field name="shippers_ref"/>
+                                    <field name="carrier_id" domain="[('is_carrier', '=', True)]"/>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="est_pickup_date"/>
+                                        <field name="est_delivery_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="req_pickup_date"/>
+                                        <field name="req_delivery_date"/>
+                                    </group>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Goods Details">
+                                    <div class="o_row" name="outers">
+                                        <span>Outers</span>
+                                        <field name="outers"/>
+                                        <field name="outer_uom_id" nolabel="1"/>
+                                    </div>
+                                    <div class="o_row" name="volume" >
+                                        <span>Volume</span>
+                                        <field name="volume"/>
+                                        <field name="volume_uom_id" nolabel="1"/>
+                                    </div>
+                                    <div class="o_row" name="gross_weight" style="margin-top: 4%;">
+                                        <span>Weight</span>
+                                        <field name="gross_weight"/>
+                                        <field name="gross_weight_uom_id" nolabel="1"/>
+                                    </div>
+                                    <div class="o_row" name="chargeable" style="margin-top: 4%;">
+                                        <span>Chargeable Weight</span>
+                                        <field name="chargebale"/>
+                                        <field name="charge_uom_id"/>
+                                    </div>
+                                </group>
+                                <group style="margin-top: 4%;">
+                                    <field name="pic_drop_id"/>
+                                    <field name="div_drop_id"/>
+                                </group>
+                                <group>
+                                    <field name="weight_type" widget="radio" options="{'horizontal': true}" default="estimated"/>
+                                    <field name="stackability" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="number_packages"/>
+                                </group>
+                                <group></group>
+                                <group string="Brokerage Details">
+                                    <group>
+                                        <field name="brokerage_type" nolabel="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="brokerage_details" nolabel="1"/>
+                                    </group>
+                                    <field name="cargo_container_visible" invisible="1"/>
+                                </group>
+                                <group string="Monetary Values">
+                                    <div class="o_row" name="goods_vals" style="margin-top: 4%;">
+                                        <span>Goods Val</span>
+                                        <field name="goods_vals"/>
+                                        <field name="goods_vals_currency_id"/>
+                                    </div>
+                                    <div class="o_row" name="ins_vals" style="margin-top: 4%;">
+                                        <span>Ins Value</span>
+                                        <field name="ins_vals"/>
+                                        <field name="ins_vals_currency_id"/>
+                                    </div>
+                                    <div class="o_row" name="is_insurance_required" style="margin-top: 4%;">
+                                        <span>Insurance Required</span>
+                                        <field name="is_insurance_required" widget="radio" options="{'horizontal': true}"/>
+                                    </div>
+                                </group>
+
+                                <group string="Security" attrs="{'invisible': [('transport','!=','air')]}">
+                                    <field name="inspection" />
+                                </group>
+                            </group>
+                            <notebook>
+                                <page name="loose_cargo" string="Loose Cargo">
+                                    <field name="loose_cargo_ids" nolabel="1"/>
+                                </page>
+                                <page name="container" string="Containers" attrs="{'invisible': [('cargo_container_visible','!=','both')]}">
+                                    <field name="container_ids" context="{'default_dep_container_id': shipper_id, 'default_arr_container_yard_id': consignee_id}" nolabel="1"/>
+                                </page>
+                                <page name="vehicle_details" string="Vehicle Details">
+                                    <field name="vehicle_ids" nolabel="1"/>
+                                </page>
+                                <page name="order_management_link" string="Order Management Link">
+                                    <group>
+                                        <field name="job_management_order_ref"/>
+                                    </group>
+                                    <field name="job_management_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="job_number"/>
+                                            <field name="job_type"/>
+                                            <field name="job_description"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
                         </page>
-                        <page name="vehicle_details" string="Vehicle Details">
-                            <field name="vehicle_ids" nolabel="1"/>
+                        <page name="additional_details" string="Additional Details">
+                                <header>
+                                    <button name="button_add_new_sailings" string="Add New Sailing"  attrs="{'invisible': [('transport', '!=', 'ocean')]}" type="object" class="oe_highlight"/>
+                                    <button name="button_clear_sailing" string="Clear Sailing" type="object" class="oe_highlight" />
+                                </header>
+                                <group>
+                                    <group>
+                                        <div class="o_row" name="source_location_id">
+                                            <span>Origin</span>
+                                            <field name="source_location_id"/>
+                                        </div>
+
+                                        <div class="o_row" name="destination_location_id">
+                                            <span>Destination</span>
+                                            <field name="destination_location_id"/>
+                                        </div>
+
+                                        <div class="o_row" name="load_location_id">
+                                            <span>Load</span>
+                                            <field name="load_location_id"/>
+                                        </div>
+
+                                        <div class="o_row" name="discharge_location_id">
+                                            <span>Discharge</span>
+                                            <field name="discharge_location_id"/>
+                                        </div>
+
+                                        <div class="o_row" name="est_pickup_date" style="margin-top: 4%;">
+                                            <span>ETA</span>
+                                            <field name="est_pickup_date"/>
+                                        </div>
+
+                                        <div class="o_row" name="est_delivery_date" style="margin-top: 4%;">
+                                            <span>ETD</span>
+                                            <field name="est_delivery_date"/>
+                                        </div>
+
+                                        <div class="o_row" name="total_current_weight" style="margin-top: 4%;">
+                                            <span>Estimated Arrival Date</span>
+                                            <field name="estimated_arrival_date" nolabel="1"/>
+                                        </div>
+                                        <div class="o_row" name="total_current_volume" style="margin-top: 4%;">
+                                            <span>Estimated Departure Date</span>
+                                            <field name="estimated_departure_date" nolabel="1"/>
+                                        </div>
+                                        <div class="o_row" name="total_current_weight" style="margin-top: 4%;">
+                                            <span>Total Current Weight</span>
+                                            <field name="total_current_weight"/>
+                                            <field name="weight_uom_id" nolabel="1"/>
+                                        </div>
+
+                                        <div class="o_row" name="cfs_cut_off" style="margin-top: 4%;">
+                                            <span>CFS Cut Off</span>
+                                            <field name="cfs_cut_off"/>
+                                        </div>
+
+                                        <div class="o_row" name="total_current_volume" style="margin-top: 4%;">
+                                            <span>Total Current Volume</span>
+                                            <field name="total_current_volume"/>
+                                            <field name="volume_add_uom_id" nolabel="1"/>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field name="booked_date"/>
+                                        <field name="client_req_eat_date"/>
+                                        <field name="warehouse_rec_date"/>
+                                        <field name="interim_receipt"/>
+                                        <field name="cfs_ref"/>
+                                        <field name="booking_party_id"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="cfs_id"/>
+                                        <field name="pickup_agent_id"/>
+                                        <field name="delivery_agent_id"/>
+                                        <field name="export_broker_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="import_broker_id"/>
+                                        <field name="port_transport_id"/>
+                                        <field name="controlling_customer_id"/>
+                                    </group>
+                                </group>
+                                <notebook>
+                                    <page name="reference_number" string="Reference Number">
+                                        <field name="reference_ids" nolabel="1">
+                                            <tree editable="bottom">
+                                                <field name="name" required="1"/>
+                                                <field name="type"/>
+                                                <field name="country_id"/>
+                                            </tree>
+                                        </field>
+                                    </page>
+                                    <page name="service_details" string="Service Details">
+                                        <field name="service_details_ids" nolabel="1">
+                                            <tree editable="bottom">
+                                                <field name="service_type"/>
+                                                <field name="contractor_id"/>
+                                                <field name="date_booked"/>
+                                                <field name="completed"/>
+                                            </tree>
+                                        </field>
+                                    </page>
+                                </notebook>
+                            </page>
+                        <page name="consolidation_details" string="Consolidation Details">
+                            <field name="consol_details_ids">
+                                <tree>
+                                    <field name="fst_load"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group string="Consol Details">
+                                            <field name="is_domestic"/>
+                                            <label for="type"/>
+                                            <div class="o_row">
+                                                <field name="type"/>
+                                                <label for="transport" style="font-weight:bold"/>
+                                                <field name="transport"/>
+                                                <label for="cont_mode" style="font-weight:bold"/>
+                                                <field name="cont_mode"/>
+                                            </div>
+                                            <label for="fst_load"/>
+                                            <div class="o_row">
+                                                <field name="fst_load"/>
+                                                <label for="last_disc" style="font-weight:bold"/>
+                                                <field name="last_disc"/>
+                                                <label for="phase" style="font-weight:bold"/>
+                                                <field name="phase"/>
+                                            </div>
+
+                                        </group>
+                                        <group string="Voyage">
+                                            <label for="voyage"/>
+                                            <div class="o_row">
+                                                <field name="voyage"/>
+                                                <label for="vessel" style="font-weight:bold"/>
+                                                <field name="vessel"/>
+                                            </div>
+                                            <label for="load_port"/>
+                                            <div class="o_row">
+                                                <field name="load_port"/>
+                                                <label for="etd" style="font-weight:bold"/>
+                                                <field name="etd"/>
+                                                <label for="atd" style="font-weight:bold"/>
+                                                <field name="atd"/>
+                                            </div>
+                                            <label for="disc_port"/>
+                                            <div class="o_row">
+                                                <field name="disc_port"/>
+                                                <label for="eta" style="font-weight:bold"/>
+                                                <field name="eta"/>
+                                                <label for="ata" style="font-weight:bold"/>
+                                                <field name="ata"/>
+                                            </div>
+                                            <label for="is_domestic_voyage"/>
+                                            <div class="o_row">
+                                                <field name="is_domestic_voyage"/>
+                                                <label for="is_linked" style="font-weight:bold"/>
+                                                <field name="is_linked"/>
+                                                <label for="is_charter" style="font-weight:bold"/>
+                                                <field name="is_charter"/>
+                                            </div>
+                                        </group>
+                                        <group>
+                                            <group>
+                                                <field name="bol"/>
+                                                <field name="payment"/>
+                                            </group>
+                                            <group>
+                                                <field name="serv_level"/>
+                                                <field name="crn"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
                         </page>
-                        <page name="order_management_link" string="Order Management Link">
-                    <group>
-                        <field name="job_management_order_ref"/>
-                    </group>
-                    <field name="job_management_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="job_number"/>
-                            <field name="job_type"/>
-                            <field name="job_description"/>
-                        </tree>
-                    </field>
-                </page>
+                        <page name="custom_fields" string="Custom Fields">
+                        <group string="Custom Fields">
+                            <group>
+                                <field name="buy_appr_ship_sched" />
+                                <field name="buy_comm" />
+                                <field name="frc_approval_ship_sch" />
+                                <field name="frc_comm" />
+                                <field name="in_dc_ex" />
+                                <field name="own_office" />
+                                <field name="contract" />
+                                <field name="named_acc" />
+                                <field name="named_acc_ref" />
+                                <field name="comm_grp_or_bull_ggrp" />
+                                <field name="buy_appr_ship_sched" />
+                                <field name="buy_comm" />
+
+                            </group>
+                            <group>
+                                <field name="frc_approval_ship_sch" />
+                                <field name="frc_comm"/>
+                                <field name="in_dc_ex"/>
+                                <field name="own_office"/>
+                                <field name="contract"/>
+                                <field name="named_acc"/>
+                                <field name="named_acc_ref"/>
+                                <field name="comm_grp_or_bull_ggrp"/>
+                                <field name="cont_ser"/>
+                                <field name="cont_loc"/>
+                                <field name="ship_ref"/>
+                                <field name="cust_due_amount"/>
+                                <field name="z_dest_ship_comm"/>
+                            </group>
+
+                        </group>
+                    </page>
                     </notebook>
                     </sheet>
                 </xpath>

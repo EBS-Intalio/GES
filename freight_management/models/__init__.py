@@ -33,3 +33,4 @@ from . import account_budget
 from . import account_move
 from . import freight_vessel
 from . import freight_operation
+from . import consol_details

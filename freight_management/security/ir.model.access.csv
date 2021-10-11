@@ -34,3 +34,4 @@ access_freight_commodity,access_freight_commodity,freight_management.model_freig
 access_freight_sailing,access_freight_sailing,freight_management.model_freight_sailing,,1,1,1,1
 access_freight_service_details,access_freight_service_details,freight_management.model_freight_service_details,,1,1,1,1
 access_vehicle_details,access_vehicle_details,freight_management.model_vehicle_details,,1,1,1,1
+access_consol_details,access_consol_details,freight_management.model_consol_details,,1,1,1,1

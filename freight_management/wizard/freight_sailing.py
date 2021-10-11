@@ -13,8 +13,9 @@ class FreightSailing(models.TransientModel):
         Add sailing in the booking
         :return:
         """
-        booking = self.env['freight.booking'].browse(self._context.get('active_ids'))
-        booking.write({'carrier_id': self.carrier_id and self.carrier_id.id or False,
+
+        freight = self.env[self._context.get('active_model')].browse(self._context.get('active_ids'))
+        freight.write({'carrier_id': self.carrier_id and self.carrier_id.id or False,
                        'voyage_no': self.voyage_no,
                        'vessel_id': self.vessel_id and self.vessel_id.id or False})
         return True

@@ -21,4 +21,5 @@ class FreightServiceDetails(models.Model):
     completed = fields.Date(string="Completed")
     contractor_id = fields.Many2one('res.partner', string='Contractor')
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
+    shipment_id = fields.Many2one('freight.operation', string='Shipment')
 
