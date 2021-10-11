@@ -83,6 +83,8 @@
                                 <field name="freight_trucker_number" attrs="{'invisible': [('freight_transport','!=','land')]}"/>
 <!--                                <field name="carrier_ids" widget="many2many_tags" attrs="{'invisible': [('state','!=','done')]}" domain="[('is_carrier', '=', True)]"/>-->
                                 <field name="carrier_ids" widget="many2many_tags" domain="[('is_carrier', '=', True)]"/>
+                                <field name="vehicle_size" attrs="{'invisible': [('freight_transport','!=','land')]}" />
+                                <field name="vehicle_type" attrs="{'invisible': [('freight_transport','!=','land')]}" />
                             </group>
 
                         </group>
@@ -186,6 +188,8 @@
             <field name="arch" type="xml">
                 <tree string="Operations">
                     <field name="name"/>
+                    <field name="freight_transport"/>
+                    <field name="ocean_shipment"/>
                 </tree>
             </field>
         </record>

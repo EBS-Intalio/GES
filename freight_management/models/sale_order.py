@@ -15,6 +15,18 @@ class SalesOrder(models.Model):
     contact_id = fields.Many2one('res.partner', string='Contact')
     customer_representative_id = fields.Many2one('res.partner', string='Customer Representative')
     freight_note = fields.Text('Freight Note')
+    vehicle_size = fields.Selection([('3_ton', '3 Ton Truck'),
+                                     ('7_ton', '7 Ton Truck'),
+                                     ('10_ton', '10 Ton Truck'),
+                                     ('12_ton', '12 Meter Trailer'),
+                                     ('15_ton', '15 Meter Trailer')], string="Vehicle Size")
+    vehicle_type = fields.Selection([('flat_bed', 'Flat Bed'),
+                                     ('full_box', 'Full Box'),
+                                     ('curtain_slider', 'Curtain Slider'),
+                                     ('53', '53'),
+                                     ('hot_shot', 'Hot Shot'),
+                                     ('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')],
+                                    string="Vehicle Type")
 
     @api.depends('amount_total')
     def _compute_usd_aed_amount(self):

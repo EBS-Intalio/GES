@@ -57,6 +57,8 @@ class FreightPricing(models.Model):
     freight_pricing_data_ids = fields.One2many('freight.pricing.data','pricing_id','Pricing Data')
     equipment_type = fields.Selection(related='freight_request_id.equipment_type', readonly=False)
     equipment_count = fields.Integer(related='freight_request_id.equipment_count', readonly=False)
+    vehicle_type = fields.Selection(related='freight_request_id.vehicle_type', readonly=False)
+    vehicle_size = fields.Selection(related='freight_request_id.vehicle_size', readonly=False)
 
     @api.model
     def create(self,vals):
@@ -281,6 +283,8 @@ class FreightPricing(models.Model):
                 'freight_request_id': freight_request_id.id,
                 'pricing_id': self.id,
                 'partner_id': freight_request_id and freight_request_id.partner_id.id or False,
+                'vehicle_size': self.vehicle_size,
+                'vehicle_type': self.vehicle_type,
                 'order_line': vals
             }
             if self.currency_id:
