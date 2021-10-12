@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*"-
-from odoo import models, fields
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class AccountOperationMatrix(models.Model):
     _name = 'account.operation.matrix'
     _description = 'Account Operation Matrix'
 
     name = fields.Char("Line of service", required=True)
-    shipment_department = fields.Char("Shipment Department", required=True)
+    shipment_department = fields.Char("Shipment Department")
     transport = fields.Selection(([('air', 'Air'), ('sea', 'Sea'), ('road', 'Road'), ('sea_then_air', 'Sea then Air'),
                                    ('air_then_sea', 'Air then Sea'), ('rail', 'Rail'), ('courier', 'Courier')]), default='air', string='Mode')
     direction = fields.Selection([('import','Import'),('export','Export'),('cross','Cross')], default='import', string='Direction')
@@ -15,11 +16,38 @@ class AccountOperationMatrix(models.Model):
     income_account = fields.Many2one('account.account', 'Income Account',required=True)
     expense_account = fields.Many2one('account.account', 'Expense Account',required=True)
     matrix_line_ids = fields.One2many('account.operation.matrix.line', 'operation_matrix_id')
+    ocean_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
+                                       ('breakbulk', 'Breakbulk'),
+                                       ('liquid', 'Liquid'),
+                                       ('bulk', 'Bulk'),
+                                       ('roro', 'Roro')], string='Ocean Shipment Type')
 
     _sql_constraints = [
-        ('_unique_mode_direction_service_type', 'unique (transport, direction, service_type)',
-         "A record with the Same Mode,Direction,Service type cannot be created"),
+        ('_unique_mode_ocean_shipment_direction_service_type', 'unique (transport,ocean_shipment, direction, service_type)',
+         "A record with the Same Mode,Ocean Shipment, Direction, Service type cannot be created"),
     ]
+
+    @api.model
+    def create(self, vals):
+        res = super(AccountOperationMatrix, self).create(vals)
+        if vals.get('transport') != 'sea':
+            account_matrix_id = self.env['account.operation.matrix'].search_count([('transport', '=', vals.get('transport')),
+                                                                             ('direction', '=', vals.get('direction')),
+                                                                             ('service_type', '=', vals.get('service_type'))])
+            if account_matrix_id > 1:
+                raise ValidationError(_("A record with the Same Mode, Direction, Service type cannot be created"))
+        return res
+
+    def write(self, vals):
+        res = super(AccountOperationMatrix, self).write(vals)
+        if vals.get('transport') != 'sea':
+            account_matrix_id = self.env['account.operation.matrix'].search_count([('transport', '=', self.transport),
+                                                                            ('direction', '=', self.direction),
+                                                                            ('service_type', '=', self.service_type)])
+            if account_matrix_id > 1:
+                raise ValidationError(_("A record with the Same Mode, Direction, Service type cannot be created"))
+
+        return res
 
 class AccountOperationMatrixLine(models.Model):
     _name = 'account.operation.matrix.line'

@@ -17,9 +17,10 @@
                             <field name="expense_account" options="{'no_open':True,'no_create': True}"/>
                         </group>
                         <group>
-                            <field name="transport"  widget="radio"/>
-                            <field name="direction"  widget="radio"/>
-                            <field name="service_type"  widget="radio"/>
+                            <field name="transport"  options="{'horizontal': true}" widget="radio"/>
+                            <field name="ocean_shipment" options="{'horizontal': true}" widget="radio" attrs="{'invisible': [('transport','!=','sea')]}"/>
+                            <field name="direction" options="{'horizontal': true}" widget="radio"/>
+                            <field name="service_type" options="{'horizontal': true}" widget="radio"/>
                         </group>
                     </group>
                      <notebook>

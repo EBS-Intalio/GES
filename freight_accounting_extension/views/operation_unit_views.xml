@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.menu" id="operating_unit.menu_action_operating_unit_tree">
+        <field name="name">Branches</field>
+    </record>
+    <record model="ir.actions.act_window" id="operating_unit.action_operating_unit_tree">
+        <field name="name">Branches</field>
+    </record>
+</odoo>

@@ -6,8 +6,11 @@
         <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='percentage']" position="after">
-            <field name="sale_budget_line" readonly="1" optional="hide" string="Budget Line"/>
-        </xpath>
+                <field name="sale_budget_line" readonly="1" optional="hide" string="Budget Line"/>
+            </xpath>
+            <xpath expr="//notebook//page[@name='budget_lines']//field[@name='crossovered_budget_line']//tree//field[@name='operating_unit_id']" position="attributes">
+                <attribute name="string">Branch</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
