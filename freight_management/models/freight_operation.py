@@ -45,7 +45,7 @@ class FreightOperation(models.Model):
                                      string="Service Level")
 
     is_admin = fields.Boolean('Is Admin',compute='check_admin')
-    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State')], default='cross_state')
+    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State'), ('domestic', 'Domestic')], default='cross_state')
     incotearm_name = fields.Char(related='incoterm.code')
     add_terms = fields.Char(string="Add. Terms")#use this in details
     ata = fields.Date('ATA')
@@ -406,8 +406,28 @@ class FreightOperation(models.Model):
             load_location_id = self.source_location_id.id
         if self.destination_location_id:
             discharge_location_id = self.destination_location_id.id
+
+        direction = 'cross_state'
+        if self.env.company.country_id:
+            if (self.source_location_id and self.destination_location_id and self.source_location_id.country and
+                    self.destination_location_id.country and self.source_location_id.country == self.env.company.country_id == self.destination_location_id.country):
+                direction = 'domestic'
+            elif (
+                    self.source_location_id and not self.destination_location_id and self.source_location_id.country == self.env.company.country_id) or (
+                    self.source_location_id and self.source_location_id.country and self.source_location_id.country == self.env.company.country_id and
+                    (not self.destination_location_id or (
+                            self.destination_location_id and self.destination_location_id.country != self.env.company.country_id))):
+                direction = 'export'
+            elif (
+                    self.destination_location_id and not self.source_location_id.country and self.destination_location_id.country == self.env.company.country_id) or (
+                    self.destination_location_id and self.destination_location_id.country and self.destination_location_id.country == self.env.company.country_id and
+                    (not self.source_location_id or (
+                            self.source_location_id and self.source_location_id.country != self.env.company.country_id))):
+                direction = 'import'
+
         self.write({'load_location_id': load_location_id,
-                    'discharge_location_id': discharge_location_id})
+                    'discharge_location_id': discharge_location_id,
+                    'direction': direction})
 
     @api.depends('source_location_id', 'destination_location_id')
     def _compute_is_domestic(self):

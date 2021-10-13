@@ -186,7 +186,7 @@ class FreightBooking(models.Model):
     target_etd_asap = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="yes",
                                        string="Target ETD ASAP", required=True)
 
-    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State')], default='cross_state')
+    direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State'), ('domestic', 'Domestic')], default='cross_state')
     incotearm_name = fields.Char(related='incoterm.code')
     equipment_count = fields.Integer(string='Equipment Count')
 
@@ -282,14 +282,18 @@ class FreightBooking(models.Model):
         """
         for req in self:
             direction = 'cross_state'
-            if (req.source_location_id and not req.destination_location_id and req.source_location_id.country.id == self.env.company.country_id.id) or (
-                    req.source_location_id and req.source_location_id.country and req.source_location_id.country.id == self.env.company.country_id.id and
-                    (not req.destination_location_id or (req.destination_location_id and req.destination_location_id.country.id != self.env.company.country_id.id))):
-                direction = 'export'
-            elif (req.destination_location_id and not req.source_location_id.country and req.destination_location_id.country.id == self.env.company.country_id.id) or (
-                    req.destination_location_id and req.destination_location_id.country and req.destination_location_id.country.id == self.env.company.country_id.id and
-                    (not req.source_location_id or (req.source_location_id and req.source_location_id.country.id != self.env.company.country_id.id))):
-                direction = 'import'
+            if self.env.company.country_id:
+                if (req.source_location_id and req.destination_location_id and req.source_location_id.country and
+                        req.destination_location_id.country and req.source_location_id.country == self.env.company.country_id == req.destination_location_id.country):
+                    direction = 'domestic'
+                elif (req.source_location_id and not req.destination_location_id and req.source_location_id.country == self.env.company.country_id) or (
+                        req.source_location_id and req.source_location_id.country and req.source_location_id.country == self.env.company.country_id and
+                        (not req.destination_location_id or (req.destination_location_id and req.destination_location_id.country != self.env.company.country_id))):
+                    direction = 'export'
+                elif (req.destination_location_id and not req.source_location_id.country and req.destination_location_id.country == self.env.company.country_id) or (
+                        req.destination_location_id and req.destination_location_id.country and req.destination_location_id.country == self.env.company.country_id and
+                        (not req.source_location_id or (req.source_location_id and req.source_location_id.country != self.env.company.country_id))):
+                    direction = 'import'
             req.direction = direction
 
     @api.onchange('booking_gross_weight', 'weight_uom_id')
