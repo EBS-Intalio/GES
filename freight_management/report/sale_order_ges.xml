@@ -165,6 +165,10 @@
                                             <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='courier'">
                                                 <span>Courier</span>
                                             </t>
+                                            <t t-if="o.freight_request_id and o.freight_request_id.mode_of_transport=='documentation'">
+                                                <span>Documentation</span>
+                                            </t>
+
                                         </td>
                                     </tr>
                                     <tr style="background-color:#838383">

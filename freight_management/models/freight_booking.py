@@ -24,7 +24,8 @@ class FreightBooking(models.Model):
                                    ('sea_then_air', 'Sea then Air'),
                                    ('air_then_sea', 'Air then Sea'),
                                    ('rail', 'Rail'),
-                                   ('courier', 'Courier')], string='Transport', default='air', required=False)
+                                   ('courier', 'Courier'),
+                                   ('documentation', 'Documentation')], string='Transport', default='air', required=False)
 
     ocean_shipment_type = fields.Selection(selection_add=[('breakbulk', 'Breakbulk'),
                                               ('liquid', 'Liquid'),
@@ -35,7 +36,8 @@ class FreightBooking(models.Model):
     marks_and_num = fields.Char(string='Marks & Nums')
     add_terms = fields.Char(string="Add. Terms")
     service_level = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
-                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door')],
+                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
+                                      ('custom_and_brokerage', 'Customs and Brokerage')],
                                      string="Service Level")
     shippers_ref = fields.Char(string="Shipper's Ref")
     carrier_id = fields.Many2one('res.partner', string='Carrier')
@@ -347,7 +349,7 @@ class FreightBooking(models.Model):
         if (not self.sea_then_air_shipment and not self.air_then_sea_shipment
             and not self.inland_shipment_type and not self.ocean_shipment_type
             and not self.rail_shipment_type and self.transport != 'air') or (
-                self.transport == 'courier'):
+                self.transport in ['courier', 'documentation']):
             self.is_dimensions_visible = False
         elif (self.rail_shipment_type and self.rail_shipment_type == 'lcl') or (
                 self.ocean_shipment_type and self.ocean_shipment_type == 'lcl') or (

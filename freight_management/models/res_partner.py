@@ -570,7 +570,8 @@ class ResPartner(models.Model):
         ('sea_then_air', 'Sea then Air'),
         ('air_then_sea', 'Air then Sea'),
         ('rail', 'Rail'),
-        ('courier', 'Courier')
+        ('courier', 'Courier'),
+        ('documentation', 'Documentation')
     ], string='Transport Mode')
     Cont_mode = fields.Selection([
         ('no_data','no Data')

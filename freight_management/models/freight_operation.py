@@ -7,14 +7,14 @@ from odoo import api, fields, models, _
 class FreightOperation(models.Model):
     _inherit = 'freight.operation'
 
-
     transport = fields.Selection([('air', 'Air'),
                                   ('ocean', 'Ocean'),
                                   ('land', 'Road'),
                                   ('sea_then_air', 'Sea then Air'),
                                   ('air_then_sea', 'Air then Sea'),
                                   ('rail', 'Rail'),
-                                  ('courier', 'Courier')], default='air', string='Transport')
+                                  ('courier', 'Courier'),
+                                  ('documentation', 'Documentation')], default='air', string='Transport')
 
     ocean_shipment_type = fields.Selection(selection_add=[('breakbulk', 'Breakbulk'),
                                               ('liquid', 'Liquid'),
@@ -40,7 +40,8 @@ class FreightOperation(models.Model):
                                               ('roro', 'Roro')], string='Air then Sea Shipment Type')
     # move_type = fields.Many2one('freight.move.type', 'Service Type')
     service_level = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
-                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door')],
+                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
+                                      ('custom_and_brokerage', 'Customs and Brokerage')],
                                      string="Service Level")
 
     is_admin = fields.Boolean('Is Admin',compute='check_admin')

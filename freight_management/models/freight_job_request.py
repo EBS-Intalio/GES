@@ -13,12 +13,13 @@ class FreightJobRequest(models.Model):
     name = fields.Char(string='Name', translate=True, copy=False)
     partner_id = fields.Many2one('res.partner', string="Customer")
     mode_of_transport = fields.Selection([('air', 'Air'),
-                                           ('ocean', 'Sea'),
-                                           ('land', 'Road'),
-                                           ('sea_then_air', 'Sea then Air'),
-                                           ('air_then_sea', 'Air then Sea'),
-                                           ('rail', 'Rail'),
-                                           ('courier', 'Courier')], default="air", string="Mode of Transport")
+                                          ('ocean', 'Sea'),
+                                          ('land', 'Road'),
+                                          ('sea_then_air', 'Sea then Air'),
+                                          ('air_then_sea', 'Air then Sea'),
+                                          ('rail', 'Rail'),
+                                          ('courier', 'Courier'),
+                                          ('documentation', 'Documentation')], default="air", string="Mode of Transport")
     rail_shipment_type = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
                                       ('breakbulk', 'Breakbulk'),
                                       ('liquid', 'Liquid'),
@@ -81,9 +82,9 @@ class FreightJobRequest(models.Model):
                                       ('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')],
                                     string="Vehicle Type")
     reefer_status = fields.Selection([('yes', 'YES'), ('no', 'NO'), ('non_operate', 'Non Operating Reefer')],
-                                     string="Reefer Status", default="yes", required=True)
+                                     string="Reefer Status", default="yes", required=False)
     temperature = fields.Selection([('celsius', 'Celsius'), ('fahrenheit', 'Fahrenheit')], string="Temperature")
-    temperature_value = fields.Float("Temp Set")
+    temperature_value = fields.Float("SET")
     commodity_category = fields.Selection([('food_perishable', 'Food Perishable'),
                                             ('nonfood_perishable', 'Non food perishable'),
                                             ('non_perishable', 'Non perishable F&B'),
@@ -93,20 +94,20 @@ class FreightJobRequest(models.Model):
                                             ('pharmaceuticals', 'Pharmaceuticals'),
                                             ('petroleum_products', 'Petroleum Products'),
                                             ('other_chemicals', 'Other Chemicals')],
-                                          string="Commodity Category", default="food_perishable", required=True)
+                                          string="Commodity Category", default="food_perishable", required=False)
     commodity_description = fields.Text(string="Commodity Description", required=True)
     # is_dangerous_goods = fields.Boolean(string="Is Dangerous Goods?")
     is_dangerous_goods = fields.Selection([('yes', 'YES'), ('no', 'NO')], default="no",
-                                                  string="Is Dangerous Goods?", required=True)
+                                                  string="Is Dangerous Goods?", required=False)
     dangerous_goods_notes = fields.Text(string="Dangerous Goods Info")
     dangerous_goods_class = fields.Selection([('class_1', 'Class 1'), ('class_2', 'Class 2'), ('class_3', 'Class 3'),
                                                ('class_4', 'Class 4'), ('class_5', 'Class 5'), ('class_6', 'Class 6'),
                                                ('class_7', 'Class 7'), ('class_8', 'Class 8'), ('class_9', 'Class 9')],
                                              string="Dangerous Goods Class")
     # Many2many ned new model
-    freight_hs_code_ids = fields.Many2many('freight.hs.code', string="HS-Codes", required=True)
+    freight_hs_code_ids = fields.Many2many('freight.hs.code', string="HS-Codes", required=False)
     gross_weight = fields.Float(string="Gross weight (KG)", required=True)
-    number_of_pallets_packages = fields.Integer(string="Number of packages / Pallets", required=True)
+    number_of_pallets_packages = fields.Integer(string="Number of packages / Pallets", required=False)
     # dimensions_of_package = Dimensions of each package / Pallets   dimensions
     dimensions_of_package_id = fields.Many2one('freight.package', string="Dimensions of each package /Pallets dimensions")
     stackability = fields.Selection(([('stackable', 'Stackable'),
@@ -167,7 +168,8 @@ class FreightJobRequest(models.Model):
     pod_id = fields.Many2one('freight.pod', string="POD")
     # pofd_destination_id = fields.Many2one('freight.pofd.destination', string="POFD /Destination")
     service_level = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
-                                       ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door')],
+                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
+                                      ('custom_and_brokerage', 'Customs and Brokerage')],
                                      string="Service Level")
     # End
 
@@ -267,7 +269,7 @@ class FreightJobRequest(models.Model):
         self.dimensions_of_package_id = False
         if (not self.sea_then_air_shipment and not self.air_then_sea_shipment
             and not self.inland_shipment and not self.ocean_shipment
-            and not self.rail_shipment_type and self.mode_of_transport != 'air') or (self.mode_of_transport == 'courier'):
+            and not self.rail_shipment_type and self.mode_of_transport != 'air') or (self.mode_of_transport in ['courier', 'documentation']):
             self.is_dimensions_visible = False
         elif (self.rail_shipment_type and self.rail_shipment_type == 'lcl') or (
                 self.ocean_shipment and self.ocean_shipment == 'lcl') or (

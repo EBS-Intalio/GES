@@ -59,6 +59,9 @@ class FreightPricing(models.Model):
     equipment_count = fields.Integer(related='freight_request_id.equipment_count', readonly=False)
     vehicle_type = fields.Selection(related='freight_request_id.vehicle_type', readonly=False)
     vehicle_size = fields.Selection(related='freight_request_id.vehicle_size', readonly=False)
+    service_level = fields.Selection(related='freight_request_id.service_level', readonly=False)
+    origin_id = fields.Many2one(related='freight_request_id.origin_airport_id')
+    destination_id = fields.Many2one(related='freight_request_id.destination_airport_id')
 
     @api.model
     def create(self,vals):

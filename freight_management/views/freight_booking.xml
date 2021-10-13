@@ -76,13 +76,13 @@
                                 </group>
                                 <group></group>
                                 <group>
-                                    <field name="shipper_id" domain="[('shipper', '=', True)]" required="1"/>
+                                    <field name="shipper_id" domain="[('shipper', '=', True)]" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
                                     <field name="shipper_address_id" domain="[('parent_id', '=', shipper_id),('parent_id','!=',False)]"
                                            context="{'default_parent_id': shipper_id, 'default_type': 'other'}"
                                            options="{'no_create_edit':1}"/>
                                 </group>
                                 <group>
-                                    <field name="consignee_id" domain="[('consignee', '=', True)]" required="1"/>
+                                    <field name="consignee_id" domain="[('consignee', '=', True)]" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
                                     <field name="consignee_address_id" context="{'default_parent_id': consignee_id, 'default_type': 'other'}"
                                            domain="[('parent_id', '=', consignee_id),('parent_id','!=',False)]" options="{'no_create_edit':1}"/>
                                 </group>
@@ -91,8 +91,7 @@
                                 <group>
                                     <field name="source_location_id" string="Origin Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
                                     <field name="source_location_id" string="POR /Origin" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
-                                    <field name="source_location_id" string="Origin" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air'])]}"/>
-    
+                                    <field name="source_location_id" string="Origin" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air', 'documentation'])]}"/>
                                     <field name="origin_close" string="Consider Close by Origin Airports" style="margin-bottom: 5%;margin-top: 5%;" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pol" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
                                     <field name="equipment_type" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
@@ -111,7 +110,7 @@
                                 <group>
                                     <field name="destination_location_id" string="Destination Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
                                     <field name="destination_location_id" string="POFD /Destination" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
-                                    <field name="destination_location_id" string="Destination" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air'])]}"/>
+                                    <field name="destination_location_id" string="Destination" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air', 'documentation'])]}"/>
 
                                     <field name="destination_close" style="margin-bottom: 5%;margin-top: 5%;" string="Consider Close By Destination Airport" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pod" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
@@ -150,7 +149,7 @@
                                 <group>
                                     <field name="service_level"/>
                                     <field name="package_type_id" />
-                                    <field name="number_packages"/>
+                                    <field name="number_packages" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
                                     <field name="is_dimensions_visible" invisible="1"/>
                                     <field name="dimensions_of_package_id" context="{'is_dimensions_of_package': True}" attrs="{'invisible': [('is_dimensions_visible','!=', True)]}"/>
                                     <field name="clearance_required" widget="radio" options="{'horizontal': true}"/>
@@ -177,27 +176,23 @@
                                         <span>Days</span>
                                     </div>
                                     <field name="additional_comments" />
-                                    <field name="shipment_ready_asap" widget="radio" options="{'horizontal': true}"/>
-                                    <field name="shipment_ready_date" attrs="{'invisible': [('shipment_ready_asap','!=','no')]}"/>
+                                    <field name="shipment_ready_asap" attrs="{'invisible' : [('transport', '=', 'documentation')]}" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="shipment_ready_date" attrs="{'invisible': ['|', ('transport', '=', 'documentation'), ('shipment_ready_asap','!=','no')]}"/>
                                 </group>
                                 <group>
-                                    <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', '!=', 'land')]}"/>
+                                    <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', 'not in', ['land','documentation'])]}"/>
                                     <field name="incotearm_name" string="Incoterm Name"/>
                                     <br/>
                                     <field name="dangerous_goods"/>
                                     <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)], 'required' : [('dangerous_goods', '=', True)]}" />
                                     <field name="dangerous_goods_notes" style="border-color: black;" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
-                                    <field name="reefer_status"/>
-                                    <label for="temperature"/>
-                                    <div class="o_row" name="temperature">
-                                        <field name="temperature" nolabel="1"/>
-                                        <span attrs="{'invisible': [('temperature','=',False)]}">SET</span>
-                                        <field name="set_temperature" nolabel="1" attrs="{'invisible': [('temperature','=',False)]}"/>
-                                    </div>
-                                    <field name="commodity_category"/>
-                                    <field name="commodity_description"/>
-                                    <field name="hs_code" widget="many2many_tags"/>
-                                    <field name="gross_weight"/>
+                                    <field name="reefer_status" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="temperature" attrs="{'invisible' : [('transport', '=', 'documentation')]}" options="{'horizontal': true}" widget="radio"/>
+                                    <field name="set_temperature" string="SET" attrs="{'invisible': ['|', ('transport', '=', 'documentation'), ('temperature','=',False)]}"/>
+                                    <field name="commodity_category" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="commodity_description" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="hs_code" widget="many2many_tags" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="gross_weight" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
                                     <field name="additional_requirements" />
                                 </group>
                             </group>
@@ -254,7 +249,6 @@
                                 <group>
                                     <field name="weight_type" widget="radio" options="{'horizontal': true}" default="estimated"/>
                                     <field name="stackability" widget="radio" options="{'horizontal': true}"/>
-                                    <field name="number_packages"/>
                                 </group>
                                 <group></group>
                                 <group string="Brokerage Details">
@@ -350,12 +344,12 @@
                                         <field name="discharge_location_id"/>
                                     </div>
 
-                                    <div class="o_row" name="est_pickup_date" style="margin-top: 4%;">
+                                    <div class="o_row" name="est_pickup_date"  attrs="{'invisible' : [('transport', '=', 'documentation')]}" style="margin-top: 4%;">
                                         <span>ETA</span>
                                         <field name="est_pickup_date"/>
                                     </div>
 
-                                    <div class="o_row" name="est_delivery_date" style="margin-top: 4%;">
+                                    <div class="o_row"  attrs="{'invisible' : [('transport', '=', 'documentation')]}" name="est_delivery_date" style="margin-top: 4%;">
                                         <span>ETD</span>
                                         <field name="est_delivery_date"/>
                                     </div>

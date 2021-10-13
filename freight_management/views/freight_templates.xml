@@ -117,6 +117,9 @@
                                             <t t-if="f_request.mode_of_transport == 'courier'">
                                                 <span style="font-size:15px;background-color: darkorange;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
                                             </t>
+                                            <t t-if="f_request.mode_of_transport == 'documentation'">
+                                                <span style="font-size:15px;background-color: darkorange;"  class="badge badge-danger" t-field="f_request.mode_of_transport"/>
+                                            </t>
 
                                         </td>
                                         <td class="text-right">
@@ -415,6 +418,10 @@
 
                             <label  class="cont" for="courier" style="margin-right:10px;">Courier
                                 <input type="radio" id="courier" name="mode_of_transport" value="courier"/>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label  class="cont" for="documentation" style="margin-right:10px;">Documentation
+                                <input type="radio" id="documentation" name="mode_of_transport" value="documentation"/>
                                 <span class="checkmark"></span>
                             </label>
 <!--                            END-->
@@ -997,6 +1004,7 @@
                                 <option value="door_to_port">Door to Port</option>
                                 <option value="port_to_port">Port to Port</option>
                                 <option value="port_to_door">Port to Door</option>
+                                <option value="port_to_door">Customs and Brokerage</option>
                             </select><br/>
 
                             <input name="target_etd" type="date" class="input-class form-control" id="target_etd" /><br/>

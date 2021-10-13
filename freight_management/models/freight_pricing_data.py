@@ -11,7 +11,8 @@ class FreightBookingData(models.Model):
                                            ('sea_then_air', 'Sea then Air'),
                                            ('air_then_sea', 'Air then Sea'),
                                            ('rail', 'Rail'),
-                                           ('courier', 'Courier')], string='Transpotr')
+                                           ('courier', 'Courier'),
+                                           ('documentation', 'Documentation')], string='Transpotr')
     freight_target_eta = fields.Date('Target ETA')
     freight_target_etd = fields.Date('Target ETD')
 

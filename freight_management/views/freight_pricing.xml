@@ -19,11 +19,6 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-<!--                            <button class="oe_stat_button" name="button_shipping"-->
-<!--                                    attrs="{'invisible': ['|', ('freight_id','=',False),('state','=','draft')]}"-->
-<!--                                    type="object" icon="fa-truck">-->
-<!--                                Shipment-->
-<!--                            </button>-->
                             <button class="oe_stat_button" name="button_request"
                                     attrs="{'invisible': [('freight_request_id','=',False)]}"
                                     type="object" icon="fa-reorder">
@@ -42,7 +37,7 @@
                                 <field name="name" readonly="1"/>
                             </div>
                         </h1>
-                        <group string="Operation">
+                        <group>
                             <group>
                                 <field name="freight_transport" options="{'horizontal': true}" widget="radio"/>
 
@@ -56,16 +51,18 @@
                                        attrs="{'invisible': [('freight_transport','!=','sea_then_air')], 'required': [('freight_transport', '=', 'sea_then_air')]}"/>
                                 <field name="air_then_sea_shipment" options="{'horizontal': true}" widget="radio"
                                        attrs="{'invisible': [('freight_transport','!=','air_then_sea')], 'required': [('freight_transport', '=', 'air_then_sea')]}"/>
-
-<!--                                <field name="freight_id" invisible="1"/>-->
                                 <field name="freight_request_id" invisible="1"/>
-
                                 <field name="freight_target_eta"/>
                                 <field name="freight_target_etd"/>
                             </group>
                             <group>
+                                <field name="origin_id" attrs="{'invisible': [('freight_transport','!=','courier')]}"/>
+                                <field name="destination_id" attrs="{'invisible': [('freight_transport','!=','courier')]}"/>
+                            </group>
+                            <group>
                                 <field name="equipment_type" attrs="{'invisible': [('freight_transport','!=','ocean')]}" />
                                 <field name="equipment_count" attrs="{'invisible': [('freight_transport','!=','ocean')]}" />
+                                <field name="service_level"/>
                                 <field name="preferred_airline_id" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
                                 <field name="freight_flight_no" attrs="{'invisible': [('freight_transport','!=','air')]}"/>
                                 <field name="freight_shipping_line_id" attrs="{'invisible': [('freight_transport','!=','ocean')]}"/>
@@ -103,8 +100,8 @@
                                     <tree>
                                         <field name="pricing_id" invisible="1"/>
                                         <field name="freight_transport" />
-                                        <field name="freight_target_eta" />
-                                        <field name="freight_target_etd" />
+                                        <field name="freight_target_eta"/>
+                                        <field name="freight_target_etd"/>
                                         <field name="preferred_airline_id" attrs="{'column_invisible': [('parent.freight_transport','!=','air')]}"/>
                                         <field name="freight_flight_no" attrs="{'column_invisible': [('parent.freight_transport','!=','air')]}"/>
                                         <field name="freight_shipping_line_id" attrs="{'column_invisible': [('parent.freight_transport','!=','ocean')]}"/>
@@ -130,11 +127,8 @@
                                         <field name="currency_id"/>
                                         <field name="different_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="charge_amount" attrs="{'column_invisible': [('parent.different_amount','!=','price_1'), ('parent.state','=','done')]}"/>
-
                                         <field name="charge_amount_price_2" attrs="{'column_invisible': [('parent.different_amount','!=','price_2'), ('parent.state','=','done')]}"/>
-
                                         <field name="charge_amount_price_3" attrs="{'column_invisible': [('parent.different_amount','!=','price_3'), ('parent.state','=','done')]}" />
-
                                         <field name="margin_per" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="margin_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
                                         <field name="charge_total_amount" attrs="{'column_invisible': [('parent.state','!=','done')]}"/>
