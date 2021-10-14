@@ -432,7 +432,7 @@
                     <attribute name="attrs">{'invisible':['|',('state','=','ship_order'),('is_review_booking','!=',True)]}</attribute>
                 </xpath>
                 <xpath expr="//button[@name='convert_to_operation']" position="before">
-                    <button name="review_booking" string="Review Booking" type="object" class="oe_highlight" attrs="{'invisible':['|',('state','=','ship_order'),('is_review_booking','=',True)]}"/>
+                    <button name="review_booking" string="Submit Booking" type="object" class="oe_highlight" attrs="{'invisible':['|',('state','=','ship_order'),('is_review_booking','=',True)]}"/>
                 </xpath>
 
                 <xpath expr="//button[@name='convert_to_operation']" position="after">
