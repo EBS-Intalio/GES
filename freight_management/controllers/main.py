@@ -54,6 +54,7 @@ class RequestCustom(http.Controller):
             'airlines':airlines,
             'vessels':vessels,
             'truckers':truckers,
+            'dimensions': 'aaa'
         }
         return request.render("freight_management.portal_request_create", values)
 
@@ -80,10 +81,17 @@ class RequestCustom(http.Controller):
                 final_dict['is_dangerous_goods'] = post.get('is_dangerous_goods')
             if post.get('mode_of_transport'):
                 final_dict['mode_of_transport'] = post.get('mode_of_transport')
+
             if post.get('shipper_id'):
                 final_dict['shipper_id'] = int(post.get('shipper_id'))
+            if post.get('shipper_address'):
+                final_dict['shipper_addr'] = int(post.get('shipper_address'))
+
             if post.get('consignee_id'):
                 final_dict['consignee_id'] = int(post.get('consignee_id'))
+            if post.get('consignee_address'):
+                final_dict['consignee_addr'] = int(post.get('consignee_address'))
+
             if post.get('air_source_location_id'):
                 final_dict['origin_airport_id'] = int(post.get('air_source_location_id'))
             if post.get('mawb_no'):
@@ -122,6 +130,21 @@ class RequestCustom(http.Controller):
                 final_dict['expected_free_time_at_origin'] = int(post.get('expected_free_time_at_origin'))
             if post.get('expected_free_time_at_destination'):
                 final_dict['expected_free_time_at_destination'] = int(post.get('expected_free_time_at_destination'))
+
+            if post.get('original_copy'):
+                final_dict['original_copy'] = post.get('original_copy')
+
+            bl_copy = False
+            if post.get('bl_copy') == 'on':
+                bl_copy = True
+            final_dict['bl_copy'] = bl_copy
+            shipping_documents = False
+            if post.get('shipping_documents') == 'on':
+                shipping_documents = True
+            final_dict['shipping_documents'] = shipping_documents
+            if post.get('dimensions_of_package_id'):
+                final_dict['dimensions_of_package_id'] = int(post.get('dimensions_of_package_id'))
+
             if post.get('commodity_category'):
                 final_dict['commodity_category'] = post.get('commodity_category')
             if post.get('commodity_description'):
@@ -195,7 +218,7 @@ class RequestCustom(http.Controller):
                     final_dict['destination_airport_id'] = int(post.get('air_destination_location_id'))
             if dir == 'ocean':
                 if post.get('ocean_source_location_id'):
-                    final_dict['origin_airport_id']  = int(post.get('ocean_source_location_id'))
+                    final_dict['origin_airport_id'] = int(post.get('ocean_source_location_id'))
                 if post.get('ocean_destination_location_id'):
                     final_dict['destination_airport_id'] = int(post.get('ocean_destination_location_id'))
         request_obj = request.env['freight.job.request']

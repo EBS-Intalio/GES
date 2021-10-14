@@ -9,7 +9,7 @@
                 <xpath expr="//field[@name='clearance_required']" position="after">
                     <field name="bl_copy" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
                     <field name="shipping_documents" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
-                    <field name="original_copy" attrs="{'invisible': ['|', ('shipping_documents','!=',True), ('clearance_required','!=','yes')], 'required' : [('shipping_documents', '=', True), ('clearance_required', '=', 'yes')]}" widget="radio"/>
+                    <field name="original_copy" options="{'horizontal': true}" attrs="{'invisible': ['|', ('shipping_documents','!=',True), ('clearance_required','!=','yes')], 'required' : [('shipping_documents', '=', True), ('clearance_required', '=', 'yes')]}" widget="radio"/>
                 </xpath>
             </field>
         </record>

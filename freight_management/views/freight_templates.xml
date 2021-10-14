@@ -601,7 +601,8 @@
                         </div>
                         <div class="col-2">
                             <br/>
-                            <label for="shipper">Shipper:</label><br/><br/><br/>
+                            <label for="shipper">Shipper:</label><br/><br/>
+                            <label for="shipper">Shipper Address:</label><br/><br/>
                             <label id="incoterm_lbl" for="incoterm" >Incoterm:</label>
                             <br/><br/><br/>
 
@@ -609,9 +610,16 @@
                         <div class="col-3">
                             <br/>
                             <select id="shippers" name="shipper_id" required="True" class="form-control">
+                                <option></option>
                                 <t t-foreach="shipper" t-as="partner">
                                     <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
                             </select><br/>
+
+                            <select id="shipper_address" name="shipper_address" class="form-control">
+                                <option></option>
+                            </select><br/>
+
+
                             <select id="incoterm" name="freight_incoterm_id" class="form-control">
                                 <option></option>
                                 <t t-foreach="incoterms" t-as="inc">
@@ -621,13 +629,18 @@
                         </div>
                         <div class="col-2">
                             <br/>
-                            <label for="consignee">Consignee:</label><br/><br/><br/>
+                            <label for="consignee">Consignee:</label><br/><br/>
+                            <label for="shipper">Consignee Address:</label><br/><br/>
                         </div>
                         <div class="col-3">
                             <br/>
                             <select id="consignee" name="consignee_id" required="True" class="form-control">
+                                <option></option>
                                 <t t-foreach="consignees" t-as="partner">
                                     <option t-att-value="partner.id" t-esc="partner.display_name"/></t>
+                            </select><br/>
+                            <select id="consignee_address" name="consignee_address" class="form-control">
+                                <option></option>
                             </select>
                         </div>
                         <div class="col-1">
@@ -931,6 +944,7 @@
                             <label for="job_type">Job Type:</label><br/><br/>
                             <label id="freight_hs_code_ids_lbl" for="freight_hs_code_ids">HS-Codes:</label><br/><br/>
                             <label for="package_type_id" style="margin-top: 6%;">Packaging Type:</label><br/><br/>
+                            <label for="dimensions_of_package_id">Dimensions of each package /Pallets dimensions:</label><br/>
                             <label for="reefer_status" style="margin-top: 9%;">Reefer Status:</label><br/><br/>
                             <label for="target_transit_time" >Target Transit Time (Days):</label><br/>
                             <label for="expected_free_time_at_origin" >Expected Free Time at Origin (Days):</label><br/><br/>
@@ -967,6 +981,15 @@
                                 <option value="drums">Drums</option>
                                 <option value="other">Others</option>
                             </select><br/>
+
+                            <select id="dimensions_of_package_id" name="dimensions_of_package_id" class="form-control">
+                                    <option></option>
+                                    <t t-foreach="packages" t-as="package">
+                                        <option t-att-value="package.id" t-esc="package.name"/></t>
+                                </select>
+                                <br/><br/>
+
+<!--                            <input id="dimensions_of_package_id" name="dimensions_of_package_id" type="number" class="input-class form-control" /><br/><br/>-->
                             <select id="reefer_status" name="reefer_status" required="True" class="form-control">
                                 <option value="yes" >YES</option>
                                 <option value="no" >NO</option>
@@ -1053,12 +1076,15 @@
                         </div>
                         <div class="col-2">
                             <br/><br/>
+                            <div class="bl_copy"><b>BL Copy Available ?:</b><br/><br/></div>
+                            <div class="shipping_documents"><b>Shipping Documents:</b><br/><br/></div>
+                            <div class="original_copy"><b>Original/Copy:</b><br/><br/><br/><br/></div>
                             <div class="clearance_required"><b>Clearance Required:</b><br/><br/><br/><br/></div>
                             <div class="warehousing_storage"><b>Warehousing / Storage:</b><br/><br/><br/><br/></div>
                             <div id="rate_in_usd"><label for="rate_in_usd" >Target Rate in USD:</label><br/><br/></div>
                             <div id="gross_weight_kg"><label for="gross_weight_kg" >Gross weight (KG):</label><br/><br/></div>
                             <div id="number_of_packages_pallets"><label id="number_of_packages_pallets" for="number_of_packages_pallets">Number of packages / Pallets:</label><br/><br/></div>
-                            <div class="stackability"><b>Stackable:</b><br/><br/><br/></div>
+                            <div class="stackability"><b>Stackability:</b><br/><br/><br/></div>
                             <div id="additional_requirements"><label for="additional_requirement" style="margin-top: 7%;">Additional Requirements:</label><br/><br/></div>
                             <div id="additional_comments"><label for="additional_description" >Additional Comments:</label><br/><br/></div>
                             <div id="shipment_ready_date"><label for="shipment_ready_date" >Shipment Ready Date:</label><br/></div>
@@ -1074,6 +1100,18 @@
 
                         <div class="col-3">
                             <br/><br/>
+                            <input id="bl_copy" name="bl_copy" type="checkbox" /><br/><br/><br/>
+                            <input id="shipping_documents" name="shipping_documents" type="checkbox" /><br/><br/>
+                            <label class="cont"  for="original_copy_original" style="margin-right:10px;">Original
+                                    <input type="radio" id="original_copy_original" name="original_copy" value="original"/>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                            <label class="cont"  for="original_copy_copy" style="margin-right:10px;">Copy
+                                    <input type="radio" id="original_copy_copy" name="original_copy" value="copy"/>
+                                    <span class="checkmark"></span>
+                                </label><br/>
+
                             <label class="cont"  for="clearance_required_yes" style="margin-right:10px;">Yes
                                     <input type="radio" id="clearance_required_yes" name="clearance_required" value="yes" checked="checked"/>
                                     <span class="checkmark"></span>
@@ -1100,14 +1138,14 @@
 
 
                             <label class="cont"  for="stackability_stackable" style="margin-right:10px;">Stackable
-                                    <input type="radio" id="stackability_stackable" name="stackability" value="stackable"/>
-                                    <span class="checkmark"></span>
-                                </label>
+                                <input type="radio" id="stackability_stackable" name="stackability" value="stackable"/>
+                                <span class="checkmark"></span>
+                            </label>
 
                             <label class="cont"  for="stackability_stackable_no" style="margin-right:10px;">No Stackable
-                                    <input type="radio" id="stackability_stackable_no" name="stackability" value="no_stackable"/>
-                                    <span class="checkmark"></span>
-                                </label><br/>
+                                <input type="radio" id="stackability_stackable_no" name="stackability" value="no_stackable"/>
+                                <span class="checkmark"></span>
+                            </label><br/>
 
                             <textarea id="additional_requirement" name="additional_requirement" class="form-control"/><br/>
                             <textarea id="additional_description" name="additional_comments" class="form-control"/><br/>

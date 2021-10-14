@@ -1,6 +1,10 @@
 odoo.define('freight_management.website_request', function (require) {
 'use strict';
 require('web.dom_ready');
+var rpc = require("web.rpc");
+
+
+
 $(document).ready(function (){
         $('#req_ocean_div').hide();
         $('#req_rail_div').hide()
@@ -13,6 +17,45 @@ $(document).ready(function (){
 	    $('#danger_info_req').hide();
 //	    $('#danger_class').hide();
 //	    $('#danger_class_info').hide();
+
+
+
+        $('select[name="shipper_id"]').change(function(ev) {
+            var domain = [['parent_id','=', parseInt($('select[name="shipper_id"]')[0].value)]];
+            var params = {
+                model: 'res.partner',
+                method: 'search_read',
+                domain: domain,
+                fields:['id','name']
+            }
+            rpc.query(params, {async: false}).then(function(partner){
+                var selectedAddress = $('select[name="shipper_address"]');
+                selectedAddress.find('option').remove().end();
+                _.each(partner, function (x) {
+                    var opt = $('<option>').text(x['name']).attr('value', x['id'])
+                    selectedAddress.append(opt);
+                });
+            });
+        });
+
+        $('select[name="consignee_id"]').change(function(ev) {
+            var domain = [['parent_id','=', parseInt($('select[name="consignee_id"]')[0].value)]];
+            var params = {
+                model: 'res.partner',
+                method: 'search_read',
+                domain: domain,
+                fields:['id','name']
+            }
+            rpc.query(params, {async: false}).then(function(partner){
+                var selectedAddress = $('select[name="consignee_address"]');
+                selectedAddress.find('option').remove().end();
+                _.each(partner, function (x) {
+                    var opt = $('<option>').text(x['name']).attr('value', x['id'])
+                    selectedAddress.append(opt);
+                });
+            });
+        });
+
 	    $('input[type=datetime-local][name=date]').change(function() {
 	        $('#new_date').val(this.value);
 	    });
