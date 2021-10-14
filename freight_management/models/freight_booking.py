@@ -189,6 +189,7 @@ class FreightBooking(models.Model):
     direction = fields.Selection(selection_add=[('cross_state', 'Cross Border State'), ('domestic', 'Domestic')], default='cross_state')
     incotearm_name = fields.Char(related='incoterm.code')
     equipment_count = fields.Integer(string='Equipment Count')
+    is_review_booking = fields.Boolean('Review Booking')
 
     def action_create_new_invoice(self):
         """
@@ -247,6 +248,7 @@ class FreightBooking(models.Model):
                         'default_vehicle_ids': [(6, 0, self.vehicle_ids.ids)],
                         'default_target_rate': self.target_rate,
                         'default_container_ids': [(6, 0, self.container_ids.ids)]}),
+
             book.write({'state':'ship_order'})
             return {
                 'name': name_act,
@@ -612,3 +614,7 @@ class FreightBooking(models.Model):
 
     def button_lode_list(self):
         return True
+
+    def review_booking(self):
+        for rec in self:
+            rec.is_review_booking = True

@@ -11,6 +11,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box" >
                             <field name="pricing_id" invisible="1"/>
+
                             <field name="freight_id" invisible="1"/>
                             <field name="show_create_processing_checklist" force_save="1" invisible="1"/>
                             <field name="freight_request_id" invisible="1"/>
@@ -41,6 +42,7 @@
                         <h1>
                             <div>
                                 <field name="name" readonly="1"/>
+                                <field name="is_review_booking" invisible="1"/>
                             </div>
                         </h1>
                         </div>
@@ -425,6 +427,12 @@
                         </page>
                     </notebook>
                     </sheet>
+                </xpath>
+                 <xpath expr="//button[@name='convert_to_operation']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|',('state','=','ship_order'),('is_review_booking','!=',True)]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='convert_to_operation']" position="before">
+                    <button name="review_booking" string="Review Booking" type="object" class="oe_highlight" attrs="{'invisible':['|',('state','=','ship_order'),('is_review_booking','=',True)]}"/>
                 </xpath>
 
                 <xpath expr="//button[@name='convert_to_operation']" position="after">
