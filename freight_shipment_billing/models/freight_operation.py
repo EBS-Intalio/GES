@@ -44,13 +44,13 @@ class FreightOperationBilling(models.Model):
     invoice_type = fields.Selection(related='ar_invoice_number.invoice_type', string='Inv. Type')
     invoice_date = fields.Date(related='ar_invoice_number.invoice_date', string='Inv. Date')
     invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='ar_invoice_number.currency_id')
-    sell_invoice_amount = fields.Monetary(string="Sell Inv. Amount", currency_field='invoice_currency_id', related='ar_invoice_number.amount_total')
+    invoice_line_id = fields.Many2one('account.move.line')
+    sell_invoice_amount = fields.Monetary(string="Sell Inv. Amount", currency_field='invoice_currency_id', related='invoice_line_id.price_subtotal')
     local_sell_invoice_amount = fields.Monetary(string="Local Sell Invoice Amount", currency_field='company_currency_id',
                                         compute='_compute_local_sell_invoice_amount')
 
-    invoice_line_id = fields.Many2one('account.move.line')
 
-    sell_invoice_tax_amount = fields.Monetary(string="Sell Inv. Tax Amount", currency_field='invoice_currency_id', related='ar_invoice_number.amount_tax')
+    sell_invoice_tax_amount = fields.Monetary(string="Sell Inv. Tax Amount", currency_field='invoice_currency_id', related='invoice_line_id.tax_base_amount')
 
     operation_billing_id = fields.Many2one('freight.operation', readonly=True)
 
