@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="customer_valuation_charge_form_view">
+            <field name="name">customer.valuation.charge.form.view</field>
+            <field name="model">customer.valuation.charge</field>
+            <field name="arch" type="xml">
+                <form string="Custom Valuation Chages">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="code" required="1"/>
+                                <field name="amount"/>
+                                <field name="currency"/>
+                                <field name="ex_rate"/>
+                            </group>
+                            <group>
+                                <field name="dutiable"/>
+                                <field name="add_to_cif"/>
+                                <field name="inc_in_invoice_lines"/>
+                                <field name="distribute_by"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="customer_valuation_charge_tree_view">
+            <field name="name">customer.valuation.charge.tree.view</field>
+            <field name="model">customer.valuation.charge</field>
+            <field name="arch" type="xml">
+                <tree string="Custom Valuation Changes">
+                    <field name="code"/>
+                    <field name="amount"/>
+                    <field name="currency"/>
+                    <field name="ex_rate"/>
+                    <field name="dutiable"/>
+                    <field name="add_to_cif"/>
+                    <field name="inc_in_invoice_lines"/>
+                    <field name="distribute_by"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="customer_valuation_charge_action">
+            <field name="name">Custom Valuation Charges</field>
+            <field name="res_model">customer.valuation.charge</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Custom Valuation Charges.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

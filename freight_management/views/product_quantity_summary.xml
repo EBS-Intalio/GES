@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_product_quantity_summary_form_view">
+            <field name="name">Product Quantity Summary</field>
+            <field name="model">product.quantity.summary</field>
+            <field name="arch" type="xml">
+                <form string="Product Quantity Summary">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="part_no" required="1"/>
+                                <field name="description" required="1"/>
+                                <field name="quantity_ordered"/>
+                                <field name="quantity_invoiced"/>
+                            </group>
+                            <group>
+                                <field name="quantity_received"/>
+                                <field name="quantity_remaining"/>
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_product_quantity_summary_tree_view">
+            <field name="name">Product Quantity Summary tree view</field>
+            <field name="model">product.quantity.summary</field>
+            <field name="arch" type="xml">
+                <tree string="Product Quantity Summary">
+                    <field name="part_no"/>
+                    <field name="description"/>
+                    <field name="quantity_ordered"/>
+                    <field name="quantity_invoiced"/>
+                    <field name="quantity_received"/>
+                    <field name="quantity_remaining"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_product_quantity_summary_action">
+            <field name="name">Product Quantity Summary</field>
+            <field name="res_model">product.quantity.summary</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Summary.
+                </p>
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_order_line_form_view">
+            <field name="name">freight.order.line.form.view</field>
+            <field name="model">freight.order.line</field>
+            <field name="arch" type="xml">
+                <form string="Freight Order Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="line" readonly="1"/>
+                                <field name="product_id" required="1"/>
+                                <field name="description"/>
+                                <field name="inner_packs"/>
+                                <field name="outer_packs"/>
+                                <field name="type"/>
+                                <field name="quantity"/>
+                                <field name="invoiced"/>
+                            </group>
+                            <group>
+                                <field name="quantity_received"/>
+                                <field name="remaining"/>
+                                <field name="unit_of_qty"/>
+                                <field name="line_price"/>
+                                <field name="item_price"/>
+                                <field name="invoice_no"/>
+                                <field name="origin"/>
+                                <field name="manufacturer"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_order_line_tree_view">
+            <field name="name">freight.order.line.tree.view</field>
+            <field name="model">freight.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Order Line">
+                    <field name="line"/>
+                    <field name="product_id" />
+
+                    <field name="inner_packs"/>
+                    <field name="outer_packs"/>
+                    <field name="quantity"/>
+                    <field name="invoiced"/>
+                    <field name="quantity_received"/>
+                    <field name="remaining"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_order_line_action">
+            <field name="name">Order Line</field>
+            <field name="res_model">freight.order.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a Order Line.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

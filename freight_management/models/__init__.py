@@ -34,3 +34,7 @@ from . import account_move
 from . import freight_vessel
 from . import freight_operation
 from . import consol_details
+from . import customer_valuation_charge
+from . import freight_pre_advice
+from . import freight_order
+from . import product_quantity_summary

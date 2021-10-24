@@ -1,0 +1,368 @@
+<odoo>
+    <record model="ir.ui.view" id="view_consol_details_form">
+        <field name="name">consol.details.form</field>
+        <field name="model">consol.details</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group string="Consol Details">
+                        <field name="is_domestic"/>
+                        <label for="type"/>
+                        <div class="o_row">
+                            <field name="type"/>
+                            <label for="transport" style="font-weight:bold"/>
+                            <field name="transport"/>
+                            <label for="cont_mode" style="font-weight:bold"/>
+                            <field name="cont_mode"/>
+                        </div>
+                        <label for="fst_load"/>
+                        <div class="o_row">
+                            <field name="fst_load"/>
+                            <label for="last_disc" style="font-weight:bold"/>
+                            <field name="last_disc"/>
+                            <label for="phase" style="font-weight:bold"/>
+                            <field name="phase"/>
+                        </div>
+
+                    </group>
+                    <group string="Voyage">
+                        <label for="voyage"/>
+                        <div class="o_row">
+                            <field name="voyage"/>
+                            <label for="vessel" style="font-weight:bold"/>
+                            <field name="vessel"/>
+                        </div>
+                        <label for="load_port"/>
+                        <div class="o_row">
+                            <field name="load_port"/>
+                            <label for="etd" style="font-weight:bold"/>
+                            <field name="etd"/>
+                            <label for="atd" style="font-weight:bold"/>
+                            <field name="atd"/>
+                        </div>
+                        <label for="disc_port"/>
+                        <div class="o_row">
+                            <field name="disc_port"/>
+                            <label for="eta" style="font-weight:bold"/>
+                            <field name="eta"/>
+                            <label for="ata" style="font-weight:bold"/>
+                            <field name="ata"/>
+                        </div>
+                        <label for="is_domestic_voyage"/>
+                        <div class="o_row">
+                            <field name="is_domestic_voyage"/>
+                            <label for="is_linked" style="font-weight:bold"/>
+                            <field name="is_linked"/>
+                            <label for="is_charter" style="font-weight:bold"/>
+                            <field name="is_charter"/>
+                        </div>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="bol"/>
+                            <field name="payment"/>
+                        </group>
+                        <group>
+                            <field name="serv_level"/>
+                            <field name="crn"/>
+                        </group>
+                    </group>
+                     <field name="shipment_ids">
+                        <tree>
+                            <field name="consignee_id"/>
+                            <field name="shipper_id"/>
+                            <field name="source_location_id"/>
+                            <field name="destination_location_id"/>
+                            <field name="house_bill"/>
+                        </tree>
+                    </field>
+                    <group>
+                        <div class="o_row">
+                            <label style="font-weight:bold;" for="show"/>
+                            <field name="show"/>
+
+                            <label style="font-weight:bold;" for="ship_count"/>
+                            <field name="ship_count"/>
+
+                            <label style="font-weight:bold;" for="packs"/>
+                            <field name="packs"/>
+
+                            <label style="font-weight:bold;" for="weight"/>
+                            <field name="weight"/>
+                            <field name="weight_uom"/>
+
+                            <label style="font-weight:bold;" for="volume"/>
+                            <field name="volume"/>
+                            <field name="volume_uom_id"/>
+
+                            <label style="font-weight:bold;" for="chargeable"/>
+                            <field name="chargeable"/>
+                            <field name="chargeable_uom"/>
+
+                            <label style="font-weight:bold;" for="prepaid"/>
+                            <field name="prepaid"/>
+                            <field name="prepaid_curr"/>
+
+                            <label style="font-weight:bold;" for="collect"/>
+                            <field name="collect"/>
+                            <field name="collect_curr"/>
+                        </div>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="Organizations">
+                                <group>
+                                    <group>
+                                        <field name="sending_agent_id"/>
+                                        <field name="sending_agent_address_id"
+                                            context="{'default_parent_id': sending_agent_id, 'default_type': 'other'}"
+                                       domain="[('parent_id', '=', sending_agent_id),('parent_id','!=',False)]"/>
+                                    </group>
+                                    <group>
+                                        <field name="receiving_agent_id"/>
+                                        <field name="receiving_agent_address_id" context="{'default_parent_id': receiving_agent_id, 'default_type': 'other'}"
+                                       domain="[('parent_id', '=', receiving_agent_id),('parent_id','!=',False)]"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="carrier"/>
+                                        <field name="creditor"/>
+                                        <field name="carrier_bkg_ref"/>
+                                    </group>
+                                    <group>
+                                        <field name="agent_reference"/>
+                                    </group>
+                                </group>
+
+                            </page>
+                            <page string="Departure">
+                                <group>
+                                    <group>
+                                        <field name="cto_address"/>
+                                        <field name="cfs_address"/>
+                                        <field name="receipt_requested"/>
+                                        <field name="container_yard_id"/>
+                                        <field name="port_transport_id"/>
+                                        <field name="first_foreign_port_id"/>
+                                        <field name="last_foreign_port_id"/>
+                                    </group>
+                                    <group>
+
+                                        <field name="dispatch_requested"/>
+                                        <field name="first_arrival_port_arrival_date"/>
+                                        <field name="departure_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Arrival">
+                                <group>
+                                    <group>
+                                        <field name="cto_address_arrival"/>
+                                        <field name="cfs_address_arrival"/>
+                                        <field name="receipt_requested_arrival"/>
+                                        <field name="container_yard_arrival_id"/>
+                                        <field name="port_transport_arrival_id"/>
+                                        <field name="first_foreign_port_arrival_id"/>
+                                        <field name="last_foreign_port_arrival_id"/>
+                                    </group>
+                                    <group>
+
+                                        <field name="dispatch_requested_arrival"/>
+                                        <field name="first_arrival_port_arrival_date_arrival"/>
+                                        <field name="departure_date_arrival"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Docs">
+                                <group>
+                                    <group>
+                                        <field name="manifest_Print"/>
+                                        <field name="awb_dimensions"/>
+                                        <field name="release_type"/>
+                                        <field name="place_of_issue"/>
+
+
+                                    </group>
+                                    <group>
+                                        <field name="print_option_for_other_doc"/>
+                                        <field name="copy_bills"/>
+                                        <field name="original_bills"/>
+                                        <field name="master_bill_issue_date"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Pre-Allocation">
+                                <group>
+                                    <group>
+                                        <field name="shipment"/>
+                                        <field name="chargeable_pre"/>
+                                        <field name="cut_off_date"/>
+                                        <field name="is_hazardous"/>
+
+
+                                    </group>
+                                    <group>
+                                        <div class="o_row" name="outers">
+                                            <span>Weight:</span>
+                                            <field name="weight_pre" nolabel="1"/>
+                                            <field name="weight_uom_pre_id" nolabel="1"/>
+                                        </div>
+
+                                        <div class="o_row" name="outers">
+                                            <span>Volume:</span>
+                                            <field name="volume_pre" nolabel="1"/>
+                                            <field name="volume_uom_pre_id" nolabel="1"/>
+                                        </div>
+                                        <label for="max_dims" string="Max Dimensions"/>
+                                        <div class="o_row" name="outers">
+                                            <field name="max_dims"/>
+                                            <label for="max_dims1" string="*"/>
+                                            <field name="max_dims1"/>
+                                            <label for="max_dims2" string="*"/>
+                                            <field name="max_dims2"/>
+                                            <field name="max_dims_uom" nolabel="1"/>
+                                        </div>
+
+                                        <field name="is_temperature_controlled"/>
+                                        <div class="o_row" name="outers">
+                                            <span>Min Temperature :</span>
+                                            <field name="min_temp"/>
+                                            <field name="min_temp_in"/>
+                                        </div>
+                                        <div class="o_row" name="outers">
+                                            <span>Max Temperature :</span>
+                                            <field name="max_temp"/>
+                                            <field name="max_temp_in"/>
+                                        </div>
+                                    </group>
+                                    <group>
+
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Archived Quantity">
+                                <group>
+                                    <group>
+                                        <field name="quantities_override"/>
+
+                                        <label for="consolidated_weight" string="Consolidated Weight:"/>
+                                        <div class="o_row">
+
+                                            <field name="consolidated_weight" nolabel="1"  attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                            <field name="consolidated_weight_uom_id" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                        </div>
+                                        <label for="consolidated_volume" string="Consolidated Volume:"/>
+                                        <div class="o_row">
+                                            <field name="consolidated_volume" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                            <field name="consolidated_volume_uom_id" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                        </div>
+                                        <label for="cons_charge_qty" string="Cons Charge QTY :"/>
+                                        <div class="o_row" name="outers">
+                                            <field name="cons_charge_qty" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                            <field name="cons_charge_qty_uom_id" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                        </div>
+
+
+                                        <field name="cons_charge_qty"/>
+                                        <field name="first_foreign_port_arrival_id"/>
+                                        <field name="last_foreign_port_arrival_id"/>
+                                    </group>
+                                    <group>
+                                        <label for="weight_vol" string="Weight Volume :"/>
+                                        <div class="o_row">
+                                            <field name="weight_vol" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                            <field name="weight_vol_uom_id" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                        </div>
+                                        <label for="excess_wgt_vol" string="Excess weight volume:"/>
+                                        <div class="o_row">
+                                            <field name="excess_wgt_vol" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                            <field name="excess_wgt_vol_uom_id" nolabel="1" attrs="{'readonly': [('quantities_override', '!=', True)]}"/>
+                                        </div>
+                                        <label for="weight_utilization" string="Volume Utilization :"/>
+                                        <div class="o_row">
+                                            <field name="weight_utilization"/>
+                                            <label for="weight_utilization" string="%"/>
+                                        </div>
+                                        <label for="volume_utilization" string="Weight Utilization :"/>
+                                        <div class="o_row">
+                                            <field name="volume_utilization"/>
+                                            <label for="volume_utilization" string="%"/>
+                                        </div>
+
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label for="frt_cost_mb_charge" string="FRT Cost MB Charge:"/>
+                                        <div class="o_row" name="outers">
+                                            <field name="frt_cost_mb_charge" nolabel="1"/>
+                                            <field name="frt_cost_mb_charge_currency_id" nolabel="1"/>
+                                        </div>
+
+                                    </group>
+                                    <group>
+
+                                        <label for="cost_free" string="Cost Free :"/>
+                                        <div class="o_row">
+                                            <field name="cost_free"/>
+                                            <label for="cost_free" string="%"/>
+                                        </div>
+
+                                    </group>
+                                    <group>
+                                        <label for="frt_cost_hb_charge" string="FRT Cost HB Charge:"/>
+                                        <div class="o_row">
+                                            <field name="frt_cost_hb_charge" nolabel="1"/>
+                                            <field name="frt_cost_hb_charge_currency_id" nolabel="1"/>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <label for="cost_free_unit" string="Cost Free Unit :"/>
+                                        <div class="o_row">
+                                            <field name="cost_free_unit" nolabel="1"/>
+                                            <field name="cost_free_units_uom_id" nolabel="1"/>
+                                        </div>
+                                    </group>
+
+                                </group>
+                                <group>
+                                    <field name="density_factor" widget="priority"/>
+
+                                </group>
+
+                            </page>
+                            <page string="Reference Number">
+                                <group>
+
+                                    <field name="reference_number_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Additional Details">
+                                <group>
+
+                                    <field name="Dest_cntr_comments"/>
+                                    <field name="chassis_provider"/>
+                                    <field name="atd_update"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_consol_details_tree" model="ir.ui.view">
+        <field name="name">consol.details.tree</field>
+        <field name="model">consol.details</field>
+        <field name="arch" type="xml">
+            <tree string="Consol Details" create="1" delete="1">
+                <field name="transport"/>
+                <field name="phase"/>
+
+            </tree>
+        </field>
+    </record>
+
+</odoo>

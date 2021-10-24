@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_freight_order_form_view">
+            <field name="name">freight.order.form.view</field>
+            <field name="model">freight.order</field>
+            <field name="arch" type="xml">
+                <form string="Freight Order">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="convert_to_booking" string="Convert To Booking" states="draft" type="object" default_focus="1" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_freight_booking"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-clipboard"
+                                    attrs="{'invisible': [('booking_count', '=', 0)]}">
+                                <field name="booking_count" widget="statinfo" string="Booking"/>
+                            </button>
+
+                        </div>
+                        <group>
+                            <group>
+                                <field name="buyer" domain="[('consignee', '=', True)]" attrs="{'required' : [('mode_of_transport', '!=', 'documentation')]}"/>
+                                <field name="buyer_address" domain="[('parent_id', '=', buyer),('parent_id','!=',False)]"
+                                           context="{'default_parent_id': buyer, 'default_type': 'other'}"
+                                           options="{'no_create_edit':1}"/>
+                            </group>
+                            <group>
+                                <field name="shipper" domain="[('shipper', '=', True)]" attrs="{'required' : [('mode_of_transport', '!=', 'documentation')]}"/>
+                                <field name="shipper_address" domain="[('parent_id', '=', shipper),('parent_id','!=',False)]"
+                                           context="{'default_parent_id': shipper, 'default_type': 'other'}"
+                                           options="{'no_create_edit':1}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="order_no" required="1"/>
+                                <field name="agent_id" required="1"/>
+                                <field name="confirm_no"/>
+                                <field name="invoice_no"/>
+                                <field name="req_ex_work"/>
+                                <field name="pre_advice_id"/>
+                            </group>
+                            <group>
+                                <field name="oder_date"/>
+                                <field name="confirm_date"/>
+                                <field name="invoice_date"/>
+                                <field name="followup_date"/>
+                                <field name="req_in_store"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="additional_terms"/>
+                                <field name="mode_of_transport" required="1"/>
+                                <field name="cont_mode"/>
+                                <field name="origin_country"/>
+                            </group>
+                            <group>
+                                <field name="goods_description"/>
+                                <field name="currency"/>
+                                <field name="currency_value"/>
+                                <field name="service_level"/>
+                                <field name="incoterm_id" attrs="{'invisible': [('mode_of_transport','=','land')], 'required' : [('mode_of_transport', 'not in', ['land','documentation'])]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="reefer_status" widget="radio" required="1" options="{'horizontal': true}"/>
+                                <field name="commodity_category" options="{'horizontal': true}" attrs="{'required' : [('mode_of_transport', 'not in', ['documentation'])]}"/>
+                                <field name="commodity_description" attrs="{'required' : [('mode_of_transport', 'not in', ['documentation'])]}"/>
+                                <field name="hs_code" widget="many2many_tags" attrs="{'required' : [('mode_of_transport', 'not in', ['documentation'])]}"/>
+                                <field name="clearance_required" options="{'horizontal': true}" widget="radio" required="1"/>
+                                <field name="warehousing" options="{'horizontal': true}" widget="radio" required="1"/>
+                            </group>
+                            <group>
+                                <field name="weight_type" options="{'horizontal': true}" widget="radio" required="1"/>
+                                <field name="gross_weight"  required="1"/>
+                                <field name="equipment_type" attrs="{'invisible': [('mode_of_transport','!=','ocean')], 'required' : [('mode_of_transport', 'in', ['ocean'])]}"/>
+                                <field name="vehicle_size" attrs="{'invisible': [('mode_of_transport','!=','land')], 'required' : [('mode_of_transport', 'in', ['land'])]}"/>
+                                <field name="vehicle_type" attrs="{'invisible': [('mode_of_transport','!=','land')], 'required' : [('mode_of_transport', 'in', ['land'])]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="order_line" string="Order Line">
+                                <group>
+                                    <field name="order_line_ids" nolabel="1"/>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="order_line_line_count"/>
+                                        <field name="order_line_inner_packs"/>
+                                        <field name="order_line_outer_packs"/>
+                                        <field name="order_line_quantity"/>
+                                    </group>
+                                    <group>
+                                        <field name="order_line_invoiced"/>
+                                        <field name="order_line_quantity_received"/>
+                                        <field name="order_line_remaining"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="planning" string="Planning">
+                                <group>
+                                    <group>
+                                        <field name="origin_cutoff"/>
+                                        <field name="carrier"/>
+                                        <field name="house_bill"/>
+                                        <field name="master_bill"/>
+                                    </group>
+                                    <group string="Vessel">
+                                        <field name="departure"/>
+                                        <field name="intermediate"/>
+                                        <field name="arrival"/>
+                                        <field name="goods_origin" />
+                                        <field name="goods_destination" />
+                                        <field name="port_of_loading"/>
+                                        <field name="discharge_port"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="estimated_depart"/>
+                                        <field name="estimated_arrive"/>
+                                        <field name="sending_agent"/>
+                                        <field name="receiving_agent"/>
+                                    </group>
+                                    <group string="Voyage/Flight">
+                                        <field name="voyage_departure"/>
+                                        <field name="voyage_intermediate"/>
+                                        <field name="voyage_arrival"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="packs" attrs="{'required':[('mode_of_transport','!=','documentation')]}"/>
+                                        <field name="package_type_id"/>
+                                        <field name="actual_volume"/>
+                                        <field name="actual_volume_uom"/>
+                                        <field name="actual_weight"/>
+                                        <field name="actual_weight_uom"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="shipment" string="Shipment">
+                                <group>
+                                    <group>
+                                        <field name="shipment_no"/>
+                                        <field name="booking_no"/>
+                                        <field name="declaration_ref"/>
+                                        <field name="shipment_house_bil"/>
+                                    </group>
+                                    <group>
+                                        <field name="shipment_origin" attrs="{'required':[('mode_of_transport','!=','documentation')]}"/>
+                                        <field name="shipment_destination" attrs="{'required':[('mode_of_transport','!=','documentation')]}"/>
+                                        <field name="shipment_service_level"/>
+                                    </group>
+                                </group>
+                                <group string="Console">
+                                    <field name="consol_details_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name="additional_details" string="Additional Details">
+                            </page>
+                            <page name="product_qty_summary" string="Product Quantity Summary">
+                                <group>
+                                    <field name="product_qty_summary_ids" nolabel="1"/>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="product_summary_line_count"/>
+                                        <field name="product_summary_inner_packs"/>
+                                        <field name="product_summary_outer_packs"/>
+                                        <field name="product_summary_quantity"/>
+                                    </group>
+                                    <group>
+                                        <field name="product_summary_invoiced"/>
+                                        <field name="product_summary_quantity_received"/>
+                                        <field name="product_summary_remaining"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="custom_val_charges" string="Custom Valuation Charges">
+                                <group>
+                                    <field name="custom_valuation_charges_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name="tracking_dates" string="Tracking Dates">
+                            </page>
+                            <page name="order_split" string="Order Split">
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_order_tree_view">
+            <field name="name">freight.order.tree.view</field>
+            <field name="model">freight.order</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Order">
+                    <field name="order_no"/>
+                    <field name="buyer"/>
+                    <field name="shipper"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_order_action">
+            <field name="name">Freight Order</field>
+            <field name="res_model">freight.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new order.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Freight Order" parent="freight.freight_operations" id="menu_freight_order"
+                  action="freight_order_action" />
+
+    </data>
+</odoo>

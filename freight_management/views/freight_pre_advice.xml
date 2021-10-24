@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_freight_pre_advice_form_view">
+            <field name="name">freight.pre.advice.form.view</field>
+            <field name="model">freight.pre.advice</field>
+            <field name="arch" type="xml">
+                <form string="Freight Pre Advice">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="pre_advice_id"/>
+                                <field name="master_bill"/>
+                                <field name="house_bill"/>
+                                <field name="load_port"/>
+                                <field name="discharge_port"/>
+                            </group>
+                            <group>
+                                <field name="buyer"/>
+                                <field name="buyer_address"/>
+                                <field name="carrier"/>
+                                <field name="sending_agent"/>
+                                <field name="receiving_agent"/>
+                            </group>
+                        </group>
+                        <group string="Shipment Information" name="Shipment_information">
+                            <group>
+                                <field name="shipment"/>
+                                <field name="is_canceled"/>
+                            </group>
+                            <group>
+                                <label for="weight"/>
+                                <div class="o_row">
+                                    <field name="weight"/>
+                                    <field name="weight_uom"/>
+                                </div>
+                                <label for="volume"/>
+                                <div class="o_row">
+                                    <field name="volume"/>
+                                    <field name="volume_uom"/>
+                                </div>
+                                <label for="packs"/>
+                                <div class="o_row">
+                                    <field name="packs"/>
+                                    <field name="packs_uom"/>
+                                </div>
+                            </group>
+                        </group>
+                        <group string="Container">
+                            <field name="container_ids" nolabel="1">
+                                <tree>
+                                    <field name="number"/>
+                                    <field name="count"/>
+                                    <field name="cont_type"/>
+                                    <field name="seal"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group  string="Order">
+                            <field name="order_ids" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_pre_advice_tree_view">
+            <field name="name">freight.pre.advice.tree.view</field>
+            <field name="model">freight.pre.advice</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Pre Advice">
+                    <field name="pre_advice_id"/>
+                    <field name="master_bill"/>
+                    <field name="house_bill"/>
+                    <field name="load_port"/>
+                    <field name="discharge_port"/>
+                    <field name="carrier"/>
+                    <field name="sending_agent"/>
+                    <field name="receiving_agent"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_freight_pre_advice_action">
+            <field name="name">Pre-Advice</field>
+            <field name="res_model">freight.pre.advice</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new pol.
+                </p>
+            </field>
+        </record>
+
+<!--        <menuitem name="Pre-Advise" parent="freight.freight_configuration" id="menu_freight_pre_advice_id"-->
+<!--                  action="view_freight_pre_advice_action" />-->
+
+    </data>
+</odoo>

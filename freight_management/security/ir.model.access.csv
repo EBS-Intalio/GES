@@ -35,3 +35,7 @@ access_freight_sailing,access_freight_sailing,freight_management.model_freight_s
 access_freight_service_details,access_freight_service_details,freight_management.model_freight_service_details,,1,1,1,1
 access_vehicle_details,access_vehicle_details,freight_management.model_vehicle_details,,1,1,1,1
 access_consol_details,access_consol_details,freight_management.model_consol_details,,1,1,1,1
+access_customer_valuation_charge,access.customer.valuation.charge,freight_management.model_customer_valuation_charge,,1,1,1,1
+access_freight_pre_advice,access.freight.pre.advice,freight_management.model_freight_pre_advice,,1,1,1,1
+access_product_quantity_summary,access_product.quantity.summary,freight_management.model_product_quantity_summary,,1,1,1,1
+access_freight_order_line,access_freight_order_line,freight_management.model_freight_order_line,,1,1,1,1

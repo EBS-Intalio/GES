@@ -191,6 +191,8 @@ class FreightBooking(models.Model):
     equipment_count = fields.Integer(string='Equipment Count')
     is_review_booking = fields.Boolean('Review Booking')
 
+    freight_order_id = fields.Many2one('freight.order', string='Freight Order')
+
     def action_create_new_invoice(self):
         """
         Create a new Customer Invoice

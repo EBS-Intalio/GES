@@ -183,7 +183,7 @@
                                 </group>
                                 <group>
                                     <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', 'not in', ['land','documentation'])]}"/>
-                                    <field name="incotearm_name" string="Incoterm Name"/>
+                                    <field name="incotearm_name" string="Incoterm Name" attrs="{'invisible': [('transport','=','land')]}"/>
                                     <br/>
                                     <field name="dangerous_goods"/>
                                     <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)], 'required' : [('dangerous_goods', '=', True)]}" />

@@ -700,77 +700,7 @@
                                 </notebook>
                             </page>
                         <page name="consolidation_details" string="Consolidation Details">
-                            <field name="consol_details_ids">
-                                <tree>
-                                    <field name="fst_load"/>
-                                </tree>
-                                <form>
-                                    <sheet>
-                                        <group string="Consol Details">
-                                            <field name="is_domestic"/>
-                                            <label for="type"/>
-                                            <div class="o_row">
-                                                <field name="type"/>
-                                                <label for="transport" style="font-weight:bold"/>
-                                                <field name="transport"/>
-                                                <label for="cont_mode" style="font-weight:bold"/>
-                                                <field name="cont_mode"/>
-                                            </div>
-                                            <label for="fst_load"/>
-                                            <div class="o_row">
-                                                <field name="fst_load"/>
-                                                <label for="last_disc" style="font-weight:bold"/>
-                                                <field name="last_disc"/>
-                                                <label for="phase" style="font-weight:bold"/>
-                                                <field name="phase"/>
-                                            </div>
-
-                                        </group>
-                                        <group string="Voyage">
-                                            <label for="voyage"/>
-                                            <div class="o_row">
-                                                <field name="voyage"/>
-                                                <label for="vessel" style="font-weight:bold"/>
-                                                <field name="vessel"/>
-                                            </div>
-                                            <label for="load_port"/>
-                                            <div class="o_row">
-                                                <field name="load_port"/>
-                                                <label for="etd" style="font-weight:bold"/>
-                                                <field name="etd"/>
-                                                <label for="atd" style="font-weight:bold"/>
-                                                <field name="atd"/>
-                                            </div>
-                                            <label for="disc_port"/>
-                                            <div class="o_row">
-                                                <field name="disc_port"/>
-                                                <label for="eta" style="font-weight:bold"/>
-                                                <field name="eta"/>
-                                                <label for="ata" style="font-weight:bold"/>
-                                                <field name="ata"/>
-                                            </div>
-                                            <label for="is_domestic_voyage"/>
-                                            <div class="o_row">
-                                                <field name="is_domestic_voyage"/>
-                                                <label for="is_linked" style="font-weight:bold"/>
-                                                <field name="is_linked"/>
-                                                <label for="is_charter" style="font-weight:bold"/>
-                                                <field name="is_charter"/>
-                                            </div>
-                                        </group>
-                                        <group>
-                                            <group>
-                                                <field name="bol"/>
-                                                <field name="payment"/>
-                                            </group>
-                                            <group>
-                                                <field name="serv_level"/>
-                                                <field name="crn"/>
-                                            </group>
-                                        </group>
-                                    </sheet>
-                                </form>
-                            </field>
+                            <field name="consol_details_ids"/>
                         </page>
                         <page name="custom_fields" string="Custom Fields">
                         <group string="Custom Fields">

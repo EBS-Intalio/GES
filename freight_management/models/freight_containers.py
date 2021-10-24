@@ -24,3 +24,4 @@ class FreightContainer(models.Model):
     dep_container_id = fields.Many2one('res.partner', string='Dep. Container Yard')
     arr_container_yard_id = fields.Many2one('res.partner', string='Arr. Container Yard')
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
+    seal = fields.Char('Seal#')

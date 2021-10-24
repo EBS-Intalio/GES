@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.1.42',
+    'version': '14.0.1.43',
 
     'category': 'Freight',
     'description': """
@@ -25,6 +25,7 @@
         "views/freight_pod.xml",
         # "views/freight_pod_destination.xml",
         "views/freight_pol.xml",
+        "views/consol_details_view.xml",
         # "views/freight_por_origin.xml"
         "views/sale_order.xml",
         "report/sale_order_ges.xml",
@@ -52,6 +53,11 @@
         "views/vehicle_details.xml",
         "views/freight_operation.xml",
         "views/freight_incoterms.xml",
+        "views/freight_pre_advice.xml",
+        "views/freight_order.xml",
+        "views/customs_valuation_charges.xml",
+        "views/product_quantity_summary.xml",
+        "views/freight_order_line.xml",
     ],
     'installable': True,
     'application': True,
