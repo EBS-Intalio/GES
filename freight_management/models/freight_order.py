@@ -32,7 +32,7 @@ class FreightOrder(models.Model):
     followup_date = fields.Date(string="Follow-Up Date")
     req_in_store = fields.Date(string="Req In Store")
     goods_description = fields.Char(string="Goods description")
-    currency = fields.Many2one(string="Currency")
+    currency = fields.Many2one('res.currency', string="Currency")
     currency_value = fields.Float(string="Currency value")
     service_level = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
                                       ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
@@ -182,6 +182,7 @@ class FreightOrder(models.Model):
         :return:
         """
         vals = {
+            'job_management_order_ref': self.order_no,
             'transport': self.mode_of_transport,
             'source_location_id': self.shipment_origin and self.shipment_origin.id or False,
             'destination_location_id': self.shipment_destination and self.shipment_destination.id or False,
