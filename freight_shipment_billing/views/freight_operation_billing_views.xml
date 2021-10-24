@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+
+    <record id="freight_clearance_filter_view" model="ir.ui.view">
+    <field name="name">freight.operation.billing.view.search</field>
+    <field name="model">freight.operation.billing</field>
+    <field name="arch" type="xml">
+        <search string="Search Billing">
+            <field name="debtor"/>
+            <field name="vendor"/>
+            <field name="operation_billing_id"/>
+            <field name="booking_id"/>
+            <field name="operating_unit_id"/>
+            <field name="source_location_id"/>
+            <field name="destination_location_id"/>
+            <field name="transport"/>
+            <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Debtor" name="debtor" domain="[]"  context="{'group_by':'debtor'}"/>
+                    <filter string="Creditor" name="vendor" domain="[]" context="{'group_by':'vendor'}"/>
+                    <filter string="Shipment" name="operation_billing_id" domain="[]" context="{'group_by':'operation_billing_id'}"/>
+                    <filter string="Booking" name="booking_id" domain="[]" context="{'group_by':'booking_id'}"/>
+                    <filter string="Branch" name="operating_unit_id" domain="[]" context="{'group_by':'operating_unit_id'}"/>
+                    <filter string="source location" name="source_location_id" domain="[]" context="{'group_by':'source_location_id'}"/>
+                    <filter string="Destination location" name="destination_location_id" domain="[]" context="{'group_by':'destination_location_id'}"/>
+                    <filter string="Transport" name="transport" domain="[]" context="{'group_by':'transport'}"/>
+                </group>
+                </search>
+            </field>
+        </record>
+
     <record id="view_freight_operation_Billing_form" model="ir.ui.view">
         <field name="name">freight.operation.billing.form</field>
         <field name="model">freight.operation.billing</field>
@@ -9,7 +38,7 @@
                     <group>
                         <group>
                             <field name="charge_code_sequence" />
-                            <field name="charge_code" options="{'no_create': True,'no_create_edit':True}"/>
+                            <field name="charge_code" options="{'no_create': True,'no_create_edit':True}" domain="['|', ('transport', '=', 'all'), ('transport', '=', parent.transport)]"/>
                             <field name="description" />
                             <field name="product_categ_id" options="{'no_create': True,'no_create_edit':True}"/>
                             <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}"/>
@@ -22,7 +51,9 @@
                             <field name="vendor" options="{'no_create': True,'no_create_edit':True}" />
                             <field name="cost_recognition" />
                             <field name="posted_cost" readonly="1" />
+                            <field name="cost_invoice_no" readonly="1" />
                             <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" />
+                            <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" />
                         </group>
                         <group>
                             <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}" />
@@ -44,11 +75,71 @@
                             <field name="local_sell_invoice_amount" />
                             <field name="invoice_line_id" invisible="1" />
                             <field name="sell_invoice_tax_amount" readonly="1" />
-                            <field name="operation_billing_id" invisible="1"/>
+                            <field name="operation_billing_id"/>
+                            <field name="bill_created" invisible="1"/>
+                            <field name="invoice_created" invisible="1"/>
                         </group>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="view_freight_operation_Billing_tree">
+            <field name="name">freight.operation.billing.tree</field>
+            <field name="model">freight.operation.billing</field>
+            <field name="arch" type="xml">
+                <tree string="Billing" create="0" edit="0" delete="0">
+                    <field name="vendor" options="{'no_create': True,'no_create_edit':True}" />
+                    <field name="debtor"/>
+                    <field name="charge_code" options="{'no_create': True,'no_create_edit':True}"/>
+                    <field name="description"/>
+                    <field name="product_categ_id" options="{'no_create': True,'no_create_edit':True}"/>
+                    <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}"/>
+                    <field name="analytic_account_id" options="{'no_create': True,'no_create_edit':True}"/>
+                    <field name="cost_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide"/>
+                    <field name="os_cost_amount" optional="hide" />
+                    <field name="estimated_cost" readonly="1" optional="hide" />
+                    <field name="company_currency_id" invisible="1" optional="hide" />
+                    <field name="local_cost_amount"  optional="hide"/>
+                    <field name="cost_recognition" optional="hide" />
+                    <field name="posted_cost" readonly="1" optional="hide" />
+                    <field name="cost_invoice_no" readonly="1" optional="hide" />
+                    <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
+                    <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
+                    <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
+                    <field name="os_sell_amount" optional="hide" />
+                    <field name="estimated_revenue" readonly="1" optional="hide" />
+                    <field name="local_sell_amount" optional="hide" />
+                    <field name="sell_recognition" optional="hide" />
+                    <field name="posted_revenue" readonly="1" optional="hide" />
+                    <field name="sell_reference" optional="hide" />
+                    <field name="cost_exchange_rate" readonly="1" optional="hide" />
+                    <field name="sell_exchange_rate" readonly="1" optional="hide" />
+                    <field name="reference" optional="hide" />
+                    <field name="ar_invoice_number" readonly="1" optional="hide" />
+                    <field name="invoice_type" optional="hide" />
+                    <field name="invoice_date" optional="hide" />
+                    <field name="invoice_currency_id" invisible="1" />
+                    <field name="sell_invoice_amount" optional="hide" />
+                    <field name="local_sell_invoice_amount" optional="hide" />
+                    <field name="invoice_line_id" invisible="1" />
+                    <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
+                    <field name="operation_billing_id" />
+                    <field name="bill_created" invisible="1"/>
+                    <field name="invoice_created" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_freight_Billing">
+            <field name="name">Billing</field>
+            <field name="res_model">freight.operation.billing</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <menuitem name="Billing" parent="freight.freight_operations" id="menu_freight_billing"
+                  action="action_freight_Billing" sequence="15"/>
+
 </odoo>

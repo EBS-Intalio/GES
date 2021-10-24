@@ -12,6 +12,7 @@
     'website': "http://www.ever-bs.com/",
     'data': [
         "security/ir.model.access.csv",
+        "views/product_views.xml",
         "views/account_move_view.xml",
         "views/freight_operation_billing_views.xml",
         "views/freight_operation_views.xml",

@@ -9,6 +9,18 @@ class FreightOperationInherit(models.Model):
 
     account_operation_lines = fields.One2many(comodel_name='freight.operation.billing', inverse_name='operation_billing_id')
 
+    total_revenue = fields.Monetary(string="Total Revenue", currency_field='company_currency_id',  compute="compute_data")
+    total_cost = fields.Monetary(string="Total Cost", currency_field='company_currency_id',  compute="compute_data")
+    profit = fields.Monetary(string="Profit", currency_field='company_currency_id',  compute="compute_data")
+    company_currency_id = fields.Many2one('res.currency', string="Currency",default=lambda self: self.env.company.currency_id.id)
+
+    @api.depends('account_operation_lines')
+    def compute_data(self):
+        for rec in self:
+            rec.total_revenue = sum(rec.account_operation_lines.mapped('local_sell_amount'))
+            rec.total_cost = sum(rec.account_operation_lines.mapped('local_cost_amount'))
+            rec.profit = rec.total_revenue - rec.total_cost
+
 
 class FreightOperationBilling(models.Model):
     _name = "freight.operation.billing"
@@ -17,23 +29,24 @@ class FreightOperationBilling(models.Model):
     charge_code = fields.Many2one('product.product', 'Charge Code')
     description = fields.Char(compute='_default_description', string="Description", readonly=False)
     product_categ_id = fields.Many2one('product.category', string='Product Type', related='charge_code.categ_id')
-    operating_unit_id = fields.Many2one('operating.unit', compute='_default_operating_unit_id', readonly=False , string='Branch')
+    operating_unit_id = fields.Many2one('operating.unit', compute='_default_operating_unit_id', readonly=False , string='Branch', store=True)
     analytic_account_id = fields.Many2one('account.analytic.account', compute='_default_analytic_account_id', readonly=False, string='Department')
-    cost_currency_id = fields.Many2one('res.currency', string='Cost Currency')
+    cost_currency_id = fields.Many2one('res.currency', string='Cost Currency', default=lambda self: self.env.company.currency_id.id)
     os_cost_amount = fields.Monetary(string="OS Cost Amount", currency_field='cost_currency_id')
     company_currency_id = fields.Many2one('res.currency', string="Currency", default=lambda self: self.env.company.currency_id.id)
     estimated_cost = fields.Monetary(string="Estimated Cost", currency_field='company_currency_id')
     local_cost_amount = fields.Monetary(string="Local Cost Amount", currency_field='company_currency_id', compute='_compute_local_cost_amount')
-    vendor = fields.Many2one("res.partner", string="Vendor", domain="[('is_payable', '=', True)]")
+    vendor = fields.Many2one("res.partner", string="Creditor", domain="[('is_payable', '=', True)]")
     cost_recognition = fields.Selection(([('imm', 'IMM')]), string='Cost Recognition', default='imm')
     posted_cost = fields.Boolean("Posted Cost", default=False)
-    cost_tax_ids = fields.Many2many('account.tax', string="Tax")
-    sell_currency_id = fields.Many2one('res.currency', string='Sell Currency')
+    cost_tax_ids = fields.Many2many(comodel_name='account.tax', relation="billing_cost_tax_rel", string="Cost Tax", domain="[('type_tax_use', '=', 'purchase')]")
+    sell_tax_ids = fields.Many2many(comodel_name='account.tax', relation="billing_sell_tax_rel", string="Sell Tax", domain="[('type_tax_use', '=', 'sale')]")
+    sell_currency_id = fields.Many2one('res.currency', string='Sell Currency', default=lambda self: self.env.company.currency_id.id)
     os_sell_amount = fields.Monetary(string="OS Sell Amount", currency_field='sell_currency_id')
     estimated_revenue = fields.Monetary(string="Estimated Revenue", currency_field='company_currency_id')
     local_sell_amount = fields.Monetary(string="Local Sell Amount", currency_field='company_currency_id',
                                         compute='_compute_local_sell_amount')
-    debtor = fields.Many2one('res.partner', string='Debtor', related='operation_billing_id.agent_id')
+    debtor = fields.Many2one('res.partner', string='Debtor', related='operation_billing_id.agent_id', store=True)
     sell_recognition = fields.Selection(([('imm', 'IMM')]), string='Sell Recognition', default='imm')
     posted_revenue = fields.Boolean("Posted Revenue", default=False)
     sell_reference = fields.Char("Sell Reference")
@@ -45,6 +58,7 @@ class FreightOperationBilling(models.Model):
     invoice_date = fields.Date(related='ar_invoice_number.invoice_date', string='Inv. Date')
     invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='ar_invoice_number.currency_id')
     invoice_line_id = fields.Many2one('account.move.line')
+    cost_invoice_no = fields.Char("Cost Inv No.")
     sell_invoice_amount = fields.Monetary(string="Sell Inv. Amount", currency_field='invoice_currency_id', related='invoice_line_id.price_subtotal')
     local_sell_invoice_amount = fields.Monetary(string="Local Sell Invoice Amount", currency_field='company_currency_id',
                                         compute='_compute_local_sell_invoice_amount')
@@ -53,18 +67,28 @@ class FreightOperationBilling(models.Model):
     sell_invoice_tax_amount = fields.Monetary(string="Sell Inv. Tax Amount", currency_field='invoice_currency_id', related='invoice_line_id.tax_base_amount')
 
     operation_billing_id = fields.Many2one('freight.operation', readonly=True)
+    booking_id = fields.Many2one('freight.booking', related='operation_billing_id.booking_id', store=True)
+    source_location_id = fields.Many2one('freight.port', related='operation_billing_id.source_location_id', store=True)
+    destination_location_id = fields.Many2one('freight.port', related='operation_billing_id.destination_location_id', store=True)
+    transport = fields.Selection(related='operation_billing_id.transport', store=True)
+
+    bill_created = fields.Boolean("Bill Created", default=False)
+    invoice_created = fields.Boolean("Invoice Created", default=False)
 
     @api.depends('charge_code')
     def _default_description(self):
-        self.description = self.charge_code.name
+        for rec in self:
+            rec.description = rec.charge_code.name
 
     @api.depends('operation_billing_id')
     def _default_operating_unit_id(self):
-        self.operating_unit_id = self.operation_billing_id.operating_unit_id.id
+        for rec in self:
+            rec.operating_unit_id = rec.operation_billing_id.operating_unit_id.id
 
     @api.depends('operation_billing_id')
     def _default_analytic_account_id(self):
-        self.analytic_account_id = self.operation_billing_id.analytic_account_id.id
+        for rec in self:
+            rec.analytic_account_id = rec.operation_billing_id.analytic_account_id.id
 
     @api.depends('cost_currency_id', 'os_cost_amount')
     def _compute_local_cost_amount(self):

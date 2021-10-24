@@ -31,7 +31,9 @@
                             <field name="vendor" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                             <field name="cost_recognition" optional="hide" />
                             <field name="posted_cost" readonly="1" optional="hide" />
+                            <field name="cost_invoice_no" readonly="1" optional="hide" />
                             <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
+                            <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                             <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                             <field name="os_sell_amount" optional="hide" />
                             <field name="estimated_revenue" readonly="1" optional="hide" />
@@ -52,8 +54,16 @@
                             <field name="invoice_line_id" invisible="1" />
                             <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
                             <field name="operation_billing_id" invisible="1"/>
+                            <field name="bill_created" invisible="1"/>
+                            <field name="invoice_created" invisible="1"/>
                         </tree>
                     </field>
+                    <group>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="total_revenue" />
+                        <field name="total_cost" />
+                        <field name="profit" />
+                    </group>
                 </page>
             </xpath>
         </field>
