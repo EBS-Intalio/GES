@@ -52,6 +52,7 @@
                             <field name="sell_invoice_amount" optional="hide" />
                             <field name="local_sell_invoice_amount" optional="hide" />
                             <field name="invoice_line_id" invisible="1" />
+                            <field name="bill_line_id" invisible="1" />
                             <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
                             <field name="operation_billing_id" invisible="1"/>
                             <field name="bill_created" invisible="1"/>

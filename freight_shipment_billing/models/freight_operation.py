@@ -58,6 +58,7 @@ class FreightOperationBilling(models.Model):
     invoice_date = fields.Date(related='ar_invoice_number.invoice_date', string='Inv. Date')
     invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='ar_invoice_number.currency_id')
     invoice_line_id = fields.Many2one('account.move.line')
+    bill_line_id = fields.Many2one('account.move.line')
     cost_invoice_no = fields.Char("Cost Inv No.")
     sell_invoice_amount = fields.Monetary(string="Sell Inv. Amount", currency_field='invoice_currency_id', related='invoice_line_id.price_subtotal')
     local_sell_invoice_amount = fields.Monetary(string="Local Sell Invoice Amount", currency_field='company_currency_id',
@@ -120,3 +121,34 @@ class FreightOperationBilling(models.Model):
                 rec.local_sell_invoice_amount = rec.invoice_currency_id._convert(rec.sell_invoice_amount, rec.company_currency_id, company, date)
             else:
                 rec.local_sell_invoice_amount = 0
+
+
+    def action_post_sell(self):
+        invoice_line_ids = []
+        for record in self:
+            invoice_line_ids.append((0, 0, {
+                'product_id': record.charge_code.id,
+                'transport': record.transport,
+                'direction': record.operation_billing_id.direction,
+                'service_type': record.operation_billing_id.service_level,
+                'operating_unit_id': record.operating_unit_id.id,
+                'analytic_account_id': record.operating_unit_id.id,
+                'quantity': 1,
+                'price_unit': record.os_sell_amount,
+                'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
+            }))
+        debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
+            'debtor', 'in', self.debtor.ids)], fields=['debtor'],groupby=['debtor'])
+        mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
+        for data in mapped_data:
+            debtor_id = self.env['res.partner'].browse(data)
+            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id)], limit=1)
+            invoice_id = self.env['account.move'].sudo().create({
+                            'name': "/",
+                            'move_type': 'out_invoice',
+                            'partner_id': debtor_id.id,
+                            'invoice_date': fields.Date.today(),
+                            'operating_unit_id':billing_id.operating_unit_id,
+                            'currency_id':billing_id.sell_currency_id.id,
+                            'invoice_line_ids': invoice_line_ids,
+            })

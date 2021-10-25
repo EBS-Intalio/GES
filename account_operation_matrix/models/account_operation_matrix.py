@@ -8,11 +8,19 @@ class AccountOperationMatrix(models.Model):
 
     name = fields.Char("Line of service", required=True)
     shipment_department = fields.Char("Shipment Department")
-    transport = fields.Selection(([('air', 'Air'), ('sea', 'Sea'), ('road', 'Road'), ('sea_then_air', 'Sea then Air'),
-                                   ('air_then_sea', 'Air then Sea'), ('rail', 'Rail'), ('courier', 'Courier')]), default='air', string='Mode')
+    transport = fields.Selection([('air', 'Air'),
+                                  ('ocean', 'Ocean'),
+                                  ('land', 'Road'),
+                                  ('sea_then_air', 'Sea then Air'),
+                                  ('air_then_sea', 'Air then Sea'),
+                                  ('rail', 'Rail'),
+                                  ('courier', 'Courier'),
+                                  ('documentation', 'Documentation')], default='air', string='Mode')
     direction = fields.Selection([('import','Import'),('export','Export'),('cross','Cross')], default='import', string='Direction')
-    service_type = fields.Selection([('door_to_door','Door to Door'),('door_to_port','Door to Port'),
-                                     ('port_to_port','Port to Port'),('port_to_door','Port to Door')], default='door_to_door', string='Service type')
+    service_type = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
+                                     ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
+                                     ('custom_and_brokerage', 'Customs and Brokerage')],
+                                    string="Service Level")
     income_account = fields.Many2one('account.account', 'Income Account',required=True)
     expense_account = fields.Many2one('account.account', 'Expense Account',required=True)
     matrix_line_ids = fields.One2many('account.operation.matrix.line', 'operation_matrix_id')

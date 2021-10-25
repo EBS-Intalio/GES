@@ -4,14 +4,20 @@ from odoo import models, fields, api
 class AccountMoveLineInherit(models.Model):
     _inherit = 'account.move.line'
 
-    transport = fields.Selection(([('air', 'Air'), ('sea', 'Sea'), ('road', 'Road'), ('sea_then_air', 'Sea then Air'),
-                                   ('air_then_sea', 'Air then Sea'), ('rail', 'Rail'), ('courier', 'Courier')]),
-                                 default='air', string='Mode')
+    transport = fields.Selection([('air', 'Air'),
+                                  ('ocean', 'Ocean'),
+                                  ('land', 'Road'),
+                                  ('sea_then_air', 'Sea then Air'),
+                                  ('air_then_sea', 'Air then Sea'),
+                                  ('rail', 'Rail'),
+                                  ('courier', 'Courier'),
+                                  ('documentation', 'Documentation')], default='air', string='Mode')
     direction = fields.Selection([('import', 'Import'), ('export', 'Export'), ('cross', 'Cross')], default='import',
                                  string='Direction')
     service_type = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
-                                     ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door')],
-                                    default='door_to_door', string='Service type')
+                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
+                                      ('custom_and_brokerage', 'Customs and Brokerage')],
+                                     string="Service Level")
 
     @api.onchange('product_id', 'transport', 'direction', 'service_type')
     def _onchange_product_transport_direction_service(self):
