@@ -6,10 +6,11 @@
             <field name="name">freight.order.form.view</field>
             <field name="model">freight.order</field>
             <field name="arch" type="xml">
-                <form string="Freight Order">
+                <form string="Order">
                     <header>
                         <field name="state" widget="statusbar"/>
                         <button name="convert_to_booking" string="Convert To Booking" states="draft" type="object" default_focus="1" class="oe_highlight"/>
+                        <button name="create_declaration" string="Create Declaration" states="draft" type="object" default_focus="1" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -39,7 +40,7 @@
                         <group>
                             <group>
                                 <field name="order_no" required="1"/>
-                                <field name="agent_id" required="1"/>
+                                <field name="agent_id"/>
                                 <field name="confirm_no"/>
                                 <field name="invoice_no"/>
                                 <field name="req_ex_work"/>
@@ -49,6 +50,7 @@
                                 <field name="oder_date"/>
                                 <field name="confirm_date"/>
                                 <field name="invoice_date"/>
+                                <field name="order_status"/>
                                 <field name="followup_date"/>
                                 <field name="req_in_store"/>
                             </group>
@@ -65,15 +67,15 @@
                                 <field name="currency"/>
                                 <field name="currency_value"/>
                                 <field name="service_level"/>
-                                <field name="incoterm_id" attrs="{'invisible': [('mode_of_transport','=','land')], 'required' : [('mode_of_transport', 'not in', ['land','documentation'])]}"/>
+                                <field name="incoterm_id" attrs="{'invisible': [('mode_of_transport','=','land')]}"/>
                             </group>
                         </group>
                         <group>
                             <group>
                                 <field name="reefer_status" widget="radio" required="1" options="{'horizontal': true}"/>
                                 <field name="commodity_category" options="{'horizontal': true}" attrs="{'required' : [('mode_of_transport', 'not in', ['documentation'])]}"/>
-                                <field name="commodity_description" attrs="{'required' : [('mode_of_transport', 'not in', ['documentation'])]}"/>
-                                <field name="hs_code" widget="many2many_tags" attrs="{'required' : [('mode_of_transport', 'not in', ['documentation'])]}"/>
+                                <field name="commodity_description"/>
+                                <field name="hs_code" widget="many2many_tags" />
                                 <field name="clearance_required" options="{'horizontal': true}" widget="radio" required="1"/>
                                 <field name="warehousing" options="{'horizontal': true}" widget="radio" required="1"/>
                             </group>
@@ -92,15 +94,15 @@
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="order_line_line_count"/>
-                                        <field name="order_line_inner_packs"/>
-                                        <field name="order_line_outer_packs"/>
-                                        <field name="order_line_quantity"/>
+                                        <field name="order_line_line_count" readonly="1"/>
+                                        <field name="order_line_inner_packs" readonly="1"/>
+                                        <field name="order_line_outer_packs" readonly="1"/>
+                                        <field name="order_line_quantity" readonly="1"/>
                                     </group>
                                     <group>
-                                        <field name="order_line_invoiced"/>
-                                        <field name="order_line_quantity_received"/>
-                                        <field name="order_line_remaining"/>
+                                        <field name="order_line_invoiced" readonly="1"/>
+                                        <field name="order_line_quantity_received" readonly="1"/>
+                                        <field name="order_line_remaining" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
@@ -149,14 +151,14 @@
                             <page name="shipment" string="Shipment">
                                 <group>
                                     <group>
-                                        <field name="shipment_no"/>
-                                        <field name="booking_no"/>
+                                        <field name="shipment_no" readonly="1"/>
+                                        <field name="booking_no" readonly="1"/>
                                         <field name="declaration_ref"/>
                                         <field name="shipment_house_bil"/>
                                     </group>
                                     <group>
-                                        <field name="shipment_origin" attrs="{'required':[('mode_of_transport','!=','documentation')]}"/>
-                                        <field name="shipment_destination" attrs="{'required':[('mode_of_transport','!=','documentation')]}"/>
+                                        <field name="shipment_origin" />
+                                        <field name="shipment_destination"/>
                                         <field name="shipment_service_level"/>
                                     </group>
                                 </group>
@@ -164,23 +166,23 @@
                                     <field name="consol_details_ids" nolabel="1"/>
                                 </group>
                             </page>
-                            <page name="additional_details" string="Additional Details">
-                            </page>
+<!--                            <page name="additional_details" string="Additional Details">-->
+<!--                            </page>-->
                             <page name="product_qty_summary" string="Product Quantity Summary">
                                 <group>
-                                    <field name="product_qty_summary_ids" nolabel="1"/>
+                                    <field name="product_qty_summary_ids" nolabel="1" readonly="1"/>
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="product_summary_line_count"/>
-                                        <field name="product_summary_inner_packs"/>
-                                        <field name="product_summary_outer_packs"/>
-                                        <field name="product_summary_quantity"/>
+                                        <field name="product_summary_line_count" readonly="1"/>
+                                        <field name="order_line_inner_packs" readonly="1"/>
+                                        <field name="order_line_outer_packs" readonly="1"/>
+                                        <field name="product_summary_quantity" readonly="1"/>
                                     </group>
                                     <group>
-                                        <field name="product_summary_invoiced"/>
-                                        <field name="product_summary_quantity_received"/>
-                                        <field name="product_summary_remaining"/>
+                                        <field name="product_summary_invoiced" readonly="1"/>
+                                        <field name="product_summary_quantity_received" readonly="1"/>
+                                        <field name="product_summary_remaining" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
@@ -203,7 +205,7 @@
             <field name="name">freight.order.tree.view</field>
             <field name="model">freight.order</field>
             <field name="arch" type="xml">
-                <tree string="Freight Order">
+                <tree string="Order">
                     <field name="order_no"/>
                     <field name="buyer"/>
                     <field name="shipper"/>
@@ -212,7 +214,7 @@
         </record>
 
         <record model="ir.actions.act_window" id="freight_order_action">
-            <field name="name">Freight Order</field>
+            <field name="name">Order</field>
             <field name="res_model">freight.order</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
@@ -222,7 +224,7 @@
             </field>
         </record>
 
-        <menuitem name="Freight Order" parent="freight.freight_operations" id="menu_freight_order"
+        <menuitem name="Order" parent="freight.freight_operations" id="menu_freight_order"
                   action="freight_order_action" />
 
     </data>

@@ -311,8 +311,19 @@ class FreightOperation(models.Model):
     reference_ids = fields.One2many('freight.reference.number', 'shipment_id', string='Reference Number', copy=False)
     service_details_ids = fields.One2many('freight.service.details', 'freight_booking_id', string='Commodity Details', copy=False)
 
+    @api.model
+    def create(self, values):
+        """
 
-
+        :param values:
+        :return:
+        """
+        if values.get('name', _('New')) == _('New') and values.get('operation') not in ['master', 'house', 'direct']:
+            values['name'] = self.env['ir.sequence'].next_by_code('freight.operation') or _('New')
+        res = super(FreightOperation, self).create(values)
+        if res.booking_id and res.booking_id.freight_order_id:
+            res.booking_id.freight_order_id.shipment_no = res.name
+        return res
 
     def check_admin(self):
         """

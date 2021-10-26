@@ -6,7 +6,7 @@
             <field name="name">freight.order.line.form.view</field>
             <field name="model">freight.order.line</field>
             <field name="arch" type="xml">
-                <form string="Freight Order Line">
+                <form string="Order Line">
                     <sheet>
                         <group>
                             <group>
@@ -28,6 +28,8 @@
                                 <field name="invoice_no"/>
                                 <field name="origin"/>
                                 <field name="manufacturer"/>
+                                <field name="manufacturer_address" domain="[('parent_id', '=', manufacturer),('parent_id','!=',False)]"
+                                           context="{'default_parent_id': manufacturer, 'default_type': 'other'}" options="{'no_create_edit':1}"/>
                             </group>
                         </group>
                     </sheet>
@@ -39,7 +41,7 @@
             <field name="name">freight.order.line.tree.view</field>
             <field name="model">freight.order.line</field>
             <field name="arch" type="xml">
-                <tree string="Freight Order Line">
+                <tree string="Order Line">
                     <field name="line"/>
                     <field name="product_id" />
 

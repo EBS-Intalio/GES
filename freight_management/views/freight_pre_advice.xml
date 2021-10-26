@@ -93,7 +93,7 @@
             </field>
         </record>
 
-        <menuitem name="Pre-Advise" parent="freight.freight_configuration" id="menu_freight_pre_advice_id"
+        <menuitem name="Pre-Advise" parent="freight.freight_operations" id="menu_freight_pre_advice_id"
                   action="view_freight_pre_advice_action" />
 
     </data>

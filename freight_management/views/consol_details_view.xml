@@ -5,110 +5,112 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <group string="Consol Details">
-                        <field name="is_domestic"/>
-                        <label for="type"/>
-                        <div class="o_row">
-                            <field name="type"/>
-                            <label for="transport" style="font-weight:bold"/>
-                            <field name="transport"/>
-                            <label for="cont_mode" style="font-weight:bold"/>
-                            <field name="cont_mode"/>
-                        </div>
-                        <label for="fst_load"/>
-                        <div class="o_row">
-                            <field name="fst_load"/>
-                            <label for="last_disc" style="font-weight:bold"/>
-                            <field name="last_disc"/>
-                            <label for="phase" style="font-weight:bold"/>
-                            <field name="phase"/>
-                        </div>
+                    <notebook>
+                        <page name="main_details" string="Details">
+                            <group string="Consol Details">
+                                <field name="is_domestic"/>
+                                <label for="type"/>
+                                <div class="o_row">
+                                    <field name="type"/>
+                                    <label for="transport" style="font-weight:bold"/>
+                                    <field name="transport" required="1"/>
+                                    <label for="cont_mode" style="font-weight:bold"/>
+                                    <field name="cont_mode"/>
+                                </div>
+                                <label for="fst_load"/>
+                                <div class="o_row">
+                                    <field name="fst_load"/>
+                                    <label for="last_disc" style="font-weight:bold"/>
+                                    <field name="last_disc"/>
+                                    <label for="phase" style="font-weight:bold"/>
+                                    <field name="phase"/>
+                                </div>
 
-                    </group>
-                    <group string="Voyage">
-                        <label for="voyage"/>
-                        <div class="o_row">
-                            <field name="voyage"/>
-                            <label for="vessel" style="font-weight:bold"/>
-                            <field name="vessel"/>
-                        </div>
-                        <label for="load_port"/>
-                        <div class="o_row">
-                            <field name="load_port"/>
-                            <label for="etd" style="font-weight:bold"/>
-                            <field name="etd"/>
-                            <label for="atd" style="font-weight:bold"/>
-                            <field name="atd"/>
-                        </div>
-                        <label for="disc_port"/>
-                        <div class="o_row">
-                            <field name="disc_port"/>
-                            <label for="eta" style="font-weight:bold"/>
-                            <field name="eta"/>
-                            <label for="ata" style="font-weight:bold"/>
-                            <field name="ata"/>
-                        </div>
-                        <label for="is_domestic_voyage"/>
-                        <div class="o_row">
-                            <field name="is_domestic_voyage"/>
-                            <label for="is_linked" style="font-weight:bold"/>
-                            <field name="is_linked"/>
-                            <label for="is_charter" style="font-weight:bold"/>
-                            <field name="is_charter"/>
-                        </div>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="bol"/>
-                            <field name="payment"/>
-                        </group>
-                        <group>
-                            <field name="serv_level"/>
-                            <field name="crn"/>
-                        </group>
-                    </group>
-                     <field name="shipment_ids">
-                        <tree>
-                            <field name="consignee_id"/>
-                            <field name="shipper_id"/>
-                            <field name="source_location_id"/>
-                            <field name="destination_location_id"/>
-                            <field name="house_bill"/>
-                        </tree>
-                    </field>
-                    <group>
-                        <div class="o_row">
-                            <label style="font-weight:bold;" for="show"/>
-                            <field name="show"/>
+                            </group>
+                            <group string="Voyage">
+                                <label for="voyage"/>
+                                <div class="o_row">
+                                    <field name="voyage"/>
+                                    <label for="vessel" style="font-weight:bold"/>
+                                    <field name="vessel"/>
+                                </div>
+                                <label for="load_port"/>
+                                <div class="o_row">
+                                    <field name="load_port"/>
+                                    <label for="etd" style="font-weight:bold"/>
+                                    <field name="etd"/>
+                                    <label for="atd" style="font-weight:bold"/>
+                                    <field name="atd"/>
+                                </div>
+                                <label for="disc_port"/>
+                                <div class="o_row">
+                                    <field name="disc_port"/>
+                                    <label for="eta" style="font-weight:bold"/>
+                                    <field name="eta"/>
+                                    <label for="ata" style="font-weight:bold"/>
+                                    <field name="ata"/>
+                                </div>
+                                <label for="is_domestic_voyage"/>
+                                <div class="o_row">
+                                    <field name="is_domestic_voyage"/>
+                                    <label for="is_linked" style="font-weight:bold"/>
+                                    <field name="is_linked"/>
+                                    <label for="is_charter" style="font-weight:bold"/>
+                                    <field name="is_charter"/>
+                                </div>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="bol"/>
+                                    <field name="payment"/>
+                                </group>
+                                <group>
+                                    <field name="serv_level"/>
+                                    <field name="crn"/>
+                                </group>
+                            </group>
+                             <field name="shipment_ids">
+                                <tree>
+                                    <field name="consignee_id"/>
+                                    <field name="shipper_id"/>
+                                    <field name="source_location_id"/>
+                                    <field name="destination_location_id"/>
+                                    <field name="house_bill"/>
+                                </tree>
+                            </field>
+                            <group>
+                                <div class="o_row">
+                                    <label style="font-weight:bold;" for="show"/>
+                                    <field name="show"/>
 
-                            <label style="font-weight:bold;" for="ship_count"/>
-                            <field name="ship_count"/>
+                                    <label style="font-weight:bold;" for="ship_count"/>
+                                    <field name="ship_count"/>
 
-                            <label style="font-weight:bold;" for="packs"/>
-                            <field name="packs"/>
+                                    <label style="font-weight:bold;" for="packs"/>
+                                    <field name="packs"/>
 
-                            <label style="font-weight:bold;" for="weight"/>
-                            <field name="weight"/>
-                            <field name="weight_uom"/>
+                                    <label style="font-weight:bold;" for="weight"/>
+                                    <field name="weight"/>
+                                    <field name="weight_uom"/>
 
-                            <label style="font-weight:bold;" for="volume"/>
-                            <field name="volume"/>
-                            <field name="volume_uom_id"/>
+                                    <label style="font-weight:bold;" for="volume"/>
+                                    <field name="volume"/>
+                                    <field name="volume_uom_id"/>
 
-                            <label style="font-weight:bold;" for="chargeable"/>
-                            <field name="chargeable"/>
-                            <field name="chargeable_uom"/>
+                                    <label style="font-weight:bold;" for="chargeable"/>
+                                    <field name="chargeable"/>
+                                    <field name="chargeable_uom"/>
 
-                            <label style="font-weight:bold;" for="prepaid"/>
-                            <field name="prepaid"/>
-                            <field name="prepaid_curr"/>
+                                    <label style="font-weight:bold;" for="prepaid"/>
+                                    <field name="prepaid"/>
+                                    <field name="prepaid_curr"/>
 
-                            <label style="font-weight:bold;" for="collect"/>
-                            <field name="collect"/>
-                            <field name="collect_curr"/>
-                        </div>
-                    </group>
-                    <group>
+                                    <label style="font-weight:bold;" for="collect"/>
+                                    <field name="collect"/>
+                                    <field name="collect_curr"/>
+                                </div>
+                            </group>
+                            <group>
                         <notebook>
                             <page string="Organizations">
                                 <group>
@@ -346,8 +348,66 @@
                                     <field name="atd_update"/>
                                 </group>
                             </page>
+
                         </notebook>
                     </group>
+                        </page>
+                        <page name="routing" string="Routing">
+                            <group string="Log Details">
+                                <group>
+                                    <field name="defined_by"/>
+                                    <field name="transport" required="1"/>
+                                    <field name="type"/>
+                                    <field name="notes_rout"/>
+                                </group>
+                                <group>
+                                    <field name="leg_order"/>
+                                    <field name="is_charter"/>
+                                    <field name="is_linked"/>
+                                </group>
+                            </group>
+                            <group string="Voyage/Flight Details">
+                                <group>
+                                    <field name="voyage"/>
+                                    <field name="creditor"/>
+                                    <field name="carrier_bkg_ref" string="Carrier Reference"/>
+                                </group>
+                                <group>
+                                    <field name="vessel"/>
+                                    <field name="carrier"/>
+                                    <field name="serv_level" string="Carrier Service Level"/>
+                                </group>
+                            </group>
+                            <group string="Origin Details">
+                                <group>
+                                    <field name="load_port"/>
+                                    <field name="depart"/>
+                                    <field name="etd" />
+                                    <field name="eta" />
+                                    <field name="cto_received_date" />
+                                    <field name="cto_available_date" />
+                                    <field name="cto_cutt_off_date" />
+                                    <field name="cto_storage_date" />
+                                    <field name="docs_due_date" />
+                                </group>
+                                <group>
+                                    <field name="disc_port"/>
+                                    <field name="arrival"/>
+                                    <field name="atd" />
+                                    <field name="ata" />
+                                    <field name="cfs_received_date" />
+                                    <field name="cfs_available_date" />
+                                    <field name="cfs_cutt_off_date" />
+                                    <field name="cfs_storage_date" />
+                                    <field name="vgm_cutt_off_date" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="container" string="Containers">
+                            <field name="container_ids"
+                                   nolabel="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

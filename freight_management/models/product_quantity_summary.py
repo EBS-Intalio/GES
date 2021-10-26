@@ -6,7 +6,7 @@ class ProductQuantitySummary(models.Model):
     _name = 'product.quantity.summary'
     _description = 'Product Quantity Summary'
 
-    freight_order_id = fields.Many2one('freight.order', string="Freight Order")
+    freight_order_id = fields.Many2one('freight.order', string="Order")
     part_no = fields.Many2one('product.product',string="Part No")
     description = fields.Char(string="Description")
     quantity_ordered = fields.Float(' Ordered Quantity')

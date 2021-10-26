@@ -6,7 +6,7 @@ class CustomerValuationCharge(models.Model):
     _name = 'customer.valuation.charge'
     _description = 'Customer Valuation Charge'
 
-    freight_order_id = fields.Many2one('freight.order', string="Freight Order")
+    freight_order_id = fields.Many2one('freight.order', string="Order")
     code = fields.Char(string="Code")
     amount= fields.Float('Amount')
     currency = fields.Many2one('res.currency',string="Currency")

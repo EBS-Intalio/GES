@@ -96,8 +96,8 @@ class FreightOrder(models.Model):
                                         ('other', 'Others')], string="Packaging Type")
     actual_volume = fields.Float(string="Actual Volume")
     actual_weight = fields.Float(string="Actual Weight")
-    actual_volume_uom = fields.Many2one('uom.uom', string="Actual Volume Uom")
-    actual_weight_uom = fields.Many2one('uom.uom', string="Actual Weight Uom")
+    actual_volume_uom = fields.Many2one('uom.uom', string="Actual Volume UOM")
+    actual_weight_uom = fields.Many2one('uom.uom', string="Actual Weight UOM")
 
     shipment_no = fields.Char(string="Shipment No")
     booking_no = fields.Char(string="Booking No")
@@ -164,6 +164,15 @@ class FreightOrder(models.Model):
     agent_id = fields.Many2one('res.partner', 'Customer')
     clearance_required = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), default='yes', string="Clearance Required")
     warehousing = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), default='yes', string="Warehousing / Storage")
+    order_status = fields.Selection([
+        ('inc','Incomplete'),
+        ('plc','Placed'),
+        ('cnf','Confirmed'),
+        ('shp','Shipped'),
+        ('prt','Part Delivered'),
+        ('dlv','Delivered'),
+        ('can','Canceled'),
+    ], string='Order Status')
 
     @api.depends('order_line_ids')
     def compute_data(self):
@@ -178,7 +187,7 @@ class FreightOrder(models.Model):
 
     def convert_to_booking(self):
         """
-        Convert freight order to booking
+        Convert  order to booking
         :return:
         """
         vals = {
@@ -204,26 +213,43 @@ class FreightOrder(models.Model):
             'vehicle_type': self.vehicle_type,
             'freight_order_id': self.id
         }
-        self.env['freight.booking'].create(vals)
-        self.write({'state': 'converted'})
+        #TODO Add Warning of Require field
+        freight_booking = self.env['freight.booking'].create(vals)
+        self.write({'state': 'converted', 'booking_no': freight_booking.name})
         return True
 
     @api.model
     def create(self,vals):
         res = super(FreightOrder, self).create(vals)
-        i=1
-        for rec in res.order_line_ids:
-            rec.line = i
-            i+=1
+        data = res.prepare_product_qaunt_summ()
+        res.with_context({'product_qty_summary':True}).write({'product_qty_summary_ids': data})
         return res
 
     def write(self,vals):
         res = super(FreightOrder, self).write(vals)
+        if not self._context.get('product_qty_summary'):
+            data = self.prepare_product_qaunt_summ()
+            self.with_context({'product_qty_summary':True}).write({'product_qty_summary_ids': data})
+        return res
+
+    def prepare_product_qaunt_summ(self,):
+        data = []
         i = 1
+        if self.product_qty_summary_ids:
+            self.product_qty_summary_ids.unlink()
         for rec in self.order_line_ids:
             rec.line = i
             i += 1
-        return res
+            data.append((0,0,{
+                'part_no':rec.product_id.id,
+                'description':rec.description,
+                'quantity_ordered':rec.quantity,
+                'quantity_invoiced':rec.invoiced,
+                'quantity_received':rec.quantity_received,
+                'quantity_remaining':rec.remaining,
+            }))
+
+        return data
 
     def action_view_freight_booking(self):
         """
@@ -254,6 +280,16 @@ class FreightOrder(models.Model):
             rec.product_summary_remaining = sum(rec.product_qty_summary_ids.mapped('quantity_remaining'))
         return True
 
+    @api.onchange('port_of_loading','discharge_port')
+    def get_origin_destination(self):
+        for rec in self:
+            rec.shipment_origin = rec.port_of_loading.id
+            rec.shipment_destination = rec.discharge_port.id
+
+
+    def create_declaration(self):
+        return True
+
 
 class FreightOrderLine(models.Model):
     _name = 'freight.order.line'
@@ -272,6 +308,11 @@ class FreightOrderLine(models.Model):
     line_price = fields.Float(string="Line price")
     item_price = fields.Float(string="Item price")
     invoice_no = fields.Char(string="Invoice No")
-    origin = fields.Many2one('freight.port', string="Origin")
+    origin = fields.Many2one('res.country', string="Origin")
     manufacturer = fields.Many2one('res.partner', string="Manufacturer")
-    freight_order = fields.Many2one('freight.order', string="Freight Order")
+    manufacturer_address = fields.Many2one('res.partner', string="Manufacturer Address")
+    freight_order = fields.Many2one('freight.order', string="Order")
+
+
+
+

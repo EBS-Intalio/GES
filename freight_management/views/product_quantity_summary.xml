@@ -11,7 +11,7 @@
                         <group>
                             <group>
                                 <field name="part_no" required="1"/>
-                                <field name="description" required="1"/>
+                                <field name="description"/>
                                 <field name="quantity_ordered"/>
                                 <field name="quantity_invoiced"/>
                             </group>

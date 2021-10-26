@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
-
+from odoo.exceptions import ValidationError
 
 class FreightBooking(models.Model):
     _inherit = 'freight.booking'
@@ -191,7 +191,19 @@ class FreightBooking(models.Model):
     equipment_count = fields.Integer(string='Equipment Count')
     is_review_booking = fields.Boolean('Review Booking')
 
-    freight_order_id = fields.Many2one('freight.order', string='Freight Order')
+    freight_order_id = fields.Many2one('freight.order', string='Order')
+
+    # Override fields for require false
+    agent_id = fields.Many2one('res.partner', 'Customer', required=False)
+    commodity_description = fields.Text("Commodity Description", required=False)
+    reefer_status = fields.Selection(([('yes', 'YES'), ('no', 'NO'), ('non_operate', 'Non Operating Reefer')]),
+                                     string="Reefer Status", required=False)
+    commodity_category = fields.Selection(([('food_perishable', 'Food Perishable'), ('nonfood_perishable', 'Non food perishable'), ('non_perishable', 'Non perishable F&B'),
+                                            ('furniture', 'Furniture'), ('building_material', 'Building Material'), ('automotive', 'Automotive'),
+                                            ('pharmaceuticals', 'Pharmaceuticals'), ('petroleum_products', 'Petroleum Products'), ('other_chemicals', 'Other Chemicals')]), string="Commodity Category",required=False)
+    weight_type = fields.Selection(([('estimated', 'Estimated'), ('actual', 'Actual')]), string="Weight Type", required=False)
+    clearance_required = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Clearance Required", required=False)
+    warehousing = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Warehousing / Storage", required=False)
 
     def action_create_new_invoice(self):
         """
@@ -232,6 +244,49 @@ class FreightBooking(models.Model):
 
     def convert_to_operation(self):
         name_act = ''
+        warn_list = []
+        if self.transport in ['ocean','land','sea_then_air','air_then_sea','rail']:
+            if not self.ocean_shipment_type and not self.inland_shipment_type and not self.sea_then_air_shipment and not self.air_then_sea_shipment and not self.rail_shipment_type :
+                warn_list.append("Shipment Type")
+        if not self.agent_id:
+            warn_list.append("Customer")
+        if not self.commodity_description and self.transport != 'documentation':
+            warn_list.append("Commodity description")
+        if not self.hs_code and self.transport != 'documentation':
+            warn_list.append("hs code")
+        if not self.source_location_id and self.transport != 'documentation':
+            warn_list.append("Origin")
+        if not self.destination_location_id and self.transport != 'documentation':
+            warn_list.append("Destination")
+        if not self.gross_weight and self.transport != 'documentation':
+            warn_list.append("Gross Weight")
+        if not self.incoterm and self.transport != 'documentation':
+            warn_list.append("incoterm")
+        if not self.clearance_required:
+            warn_list.append("Clearance required")
+        if not self.number_packages and self.transport != 'documentation':
+            warn_list.append("Number of packages / Pallets")
+        if not self.reefer_status and self.transport != 'documentation':
+            warn_list.append("Reefer status")
+        if not self.warehousing:
+            warn_list.append("Warehousing")
+        if not self.weight_type:
+            warn_list.append("Weight Type")
+        if not self.commodity_category and self.transport != 'documentation' :
+            warn_list.append("Commodity category")
+        if self.dangerous_goods and not self.danger_class:
+            warn_list.append("Danger class")
+        if self.transport == 'land' and not self.vehicle_size:
+            warn_list.append("Vehicle Size")
+        if self.transport == 'land' and not self.vehicle_type:
+            warn_list.append("Vehicle Type")
+        if self.transport == 'ocean' and not self.equipment_type:
+            warn_list.append("Equipment type")
+
+
+
+        if warn_list:
+            raise ValidationError("Please Fill up this require fields %s"%warn_list)
         for book in self:
             res = self.convert_fields_to_dict()
             if res.get('operation') == 'master':

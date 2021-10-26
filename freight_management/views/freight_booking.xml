@@ -53,15 +53,15 @@
                                 </group>
                                 <group>
                                     <field name="ocean_shipment_type" options="{'horizontal': true}" widget="radio"
-                                           attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
+                                           attrs="{'invisible': [('transport','!=','ocean')]}"/>
                                     <field name="rail_shipment_type" options="{'horizontal': true}" widget="radio"
-                                           attrs="{'invisible': [('transport','!=','rail')], 'required' : [('transport', '=', 'rail')]}"/>
+                                           attrs="{'invisible': [('transport','!=','rail')]}"/>
                                     <field name="inland_shipment_type" options="{'horizontal': true}" widget="radio"
-                                           attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}"/>
+                                           attrs="{'invisible': [('transport','!=','land')]}"/>
                                     <field name="sea_then_air_shipment" options="{'horizontal': true}" widget="radio"
-                                           attrs="{'invisible': [('transport','!=','sea_then_air')], 'required' : [('transport', '=', 'sea_then_air')]}"/>
+                                           attrs="{'invisible': [('transport','!=','sea_then_air')]}"/>
                                     <field name="air_then_sea_shipment" options="{'horizontal': true}" widget="radio"
-                                           attrs="{'invisible': [('transport','!=','air_then_sea')], 'required' : [('transport', '=', 'air_then_sea')]}"/>
+                                           attrs="{'invisible': [('transport','!=','air_then_sea')]}"/>
                                 </group>
                             </group>
                             <group>
@@ -75,7 +75,7 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="agent_id" required="1"/>
+                                    <field name="agent_id" required="0"/>
                                 </group>
                                 <group></group>
                                 <group>
@@ -92,12 +92,12 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="source_location_id" string="Origin Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
-                                    <field name="source_location_id" string="POR /Origin" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
-                                    <field name="source_location_id" string="Origin" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air', 'documentation'])]}"/>
+                                    <field name="source_location_id" string="Origin Airport" attrs="{'invisible': [('transport','!=','air')],}"/>
+                                    <field name="source_location_id" string="POR /Origin" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                    <field name="source_location_id" string="Origin" attrs="{'invisible': [('transport','in',['ocean', 'air'])]}"/>
                                     <field name="origin_close" string="Consider Close by Origin Airports" style="margin-bottom: 5%;margin-top: 5%;" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pol" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
-                                    <field name="equipment_type" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}" />
+                                    <field name="equipment_type" attrs="{'invisible': [('transport','!=','ocean')]}" />
                                     <field name="equipment_count" attrs="{'invisible': [('transport','!=','ocean')]}" />
 
                                     <field name="shipping_line_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
@@ -107,13 +107,13 @@
                                     <field name="truck_ref"  attrs="{'invisible': [('transport','!=','land')]}"/>
 <!--                                    <field name="trucker"  attrs="{'invisible': [('transport','!=','land')]}"/>-->
 <!--                                    <field name="trucker_number"  attrs="{'invisible': [('transport','!=','land')]}"/>-->
-                                    <field name="vehicle_size" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
-                                    <field name="vehicle_type" attrs="{'invisible': [('transport','!=','land')], 'required' : [('transport', '=', 'land')]}" />
+                                    <field name="vehicle_size" attrs="{'invisible': [('transport','!=','land')]}" />
+                                    <field name="vehicle_type" attrs="{'invisible': [('transport','!=','land')]}" />
                                 </group>
                                 <group>
-                                    <field name="destination_location_id" string="Destination Airport" attrs="{'invisible': [('transport','!=','air')], 'required' : [('transport', '=', 'air')]}"/>
-                                    <field name="destination_location_id" string="POFD /Destination" attrs="{'invisible': [('transport','!=','ocean')], 'required' : [('transport', '=', 'ocean')]}"/>
-                                    <field name="destination_location_id" string="Destination" attrs="{'invisible': [('transport','in',['ocean', 'air'])], 'required' : [('transport', 'not in',['ocean', 'air', 'documentation'])]}"/>
+                                    <field name="destination_location_id" string="Destination Airport" attrs="{'invisible': [('transport','!=','air')]}"/>
+                                    <field name="destination_location_id" string="POFD /Destination" attrs="{'invisible': [('transport','!=','ocean')]}"/>
+                                    <field name="destination_location_id" string="Destination" attrs="{'invisible': [('transport','in',['ocean', 'air'])]}"/>
 
                                     <field name="destination_close" style="margin-bottom: 5%;margin-top: 5%;" string="Consider Close By Destination Airport" attrs="{'invisible': [('transport','!=','air')]}"/>
                                     <field name="pod" attrs="{'invisible': [('transport','not in',['ocean', 'sea_then_air', 'air_then_sea', 'rail'])]}"/>
@@ -151,16 +151,16 @@
                             <group>
                                 <group>
                                     <field name="package_type_id" />
-                                    <field name="number_packages" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="number_packages" required="0"/>
                                     <field name="is_dimensions_visible" invisible="1"/>
                                     <field name="dimensions_of_package_id" context="{'is_dimensions_of_package': True}" attrs="{'invisible': [('is_dimensions_visible','!=', True)]}"/>
-                                    <field name="clearance_required" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="clearance_required" widget="radio" options="{'horizontal': true}" required="0"/>
 
                                     <field name="bl_copy" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
                                     <field name="shipping_documents" attrs="{'invisible': [('clearance_required','!=','yes')], 'required' : [('clearance_required', '=', 'yes')]}"/>
                                     <field name="original_copy" attrs="{'invisible': ['|', ('shipping_documents','!=',True), ('clearance_required','!=','yes')], 'required' : [('shipping_documents', '=', True), ('clearance_required', '=', 'yes')]}" options="{'horizontal': true}" widget="radio"/>
 
-                                    <field name="warehousing" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="warehousing" widget="radio" options="{'horizontal': true}" required="0"/>
                                     <field name="target_rate" string="Quotation Amount"/>
                                     <label for="target_transit_time"/>
                                     <div class="o_row" name="target_transit_time">
@@ -178,23 +178,23 @@
                                         <span>Days</span>
                                     </div>
                                     <field name="additional_comments" />
-                                    <field name="shipment_ready_asap" attrs="{'invisible' : [('transport', '=', 'documentation')]}" widget="radio" options="{'horizontal': true}"/>
+                                    <field name="shipment_ready_asap" attrs="{'invisible' : [('transport', '=', 'documentation')]}" widget="radio" options="{'horizontal': true}" required="0"/>
                                     <field name="shipment_ready_date" attrs="{'invisible': ['|', ('transport', '=', 'documentation'), ('shipment_ready_asap','!=','no')]}"/>
                                 </group>
                                 <group>
-                                    <field name="incoterm" attrs="{'invisible': [('transport','=','land')], 'required' : [('transport', 'not in', ['land','documentation'])]}"/>
+                                    <field name="incoterm" attrs="{'invisible': [('transport','=','land')]}"/>
                                     <field name="incotearm_name" string="Incoterm Name" attrs="{'invisible': [('transport','=','land')]}"/>
                                     <br/>
                                     <field name="dangerous_goods"/>
-                                    <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)], 'required' : [('dangerous_goods', '=', True)]}" />
+                                    <field name="danger_class" attrs="{'invisible': [('dangerous_goods','!=',True)]}" />
                                     <field name="dangerous_goods_notes" style="border-color: black;" attrs="{'invisible': [('dangerous_goods','!=',True)]}"/>
-                                    <field name="reefer_status" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="reefer_status" required="0" />
                                     <field name="temperature" attrs="{'invisible' : [('transport', '=', 'documentation')]}" options="{'horizontal': true}" widget="radio"/>
                                     <field name="set_temperature" string="SET" attrs="{'invisible': ['|', ('transport', '=', 'documentation'), ('temperature','=',False)]}"/>
-                                    <field name="commodity_category" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
-                                    <field name="commodity_description" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
-                                    <field name="hs_code" widget="many2many_tags" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
-                                    <field name="gross_weight" attrs="{'required' : [('transport', '!=', 'documentation')]}"/>
+                                    <field name="commodity_category" required="0"/>
+                                    <field name="commodity_description" required="0" />
+                                    <field name="hs_code" widget="many2many_tags"/>
+                                    <field name="gross_weight" required="0"/>
                                     <field name="additional_requirements" />
                                 </group>
                             </group>
@@ -249,7 +249,7 @@
                                     <field name="div_drop_id"/>
                                 </group>
                                 <group>
-                                    <field name="weight_type" widget="radio" options="{'horizontal': true}" default="estimated"/>
+                                    <field name="weight_type" widget="radio" options="{'horizontal': true}" default="estimated" required="0"/>
                                     <field name="stackability" widget="radio" options="{'horizontal': true}"/>
                                 </group>
                                 <group></group>

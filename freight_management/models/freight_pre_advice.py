@@ -24,6 +24,6 @@ class FreightPreAdvice(models.Model):
     volume_uom = fields.Many2one('uom.uom', string="Volume Uom")
     packs = fields.Float(string="Packs")
     packs_uom = fields.Many2one('uom.uom', string="Packs Uom")
-    order_ids = fields.One2many('freight.order','pre_advice_id', string='Freight Order', copy=False)
+    order_ids = fields.Many2many('freight.order', string='Order', copy=False)
     container_ids = fields.Many2many('freight.container', string='Container', copy=False)
     is_canceled = fields.Boolean(string="Canceled")

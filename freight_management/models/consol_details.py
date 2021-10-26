@@ -16,11 +16,14 @@ class ConsolDerails(models.Model):
         ('oth','Other'),
     ], string='Type')
     transport = fields.Selection([
-        ('air','Air Freight'),
-        ('sea','Sea Freight'),
-        ('roa','Road Freight'),
-        ('rail','Rail Freight'),
-    ], string='Transport')
+        ('air', 'Air'),
+        ('ocean', 'Ocean'),
+        ('land', 'Road'),
+        ('sea_then_air', 'Sea then Air'),
+        ('air_then_sea', 'Air then Sea'),
+        ('rail', 'Rail'),
+        ('courier', 'Courier'),
+        ('documentation', 'Documentation')], string='Transport')
     cont_mode = fields.Selection([
         ('fcl','Full Container Load'),
         ('lcl','Less Container Load'),
@@ -62,7 +65,7 @@ class ConsolDerails(models.Model):
     ], string='Service Level')
     crn = fields.Char('CRN:')
     # new
-    freight_order_id = fields.Many2one('freight.order', string="Freight Order")
+    freight_order_id = fields.Many2one('freight.order', string="Order")
     shipment_ids = fields.Many2many('freight.operation', string="Shipment ids")
     show = fields.Boolean('Show')
     ship_count = fields.Integer('Ship count')
@@ -202,6 +205,24 @@ class ConsolDerails(models.Model):
     Dest_cntr_comments = fields.Char('Density CNTR Comments')
     chassis_provider = fields.Char('Chassis Provider')
     atd_update = fields.Char('ATD Update')
+    #routing tab
+    defined_by = fields.Char('Defined By')
+    # status = fields.Selection([()], string="Status")
+    notes_rout = fields.Text('Notes')
+    leg_order = fields.Float('Leg order')
+    depart = fields.Many2one('res.country','Dep. From')
+    arrival = fields.Many2one('res.country','Arrival At')
+    cto_received_date = fields.Date('CTO received')
+    cfs_received_date = fields.Date('CFS received')
+    cto_available_date = fields.Date('CTO Available')
+    cfs_available_date = fields.Date('CFS Available')
+    cto_cutt_off_date = fields.Date('CTO Cutt Off')
+    cfs_cutt_off_date = fields.Date('CFS Cutt Off')
+    cto_storage_date = fields.Date('CTO Storage')
+    cfs_storage_date = fields.Date('CFS Storage')
+    docs_due_date = fields.Date('Docs Due')
+    vgm_cutt_off_date = fields.Date('VGM Cutt Off')
+    container_ids = fields.Many2many('freight.container', string='Container', copy=False)
 
     @api.onchange('bol')
     def get_old_data(self):
@@ -223,7 +244,7 @@ class ConsolDerails(models.Model):
                     rec.voyage = old_rec.voyage
                     rec.vessel = old_rec.vessel and old_rec.vessel.id
                     rec.load_port = old_rec.load_port and old_rec.load_port.id
-                    rec.load_port = old_rec.load_port and old_rec.load_port.id
+                    rec.disc_port = old_rec.disc_port and old_rec.disc_port.id
                     rec.etd = old_rec.etd
                     rec.atd = old_rec.atd
                     rec.eta = old_rec.eta
