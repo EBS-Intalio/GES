@@ -137,7 +137,7 @@ class ConsolDerails(models.Model):
         ('TLX','Telex Release'),
         ('OB','Original Bill of Landing'),
         ('OBD','Original Bill Surrendered at destination'),
-    ],string="AWB Dimensions")
+    ],string="Release Type")
     place_of_issue = fields.Many2one('unloco.data',string="Place Of Issue")
     original_bills = fields.Integer('Original bills')
     copy_bills = fields.Integer('Copy bills')
