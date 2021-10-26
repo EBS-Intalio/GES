@@ -18,6 +18,6 @@ class AccountMoveLineInherit(models.Model):
         ('c', 'C'),
     ], string='CODE Journal',default='a')
 
-    @api.depends('move_id.invoice_line_ids')
     def _default_operating_unit_id(self):
-        self.operating_unit_id = self.move_id.operating_unit_id.id
+        for rec in self:
+            rec.operating_unit_id = rec.move_id.operating_unit_id.id

@@ -40,21 +40,29 @@
                             <field name="local_sell_amount" optional="hide" />
                             <field name="debtor" optional="hide" />
                             <field name="sell_recognition" optional="hide" />
+                            <field name="operation_billing_id" invisible="1"/>
                             <field name="posted_revenue" readonly="1" optional="hide" />
                             <field name="sell_reference" optional="hide" />
                             <field name="cost_exchange_rate" readonly="1" optional="hide" />
                             <field name="sell_exchange_rate" readonly="1" optional="hide" />
                             <field name="reference" optional="hide" />
                             <field name="ar_invoice_number" readonly="1" optional="hide" />
+                            <field name="ar_bill_number" readonly="1" optional="hide" />
                             <field name="invoice_type" optional="hide" />
+                            <field name="bill_type" optional="hide" />
                             <field name="invoice_date" optional="hide" />
+                            <field name="bill_date" optional="hide" />
                             <field name="invoice_currency_id" invisible="1" />
+                            <field name="bill_currency_id" invisible="1" />
                             <field name="sell_invoice_amount" optional="hide" />
+                            <field name="cost_bill_amount" optional="hide" />
                             <field name="local_sell_invoice_amount" optional="hide" />
                             <field name="invoice_line_id" invisible="1" />
                             <field name="bill_line_id" invisible="1" />
+                            <field name="sell_invoice_with_tax_amount" readonly="1" optional="hide" />
+                            <field name="cost_bill_with_tax_amount" readonly="1" optional="hide" />
                             <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
-                            <field name="operation_billing_id" invisible="1"/>
+                            <field name="cost_bill_tax_amount" readonly="1" optional="hide" />
                             <field name="bill_created" invisible="1"/>
                             <field name="invoice_created" invisible="1"/>
                         </tree>
