@@ -21,6 +21,76 @@ class FreightOperationInherit(models.Model):
             rec.total_cost = sum(rec.account_operation_lines.mapped('local_cost_amount'))
             rec.profit = rec.total_revenue - rec.total_cost
 
+    def button_post_sell(self):
+        debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
+            'debtor', 'in', self.account_operation_lines.debtor.ids), ('invoice_created', '=', False)], fields=['debtor'], groupby=['debtor'])
+        mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
+        for data in mapped_data:
+            debtor_id = self.env['res.partner'].browse(data)
+            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('operation_billing_id', '=', self.id)])
+            invoice_line_ids = []
+            for record in self.account_operation_lines:
+                if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount:
+                    invoice_line_ids.append((0, 0, {
+                        'product_id': record.charge_code.id,
+                        'transport': record.transport,
+                        'direction': record.operation_billing_id.direction,
+                        'service_type': record.operation_billing_id.service_level,
+                        'operating_unit_id': record.operating_unit_id.id,
+                        'analytic_account_id': record.operating_unit_id.id,
+                        'quantity': 1,
+                        'price_unit': record.os_sell_amount,
+                        'billing_line_id': record.id,
+                        'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
+                    }))
+                    record.invoice_created = True
+            invoice_id = self.env['account.move'].sudo().create({
+                'name': "/",
+                'move_type': 'out_invoice',
+                'partner_id': debtor_id.id,
+                'invoice_date': fields.Date.today(),
+                'operating_unit_id': billing_id.operating_unit_id,
+                'currency_id': billing_id.sell_currency_id.id,
+                'invoice_line_ids': invoice_line_ids,
+            })
+            billing_id.ar_invoice_number = invoice_id.id
+            invoice_id.created_from_shipment = True
+
+    def button_post_cost(self):
+        vendors_data = self.env['freight.operation.billing'].read_group(domain=[(
+            'vendor', 'in', self.account_operation_lines.vendor.ids), ('bill_created', '=', False)],
+            fields=['vendor'], groupby=['vendor'])
+        mapped_data = list([(vendor['vendor'][0]) for vendor in vendors_data])
+        for data in mapped_data:
+            vendor_id = self.env['res.partner'].browse(data)
+            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('operation_billing_id', '=', self.id)])
+            invoice_line_ids = []
+            for record in self.account_operation_lines:
+                if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount:
+                    invoice_line_ids.append((0, 0, {
+                        'product_id': record.charge_code.id,
+                        'transport': record.transport,
+                        'direction': record.operation_billing_id.direction,
+                        'service_type': record.operation_billing_id.service_level,
+                        'operating_unit_id': record.operating_unit_id.id,
+                        'analytic_account_id': record.operating_unit_id.id,
+                        'quantity': 1,
+                        'price_unit': record.os_cost_amount,
+                        'billing_line_id': record.id,
+                        'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
+                    }))
+                    record.bill_created = True
+            bill_id = self.env['account.move'].sudo().create({
+                'name': "/",
+                'move_type': 'in_invoice',
+                'partner_id': vendor_id.id,
+                'invoice_date': fields.Date.today(),
+                'operating_unit_id': billing_id.operating_unit_id,
+                'currency_id': billing_id.cost_currency_id.id,
+                'invoice_line_ids': invoice_line_ids,
+            })
+            billing_id.ar_bill_number = bill_id.id
+            bill_id.created_from_shipment = True
 
 class FreightOperationBilling(models.Model):
     _name = "freight.operation.billing"
@@ -61,7 +131,7 @@ class FreightOperationBilling(models.Model):
     bill_currency_id = fields.Many2one('res.currency', string='Bill Currency', related='ar_bill_number.currency_id')
     invoice_line_id = fields.Many2one('account.move.line')
     bill_line_id = fields.Many2one('account.move.line')
-    cost_invoice_no = fields.Char("Cost Inv No.")
+    # cost_invoice_no = fields.Char("Cost Inv No.")
     estimated_revenue = fields.Monetary(string="Estimated Revenue", currency_field='company_currency_id', related='ar_invoice_number.amount_total')
     estimated_cost = fields.Monetary(string="Estimated Cost", currency_field='company_currency_id', related='ar_bill_number.amount_total')
     sell_invoice_amount = fields.Monetary(string="Sell Inv. Amount", currency_field='invoice_currency_id', related='invoice_line_id.price_subtotal')
@@ -166,7 +236,7 @@ class FreightOperationBilling(models.Model):
                     }))
                     record.invoice_created = True
             invoice_id = self.env['account.move'].sudo().create({
-                            'name': "NNNNNNNNNNNNN",
+                            'name': "/",
                             'move_type': 'out_invoice',
                             'partner_id': debtor_id.id,
                             'invoice_date': fields.Date.today(),
@@ -175,6 +245,7 @@ class FreightOperationBilling(models.Model):
                             'invoice_line_ids': invoice_line_ids,
             })
             billing_id.ar_invoice_number = invoice_id.id
+            invoice_id.created_from_shipment = True
 
 
 
@@ -202,7 +273,7 @@ class FreightOperationBilling(models.Model):
                     }))
                     record.bill_created = True
             bill_id = self.env['account.move'].sudo().create({
-                            'name': "TTTTTTTTTTTTTTTTTTTTT",
+                            'name': "/",
                             'move_type': 'in_invoice',
                             'partner_id': vendor_id.id,
                             'invoice_date': fields.Date.today(),
@@ -211,3 +282,4 @@ class FreightOperationBilling(models.Model):
                             'invoice_line_ids': invoice_line_ids,
             })
             billing_id.ar_bill_number = bill_id.id
+            bill_id.created_from_shipment = True

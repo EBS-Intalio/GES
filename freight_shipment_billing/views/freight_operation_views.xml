@@ -31,7 +31,7 @@
                             <field name="vendor" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                             <field name="cost_recognition" optional="hide" />
                             <field name="posted_cost" readonly="1" optional="hide" />
-                            <field name="cost_invoice_no" readonly="1" optional="hide" />
+<!--                            <field name="cost_invoice_no" readonly="1" optional="hide" />-->
                             <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                             <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                             <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
@@ -63,8 +63,8 @@
                             <field name="cost_bill_with_tax_amount" readonly="1" optional="hide" />
                             <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
                             <field name="cost_bill_tax_amount" readonly="1" optional="hide" />
-                            <field name="bill_created" invisible="1"/>
-                            <field name="invoice_created" invisible="1"/>
+                            <field name="bill_created" readonly="1"/>
+                            <field name="invoice_created" readonly="1"/>
                         </tree>
                     </field>
                     <group>
@@ -77,4 +77,22 @@
             </xpath>
         </field>
     </record>
+        <record id="action_server_post_sell" model="ir.actions.server">
+            <field name="name">Post Sell</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_freight_operation" />
+            <field name="binding_model_id" ref="model_freight_operation" />
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">records.button_post_sell()</field>
+        </record>
+        <record id="action_server_post_cost" model="ir.actions.server">
+            <field name="name">Post Cost</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_freight_operation" />
+            <field name="binding_model_id" ref="model_freight_operation" />
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">records.button_post_cost()</field>
+        </record>
 </odoo>

@@ -12,6 +12,8 @@ class AccountMoveinherit(models.Model):
     ], string='Inv. Type', default='local_individual', required=True)
 
 
+    created_from_shipment = fields.Boolean("Shipment Invoice", default=False, readonly=True)
+
     def action_post(self):
         if self.move_type == 'out_invoice':
             for invoice_line in self.invoice_line_ids:

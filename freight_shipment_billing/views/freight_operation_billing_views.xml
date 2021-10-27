@@ -69,7 +69,7 @@
                                         <field name="invoice_line_id" invisible="1" />
                                         <field name="sell_invoice_with_tax_amount" readonly="1" />
                                         <field name="sell_invoice_tax_amount" readonly="1" />
-                                        <field name="invoice_created" invisible="1"/>
+                                        <field name="invoice_created" readonly="1"/>
                                         <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" />
                                         <field name="ar_invoice_number" readonly="1" />
                                         <field name="invoice_type" />
@@ -97,11 +97,12 @@
                                         <field name="cost_bill_amount" />
                                         <field name="cost_recognition" />
                                         <field name="posted_cost" readonly="1" />
-                                        <field name="cost_invoice_no" readonly="1" />
+<!--                                        <field name="cost_invoice_no" readonly="1" />-->
                                         <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" />
                                         <field name="ar_bill_number" readonly="1" />
                                         <field name="bill_type" />
                                         <field name="bill_date" />
+                                        <field name="bill_created" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
@@ -130,7 +131,7 @@
                     <field name="local_cost_amount"  optional="hide"/>
                     <field name="cost_recognition" optional="hide" />
                     <field name="posted_cost" readonly="1" optional="hide" />
-                    <field name="cost_invoice_no" readonly="1" optional="hide" />
+<!--                    <field name="cost_invoice_no" readonly="1" optional="hide" />-->
                     <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                     <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
                     <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
