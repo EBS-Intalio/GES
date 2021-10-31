@@ -16,6 +16,8 @@
         "views/account_move_view.xml",
         "views/freight_operation_billing_views.xml",
         "views/freight_operation_views.xml",
+        "views/freight_booking_views.xml",
+        "views/freight_job_request_views.xml",
     ],
     'installable': True,
     'application': True,

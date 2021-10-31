@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*"-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class FreightOperationInherit(models.Model):
     _inherit = "freight.operation"
@@ -114,7 +114,9 @@ class FreightOperationBilling(models.Model):
     os_sell_amount = fields.Monetary(string="OS Sell Amount", currency_field='sell_currency_id')
     local_sell_amount = fields.Monetary(string="Local Sell Amount", currency_field='company_currency_id',
                                         compute='_compute_local_sell_amount')
-    debtor = fields.Many2one('res.partner', string='Debtor', related='operation_billing_id.agent_id', store=True)
+    # debtor = fields.Many2one('res.partner', string='Debtor', related='operation_billing_id.agent_id', store=True)
+    debtor = fields.Many2one('res.partner', string='Debtor', compute='_compute_debtor', store=True)
+
     sell_recognition = fields.Selection(([('imm', 'IMM')]), string='Sell Recognition', default='imm')
     posted_revenue = fields.Boolean("Posted Revenue", default=False)
     sell_reference = fields.Char("Sell Reference")
@@ -156,8 +158,10 @@ class FreightOperationBilling(models.Model):
         for rec in self:
             rec.cost_bill_tax_amount = rec.cost_bill_with_tax_amount - rec.cost_bill_amount
 
+
+    booking_id = fields.Many2one('freight.booking')
+    freight_request_id = fields.Many2one('freight.job.request')
     operation_billing_id = fields.Many2one('freight.operation', readonly=True)
-    booking_id = fields.Many2one('freight.booking', related='operation_billing_id.booking_id', store=True)
     source_location_id = fields.Many2one('freight.port', related='operation_billing_id.source_location_id', store=True)
     destination_location_id = fields.Many2one('freight.port', related='operation_billing_id.destination_location_id', store=True)
     transport = fields.Selection(related='operation_billing_id.transport', store=True)
@@ -171,14 +175,19 @@ class FreightOperationBilling(models.Model):
             rec.description = rec.charge_code.name
 
     @api.depends('operation_billing_id')
+    def _compute_debtor(self):
+        for rec in self:
+            rec.debtor = rec.operation_billing_id.agent_id.id or rec.booking_id.agent_id.id or rec.freight_request_id.partner_id.id
+
+    @api.depends('operation_billing_id')
     def _default_operating_unit_id(self):
         for rec in self:
-            rec.operating_unit_id = rec.operation_billing_id.operating_unit_id.id
+            rec.operating_unit_id = rec.operation_billing_id.operating_unit_id.id or rec.booking_id.operating_unit_id.id or rec.freight_request_id.operating_unit_id.id
 
     @api.depends('operation_billing_id')
     def _default_analytic_account_id(self):
         for rec in self:
-            rec.analytic_account_id = rec.operation_billing_id.analytic_account_id.id
+            rec.analytic_account_id = rec.operation_billing_id.analytic_account_id.id or rec.booking_id.analytic_account_id.id or rec.freight_request_id.analytic_account_id.id
 
     @api.depends('cost_currency_id', 'os_cost_amount')
     def _compute_local_cost_amount(self):
@@ -214,14 +223,14 @@ class FreightOperationBilling(models.Model):
 
     def action_post_sell(self):
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False)], fields=['debtor'],groupby=['debtor'])
+            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], fields=['debtor'],groupby=['debtor'])
         mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id)])
+            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
             invoice_line_ids = []
             for record in self:
-                if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount:
+                if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount and record.booking_id and record.operation_billing_id:
                     invoice_line_ids.append((0, 0, {
                         'product_id': record.charge_code.id,
                         'transport': record.transport,
@@ -251,14 +260,14 @@ class FreightOperationBilling(models.Model):
 
     def action_post_cost(self):
         vendors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'vendor', 'in', self.vendor.ids), ('bill_created', '=', False)], fields=['vendor'],groupby=['vendor'])
+            'vendor', 'in', self.vendor.ids), ('bill_created', '=', False), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], fields=['vendor'],groupby=['vendor'])
         mapped_data = list([(vendor['vendor'][0]) for vendor in vendors_data])
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id)])
+            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
             invoice_line_ids = []
             for record in self:
-                if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount:
+                if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount and record.booking_id and record.operation_billing_id:
                     invoice_line_ids.append((0, 0, {
                         'product_id': record.charge_code.id,
                         'transport': record.transport,
@@ -272,6 +281,7 @@ class FreightOperationBilling(models.Model):
                         'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
                     }))
                     record.bill_created = True
+
             bill_id = self.env['account.move'].sudo().create({
                             'name': "/",
                             'move_type': 'in_invoice',

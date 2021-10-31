@@ -162,6 +162,8 @@
                     <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
                     <field name="cost_bill_tax_amount" readonly="1" optional="hide" />
                     <field name="operation_billing_id" />
+                    <field name="booking_id"/>
+                    <field name="freight_request_id" invisible="1"/>
                     <field name="bill_created"/>
                     <field name="invoice_created"/>
                 </tree>

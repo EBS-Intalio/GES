@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <record id="view_freight_operation_form_inherit" model="ir.ui.view">
-        <field name="name">freight.operation.form.inherit</field>
-        <field name="model">freight.operation</field>
-        <field name="inherit_id" ref="freight.view_freight_operation_form" />
+    <record id="view_freight_request_form_inherit" model="ir.ui.view">
+        <field name="name">freight.job.request.form.inherit</field>
+        <field name="model">freight.job.request</field>
+        <field name="inherit_id" ref="freight_management.freight_management_freight_booking_form_view" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
                 <page string="Billing Lines">
                     <group>
                         <group>
+                            <field name="transport" invisible="1"/>
                             <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}" />
                         </group>
                         <group>
@@ -41,8 +43,8 @@
                             <field name="debtor" optional="hide" />
                             <field name="sell_recognition" optional="hide" />
                             <field name="operation_billing_id" invisible="1"/>
-                            <field name="operation_billing_id" invisible="1"/>
                             <field name="booking_id" invisible="1"/>
+                            <field name="freight_request_id" invisible="1"/>
                             <field name="posted_revenue" readonly="1" optional="hide" />
                             <field name="sell_reference" optional="hide" />
                             <field name="cost_exchange_rate" readonly="1" optional="hide" />
@@ -76,25 +78,8 @@
                         <field name="profit" />
                     </group>
                 </page>
+                </notebook>
             </xpath>
         </field>
     </record>
-        <record id="action_server_post_sell" model="ir.actions.server">
-            <field name="name">Post Sell</field>
-            <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_freight_operation" />
-            <field name="binding_model_id" ref="model_freight_operation" />
-            <field name="binding_view_types">form</field>
-            <field name="state">code</field>
-            <field name="code">records.button_post_sell()</field>
-        </record>
-        <record id="action_server_post_cost" model="ir.actions.server">
-            <field name="name">Post Cost</field>
-            <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_freight_operation" />
-            <field name="binding_model_id" ref="model_freight_operation" />
-            <field name="binding_view_types">form</field>
-            <field name="state">code</field>
-            <field name="code">records.button_post_cost()</field>
-        </record>
 </odoo>
