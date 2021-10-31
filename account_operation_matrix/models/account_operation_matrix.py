@@ -38,7 +38,7 @@ class AccountOperationMatrix(models.Model):
     @api.model
     def create(self, vals):
         res = super(AccountOperationMatrix, self).create(vals)
-        if vals.get('transport') != 'sea':
+        if vals.get('transport') != 'ocean':
             account_matrix_id = self.env['account.operation.matrix'].search_count([('transport', '=', vals.get('transport')),
                                                                              ('direction', '=', vals.get('direction')),
                                                                              ('service_type', '=', vals.get('service_type'))])
@@ -48,7 +48,7 @@ class AccountOperationMatrix(models.Model):
 
     def write(self, vals):
         res = super(AccountOperationMatrix, self).write(vals)
-        if vals.get('transport') != 'sea':
+        if vals.get('transport') != 'ocean':
             account_matrix_id = self.env['account.operation.matrix'].search_count([('transport', '=', self.transport),
                                                                             ('direction', '=', self.direction),
                                                                             ('service_type', '=', self.service_type)])
