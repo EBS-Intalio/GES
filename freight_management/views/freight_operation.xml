@@ -685,7 +685,7 @@
 
                                                 <div style="width:200%">
                                                     <label for="pickup_labor_duration" string="Pickup Labor:"
-                                                           style="font-weight:bold;margin-right:250px"
+                                                           style="font-weight:bold;margin-right:275px"
                                                            class="oe_inline"/>
                                                     <field name="pickup_labor_duration" style="width:17%"
                                                            class="oe_inline"
