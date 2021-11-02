@@ -27,3 +27,6 @@ class FreightReferenceNumber(models.Model):
     freight_booking_id = fields.Many2one('freight.booking', string='Freight Booking')
     shipment_id = fields.Many2one('freight.operation', string='Shipment')
     freight_console_id = fields.Many2one('consol.details', string='Consol')
+    information = fields.Char(string='Information')
+    issue_date = fields.Date(string='Issue Date')
+    freight_container_id = fields.Many2one('freight.container', string='Container')

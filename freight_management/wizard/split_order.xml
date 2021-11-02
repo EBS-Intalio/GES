@@ -1,0 +1,15 @@
+<odoo>
+    <record model="ir.ui.view" id="split_order_form_view">
+        <field name="name">split.order.form.view</field>
+        <field name="model">split.order</field>
+        <field name="arch" type="xml">
+            <form string="Split Order">
+                <footer>
+                    <button name="split_order" string="Split Order" type="object" class="btn-primary" context="{'split_order':True}"/>
+                    <button name="split_order" string="Create New Order" type="object" class="btn-primary" context="{'split_order':False}"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

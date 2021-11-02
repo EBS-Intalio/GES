@@ -201,9 +201,9 @@ class FreightBooking(models.Model):
     commodity_category = fields.Selection(([('food_perishable', 'Food Perishable'), ('nonfood_perishable', 'Non food perishable'), ('non_perishable', 'Non perishable F&B'),
                                             ('furniture', 'Furniture'), ('building_material', 'Building Material'), ('automotive', 'Automotive'),
                                             ('pharmaceuticals', 'Pharmaceuticals'), ('petroleum_products', 'Petroleum Products'), ('other_chemicals', 'Other Chemicals')]), string="Commodity Category",required=False)
-    weight_type = fields.Selection(([('estimated', 'Estimated'), ('actual', 'Actual')]), string="Weight Type", required=False)
-    clearance_required = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Clearance Required", required=False)
-    warehousing = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Warehousing / Storage", required=False)
+    weight_type = fields.Selection(([('estimated', 'Estimated'), ('actual', 'Actual')]), string="Weight Type", required=False,default='estimated')
+    clearance_required = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Clearance Required", required=False, default='no')
+    warehousing = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Warehousing / Storage", required=False,default='no')
 
     def action_create_new_invoice(self):
         """
@@ -260,7 +260,7 @@ class FreightBooking(models.Model):
             warn_list.append("Destination")
         if not self.gross_weight and self.transport != 'documentation':
             warn_list.append("Gross Weight")
-        if not self.incoterm and self.transport != 'documentation':
+        if not self.incoterm and self.transport not in ['documentation','land']:
             warn_list.append("incoterm")
         if not self.clearance_required:
             warn_list.append("Clearance required")

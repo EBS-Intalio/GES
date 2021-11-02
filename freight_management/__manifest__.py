@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.1.45',
+    'version': '14.0.1.46',
 
     'category': 'Freight',
     'description': """
@@ -58,6 +58,16 @@
         "views/customs_valuation_charges.xml",
         "views/product_quantity_summary.xml",
         "views/freight_order_line.xml",
+        "views/freight_routing.xml",
+        "views/tracking_dates.xml",
+        "views/outturn.xml",
+        "wizard/split_order.xml",
+        "views/export_process_line.xml",
+        "views/import_process_line.xml",
+        "views/freight_container_service.xml",
+        "views/freight_container_location.xml",
+        "views/freight_doc_line.xml",
+	"views/freight_allocated_packlines_view.xml"
     ],
     'installable': True,
     'application': True,

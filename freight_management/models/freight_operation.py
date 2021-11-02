@@ -310,11 +310,136 @@ class FreightOperation(models.Model):
     controlling_customer_id = fields.Many2one('res.partner', string='Controlling Customer')
     reference_ids = fields.One2many('freight.reference.number', 'shipment_id', string='Reference Number', copy=False)
     service_details_ids = fields.One2many('freight.service.details', 'freight_booking_id', string='Commodity Details', copy=False)
+    routing_ids = fields.One2many('freight.routing','shipment_id')
+
+    # Pick Up Export
+    pickup_export_broker_id = fields.Many2one('res.partner', string='Export Broker')
+    pickup_shippers_ref = fields.Char('Shippers Ref')
+    pickup_transport_id = fields.Many2one('res.partner', string="Pick Up Transport Company")
+    transit_warehouse_id = fields.Many2one('res.partner', string="CFS / Transit Warehouse")
+    pick_up_agent_id = fields.Many2one('res.partner', string='Pickup Agent')
+    pickup_from_id = fields.Many2one('res.partner', string="Pickup From ")
+    pickup_interim_receipt = fields.Char(string="Interim Receipt")
+    receipt_requested = fields.Date('Receipt Requested')
+    dispatch_requested = fields.Date('Dispatch Requested')
+    pickup_interim_date_receipt = fields.Date(string="Interim Receipt")
+    hbl_booking_status = fields.Selection([('sl', 'Confirmed')], string="HBL Booking status")
+    drop_mode = fields.Selection([
+        ('any', 'Any'),
+        ('lof', 'Drop Container premise Supplies Lift '),
+        ('sdl', 'Drop Container With Side Loader '),
+        ('trl', 'Drop Trailer'),
+        ('wup', 'Wait for Pack / Unpack '),
+        ('ask', 'Ask Client')
+    ], "Drop Mode")
+    pickup_required_from = fields.Date('Pickup Required From ')
+    pickup_required_by = fields.Date('Pickup Required By  ')
+    estimated_pickup = fields.Date('Estimated Pickup ')
+    actual_pickup = fields.Date('Actual Pickup ')
+    trn_booking_requested = fields.Date('Trn. Booking Requested')
+    pickup_labor_duration = fields.Float('Pickup Labor Duration')
+    pickup_labor_charge = fields.Float('Pickup Labor Charge')
+    truck_wait_time_duration = fields.Float('Truck Wait Time Duration ')
+    truck_wait_time_charge = fields.Float('Truck Wait Time Charge ')
+    detention_free = fields.Integer('Detention Free')
+    detention_duration = fields.Integer('Detention Duration ')
+    detention_charge = fields.Float('Detention Charge')
+
+    # Pick From Shipper
+    estimated_date = fields.Date('Estimated')
+    requested_by = fields.Date('Requested By')
+    picked_up_at = fields.Date('Picked Up At')
+    transport_company = fields.Many2one('res.partner', 'Transport Company')
+    good_sign_by = fields.Char('Good Sign By ')
+    transport_company_name = fields.Char('Transport Company Name')
+    driver_name = fields.Char('Driver Name')
+    licence = fields.Char('Licence')
+    vehicle_reg = fields.Char('Vehicle Registration')
+    pc_distance = fields.Float('P/C Distance')
+    driving_distance = fields.Float('Driving Distance')
+    distance_type = fields.Selection([
+        ('km', 'KM'),
+        ('mi', 'MI'),
+    ], string="Distance Type")
+    pickup_from_shipper_addrs = fields.Many2one('res.partner', string="Shipper Address")
+    note = fields.Text('Note')
+    booking = fields.Many2one('res.partner', string="Booking")
+    confirm_drop_mode = fields.Selection([
+        ('any', 'Any'),
+        ('lof', 'Drop Container premise Supplies Lift '),
+        ('sdl', 'Drop Container With Side Loader '),
+        ('trl', 'Drop Trailer'),
+        ('wup', 'Wait for Pack / Unpack '),
+        ('ask', 'Ask Client')
+    ], "Drop Mode")
+    # Delivery
+    #details tab
+    delivery_import_broker = fields.Many2one('res.partner','Import Broker')
+    delivery_warehouse_id = fields.Many2one('res.partner','CFS/Transit Warehouse')
+    delivery_transport_company_id = fields.Many2one('res.partner','Delivery Transport Company')
+    delivery_delivery_agent_id = fields.Many2one('res.partner','Delivery Agent')
+    deliver_to = fields.Many2one('res.partner','Delivered To')
+    deliver_to_address = fields.Many2one('res.partner','Delivered To Address')#
+    delivered_receipt_requested = fields.Date('receipt requested')
+    delivery_dispatch_requested = fields.Date('dispatch requested')
+    delivery_drop_mode = fields.Selection([
+        ('any', 'Any'),
+        ('lof', 'Drop Container premise Supplies Lift '),
+        ('sdl', 'Drop Container With Side Loader '),
+        ('trl', 'Drop Trailer'),
+        ('wup', 'Wait for Pack / Unpack '),
+        ('ask', 'Ask Client')
+    ], "Drop Mode")
+    delivery_fcl_date = fields.Date('FCL Available Date')
+    delivery_required_from = fields.Date('Delivery Required From')
+    delivery_required_by = fields.Date('Delivery Required By')
+    delivery_booking_requested = fields.Date('Trn. Booing Requested')
+    actual_delivery = fields.Date('Actual Delivery')
+    delivery_labour_duration = fields.Float('Delivery Labor Duration')
+    delivery_labour_charge = fields.Float('Delivery Labor Charge')
+    delivery_truck_wait_time_charge = fields.Float('Truck Wait Time Charge')
+    delivery_truck_wait_time_duration = fields.Float('Truck Wait Time Duration')
+    storage_charge =fields.Float('Storage Charge')
+    delivery_detention_charge = fields.Float('Detention Charge')
+    delivery_detention_free = fields.Integer('Detention Free')
+    delivery_detention_duration = fields.Integer('Detention Duration')
+    fcl_storage_date = fields.Date('FCL Storage Date')
+    estimated_delivery_date = fields.Date('Estimated Delivery')
+    # transport_booking = fields.Many2one()
+    # confirmation tab
+    estimated_delivery_confirm_date = fields.Date('Estimated')
+    delivery_requested_by = fields.Date('Requested By')
+    delivery_actual_date = fields.Date('Actual')
+    delivery_good_sign_by = fields.Char('Goods Signed By')
+    delivery_confirm_dropm_mode = fields.Selection([
+        ('any', 'Any'),
+        ('lof', 'Drop Container premise Supplies Lift '),
+        ('sdl', 'Drop Container With Side Loader '),
+        ('trl', 'Drop Trailer'),
+        ('wup', 'Wait for Pack / Unpack '),
+        ('ask', 'Ask Client')
+    ], "Drop Mode")
+    delivery_booking_id = fields.Many2one('freight.booking','Booking')
+    delivery_notes = fields.Text('Notes')
+    delivery_transport_company = fields.Many2one('res.partner','Transport Company')
+    delivery_transport_company_name = fields.Char('Transport company Name')
+    delivery_driver_name = fields.Char('Drivers Name')
+    delivery_license = fields.Char('License')
+    delivery_vehicle_reg = fields.Char('Vehicle Registration')
+    delivery_pc_distance = fields.Float('P/C Distance')
+    delivery_pc_distance_type = fields.Selection([
+        ('km','KM'),
+        ('mi','MI')
+    ], string='Distance Type')
+    delivery_distance_driving = fields.Float('Driving Distance')
+    delivery_address = fields.Many2one('res.partner','Address')
+    delivery_storage_charge = fields.Float(string='Storage Charge')
+    delivery_storage_charge_days = fields.Integer(string='Storage Charge Days')
 
     @api.model
     def create(self, values):
         """
-
+        generate sequence
         :param values:
         :return:
         """

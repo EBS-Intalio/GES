@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="container_outturn_line_form_view">
+            <field name="name">container.outturn.line.form.view</field>
+            <field name="model">container.outturn.line</field>
+            <field name="arch" type="xml">
+                <form string="outturn">
+                    <sheet>
+                        <group>
+                            <field name="shipment_id"/>
+                            <field name="packs"/>
+                            <field name="pk_ty"/>
+                            <field name="outturn"/>
+                            <field name="damaged"/>
+                            <field name="pillaged"/>
+                            <field name="outturn_container_id" invisible="1"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_container_outturn_line_tree_view">
+            <field name="name">container.outturn.line.tree.view</field>
+            <field name="model">container.outturn.line</field>
+            <field name="arch" type="xml">
+                <tree string="outturn">
+                    <field name="shipment_id"/>
+                    <field name="packs"/>
+                    <field name="pk_ty"/>
+                    <field name="outturn"/>
+                    <field name="damaged"/>
+                    <field name="pillaged"/>
+                    <field name="outturn_container_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_container_outturn_line_action">
+            <field name="name">outturn</field>
+            <field name="res_model">container.outturn.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a Outturn.
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

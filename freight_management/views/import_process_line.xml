@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_import_process_line_form_view">
+            <field name="name">import.process.line.form.view</field>
+            <field name="model">import.process.line</field>
+            <field name="arch" type="xml">
+                <form string="Import Process Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="penalty" required="1"/>
+                                <field name="penalty_desc"/>
+                                <field name="credit_type"/>
+                                <field name="creditor"/>
+                                <field name="location"/>
+                            </group>
+                            <group>
+                                <field name="free_time"/>
+                                <field name="duration"/>
+                                <field name="unit"/>
+                                <field name="override_co"/>
+                                <field name="override"/>
+                                <field name="currency"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="import_process_line_tree_view">
+            <field name="name">import.process.line.tree.view</field>
+            <field name="model">import.process.line</field>
+            <field name="arch" type="xml">
+                <tree string="Import Process Lin">
+                    <field name="penalty" required="1"/>
+                    <field name="penalty_desc"/>
+                    <field name="credit_type"/>
+                    <field name="creditor"/>
+                    <field name="override_co"/>
+                    <field name="override"/>
+                    <field name="currency"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="import_process_line_action">
+            <field name="name">Import Process Line</field>
+            <field name="res_model">import.process.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Import Process Line.
+                </p>
+            </field>
+        </record>
+
+<!--        <menuitem name="POL" parent="freight.freight_configuration" id="menu_freight_pol_id"-->
+<!--                  action="view_freight_pol_action" sequence="2"/>-->
+
+    </data>
+</odoo>

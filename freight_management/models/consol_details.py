@@ -4,6 +4,8 @@ from odoo import models, fields, api, _
 
 class ConsolDerails(models.Model):
     _name = 'consol.details'
+    
+    name = fields.Char(string="Console ID", required=True, default='New')
 
     shipment_id = fields.Many2one('freight.operation')
     # consol details
@@ -16,15 +18,18 @@ class ConsolDerails(models.Model):
         ('oth','Other'),
     ], string='Type')
     transport = fields.Selection([
-        ('air', 'Air'),
-        ('ocean', 'Ocean'),
-        ('land', 'Road'),
-        ('sea_then_air', 'Sea then Air'),
-        ('air_then_sea', 'Air then Sea'),
-        ('rail', 'Rail'),
-        ('courier', 'Courier'),
-        ('documentation', 'Documentation')], string='Transport')
-    cont_mode = fields.Selection([
+        ('air', 'Air Freight'),
+        ('ocean', 'Sea Freight'),
+        ('land', 'Road Freight'),
+        ('rail', 'Rail Freight'),
+], string='Transport')
+    air_cont_mode = fields.Selection([
+        ('ls','Loose'),
+        ('uld',' Unit Load Device'),
+        ('bc','Buyer’s Consolidation'),
+        ('ot','Other'),
+    ], string='Container Mode')
+    sea_cont_mode = fields.Selection([
         ('fcl','Full Container Load'),
         ('lcl','Less Container Load'),
         ('blk','Bulk'),
@@ -33,7 +38,47 @@ class ConsolDerails(models.Model):
         ('bcn','Buyers Consolidation'),
         ('ror','Roll On / Roll Off'),
         ('oth','Other'),
-    ],string='Container Mode')
+    ], string='Container Mode')
+    road_cont_mode = fields.Selection([
+        ('fcl','Full Container Load'),
+        ('ftl','Full Truck load'),
+        ('lcl','Less Container Load'),
+        ('ltl','Less Truck Load'),
+        ('bcn','Buyer’s Consolidation'),
+        ('grp','Groupage / Freight All kinds'),
+        ('oth','Other'),
+    ], string='Container Mode')
+    rail_cont_mode = fields.Selection([
+        ('fcl','Full Container Load'),
+        ('lcl','Less Container Load'),
+        ('blk', 'Bulk'),
+        ('lqd', 'Liquid'),
+        ('bbk', 'break Bulb'),
+        ('bcn','Buyer’s Consolidation'),
+        ('grp','Groupage / Freight All kinds'),
+        ('ror', 'Roll On/Roll Off'),
+        ('oth','Other'),
+    ], string='Container Mode')
+
+    aircraft_reg = fields.Char('Aircraft Reg.')
+    aircraft_type = fields.Char('Aircraft Type')
+    flight = fields.Char('Flight')
+    neutral_mawb = fields.Boolean('Neutral MAWB')
+    mawb = fields.Char('MAWB')
+    mawb_1 = fields.Char('MAWB 1')
+    svc_lvl = fields.Selection([
+        ('std','Standard')
+    ], string='svc. Lcl')
+    is_cargo_only = fields.Boolean('Is Cargo Only')
+    truck_ref = fields.Char('Truck Ref.')
+    othe_ref = fields.Char('Other Ref.')
+    journey_ref = fields.Char('Journy Ref')
+    journey_no = fields.Char('Journey No')
+    co_load_with = fields.Many2one('res.partner','Co-Load With')
+    co_load_mbl = fields.Char('Co-Load MBL')
+    co_load_bkg_ref = fields.Char('Co-Load Bkg. Ref.')
+    rego = fields.Char('Rego')
+#new
     phase = fields.Selection([
         ('all','Open Security'),
         ('dst','Destination'),
@@ -68,7 +113,7 @@ class ConsolDerails(models.Model):
     freight_order_id = fields.Many2one('freight.order', string="Order")
     shipment_ids = fields.Many2many('freight.operation', string="Shipment ids")
     show = fields.Boolean('Show')
-    ship_count = fields.Integer('Ship count')
+    ship_count = fields.Integer('Ship Count')
     packs = fields.Integer('Packs')
     weight = fields.Float('Weight')
     weight_uom = fields.Many2one('uom.uom', string="Weight uom")
@@ -81,14 +126,14 @@ class ConsolDerails(models.Model):
     collect = fields.Float('Collect')
     collect_curr = fields.Many2one('res.currency', string="Collect uom")
 
-    sending_agent_id = fields.Many2one('res.partner', string="Sending agent")
-    sending_agent_address_id = fields.Many2one('res.partner', string="Sending agent address")
-    receiving_agent_id = fields.Many2one('res.partner', string="Receiving agent")
-    receiving_agent_address_id = fields.Many2one('res.partner', string="Receiving agent address")
+    sending_agent_id = fields.Many2one('res.partner', string="Sending Agent")
+    sending_agent_address_id = fields.Many2one('res.partner', string="Sending Agent Address")
+    receiving_agent_id = fields.Many2one('res.partner', string="Receiving Agent")
+    receiving_agent_address_id = fields.Many2one('res.partner', string="Receiving Agent Address")
     carrier = fields.Many2one('res.partner', string="Carrier")
     creditor = fields.Many2one('res.partner', string="Creditor")
-    carrier_bkg_ref = fields.Char('Carrier bkg ref')
-    agent_reference = fields.Char('Agent reference')
+    carrier_bkg_ref = fields.Char('Carrier Bkg Ref')
+    agent_reference = fields.Char('Agent Reference')
 
     cto_address = fields.Many2one('res.partner', string="CTO Address")
     cfs_address = fields.Many2one('res.partner', string="CFS Address")
@@ -139,17 +184,17 @@ class ConsolDerails(models.Model):
         ('OBD','Original Bill Surrendered at destination'),
     ],string="Release Type")
     place_of_issue = fields.Many2one('unloco.data',string="Place Of Issue")
-    original_bills = fields.Integer('Original bills')
-    copy_bills = fields.Integer('Copy bills')
+    original_bills = fields.Integer('Original Bills')
+    copy_bills = fields.Integer('Copy Bills')
     print_option_for_other_doc = fields.Selection([
         ('sub_house_bill', 'Sub house bill'),
         ('print_masters_only', 'Print Masters Only'),
         ('print_sub_house_bill_only', 'Print sub house bill only')])
-    master_bill_issue_date = fields.Date('master bill issue date')
+    master_bill_issue_date = fields.Date('Master Bill Issue Date')
     shipment = fields.Integer('Shipment')
-    weight_pre = fields.Float('Weight pre')
-    weight_uom_pre_id = fields.Many2one('uom.uom', string="Weight uom pre")
-    volume_pre = fields.Float('Volume pre')
+    weight_pre = fields.Float('Weight Pre')
+    weight_uom_pre_id = fields.Many2one('uom.uom', string="Weight Uom Pre")
+    volume_pre = fields.Float('Volume Pre')
     volume_uom_pre_id = fields.Many2one('uom.uom', string='Volume uom pre ')
     max_dims = fields.Float('Max dimension')
     max_dims1 = fields.Float('Max dimension 1')
@@ -163,10 +208,10 @@ class ConsolDerails(models.Model):
     max_temp = fields.Float('Max Temp')
     min_temp_in = fields.Selection([
         ('celsius', 'Celsius'),
-        ('fahrenheit', 'Fahrenheit')], string="Min temperature")
+        ('fahrenheit', 'Fahrenheit')], string="Min Temperature")
     max_temp_in = fields.Selection([
         ('celsius', 'Celsius'),
-        ('fahrenheit', 'Fahrenheit')], string="Max temperature")
+        ('fahrenheit', 'Fahrenheit')], string="Max Temperature")
     quantities_override = fields.Boolean('Quantities Override')
     weight_vol = fields.Float('Weight Volume')
     weight_vol_uom_id = fields.Many2one('uom.uom', 'Weight Volume')
@@ -174,10 +219,10 @@ class ConsolDerails(models.Model):
     consolidated_volume = fields.Float('Consolidated Volume')
     cons_charge_qty = fields.Float('Cons Charge Qty')
     cons_charge_qty_uom_id = fields.Many2one('uom.uom', 'Cons Charge Qty Uom')
-    consolidated_volume_uom_id = fields.Many2one('uom.uom', 'Consolidated volume Uom')
-    consolidated_weight_uom_id = fields.Many2one('uom.uom', 'Consolidated weight Uom')
-    excess_wgt_vol = fields.Float('Excess weight volume')
-    excess_wgt_vol_uom_id = fields.Many2one('uom.uom', 'Excess weight volume')
+    consolidated_volume_uom_id = fields.Many2one('uom.uom', 'Consolidated Volume Uom')
+    consolidated_weight_uom_id = fields.Many2one('uom.uom', 'Consolidated Weight Uom')
+    excess_wgt_vol = fields.Float('Excess Weight Volume')
+    excess_wgt_vol_uom_id = fields.Many2one('uom.uom', 'Excess weight Volume')
     frt_cost_mb_charge = fields.Float('FRT Cost MB Charge')
     frt_cost_mb_charge_currency_id = fields.Many2one('res.currency', 'FRT Cost MB Charge')
     frt_cost_hb_charge = fields.Float('FRT Cost HB Charge')
@@ -201,28 +246,37 @@ class ConsolDerails(models.Model):
         ('10', '10'),
         ('11', '11'),
         ('12', '12')], string="Density Factor")
-    reference_number_ids = fields.One2many('freight.reference.number', 'freight_console_id', string="Reference number")
+    reference_number_ids = fields.One2many('freight.reference.number', 'freight_console_id', string="Reference Number")
     Dest_cntr_comments = fields.Char('Density CNTR Comments')
     chassis_provider = fields.Char('Chassis Provider')
     atd_update = fields.Char('ATD Update')
     #routing tab
-    defined_by = fields.Char('Defined By')
-    # status = fields.Selection([()], string="Status")
-    notes_rout = fields.Text('Notes')
-    leg_order = fields.Float('Leg order')
-    depart = fields.Many2one('res.country','Dep. From')
-    arrival = fields.Many2one('res.country','Arrival At')
-    cto_received_date = fields.Date('CTO received')
-    cfs_received_date = fields.Date('CFS received')
-    cto_available_date = fields.Date('CTO Available')
-    cfs_available_date = fields.Date('CFS Available')
-    cto_cutt_off_date = fields.Date('CTO Cutt Off')
-    cfs_cutt_off_date = fields.Date('CFS Cutt Off')
-    cto_storage_date = fields.Date('CTO Storage')
-    cfs_storage_date = fields.Date('CFS Storage')
-    docs_due_date = fields.Date('Docs Due')
-    vgm_cutt_off_date = fields.Date('VGM Cutt Off')
+    # defined_by = fields.Char('Defined By')
+    # # status = fields.Selection([()], string="Status")
+    # notes_rout = fields.Text('Notes')
+    # leg_order = fields.Float('Leg order')
+    # depart = fields.Many2one('res.country','Dep. From')
+    # arrival = fields.Many2one('res.country','Arrival At')
+    # cto_received_date = fields.Date('CTO received')
+    # cfs_received_date = fields.Date('CFS received')
+    # cto_available_date = fields.Date('CTO Available')
+    # cfs_available_date = fields.Date('CFS Available')
+    # cto_cutt_off_date = fields.Date('CTO Cutt Off')
+    # cfs_cutt_off_date = fields.Date('CFS Cutt Off')
+    # cto_storage_date = fields.Date('CTO Storage')
+    # cfs_storage_date = fields.Date('CFS Storage')
+    # docs_due_date = fields.Date('Docs Due')
+    # vgm_cutt_off_date = fields.Date('VGM Cutt Off')
     container_ids = fields.Many2many('freight.container', string='Container', copy=False)
+    routing_ids = fields.One2many('freight.routing','console_id','Routing')
+    #doc Data Tab
+    doc_type = fields.Selection([
+        ('all','ALL'),
+        ('frwd_inst','Forwarding Instruction')
+
+    ], string='Document Type')
+    alw_shw_cmn_fields = fields.Boolean('Always Show Common Fields')
+    doc_line_ids = fields.One2many('freight.doc.line','console_id')
 
     @api.onchange('bol')
     def get_old_data(self):
@@ -252,5 +306,16 @@ class ConsolDerails(models.Model):
                     rec.is_domestic_voyage = old_rec.is_domestic_voyage
                     rec.is_linked = old_rec.is_linked
                     rec.is_charter = old_rec.is_charter
+
+    @api.model
+    def create(self, vals):
+        """
+        Generate Sequence for the Console
+        :param vals:{}
+        :return:
+        """
+        if vals.get('name', ('New')) == ('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('consol.details') or _('New')
+        return super(ConsolDerails, self).create(vals)
 
 

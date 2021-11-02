@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="freight_allocated_packlinesline_form_view">
+            <field name="name">freight.allocated.packlines.form.view</field>
+            <field name="model">freight.allocated.packlines</field>
+            <field name="arch" type="xml">
+                <form string="Freight Allocated Packlines ">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="shipment_id"/>
+                                <field name="house_bill"/>
+                                <field name="shipper_id"/>
+                                <field name="consignee_id"/>
+                                <field name="interim_receipt"/>
+                                <field name="packs"/>
+                                <field name="pk_ty"/>
+                                <field name="weight"/>
+                                <field name="uw"/>
+                                <field name="volume"/>
+                                <field name="uv"/>
+                            </group>
+                            <group>
+                                <field name="pack_order"/>
+                                <field name="commodity"/>
+                                <field name="outturn"/>
+                                <field name="pillaged"/>
+                                <field name="damaged"/>
+                                <field name="short"/>
+                                <field name="surplus"/>
+                                <field name="ot_weight"/>
+                                <field name="ot_volume"/>
+                                <field name="ot_uw"/>
+                                <field name="ot_uv"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_allocated_packlines_tree_view">
+            <field name="name">freight.allocated.packlines.tree.view</field>
+            <field name="model">freight.allocated.packlines</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Allocated Packlines">
+                    <field name="shipment_id"/>
+                    <field name="house_bill"/>
+                    <field name="consignee_id"/>
+                    <field name="shipper_id"/>
+                    <field name="interim_receipt"/>
+                    <field name="packs"/>
+                    <field name="pk_ty"/>
+                    <field name="weight"/>
+                    <field name="uw"/>
+                    <field name="volume"/>
+                    <field name="uv"/>
+                    <field name="pack_order"/>
+                    <field name="commodity"/>
+                    <field name="outturn"/>
+                    <field name="pillaged"/>
+                    <field name="damaged"/>
+                    <field name="short"/>
+                    <field name="surplus"/>
+                    <field name="ot_weight"/>
+                    <field name="ot_volume"/>
+                    <field name="ot_uw"/>
+                    <field name="ot_uv"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_allocated_packlines_action">
+            <field name="name">freight.allocated.packlines</field>
+            <field name="res_model">freight.allocated.packlines</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Export Process Line.
+                </p>
+            </field>
+        </record>
+
+        <!--        <menuitem name="POL" parent="freight.freight_configuration" id="menu_freight_pol_id"-->
+        <!--                  action="view_freight_pol_action" sequence="2"/>-->
+
+    </data>
+</odoo>

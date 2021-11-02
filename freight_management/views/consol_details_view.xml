@@ -5,6 +5,11 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
                     <notebook>
                         <page name="main_details" string="Details">
                             <group string="Consol Details">
@@ -14,8 +19,11 @@
                                     <field name="type"/>
                                     <label for="transport" style="font-weight:bold"/>
                                     <field name="transport" required="1"/>
-                                    <label for="cont_mode" style="font-weight:bold"/>
-                                    <field name="cont_mode"/>
+                                    <label for="air_cont_mode" style="font-weight:bold" attrs="{'invisible':[('transport','=',False)]}"/>
+                                    <field name="air_cont_mode" attrs="{'invisible':[('transport','not in',['air'])]}"/>
+                                    <field name="sea_cont_mode" attrs="{'invisible':[('transport','not in',['ocean'])]}"/>
+                                    <field name="road_cont_mode" attrs="{'invisible':[('transport','not in',['land'])]}"/>
+                                    <field name="rail_cont_mode" attrs="{'invisible':[('transport','not in',['rail'])]}"/>
                                 </div>
                                 <label for="fst_load"/>
                                 <div class="o_row">
@@ -29,9 +37,9 @@
                             </group>
                             <group string="Voyage">
                                 <label for="voyage"/>
-                                <div class="o_row">
+                                <div class="o_row" attrs="{'invisible':[('transport','not in',['ocean'])]}">
                                     <field name="voyage"/>
-                                    <label for="vessel" style="font-weight:bold"/>
+                                    <label for="vessel" style="font-weight:bold" />
                                     <field name="vessel"/>
                                 </div>
                                 <label for="load_port"/>
@@ -60,12 +68,34 @@
                                 </div>
                             </group>
                             <group>
+                                <group attrs="{'invisible':[('transport','not in',['air'])]}">
+                                    <field name="aircraft_reg"/>
+                                    <field name="aircraft_type"/>
+                                    <field name="flight"/>
+                                    <field name="neutral_mawb"/>
+                                    <field name="mawb" attrs="{'invisible':[('type','not in',['cht'])]}"/>
+                                    <field name="mawb_1"/>
+                                    <field name="svc_lvl"/>
+                                    <field name="is_cargo_only"/>
+                                </group>
                                 <group>
-                                    <field name="bol"/>
+                                    <field name="truck_ref" attrs="{'invisible':[('transport','not in',['land'])]}"/>
+                                    <field name="othe_ref" attrs="{'invisible':[('transport','not in',['land'])]}"/>
+                                    <field name="journey_ref" attrs="{'invisible':[('transport','not in',['rail'])]}"/>
+                                    <field name="journey_no" attrs="{'invisible':[('transport','not in',['rail'])]}"/>
+                                    <field name="co_load_with" attrs="{'invisible':[('type','not in',['cld'])]}"/>
+                                    <field name="co_load_mbl" attrs="{'invisible':[('type','not in',['cld'])]}"/>
+                                    <field name="co_load_bkg_ref" attrs="{'invisible':[('type','not in',['cld'])]}"/>
+                                    <field name="rego" attrs="{'invisible':[('type','not in',['cht'])]}"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="bol" attrs="{'invisible':[('transport','not in',['land','rail'])]}"/>
                                     <field name="payment"/>
                                 </group>
                                 <group>
-                                    <field name="serv_level"/>
+                                    <field name="serv_level" attrs="{'invisible':[('transport','not in',['land','rail'])]}"/>
                                     <field name="crn"/>
                                 </group>
                             </group>
@@ -128,7 +158,7 @@
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="carrier"/>
+                                        <field name="carrier"  attrs="{'invisible':[('type','not in',['drt'])]}"/>
                                         <field name="creditor"/>
                                         <field name="carrier_bkg_ref"/>
                                     </group>
@@ -205,14 +235,13 @@
 
                                     </group>
                                     <group>
+                                        <label for="weight_pre" string="Weight:"/>
                                         <div class="o_row" name="outers">
-                                            <span>Weight:</span>
                                             <field name="weight_pre" nolabel="1"/>
                                             <field name="weight_uom_pre_id" nolabel="1"/>
                                         </div>
-
+                                        <label for="volume_pre" string="Volume:"/>
                                         <div class="o_row" name="outers">
-                                            <span>Volume:</span>
                                             <field name="volume_pre" nolabel="1"/>
                                             <field name="volume_uom_pre_id" nolabel="1"/>
                                         </div>
@@ -227,13 +256,13 @@
                                         </div>
 
                                         <field name="is_temperature_controlled"/>
+                                        <label for ="min_temp" string="Min Temperature :"/>
                                         <div class="o_row" name="outers">
-                                            <span>Min Temperature :</span>
                                             <field name="min_temp"/>
                                             <field name="min_temp_in"/>
                                         </div>
+                                        <label for ="min_temp" string="Max Temperature :"/>
                                         <div class="o_row" name="outers">
-                                            <span>Max Temperature :</span>
                                             <field name="max_temp"/>
                                             <field name="max_temp_in"/>
                                         </div>
@@ -320,7 +349,7 @@
                                         </div>
                                     </group>
                                     <group>
-                                        <label for="cost_free_unit" string="Cost Free Unit :"/>
+                                        <label for="cost_free_unit" string="Cost Free Unit:"/>
                                         <div class="o_row">
                                             <field name="cost_free_unit" nolabel="1"/>
                                             <field name="cost_free_units_uom_id" nolabel="1"/>
@@ -353,59 +382,37 @@
                     </group>
                         </page>
                         <page name="routing" string="Routing">
-                            <group string="Log Details">
-                                <group>
-                                    <field name="defined_by"/>
-                                    <field name="transport" required="1"/>
-                                    <field name="type"/>
-                                    <field name="notes_rout"/>
-                                </group>
-                                <group>
-                                    <field name="leg_order"/>
-                                    <field name="is_charter"/>
-                                    <field name="is_linked"/>
-                                </group>
-                            </group>
-                            <group string="Voyage/Flight Details">
-                                <group>
-                                    <field name="voyage"/>
-                                    <field name="creditor"/>
-                                    <field name="carrier_bkg_ref" string="Carrier Reference"/>
-                                </group>
-                                <group>
-                                    <field name="vessel"/>
-                                    <field name="carrier"/>
-                                    <field name="serv_level" string="Carrier Service Level"/>
-                                </group>
-                            </group>
-                            <group string="Origin Details">
-                                <group>
-                                    <field name="load_port"/>
-                                    <field name="depart"/>
-                                    <field name="etd" />
-                                    <field name="eta" />
-                                    <field name="cto_received_date" />
-                                    <field name="cto_available_date" />
-                                    <field name="cto_cutt_off_date" />
-                                    <field name="cto_storage_date" />
-                                    <field name="docs_due_date" />
-                                </group>
-                                <group>
-                                    <field name="disc_port"/>
-                                    <field name="arrival"/>
-                                    <field name="atd" />
-                                    <field name="ata" />
-                                    <field name="cfs_received_date" />
-                                    <field name="cfs_available_date" />
-                                    <field name="cfs_cutt_off_date" />
-                                    <field name="cfs_storage_date" />
-                                    <field name="vgm_cutt_off_date" />
-                                </group>
-                            </group>
+                            <field name="routing_ids" nolabel="1"/>
                         </page>
                         <page name="container" string="Containers">
-                            <field name="container_ids"
-                                   nolabel="1"/>
+                            <field name="container_ids" nolabel="1"/>
+                        </page>
+			<page name="packing" string="Packing">
+                            <field name="container_ids" nolabel="1" readonly="1"/>
+                        </page>
+                        <page name="doc_data" string="Doc Data">
+                            <notebook>
+                                <page name="system_defined_data" string="System Defined Data">
+                                    <group>
+                                        <group>
+                                            <field name="doc_type"/>
+                                        </group>
+                                        <group>
+                                            <field name="alw_shw_cmn_fields"/>
+                                        </group>
+                                    </group>
+
+                                    <group>
+                                        <field name="doc_line_ids" nolabel="1"/>
+
+                                    </group>
+                                </page>
+                                <page name="user_defined_data" string="User Defined Data">
+                                    <notebook>
+                                        <page name="miscellaneous" string="miscellaneous"></page>
+                                    </notebook>
+                                </page>
+                            </notebook>
                         </page>
                     </notebook>
                 </sheet>

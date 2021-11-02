@@ -9,8 +9,8 @@ class FreightPreAdvice(models.Model):
     pre_advice_id = fields.Char(string="Pre-Advice Id")
     master_bill = fields.Char(string="Master Bill")
     house_bill = fields.Char(string="House Bill")
-    load_port = fields.Many2one('freight.port', string="Load Port")
-    discharge_port = fields.Many2one('freight.port', string="Discharge Port")
+    load_port = fields.Many2one('unloco.data', string="Load Port")
+    discharge_port = fields.Many2one('unloco.data', string="Discharge Port")
     carrier = fields.Many2one('res.partner', string="Carrier")
     sending_agent = fields.Many2one('res.partner', string="Sending Agent")
     receiving_agent = fields.Many2one('res.partner', string="Receiving Agent")
@@ -27,3 +27,5 @@ class FreightPreAdvice(models.Model):
     order_ids = fields.Many2many('freight.order', string='Order', copy=False)
     container_ids = fields.Many2many('freight.container', string='Container', copy=False)
     is_canceled = fields.Boolean(string="Canceled")
+
+

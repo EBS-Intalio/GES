@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_freight_routing_form_view">
+            <field name="name">freight.routing.form.view</field>
+            <field name="model">freight.routing</field>
+            <field name="arch" type="xml">
+                <form string="Routing">
+                    <sheet>
+                        <group>
+                            <group string="Leg Details">
+                                <field name="defined_by"/>
+                                <field name="mode"/>
+                                <field name="Type" attrs="{'invisible':[('mode','not in',['sf','rof','raf'])]}"/>
+                                <field name="air_type" attrs="{'invisible':[('mode','!=','af')]}"/>
+                                <field name="status"/>
+                                <field name="leg_order"/>
+                                <field name="charter_route"/>
+                                <field name="is_linked"/>
+                                <field name="notes"/>
+                            </group>
+                            <group string="Voyage / Flight Details">
+                                <field name="voyage" attrs="{'invisible':[('mode','not in',['sf'])]}"/>
+                                <field name="flight" attrs="{'invisible':[('mode','!=','af')]}"/>
+                                <field name="truck_ref" attrs="{'invisible':[('mode','not in',['rof'])]}"/>
+                                <field name="journey_num" attrs="{'invisible':[('mode','not in',['raf'])]}"/>
+                                <field name="Vessel" attrs="{'invisible':[('mode','not in',['sf'])]}"/>
+                                <field name="other_info" attrs="{'invisible':[('mode','not in',['rof'])]}"/>
+                                <field name="journey_ref" attrs="{'invisible':[('mode','not in',['raf'])]}"/>
+                                <field name="aircraft_type" attrs="{'invisible':[('mode','!=','af')]}"/>
+                                <field name="aircraft_reg" attrs="{'invisible':[('mode','!=','af')]}"/>
+
+                                <field name="carrier"/>
+                                <field name="creditor"/>
+                                <field name="carrier_ref"/>
+                                <field name="published"/>
+<!--                                <field name="carrier_service_level"/>-->
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Origin Details" attrs="{'invisible':[('mode','not in',['af','sf','rof','raf'])]}" >
+                                <field name="load_port"/>
+                                <field name="dept_from"/>
+                                <field name="etd"/>
+                                <field name="atd"/>
+                                <field name="cto_received_date"/>
+                                <field name="cfs_received_date"/>
+                                <field name="cto_cutt_off_date"/>
+                                <field name="cfs_cutt_off_date"/>
+                                <field name="docs_due_date"/>
+                                <field name="vgm_cutt_off_date"/>
+                            </group>
+
+                            <group string="Receival Details" attrs="{'invisible':[('mode','!=','st')]}" >
+                                <field name="load_port"/>
+                                <field name="dept_from"/>
+                                <field name="etd"/>
+                                <field name="atd"/>
+                            </group>
+                            <group string="Destination Details" attrs="{'invisible':[('mode','not in',['af','sf','rof','raf'])]}">
+                                <field name="disc_port"/>
+                                <field name="arrival_at"/>
+                                <field name="eta"/>
+                                <field name="ata"/>
+                                <field name="cto_available_date"/>
+                                <field name="cfs_available_date"/>
+                                <field name="cto_storage_date"/>
+                                <field name="cfs_storage_date"/>
+                            </group>
+                            <group string="Availability Details" attrs="{'invisible':[('mode','!=','st')]}">
+                                <field name="disc_port"/>
+                                <field name="arrival_at"/>
+                                <field name="eta"/>
+                                <field name="ata"/>
+
+                            </group>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_freight_routing_tree_view">
+            <field name="name">freight.routing.tree.view</field>
+            <field name="model">freight.routing</field>
+            <field name="arch" type="xml">
+                <tree string="Routing">
+                    <field name="defined_by"/>
+                    <field name="mode"/>
+                    <field name="Type"/>
+                    <field name="status"/>
+                    <field name="leg_order"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_freight_routing_action">
+            <field name="name">Routing</field>
+            <field name="res_model">freight.routing</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a Routing.
+                </p>
+            </field>
+        </record>
+
+        <!--        <menuitem name="Pre-Advise" parent="freight.freight_operations" id="menu_freight_pre_advice_id"-->
+        <!--                  action="view_freight_pre_advice_action" />-->
+
+    </data>
+</odoo>

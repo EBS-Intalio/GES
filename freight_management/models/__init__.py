@@ -38,3 +38,12 @@ from . import customer_valuation_charge
 from . import freight_pre_advice
 from . import freight_order
 from . import product_quantity_summary
+from . import freight_routing
+from . import export_process_line
+from . import freight_container_location
+from . import import_process_line
+from . import outturn
+from . import tracking_dates
+from . import freight_container_service
+from . import freight_doc_line
+from . import freight_allocated_packlines

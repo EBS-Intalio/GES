@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_tracking_dates_form_view">
+            <field name="name">tracking.dates.form.view</field>
+            <field name="model">tracking.dates</field>
+            <field name="arch" type="xml">
+                <form string="Tracking Dates">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="estimated"/>
+                            <field name="actual_start"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tracking_dates_tree_view">
+            <field name="name">tracking.dates.tree.view</field>
+            <field name="model">tracking.dates</field>
+            <field name="arch" type="xml">
+                <tree string="Tracking Dates">
+                    <field name="name"/>
+                    <field name="estimated"/>
+                    <field name="actual_start" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_tracking_dates_action">
+            <field name="name">Tracking Dates</field>
+            <field name="res_model">tracking.dates</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a Tracking Dates.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="freight_container_service_form_view">
+            <field name="name">freight.container.service.form.view</field>
+            <field name="model">freight.container.service</field>
+            <field name="arch" type="xml">
+                <form string="Service">
+                    <sheet>
+                        <group>
+                            <group>
+                                <label for="service_type" string="Service type"/>
+                                <div class="o_row">
+                                    <field name="service_type"/>
+                                </div>
+
+                                <field name="date_booked"/>
+                                <field name="reference"/>
+                                <field name="completed"/>
+                                <field name="contractor"/>
+                                <field name="srv_location"/>
+                                <field name="service_duration" widget="float_time"/>
+                                <label for="service_rate" string="Service Rate"/>
+                                <div class="o_row">
+                                    <field name="service_rate"/>
+                                    <field name="service_rate_uom_id"/>
+                                </div>
+
+                            </group>
+                            <group>
+                                <field name="service_count"/>
+                                <field name="service_notes"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_container_service_tree_view">
+            <field name="name">freight.container.service.tree.view</field>
+            <field name="model">freight.container.service</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Container Service">
+                    <field name="service_type"/>
+                    <field name="date_booked"/>
+                    <field name="reference"/>
+                    <field name="completed"/>
+                    <field name="contractor"/>
+                    <field name="service_notes"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

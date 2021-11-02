@@ -9,23 +9,337 @@
                 <form string="Container">
                     <sheet>
                         <field name="active" invisible="1"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}"/>
                         <group>
                             <group>
-                                <field name="number" required="1"/>
-                                <field name="count"/>
-                                <field name="cont_type"/>
-                                <field name="commodity"/>
-                                <field name="humidity_percentage"/>
+                                <field name="number" required="1" string="Container Number"/>
                                 <field name="delivery_mode"/>
+                                <field name="mode"/>
+                                <field name="cont_type" string="Type"/>
                             </group>
                             <group>
+                                <label for = "seal" string="Seal"></label>
+                                <div class="o_row">
+                                    <field name="seal"/>
+                                    <label for="sealed_by_1" style="font-weight:bold"/>
+                                    <field name="sealed_by_1"/>
+                                </div>
+                                <label for = "seal_2" style="Seal 2"></label>
+                                <div class="o_row">
+                                    <field name="seal_2"/>
+                                    <label for="sealed_by_2" style="font-weight:bold"/>
+                                    <field name="sealed_by_2"/>
+                                </div>
+                                <label for = "seal_3" string="Seal 3"></label>
+                                <div class="o_row">
+                                    <field name="seal_3"/>
+                                    <label for="sealed_by_3" style="font-weight:bold"/>
+                                    <field name="sealed_by_3"/>
+                                </div>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Weights">
+                                <label for = "tare_weight"></label>
+                                <div class="o_row">
+                                    <field name="tare_weight"/>
+                                    <label for="tare" style="font-weight:bold"/>
+                                    <field name="tare"/>
+                                </div>
+                                <field name="goods_weight"/>
+                                <field name="dunnage"/>
+                                <label for = "gross_weight"></label>
+                                <div class="o_row">
+                                    <field name="gross_weight"/>
+                                    <label for="max" style="font-weight:bold"/>
+                                    <field name="max"/>
+                                </div>
+                                <field name="weight_uom"/>
+                            </group>
+                            <group>
+                                <label for = "is_seal_ok"></label>
+                                <div class="o_row">
+                                    <field name="is_seal_ok"/>
+                                    <label for="empty_container" style="font-weight:bold"/>
+                                    <field name="empty_container"/>
+                                    <label for="is_damage" style="font-weight:bold"/>
+                                    <field name="is_damage"/>
+                                </div>
+                                <field name="commodity"/>
+                                <field name="status"/>
+                                <field name="quality"/>
                                 <field name="is_shipper_owned"/>
                                 <field name="release"/>
                                 <field name="dep_container_id"/>
                                 <field name="arr_container_yard_id"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Refrigeration">
+                                <group>
+                                    <group>
+                                        <field name="control_atmosphere"/>
+                                        <field name="chiller"/>
+                                        <field name="frozen"/>
+
+                                        <label for="temp_set_point" string="Temp Set Point"/>
+                                        <div class="o_row">
+                                            <field name="temp_set_point"/>
+                                            <field name="temp_unit"/>
+                                        </div>
+                                        <field name="humidity_percent"/>
+                                        <field name="temp_rec_number"/>
+
+                                        <label for="air_vent_setting" string="Air Vent Setting"/>
+                                        <div class="o_row">
+                                            <field name="air_vent_setting"/>
+                                            <field name="air_vent_unit"/>
+                                        </div>
+
+                                        <field name="clip_on_unit_number"/>
+                                    </group>
+                                </group>
+
+
+                            </page>
+                            <page string="Measures">
+                                <group string="Measures" style="width:200%">
+                                    <div style="width:200%">
+                                        <div class="row" style="width:200%;padding: 1%;margin-left: 95px;">
+                                            <label for="height_on_file" string="On File"
+                                                   style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                            <label for="height_actual" string="Actual"
+                                                   style="font-weight:bold;padding-left: 15px;" class="oe_inline"/>
+                                            <label for="height_overhang" string="Overhang"
+                                                   style="font-weight:bold;padding-left: 128px;" class="oe_inline"/>
+                                        </div>
+                                        <label for="height_on_file" string="H.(ft.):"
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="height_on_file" style="width:17%" class="oe_inline" readonly="1"/>
+                                        <label for="height_actual" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="height_actual" nolabel="1" style="width:17%" class="oe_inline"/>
+                                        <label for="height_overhang" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="height_overhang" nolabel="1" style="width:17%" class="oe_inline" readonly="1"/>
+
+                                    </div>
+                                    <br/>
+                                    <div style="width:200%">
+                                        <label for="length_on_file" string="L.(ft.):"
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="length_on_file" style="width:17%" class="oe_inline" readonly="1"/>
+                                        <label for="length_actual" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="length_actual" nolabel="1" style="width:17%" class="oe_inline"/>
+                                        <label for="length_overhang" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="length_overhang" nolabel="1" style="width:17%" class="oe_inline" readonly="1"/>
+
+                                    </div>
+                                    <br/>
+                                    <div style="width:200%">
+                                        <label for="front" string="Front:"
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="front" style="width:17%" class="oe_inline" readonly="1"/>
+
+                                        <label for="back" string=" Back: "
+                                               style="font-weight:bold;margin-right:200px;margin-left: 65px;"
+                                               class="oe_inline"/>
+                                        <field name="back" nolabel="1" style="width:17%" class="oe_inline"/>
+                                    </div>
+                                    <br/>
+                                    <div style="width:200%">
+                                        <label for="width_on_file" string="W.(ft.):"
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="width_on_file" style="width:17%" class="oe_inline" readonly="1"/>
+                                        <label for="width_actual" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="width_actual" nolabel="1" style="width:17%" class="oe_inline"/>
+                                        <label for="width_overhang" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="width_overhang" nolabel="1" style="width:17%" class="oe_inline" readonly="1"/>
+                                    </div>
+                                    <br/>
+                                    <div style="width:200%">
+                                        <label for="left" string="Left:"
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="left" style="width:17%" class="oe_inline" readonly="1"/>
+
+                                        <label for="right" string=" Right: "
+                                               style="font-weight:bold;margin-right:200px;margin-left: 65px;"
+                                               class="oe_inline"/>
+                                        <field name="right" nolabel="1" style="width:17%" class="oe_inline"/>
+                                    </div>
+                                    <br/>
+                                    <div style="width:200%">
+                                        <div class="row" style="width:200%;padding: 1%;margin-left: 95px;">
+                                            <label for="volume_on_file" string="On File"
+                                                   style="font-weight:bold;margin-right:20px" class="oe_inline"/>
+                                            <label for="volume_on_file" string="Calculated"
+                                                   style="font-weight:bold;padding-left: 05px;" class="oe_inline"/>
+                                            <label for="volume_on_file" string="Ship Total"
+                                                   style="font-weight:bold;padding-left: 20px;" class="oe_inline"/>
+                                        </div>
+                                        <label for="volume_on_file" string="V.(M3):"
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="volume_on_file" style="width:17%" class="oe_inline" readonly="1" />
+                                        <label for="volume_actual" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="volume_actual" nolabel="1" style="width:17%" class="oe_inline" readonly="1" />
+                                        <label for="volume_overhang" string="  "
+                                               style="font-weight:bold;margin-right:63px" class="oe_inline"/>
+                                        <field name="volume_overhang" nolabel="1" style="width:17%" class="oe_inline" readonly="1" />
+                                    </div>
+                                </group>
+                            </page>
+                            <page string="Export process">
+                                <group>
+                                    <group>
+                                        <field name="empty_required_by"/>
+                                        <field name="empty_pickup_from"/>
+                                        <field name="empty_release_number"/>
+                                        <field name="port_transport_reference"/>
+
+                                        <field name="empty_release_from_cy"/>
+                                        <field name="port_transport_advised_booked"/>
+
+                                    </group>
+                                    <group>
+                                        <field name="export_port_or_cus_ref"/>
+                                        <field name="estimated_full_pickup"/>
+                                        <field name="actual_full_pickup"/>
+                                        <field name="departure_slot_date"/>
+                                        <field name="slot_booking_ref_export"/>
+                                        <field name="fcl_wharf_gate_in"/>
+                                        <field name="fcl_loaded"/>
+                                        <field name="is_arriving_at_cto_by_rail"/>
+
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="export_process_line_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Import Process">
+                                <group>
+                                    <group string="CTO Dates">
+
+                                        <field name="cto_available"/>
+                                        <field name="cto_storage_start"/>
+
+                                        <field name="fcl_upload"/>
+                                        <field name="port_transport_booked"/>
+                                        <field name="slot_date"/>
+                                        <field name="wharf_gate_out"/>
+                                        <field name="estimated_full_delivery"/>
+                                        <field name="actual_full_delivery"/>
+                                        <field name="empty_return_to"/>
+                                        <field name="empty_return_req_By"/>
+                                        <field name="empty_ready"/>
+
+
+                                    </group>
+                                    <group string="CFS Dates">
+
+                                        <field name="cfs_available"/>
+                                        <field name="cfs_storage_start"/>
+                                        <field name="port_transport_ref"/>
+                                        <field name="port_or_custom_ref"/>
+                                        <field name="import_release_no"/>
+                                        <field name="slot_booking_ref"/>
+                                        <field name="pickup_by_rail"/>
+                                        <field name="held_for_fcl_transit_staging"/>
+                                        <field name="empty_returned_on"/>
+                                        <field name="empty_return_reference"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="import_container_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Outturn">
+                                <group>
+                                    <field name="outturn_line_ids" nolabel="1"/>
+                                </group>
+                                <group>
+                                    <notebook>
+                                        <page string="Details">
+                                            <group>
+                                                <group>
+                                                    <field name="mark_and_numbers"/>
+                                                    <field name="volume"/>
+                                                    <field name="weight"/>
+                                                </group>
+                                                <group>
+                                                    <field name="outturn_comments"/>
+
+                                                </group>
+                                            </group>
+                                        </page>
+                                        <page string="Location">
+                                            <group>
+                                                <field name="outturn_location_ids" nolabel="1"/>
+                                            </group>
+                                        </page>
+                                    </notebook>
+                                </group>
+                            </page>
+                            <page string="VGM">
+                                <group>
+                                    <group string="Verified Weight">
+                                        <field name="verified_method"/>
+                                        <field name="verified_date"/>
+                                        <field name="verified_status"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="VGM Verified By">
+                                        <field name="vgm_verified_by"/>
+                                        <field name="vgm_verified_address"
+                                               context="{'default_parent_id': vgm_verified_by, 'default_type': 'other'}"
+                                               domain="[('parent_id', '=', vgm_verified_by),('parent_id','!=',False)]"/>
+
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Services">
+                                <group>
+                                    <field nolabel="1" name="service_line_ids"/>
+                                </group>
+                            </page>
+                            <page string="Freight Rate">
+                                <group>
+                                    <label for="spot_rate" string="Sport Rate"/>
+                                    <div class="o_row" >
+                                        <field name="spot_rate" />
+                                        <field name="spot_rate_currency" />
+                                        <field name="spot_rate_type" />
+                                    </div>
+
+                                    <label for="negotiated_cost" string="Negotiated Cost"/>
+                                    <div class="o_row" >
+                                        <field name="negotiated_cost" />
+                                        <field name="negotiated_cost_currency"/>
+                                        <field name="negotiated_rate_type" />
+                                    </div>
+
+                                    <label for="gateway_sell" string="Gateway Sell"/>
+                                    <div class="o_row" name="gateway">
+                                        <field name="gateway_sell" />
+                                        <field name="gateway_sell_currency" />
+                                        <field name="gateway_rate_type" />
+                                    </div>
+                                </group>
+                            </page>
+                            <page string="Numbers">
+                                <group>
+                                    <field name="reference_number_ids" nolabel="1"/>
+                                </group>
+                            </page>
+
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -61,8 +375,8 @@
             </field>
         </record>
 
-<!--        <menuitem name="Container" parent="freight.freight_operations" id="menu_freight_container"-->
-<!--                  action="freight_container_action" sequence="4"/>-->
+        <!--        <menuitem name="Container" parent="freight.freight_operations" id="menu_freight_container"-->
+        <!--                  action="freight_container_action" sequence="4"/>-->
 
     </data>
 </odoo>

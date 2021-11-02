@@ -176,34 +176,34 @@
 
                         <notebook>
                         <page string="Accounting">
-                            <div>
-                                <table width="100%" style="margin-top:25px" class="table table-bordered">
-                                    <tr bgcolor="#f2f2f3">
-                                        <th style="padding:10px;color:#0c0c0c;">#</th>
-                                        <th style="padding:10px;color:#0c0c0c;">Customer Invoices(Receivables)</th>
-                                        <th style="padding:10px;color:#0c0c0c;">Vendor Bills(Payables)</th>
-                                        <th style="padding:10px;color:#0c0c0c;">Margin</th>
-                                    </tr>
-                                    <tr>
-                                        <td bgcolor="#f2f2f3"> <font color="#0c0c0c">Expected Bills</font></td>
-                                        <td><field name="total_invoiced"/></td>
-                                        <td><field name="total_bills"/></td>
-                                        <td><field name="margin"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td bgcolor="#f2f2f3"> <font color="#0c0c0c">Actual Payments</font></td>
-                                        <td><field name="invoice_paid_amount"/></td>
-                                        <td><field name="bills_paid_amount"/></td>
-                                        <td><field name="actual_margin"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td bgcolor="#f2f2f3"><font color="#0c0c0c">Amounts Due</font></td>
-                                        <td><field name="invoice_residual"/></td>
-                                        <td><field name="bills_residual"/></td>
-                                        <td>#</td>
-                                    </tr>
-                                </table>
-                            </div>
+<!--                            <div>-->
+<!--                                <table width="100%" style="margin-top:25px" class="table table-bordered">-->
+<!--                                    <tr bgcolor="#f2f2f3">-->
+<!--                                        <th style="padding:10px;color:#0c0c0c;">#</th>-->
+<!--                                        <th style="padding:10px;color:#0c0c0c;">Customer Invoices(Receivables)</th>-->
+<!--                                        <th style="padding:10px;color:#0c0c0c;">Vendor Bills(Payables)</th>-->
+<!--                                        <th style="padding:10px;color:#0c0c0c;">Margin</th>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td bgcolor="#f2f2f3"> <font color="#0c0c0c">Expected Bills</font></td>-->
+<!--                                        <td><field name="total_invoiced"/></td>-->
+<!--                                        <td><field name="total_bills"/></td>-->
+<!--                                        <td><field name="margin"/></td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td bgcolor="#f2f2f3"> <font color="#0c0c0c">Actual Payments</font></td>-->
+<!--                                        <td><field name="invoice_paid_amount"/></td>-->
+<!--                                        <td><field name="bills_paid_amount"/></td>-->
+<!--                                        <td><field name="actual_margin"/></td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td bgcolor="#f2f2f3"><font color="#0c0c0c">Amounts Due</font></td>-->
+<!--                                        <td><field name="invoice_residual"/></td>-->
+<!--                                        <td><field name="bills_residual"/></td>-->
+<!--                                        <td>#</td>-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+<!--                            </div>-->
 
                             <group>
                                 <group>
@@ -305,126 +305,10 @@
                                 </form>
                             </field>
                         </page>
-                        <page string="Routes">
-                            <field name="freight_routes" nolabel="1" widget="one2many_list">
-                                <form string="Routes">
-                                    <sheet>
-                                        <group string="Operation">
-                                            <group>
-                                                <field name="main_carriage" invisible="1"/>
-                                                <field name="type" widget="radio" attrs="{'invisible': [('main_carriage','=',True)]}"/>
-                                            </group>
-                                            <group>
-                                                <field name="transport" widget="radio"/>
-                                            </group>
-                                        </group>
-                                        <group>
-                                            <group string="From">
-                                                <label for="source_location_id" string="From" attrs="{'invisible': [('transport','!=','land')]}"/>
-                                                <div attrs="{'invisible': [('transport','!=','land')]}">
-                                                    <field name="source_location_id" attrs="{'readonly': [('type','=','oncarriage')]}"/>
-                                                </div>
-                                                <label for="source_location_id" string="Loading Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                                <div attrs="{'invisible': [('transport','!=','ocean')]}">
-                                                    <field name="source_location_id" attrs="{'readonly': [('type','=','oncarriage')]}"/>
-                                                </div>
-                                                <label for="source_location_id" string="Gateway" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                                <div attrs="{'invisible': [('transport','!=','air')]}">
-                                                    <field name="source_location_id" attrs="{'readonly': [('type','=','oncarriage')]}"/>
-                                                </div>
-                                                <field name="shipping_line_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                                <field name="voyage_no" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                                <field name="vessel_id" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                                <field name="mawb_no" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                                <field name="obl" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                            </group>
-                                            <group string="To">
-                                                <label for="source_location_id" string="To" attrs="{'invisible': [('transport','!=','land')]}"/>
-                                                <div attrs="{'invisible': [('transport','!=','land')]}">
-                                                    <field name="destination_location_id" attrs="{'readonly': [('type','=','precarriage')]}"/>
-                                                </div>
-                                                <label for="source_location_id" string="Discharge Port" attrs="{'invisible': [('transport','!=','ocean')]}"/>
-                                                <div attrs="{'invisible': [('transport','!=','ocean')]}">
-                                                    <field name="destination_location_id" attrs="{'readonly': [('type','=','precarriage')]}"/>
-                                                </div>
-                                                <label for="source_location_id" string="Destination" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                                <div attrs="{'invisible': [('transport','!=','air')]}">
-                                                    <field name="destination_location_id" attrs="{'readonly': [('type','=','precarriage')]}"/>
-                                                </div>
-                                                <field name="airline_id" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                                <field name="flight_no" attrs="{'invisible': [('transport','!=','air')]}"/>
-                                                <field name="datetime"/>
-                                                <field name="truck_ref"  attrs="{'invisible': [('transport','!=','land')]}"/>
-                                                <field name="trucker"  attrs="{'invisible': [('transport','!=','land')]}"/>
-                                                <field name="trucker_number"  attrs="{'invisible': [('transport','!=','land')]}"/>
-                                            </group>
-                                        </group>
-                                        <group string="Follow up">
-                                            <group>
-                                                <field name="etd"/>
-                                                <field name="atd"/>
-                                            </group>
-                                            <group>
-                                                <field name="eta"/>
-                                                <field name="ata"/>
-                                                <field name="shipment_id" invisible="1"/>
-                                            </group>
-                                        </group>
-                                        <notebook>
-                                            <page string="Packages">
-                                                <field name="package_ids" nolabel="1" domain="[('shipment_id', '=', shipment_id)]" widget="many2many">
-                                                    <tree string="Items" editable="bottom">
-                                                        <field name="shipment_id" invisible="1"/>
-                                                        <field name="route_id" invisible="1"/>
-                                                        <field name="name"/>
-                                                        <field name="package"/>
-                                                        <field name="qty"/>
-                                                        <field name="type"/>
-                                                        <field name="volume"/>
-                                                        <field name="gross_weight"/>
-                                                    </tree>
-                                                </field>
-                                            </page>
-                                            <page string="Services">
-                                                <field name="freight_services" nolabel="1" widget="one2many_list">
-                                                    <tree>
-                                                        <field name="partner_id"/>
-                                                        <field name="service_id"/>
-                                                        <field name="name"/>
-                                                        <field name="currency_id"/>
-                                                        <field name="qty"/>
-                                                        <field name="cost"/>
-                                                        <field name="sale"/>
-                                                    </tree>
-                                                    <form>
-                                                        <sheet>
-                                                            <group>
-                                                                <group>
-                                                                    <field name="partner_id"/>
-                                                                    <field name="service_id"/>
-                                                                    <field name="name" required="1"/>
-                                                                    <field name="qty" required="1"/>
-                                                                </group>
-                                                                <group>
-                                                                    <field name="currency_id"/>
-                                                                    <field name="sale"/>
-                                                                    <field name="cost"/>
-                                                                </group>
-                                                            </group>
-                                                        </sheet>
-                                                    </form>
-                                                </field>
-                                            </page>
-                                        </notebook>
-                                    </sheet>
-                                </form>
-                                <tree>
-                                    <field name="name" string="Route Operation"/>
-                                    <field name="source_location_id"/>
-                                    <field name="destination_location_id"/>
-                                    <field name="transport"/>
-                                </tree>
-                            </field>
+                        <page string="Routing">
+                            <group>
+                                <field name="routing_ids" nolabel="1"/>
+                            </group>
                         </page>
                         <page string="Services">
                             <field name="freight_services" nolabel="1" widget="one2many_list">
@@ -727,7 +611,358 @@
                             </group>
 
                         </group>
+
                     </page>
+                        <page name="pickup" string="PickUp">
+                                <notebook>
+                                    <page name="details" string="Details">
+                                        <group>
+                                            <group string="Export Broker">
+                                                <label for="pickup_export_broker_id" string="Export Broker"/>
+                                                <field name="pickup_export_broker_id" nolabel="1"/>
+
+                                                <label string="Pickup Transport Company" for="pickup_transport_id"/>
+                                                <field name="pickup_transport_id" nolabel="1"/>
+
+                                                <label for="pick_up_agent_id" string="Pickup Agent"/>
+                                                <field name="pick_up_agent_id" nolabel="1"/>
+
+                                                <label for="pickup_from_id" string="Pickup From"/>
+
+
+                                            </group>
+                                            <group string="Pickup Status">
+
+                                                <field name="pickup_shippers_ref"/>
+                                                <field name="hbl_booking_status"/>
+
+                                                <label string="CFS/ Transit Warehouse" for="pickup_interim_receipt"/>
+
+                                                <field name="transit_warehouse_id" nolabel="1"/>
+                                                <field name="receipt_requested"/>
+                                                <field name="dispatch_requested"/>
+                                                <field name="pickup_interim_receipt"/>
+                                                <field name="pickup_interim_date_receipt"/>
+                                                <field name="receipt_requested"/>
+
+
+                                            </group>
+
+
+                                        </group>
+                                        <group>
+                                            <group string="Pickup From">
+                                                <field name="pickup_from_id" nolabel="1"/>
+                                            </group>
+
+                                        </group>
+                                        <group>
+                                            <group string="Pickup Details">
+                                                <field name="drop_mode"/>
+                                                <field name="pickup_required_from"/>
+                                                <field name="pickup_required_by"/>
+                                                <field name="trn_booking_requested"/>
+                                                <field name="estimated_pickup"/>
+                                                <field name="actual_pickup"/>
+                                            </group>
+
+                                        </group>
+                                        <group>
+                                            <div style="width:200%">
+                                                <div class="row"
+                                                     style="font-weight:bold;margin-left: 245px;margin-right: 85px;">
+                                                    <label for="detention_free" string="Free"
+                                                           style="font-weight:bold;margin-right: 97px;"
+                                                           class="oe_inline"/>
+                                                    <label for="pickup_labor_duration" string="Duration"
+                                                           style="font-weight:bold;padding-left: 6px;"
+                                                           class="oe_inline"/>
+                                                    <label for="pickup_labor_charge" string="Charge"
+                                                           style="font-weight:bold;padding-left: 178px;"
+                                                           class="oe_inline"/>
+
+                                                </div>
+
+                                                <div style="width:200%">
+                                                    <label for="pickup_labor_duration" string="Pickup Labor:"
+                                                           style="font-weight:bold;margin-right:250px"
+                                                           class="oe_inline"/>
+                                                    <field name="pickup_labor_duration" style="width:17%"
+                                                           class="oe_inline"
+                                                    />
+
+                                                    <label for="pickup_labor_charge" string=" "
+                                                           style="font-weight:bold;margin-right:50px;margin-left: 65px;"
+                                                           class="oe_inline"/>
+                                                    <field name="pickup_labor_charge" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <br/>
+                                                <div style="width:200%">
+                                                    <label for="truck_wait_time_duration" string="Truck Wait Time :"
+                                                           style="font-weight:bold;margin-right:250px"
+                                                           class="oe_inline"/>
+                                                    <field name="truck_wait_time_duration" style="width:17%"
+                                                           class="oe_inline"/>
+
+                                                    <label for="truck_wait_time_charge" string=" "
+                                                           style="font-weight:bold;margin-right:50px;margin-left: 65px;"
+                                                           class="oe_inline"/>
+                                                    <field name="truck_wait_time_charge" nolabel="1"
+                                                           style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <br/>
+                                                <div style="width:200%">
+                                                    <label for="detention_free" string="Detention :"
+                                                           style="font-weight:bold;margin-right:63px"
+                                                           class="oe_inline"/>
+                                                    <field name="detention_free" style="width:17%"
+                                                           class="oe_inline"
+                                                    />
+
+                                                    <label for="detention_duration" string=" "
+                                                           style="font-weight:bold;margin-right: 0px;margin-left: 62px;"
+                                                           class="oe_inline"/>
+                                                    <field name="detention_duration" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+                                                    <label for="detention_charge" string=" Days "
+                                                           style="font-weight:bold;margin-right: 75px;margin-left: 10px;"
+                                                           class="oe_inline"/>
+                                                    <field name="detention_charge" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <br/>
+                                            </div>
+
+                                        </group>
+
+
+                                    </page>
+                                    <page name="confirmation" string="Confirmation">
+                                        <field name="container_ids" nolabel="1"/>
+                                        <group string="Pickup From Shipper">
+                                            <group string="">
+                                                <field name="estimated_date"/>
+                                                <field name="requested_by"/>
+                                                <field name="picked_up_at"/>
+                                                <field name="good_sign_by"/>
+                                                <field name="confirm_drop_mode"/>
+                                                <field name="booking"/>
+                                                <field name="note"/>
+                                            </group>
+                                            <group>
+                                                <field name="transport_company"/>
+                                                <field name="transport_company_name"/>
+                                                <field name="driver_name"/>
+                                                <field name="licence"/>
+                                                <field name="vehicle_reg"/>
+                                                <label for="pc_distance"/>
+                                                <div class="o_row">
+                                                    <field name="pc_distance"/>
+                                                    <field name="distance_type"/>
+
+                                                </div>
+                                                <label for="driving_distance"/>
+                                                <div class="o_row">
+                                                    <field name="driving_distance"/>
+                                                    <field name="distance_type"/>
+
+                                                </div>
+
+
+                                            </group>
+                                            <group string="Address">
+                                                <field name="pickup_from_shipper_addrs" nolabel="1"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </page>
+                            <page name="delivery" string="Delivery">
+                                <notebook>
+                                    <page name="details" string="Details">
+                                        <group>
+                                            <group string="Import Broker">
+                                                <label for="delivery_import_broker" string="Import Broker"/>
+                                                <field name="delivery_import_broker" nolabel="1"/>
+
+                                                <label string="Delivery Transport Company" for="delivery_transport_company_id"/>
+                                                <field name="delivery_transport_company_id" nolabel="1"/>
+
+                                                <label for="delivery_delivery_agent_id" string="Delivery Agent"/>
+                                                <field name="delivery_delivery_agent_id" nolabel="1"/>
+
+                                                <label for="deliver_to" string="Deliver To"/>
+                                                <field name="deliver_to" nolabel="1"/>
+
+                                            </group>
+                                            <group string="Delivery Status">
+
+<!--                                                <field name="pickup_shippers_ref"/>-->
+<!--                                                <field name="hbl_booking_status"/>-->
+
+                                                <label string="CFS/ Transit Warehouse" for="pickup_interim_receipt"/>
+
+                                                <field name="transit_warehouse_id" nolabel="1"/>
+                                                <field name="delivered_receipt_requested"/>
+                                                <field name="delivery_dispatch_requested"/>
+<!--                                                <field name="pickup_interim_receipt"/>-->
+<!--                                                <field name="pickup_interim_date_receipt"/>-->
+<!--                                                <field name="receipt_requested"/>-->
+
+
+                                            </group>
+
+
+                                        </group>
+                                        <group>
+                                            <group string="Deliver To">
+                                                <field name="deliver_to_address" nolabel="1"/>
+                                            </group>
+
+                                        </group>
+                                        <group string="Delivery Details">
+                                            <group>
+                                                <field name="delivery_drop_mode"/>
+                                                <field name="delivery_required_from"/>
+                                                <field name="delivery_required_by"/>
+                                                <field name="delivery_booking_requested"/>
+                                            </group>
+                                            <group>
+                                                <field name="delivery_fcl_date"/>
+                                                <field name="fcl_storage_date"/>
+                                                <field name="actual_delivery"/>
+                                            </group>
+
+                                        </group>
+                                        <group>
+                                            <div style="width:200%">
+                                                <div class="row"
+                                                     style="font-weight:bold;margin-left: 245px;margin-right: 85px;">
+                                                    <label for="delivery_detention_free" string="Free"
+                                                           style="font-weight:bold;margin-right: 97px;"
+                                                           class="oe_inline"/>
+                                                    <label for="delivery_labour_duration" string="Duration"
+                                                           style="font-weight:bold;padding-left: 6px;"
+                                                           class="oe_inline"/>
+                                                    <label for="delivery_labour_charge" string="Charge"
+                                                           style="font-weight:bold;padding-left: 178px;"
+                                                           class="oe_inline"/>
+
+                                                </div>
+
+                                                <div style="width:200%">
+                                                    <label for="delivery_labour_duration" string="Delivery Labor:"
+                                                           style="font-weight:bold;margin-right:270px"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_labour_duration" style="width:17%"
+                                                           class="oe_inline"
+                                                    />
+
+                                                    <label for="delivery_labour_charge" string=" "
+                                                           style="font-weight:bold;margin-right:50px;margin-left: 65px;"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_labour_charge" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <br/>
+                                                <div style="width:200%">
+                                                    <label for="delivery_truck_wait_time_duration" string="Truck Wait Time :"
+                                                           style="font-weight:bold;margin-right:255px"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_truck_wait_time_duration" style="width:17%"
+                                                           class="oe_inline"/>
+
+                                                    <label for="delivery_truck_wait_time_charge" string=" "
+                                                           style="font-weight:bold;margin-right:50px;margin-left: 65px;"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_truck_wait_time_charge" nolabel="1"
+                                                           style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <br/>
+                                                <div style="width:200%">
+                                                    <label for="delivery_detention_free" string="Detention :"
+                                                           style="font-weight:bold;margin-right:63px"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_detention_free" style="width:17%"
+                                                           class="oe_inline"
+                                                    />
+
+                                                    <label for="delivery_detention_duration" string=" "
+                                                           style="font-weight:bold;margin-right: 0px;margin-left: 62px;"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_detention_duration" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+
+                                                    <label for="delivery_detention_charge" string=" Days "
+                                                           style="font-weight:bold;margin-right: 75px;margin-left: 10px;"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_detention_charge" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <br/>
+                                                <div style="width:200%">
+                                                    <label for="delivery_storage_charge_days" string="Storage Charge:"
+                                                           style="font-weight:bold;margin-right:270px"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_storage_charge_days" style="width:17%"
+                                                           class="oe_inline"
+                                                    />
+
+                                                    <label for="delivery_storage_charge" string=" "
+                                                           style="font-weight:bold;margin-right:50px;margin-left: 65px;"
+                                                           class="oe_inline"/>
+                                                    <field name="delivery_storage_charge" nolabel="1" style="width:17%"
+                                                           class="oe_inline"/>
+                                                </div>
+                                            </div>
+
+                                        </group>
+
+
+                                    </page>
+                                    <page name="confirmation" string="Confirmation">
+                                        <field name="container_ids" nolabel="1"/>
+                                        <group string="Delivery At Consignee">
+                                            <group string="">
+                                                <field name="estimated_delivery_confirm_date"/>
+                                                <field name="delivery_requested_by"/>
+                                                <field name="delivery_actual_date"/>
+                                                <field name="delivery_good_sign_by"/>
+                                                <field name="delivery_confirm_dropm_mode"/>
+                                                <field name="delivery_booking_id"/>
+                                                <field name="delivery_notes"/>
+                                            </group>
+                                            <group>
+                                                <field name="delivery_transport_company"/>
+                                                <field name="delivery_transport_company_name"/>
+                                                <field name="delivery_driver_name"/>
+                                                <field name="delivery_license"/>
+                                                <field name="delivery_vehicle_reg"/>
+                                                <label for="delivery_pc_distance"/>
+                                                <div class="o_row">
+                                                    <field name="delivery_pc_distance"/>
+                                                    <field name="delivery_pc_distance_type"/>
+
+                                                </div>
+                                                <label for="delivery_distance_driving"/>
+                                                <div class="o_row">
+                                                    <field name="delivery_distance_driving"/>
+                                                    <field name="delivery_pc_distance_type"/>
+
+                                                </div>
+
+
+                                            </group>
+                                            <group string="Address">
+                                                <field name="delivery_address" nolabel="1"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </page>
                     </notebook>
                     </sheet>
                 </xpath>

@@ -19,5 +19,13 @@
             <field name="company_id" eval="False"/>
         </record>
 
+        <record id="consol_details_sequence" model="ir.sequence">
+            <field name="name">Console Details</field>
+            <field name="code">consol.details</field>
+            <field name="prefix">CD</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
     </data>
 </odoo>

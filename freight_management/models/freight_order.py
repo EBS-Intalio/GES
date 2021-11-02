@@ -1,10 +1,29 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class FreightOrder(models.Model):
     _inherit = 'freight.order'
     _rec_name = 'order_no'
+
+    @api.model
+    def default_get(self, fields):
+        vals = super(FreightOrder, self).default_get(fields)
+        if 'tracking_dates_ids' in fields:
+            vals['tracking_dates_ids'] = [
+                (0, 0, {'name': 'Order Confirmed'}),
+                (0, 0, {'name': 'Ex Factory'}),
+                (0, 0, {'name': 'Original Receival at wharf / Declaration'}),
+                (0, 0, {'name': 'Departure'}),
+                (0, 0, {'name': 'Arrival'}),
+                (0, 0, {'name': 'Clearance Commerced'}),
+                (0, 0, {'name': 'Clearance Finalized'}),
+                (0, 0, {'name': 'Unpacked'}),
+                (0, 0, {'name': 'Estimated pickup'}),
+                (0, 0, {'name': 'Order delivered'}),
+            ]
+        return vals
 
     @api.depends('freight_booking_ids')
     def _compute_freight_booking(self):
@@ -41,14 +60,53 @@ class FreightOrder(models.Model):
     incoterm_id = fields.Many2one('freight.incoterms', string="Incoterm")
     additional_terms = fields.Char(string="Additional Terms")
     mode_of_transport = fields.Selection([('air', 'Air'),
-                                          ('ocean', 'Sea'),
-                                          ('land', 'Road'),
-                                          ('sea_then_air', 'Sea then Air'),
-                                          ('air_then_sea', 'Air then Sea'),
-                                          ('rail', 'Rail'),
-                                          ('courier', 'Courier'),
-                                          ('documentation', 'Documentation')], default="air",
-                                         string="Mode of Transport")
+                                  ('ocean', 'Sea'),
+                                  ('land', 'Road'),
+                                  ('sea_then_air', 'Sea then Air'),
+                                  ('air_then_sea', 'Air then Sea'),
+                                  ('rail', 'Rail'),
+                                  ('courier', 'Courier'),
+                                  ('documentation', 'Documentation')], default="air",
+                                         string="Transport Mode")
+    air_cont_mode = fields.Selection([
+        ('ls','Loose'),
+        ('uld','Unit Load Device'),
+        ('ac','Agent Consolidation'),
+        ('ot','Other'),
+    ],string='Container Mode')
+    sea_cont_mode = fields.Selection([
+        ('fcl','Full Container Load'),
+        ('lcl','Less Container Load'),
+        ('bl','Bulk'),
+        ('lq','Liquid'),
+        ('bb','Break Bulk'),
+        ('ro','Roll On/Roll Off'),
+        ('ot','Other'),
+    ], string='Container Mode')
+    sea_and_air_cont_mode = fields.Selection([
+        ('lcl','Less Container Load'),
+        ('ls','Loose'),
+        ('uld','Unit Load Device'),
+        ('ot','Other'),
+    ], string='Container Mode')
+    road_cont_mode = fields.Selection([
+        ('fcl','Full Container Load'),
+        ('ftl','Full Truck Load'),
+        ('lcl',' Less Container Load'),
+        ('ltl','Less Truck Load'),
+        ('ot','Other'),
+    ], string='Container Mode')
+    rail_cont_mode = fields.Selection([
+        ('bb','Break Bulk'),
+        ('ot','Other'),
+    ], string='Container Mode')
+    courier_cont_mode = fields.Selection([
+        ('obc','On Board Courier'),
+        ('uc','Unaccompanied'),
+    ], string='Container Mode')
+    post_container_mode = fields.Selection([
+        ('ml','Mail')
+    ], string='Container Mode')
     cont_mode = fields.Selection([
         ('fcl', 'Full Container Load'),
         ('lcl', 'Less Container Load'),
@@ -174,6 +232,54 @@ class FreightOrder(models.Model):
         ('can','Canceled'),
     ], string='Order Status')
 
+    split_order_id = fields.Many2one('freight.order','Split order')
+    new_order_id = fields.Many2one('freight.order','New order')
+    split_order_ids = fields.One2many('freight.order','split_order_id')
+    split_order_count = fields.Integer('Split Order Count', compute="_get_order_count")
+    new_order_count = fields.Integer('New Order Count', compute="_get_order_count")
+    tracking_dates_ids = fields.One2many('tracking.dates','order_id')
+    planned_container_ids = fields.Many2many('freight.container',string='Planned Container')
+
+    def _get_order_count(self):
+        for rec in self:
+            split_order_count = len(self.search([('split_order_id','=',rec.id)]).ids)
+            new_order_count = len(self.search([('new_order_id','=',rec.id)]).ids)
+            rec.split_order_count = split_order_count
+            rec.new_order_count = new_order_count
+
+    def get_split_new_order(self):
+        """
+        Prepare a action for the display the Freight Booking
+        :return:
+        """
+        action = self.env.ref('freight_management.freight_order_action').read()[0]
+        if self._context.get('split'):
+            orders = self.search([('split_order_id','=',self.id)])
+        else:
+            orders = self.search([('new_order_id', '=', self.id)])
+
+        if len(orders) > 1:
+            action['domain'] = [('id', 'in', orders.ids)]
+        elif orders:
+            form_view = [(self.env.ref('freight_management.view_freight_order_form_view').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = orders.id
+
+        return action
+
+    def split_order(self):
+        return {
+            'name': _('Split Order'),
+            'view_mode': 'form',
+            'res_model': 'split.order',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'res_id': self.id,
+        }
+
     @api.depends('order_line_ids')
     def compute_data(self):
         for rec in self:
@@ -221,12 +327,16 @@ class FreightOrder(models.Model):
     @api.model
     def create(self,vals):
         res = super(FreightOrder, self).create(vals)
+        if res.order_line_ids.filtered(lambda x:x.remaining <0):
+            raise ValidationError('Remaining quantity must not be less than zero!')
         data = res.prepare_product_qaunt_summ()
         res.with_context({'product_qty_summary':True}).write({'product_qty_summary_ids': data})
         return res
 
     def write(self,vals):
         res = super(FreightOrder, self).write(vals)
+        if self.order_line_ids.filtered(lambda x:x.remaining <0):
+            raise ValidationError('Remaining quantity must not be less than zero!')
         if not self._context.get('product_qty_summary'):
             data = self.prepare_product_qaunt_summ()
             self.with_context({'product_qty_summary':True}).write({'product_qty_summary_ids': data})
@@ -303,7 +413,7 @@ class FreightOrderLine(models.Model):
     quantity = fields.Float(string="Quantity")
     invoiced = fields.Float(string="Invoiced")
     quantity_received = fields.Float(string="Quantity received")
-    remaining = fields.Float(string="Remaining")
+    remaining = fields.Float(string="Remaining", compute = '_get_remaining_value')
     unit_of_qty = fields.Many2one('uom.uom', string="Unit of quantity")
     line_price = fields.Float(string="Line price")
     item_price = fields.Float(string="Item price")
@@ -312,6 +422,14 @@ class FreightOrderLine(models.Model):
     manufacturer = fields.Many2one('res.partner', string="Manufacturer")
     manufacturer_address = fields.Many2one('res.partner', string="Manufacturer Address")
     freight_order = fields.Many2one('freight.order', string="Order")
+    freight_order_line_ref_id = fields.Many2one('freight.order.line','Order Line Ref')
+
+    @api.depends('quantity','quantity_received')
+    def _get_remaining_value(self):
+        for rec in self:
+            rec.remaining  = rec.quantity-rec.quantity_received
+
+
 
 
 

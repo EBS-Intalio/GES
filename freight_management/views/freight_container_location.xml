@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="freight_container_location_form_view">
+            <field name="name">freight.container.location.form.view</field>
+            <field name="model">freight.container.location</field>
+            <field name="arch" type="xml">
+                <form string="location">
+                    <sheet>
+                        <group>
+                            <group>
+
+                                <field name="packs"/>
+                            </group>
+                            <group>
+                                <field name="location"/>
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_container_location_tree_view">
+            <field name="name">freight.container.location.tree.view</field>
+            <field name="model">freight.container.location</field>
+            <field name="arch" type="xml">
+                <tree string="Freight Container Service">
+                    <field name="packs"/>
+                    <field name="location"/>
+
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>
