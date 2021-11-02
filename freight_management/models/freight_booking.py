@@ -283,8 +283,6 @@ class FreightBooking(models.Model):
         if self.transport == 'ocean' and not self.equipment_type:
             warn_list.append("Equipment type")
 
-
-
         if warn_list:
             raise ValidationError("Please Fill up this require fields %s"%warn_list)
         for book in self:
@@ -299,12 +297,22 @@ class FreightBooking(models.Model):
                 name_act = 'Direct'
                 res['name'] = self.env['ir.sequence'].next_by_code('operation.direct') or _('New')
             form_view = self.env.ref('freight.view_freight_operation_form')
+
+            cargo_container_visible = 'none'
+            if (self.ocean_shipment_type and self.ocean_shipment_type == 'fcl') or (
+                    self.rail_shipment_type and self.rail_shipment_type == 'fcl') or (
+                    self.air_then_sea_shipment and self.air_then_sea_shipment == 'fcl') or (
+                    self.sea_then_air_shipment and self.sea_then_air_shipment == 'fcl'):
+                cargo_container_visible = 'both'
+
             res.update({'default_booking_id': book.id, 'default_job_management_order_ref': self.job_management_order_ref,
                         'default_loose_cargo_ids': [(6, 0, self.loose_cargo_ids.ids)],
                         'default_job_management_ids': [(6, 0, self.job_management_ids.ids)],
                         'default_vehicle_ids': [(6, 0, self.vehicle_ids.ids)],
                         'default_target_rate': self.target_rate,
-                        'default_container_ids': [(6, 0, self.container_ids.ids)]}),
+                        'default_cargo_container_visible': cargo_container_visible,
+                        'default_container_ids': [(6, 0, self.container_ids.ids)],
+                        'default_service_level': self.service_level}),
 
             book.write({'state':'ship_order'})
             return {
