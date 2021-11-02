@@ -427,9 +427,23 @@
             <tree string="Consol Details" create="1" delete="1">
                 <field name="transport"/>
                 <field name="phase"/>
-
             </tree>
         </field>
     </record>
+
+    <record model="ir.actions.act_window" id="freight_console_detail_action">
+            <field name="name">Console</field>
+            <field name="res_model">consol.details</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Console Detail.
+                </p>
+            </field>
+        </record>
+
+
+    <menuitem name="Console" parent="freight.freight_operations" id="menu_freight_console_detail"
+                  action="freight_console_detail_action" sequence="4"/>
 
 </odoo>

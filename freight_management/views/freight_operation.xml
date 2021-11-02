@@ -968,5 +968,10 @@
                 </xpath>
             </field>
         </record>
+
+        <menuitem id="freight.freight_direct_operation" active="False"/>
+        <menuitem id="freight.freight_master_operation" active="False"/>
+        <menuitem id="freight.freight_house_operation" active="False"/>
+
     </data>
 </odoo>

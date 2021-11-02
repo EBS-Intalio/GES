@@ -35,7 +35,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="HS-Code" parent="freight.freight_operations" id="menu_freight_management_freight_hs_code"
+        <menuitem name="HS-Code" parent="freight.freight_configuration" id="menu_freight_management_freight_hs_code"
                   action="freight_management_action_freight_hs_code" sequence="4"/>
     </data>
 </odoo>

@@ -202,12 +202,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.menu" id="ebs_freight_pricing.freight_pricing_menuitem">
-            <field name="action" ref="freight_management_view_freight_pricing_action"/>
-        </record>
-
-<!--        <menuitem name="Freight pricing" parent="freight_management.menu_freight_operations"-->
-<!--                  id="freight_pricing_menuitem" action="view_freight_pricing_action" sequence="6"/>-->
+        <menuitem id="ebs_freight_pricing.freight_pricing_menuitem" active="False"/>
+        <menuitem name="Freight pricing" parent="crm.crm_menu_sales"
+                  id="freight_management_pricing_menuitem" action="freight_management_view_freight_pricing_action" sequence="6"/>
 
     </data>
 </odoo>

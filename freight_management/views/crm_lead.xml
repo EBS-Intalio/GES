@@ -26,7 +26,7 @@
             </field>
         </record>
 
-        <menuitem name="Request" parent="crm.crm_menu_config"
+        <menuitem name="Request" parent="crm.crm_menu_sales"
                   id="freight_crm_job_request" action="freight_management.freight_management_freight_job_request_action"
                   sequence="5"/>
 

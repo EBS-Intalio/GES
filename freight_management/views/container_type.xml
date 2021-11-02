@@ -167,7 +167,7 @@
             </field>
         </record>
 
-        <menuitem name="Container Type" parent="freight.freight_operations" id="menu_freight_container_type"
+        <menuitem name="Container Type" parent="freight.freight_configuration" id="menu_freight_container_type"
                   action="freight_container_type_action" sequence="4"/>
 
     </data>

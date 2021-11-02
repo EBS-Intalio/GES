@@ -305,6 +305,21 @@ class FreightBooking(models.Model):
                     self.sea_then_air_shipment and self.sea_then_air_shipment == 'fcl'):
                 cargo_container_visible = 'both'
 
+            reference_vals_lst = []
+            for ref_num in self.reference_ids:
+                reference_vals_lst.append((0, 0, {'name': ref_num.name,
+                                                  'type': ref_num.type,
+                                                  'country_id': ref_num.country_id and ref_num.country_id.id or False,
+                                                  'information': ref_num.information}))
+
+            service_details = []
+            for serv_detail in self.service_details_ids:
+                service_details.append((0, 0, {'service_type': serv_detail.service_type,
+                                               'completed': serv_detail.completed,
+                                               'date_booked': serv_detail.date_booked,
+                                               'contractor_id': serv_detail.contractor_id and serv_detail.contractor_id.id or False
+                                               }))
+
             res.update({'default_booking_id': book.id, 'default_job_management_order_ref': self.job_management_order_ref,
                         'default_loose_cargo_ids': [(6, 0, self.loose_cargo_ids.ids)],
                         'default_job_management_ids': [(6, 0, self.job_management_ids.ids)],
@@ -312,9 +327,11 @@ class FreightBooking(models.Model):
                         'default_target_rate': self.target_rate,
                         'default_cargo_container_visible': cargo_container_visible,
                         'default_container_ids': [(6, 0, self.container_ids.ids)],
+                        'default_service_details_ids': service_details,
+                        'default_reference_ids': reference_vals_lst,
                         'default_service_level': self.service_level}),
 
-            book.write({'state':'ship_order'})
+            book.write({'state': 'ship_order'})
             return {
                 'name': name_act,
                 'res_model': 'freight.operation',
