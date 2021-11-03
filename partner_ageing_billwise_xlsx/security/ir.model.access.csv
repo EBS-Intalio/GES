@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_aged_trial_balance,access_account_aged_trial_balance,model_account_aged_trial_balance,,1,1,1,1
+access_account_common_partner_report,access_account_common_partner_report,model_account_common_partner_report,,1,1,1,1
+access_account_aged_trial_balance_xls,access_account_aged_trial_balance_xls,model_account_aged_trial_balance_xls,,1,1,1,1
