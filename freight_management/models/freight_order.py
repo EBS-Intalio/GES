@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 class FreightOrder(models.Model):
     _inherit = 'freight.order'
     _rec_name = 'order_no'
+    _order = 'id desc'
 
     @api.model
     def default_get(self, fields):
@@ -34,8 +35,20 @@ class FreightOrder(models.Model):
         for order in self:
             order.booking_count = len(order.freight_booking_ids)
 
+    @api.depends('freight_operation_ids')
+    def _compute_freight_operation(self):
+        """
+        Count total Shipment
+        :return:
+        """
+        for order in self:
+            order.shipment_count = len(order.freight_operation_ids)
+
     booking_count = fields.Integer(string='Total Freight Booking', compute='_compute_freight_booking')
     freight_booking_ids = fields.One2many('freight.booking', 'freight_order_id', string='Freight Booking', copy=False)
+
+    shipment_count = fields.Integer(string='Total Shipment', compute='_compute_freight_operation')
+    freight_operation_ids = fields.One2many('freight.operation', 'freight_order_id', string='Shipment', copy=False)
 
     buyer = fields.Many2one('res.partner', string="Buyer")
     buyer_address = fields.Many2one('res.partner', string="Buyer Address")
@@ -270,6 +283,12 @@ class FreightOrder(models.Model):
 
         return action
 
+    @api.constrains('order_no')
+    def check_used_order_no(self):
+        for rec in self:
+            if rec.order_no and len(self.env['freight.order'].search([('order_no', '=', rec.order_no)])) > 1:
+                raise ValidationError(_('Order Number Already Used.'))
+
     def split_order(self):
         return {
             'name': _('Split Order'),
@@ -290,6 +309,24 @@ class FreightOrder(models.Model):
             rec.order_line_invoiced = sum(rec.order_line_ids.mapped('invoiced'))
             rec.order_line_quantity_received = sum(rec.order_line_ids.mapped('quantity_received'))
             rec.order_line_remaining = sum(rec.order_line_ids.mapped('remaining'))
+
+    def convert_to_shipment(self):
+        vals = {
+            'job_management_order_ref': self.order_no,
+            'transport': self.mode_of_transport,
+            'source_location_id': self.shipment_origin and self.shipment_origin.id or False,
+            'destination_location_id': self.shipment_destination and self.shipment_destination.id or False,
+            'agent_id': self.agent_id.id,
+            'shipper_id': self.shipper and self.shipper.id or False,
+            'consignee_id': self.buyer and self.buyer.id or False,
+            'number_packages': self.packs,
+            'gross_weight': self.gross_weight,
+            'weight_type': self.weight_type,
+            'freight_order_id': self.id
+        }
+        freight_operation = self.env['freight.operation'].create(vals)
+        self.write({'state': 'converted', 'shipment_no': freight_operation.name})
+        return True
 
     def convert_to_booking(self):
         """
@@ -360,6 +397,25 @@ class FreightOrder(models.Model):
             }))
 
         return data
+
+    def action_view_freight_operation(self):
+        """
+        Prepare a action for the display the Shipment
+        :return:
+        """
+        action = self.env.ref('freight.view_freight_operation_all_action').read()[0]
+        shipment = self.freight_operation_ids
+        if len(shipment) > 1:
+            action['domain'] = [('id', 'in', shipment.ids)]
+        elif shipment:
+            form_view = [(self.env.ref('freight.view_freight_operation_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = shipment.id
+
+        return action
 
     def action_view_freight_booking(self):
         """

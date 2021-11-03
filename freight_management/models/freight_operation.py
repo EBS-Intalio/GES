@@ -435,6 +435,9 @@ class FreightOperation(models.Model):
     delivery_address = fields.Many2one('res.partner','Address')
     delivery_storage_charge = fields.Float(string='Storage Charge')
     delivery_storage_charge_days = fields.Integer(string='Storage Charge Days')
+    freight_order_id = fields.Many2one('freight.order', string="Order")
+    source_location_id = fields.Many2one('freight.port', 'Source Location', index=True, required=False)
+    destination_location_id = fields.Many2one('freight.port', 'Destination Location', index=True, required=False)
 
     @api.model
     def create(self, values):

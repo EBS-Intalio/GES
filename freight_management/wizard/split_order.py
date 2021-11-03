@@ -6,7 +6,12 @@ class FreightOrder(models.TransientModel):
     def split_order(self):
         if self._context.get('active_id'):
             old_order = self.env['freight.order'].browse(self._context.get('active_id'))
-            new_order = old_order.copy()
+            if self._context.get('split_order'):
+                total_split_orders = self.env['freight.order'].search_count([('split_order_id', '=', old_order.id)])
+                new_order = old_order.copy({'order_no': old_order.order_no +'/'+ str(total_split_orders+1)})
+            else:
+                total_new_split_orders = self.env['freight.order'].search_count([('new_order_id', '=', old_order.id)])
+                new_order = old_order.copy({'order_no': old_order.order_no+'/NSO/'+ str(total_new_split_orders+1)})
             new_order_lines = []
             for order_line in old_order.order_line_ids:
                 if order_line.remaining > 0:
