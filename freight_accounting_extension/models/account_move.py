@@ -20,10 +20,11 @@ class AccountMoveinherit(models.Model):
 
     @api.depends('posted_before', 'state', 'journal_id', 'date')
     def _compute_name(self):
-        if self.state == 'draft':
-            self.name = ""
-        else:
-            super(AccountMoveinherit, self)._compute_name()
+        for rec in self:
+            if rec.state == 'draft':
+                rec.name = ""
+            else:
+                super(AccountMoveinherit, self)._compute_name()
 
 
     @api.depends('restrict_mode_hash_table', 'state')
