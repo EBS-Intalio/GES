@@ -162,6 +162,7 @@ class FreightOperationBilling(models.Model):
     booking_id = fields.Many2one('freight.booking')
     freight_request_id = fields.Many2one('freight.job.request')
     operation_billing_id = fields.Many2one('freight.operation', readonly=True)
+    freight_console_id = fields.Many2one('consol.details', string='Consol')
     source_location_id = fields.Many2one('freight.port', related='operation_billing_id.source_location_id', store=True)
     destination_location_id = fields.Many2one('freight.port', related='operation_billing_id.destination_location_id', store=True)
     transport = fields.Selection(related='operation_billing_id.transport', store=True)

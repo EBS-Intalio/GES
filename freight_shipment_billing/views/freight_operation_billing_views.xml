@@ -164,6 +164,7 @@
                     <field name="operation_billing_id" />
                     <field name="booking_id"/>
                     <field name="freight_request_id" invisible="1"/>
+                    <field name="freight_console_id" invisible="1"/>
                     <field name="bill_created"/>
                     <field name="invoice_created"/>
                 </tree>

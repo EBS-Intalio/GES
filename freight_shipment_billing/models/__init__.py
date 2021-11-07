@@ -5,3 +5,5 @@ from . import account_move
 from . import freight_operation
 from . import freight_booking
 from . import freight_job_request
+from . import app_method
+from . import consol_details

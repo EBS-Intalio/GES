@@ -18,6 +18,7 @@
         "views/freight_operation_views.xml",
         "views/freight_booking_views.xml",
         "views/freight_job_request_views.xml",
+        "views/consol_details_views.xml",
     ],
     'installable': True,
     'application': True,

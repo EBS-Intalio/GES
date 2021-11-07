@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_freight_operation_billing,access_freight_operation_billing,model_freight_operation_billing,,1,1,1,1
+access_console_details_billing_lines,access_console_details_billing_lines,model_console_details_billing_lines,,1,1,1,1
+access_app_method,access_app_method,model_app_method,,1,1,1,1

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_consol_details_form_inherit" model="ir.ui.view">
+        <field name="name">consol.details.form.inherit</field>
+        <field name="model">consol.details</field>
+        <field name="inherit_id" ref="freight_management.view_consol_details_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Billing Lines">
+                    <field name="billing_lines" no_label="1" widget="one2many_list">
+                        <tree string="Billing Lines" editable="bottom" delete="0">
+                            <field name="sent_to_shipment" invisible="1"/>
+                            <field name="charge_code_sequence" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="charge_code" options="{'no_create': True,'no_create_edit':True}" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="description" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="analytic_account_id" options="{'no_create': True,'no_create_edit':True}" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="cost_currency_id" options="{'no_create': True,'no_create_edit':True}" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="os_cost_amount"  attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="company_currency_id" invisible="1" />
+                            <field name="local_cost_amount"  readonly="1" />
+                            <field name="vendor" options="{'no_create': True,'no_create_edit':True}"  attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="cost_recognition" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="app_method" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <button name="create_billing" type="object" string="Create billing" attrs="{'invisible': [('sent_to_shipment','=', True)]}" class="oe_highlight"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

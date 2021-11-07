@@ -43,6 +43,7 @@
                             <field name="operation_billing_id" invisible="1"/>
                             <field name="booking_id" invisible="1"/>
                             <field name="freight_request_id" invisible="1"/>
+                            <field name="freight_console_id" invisible="1"/>
                             <field name="posted_revenue" readonly="1" optional="hide" />
                             <field name="sell_reference" optional="hide" />
                             <field name="cost_exchange_rate" readonly="1" optional="hide" />
