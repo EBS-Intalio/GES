@@ -16,7 +16,7 @@ class AccountOperationMatrix(models.Model):
                                   ('rail', 'Rail'),
                                   ('courier', 'Courier'),
                                   ('documentation', 'Documentation')], default='air', string='Mode')
-    direction = fields.Selection([('import','Import'),('export','Export'),('cross','Cross')], default='import', string='Direction')
+    direction = fields.Selection([('import', 'Import'), ('export', 'Export'), ('cross_state', 'Cross Border State'), ('domestic', 'Domestic')], default='import', string='Direction')
     service_type = fields.Selection([('door_to_door', 'Door to Door'), ('door_to_port', 'Door to Port'),
                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
                                      ('custom_and_brokerage', 'Customs and Brokerage')],
