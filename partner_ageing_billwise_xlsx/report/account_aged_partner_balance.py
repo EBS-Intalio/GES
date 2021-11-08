@@ -5,6 +5,8 @@ from odoo import models, api, _
 from datetime import datetime
 from odoo.tools import float_is_zero
 from dateutil.relativedelta import relativedelta
+from odoo.exceptions import ValidationError
+
 
 
 class BillWiseBalance(models.AbstractModel):
@@ -29,9 +31,9 @@ class BillWiseBalance(models.AbstractModel):
         res = []
         total = []
         cr = self.env.cr
-        company_ids = self.env.context.get('company_ids', (self.env.user.company_id.id,))
-        user_company = self.env.user.company_id
-        user_currency = user_company.currency_id
+        # company_ids = self.env.context.get('company_ids', (self.env.user.company_id.id,))
+        user_company = self.env.company.id
+        user_currency = self.env.company.currency_id
         ResCurrency = self.env['res.currency'].with_context(date=date_from)
         move_state = ['draft', 'posted']
         if target_move == 'posted':
@@ -46,7 +48,7 @@ class BillWiseBalance(models.AbstractModel):
         if reconciled_after_date:
             reconciliation_clause = '(l.reconciled IS FALSE OR l.id IN %s)'
             arg_list += (tuple(reconciled_after_date),)
-        arg_list += (date_from, tuple(company_ids))
+        arg_list += (date_from, user_company)
         query = '''
             SELECT DISTINCT l.partner_id, UPPER(res_partner.name)
             FROM account_move_line AS l left join res_partner on l.partner_id = res_partner.id, account_account, account_move am
@@ -56,10 +58,14 @@ class BillWiseBalance(models.AbstractModel):
                 AND (account_account.internal_type IN %s)
                 AND ''' + reconciliation_clause + '''
                 AND (l.date <= %s)
-                AND l.company_id IN %s
+                AND l.company_id = %s
             ORDER BY UPPER(res_partner.name)'''
         cr.execute(query, arg_list)
         partners = cr.dictfetchall()
+        # if customer:
+        #     for ptnr in partners[:]:
+        #         if ptnr['partner_id'] not in customer:
+        #             partners.remove(ptnr)
         # put a total of 0
         for i in range(period_count + 2):
             total.append(0)
@@ -68,7 +74,7 @@ class BillWiseBalance(models.AbstractModel):
         partner_ids = [partner['partner_id'] for partner in partners if partner['partner_id']]
         lines = dict((partner['partner_id'] or False, []) for partner in partners)
         if not partner_ids:
-            return [], [], {}, periods
+            return [], [], {}, periods, period_count
 
         # This dictionary will store the not due amount of all partners
         undue_amounts = {}
@@ -80,8 +86,8 @@ class BillWiseBalance(models.AbstractModel):
                     AND (COALESCE(l.date_maturity,l.date) >= %s)\
                     AND ((l.partner_id IN %s) OR (l.partner_id IS NULL))
                 AND (l.date <= %s)
-                AND l.company_id IN %s'''
-        cr.execute(query, (tuple(move_state), tuple(account_type), date_from, tuple(partner_ids), date_from, tuple(company_ids)))
+                AND l.company_id = %s'''
+        cr.execute(query, (tuple(move_state), tuple(account_type), date_from, tuple(partner_ids), date_from, user_company))
         aml_ids = cr.fetchall()
         aml_ids = aml_ids and [x[0] for x in aml_ids] or []
         for line in self.env['account.move.line'].browse(aml_ids):
@@ -120,7 +126,7 @@ class BillWiseBalance(models.AbstractModel):
             else:
                 dates_query += ' <= %s)'
                 args_list += (periods[str(i)]['stop'],)
-            args_list += (date_from, tuple(company_ids))
+            args_list += (date_from, user_company)
 
             query = '''SELECT l.id
                     FROM account_move_line AS l, account_account, account_move am
@@ -130,7 +136,7 @@ class BillWiseBalance(models.AbstractModel):
                         AND ((l.partner_id IN %s) OR (l.partner_id IS NULL))
                         AND ''' + dates_query + '''
                     AND (l.date <= %s)
-                    AND l.company_id IN %s'''
+                    AND l.company_id = %s'''
             cr.execute(query, args_list)
             partners_amount = {}
             aml_ids = cr.fetchall()
@@ -197,7 +203,7 @@ class BillWiseBalance(models.AbstractModel):
 
     @api.model
     def generate_xlsx_report(self, workbook, data, lines):
-        currency = self.env.user.company_id.currency_id.symbol or ''
+        currency = self.env.company.currency_id.symbol or ''
         sheet = workbook.add_worksheet()
         format1 = workbook.add_format({'font_size': 16, 'align': 'vcenter', 'bg_color': '#D3D3D3', 'bold': True})
         format1.set_font_color('#000080')
@@ -224,12 +230,12 @@ class BillWiseBalance(models.AbstractModel):
 
         movelines, total, dummy, periods, period_count = self._get_billwise_move_lines(account_type, lines['date_from'], target_move, lines['period_length'], lines['period_count'])
         peroid_list = [i for i in range(period_count+1)]
-        peroid_intervals = {str(k): 0 for k, v in enumerate(peroid_list)}
-        peroid_intervals.update({
-            'total' : 0,
-        })
         for partner in dummy:
             for line in dummy[partner]:
+                peroid_intervals = {str(k): 0 for k, v in enumerate(peroid_list)}
+                peroid_intervals.update({
+                    'total': 0,
+                })
                 line['intervals'] = peroid_intervals
                 # line['intervals'] = {
                 #     '0': 0,
@@ -245,10 +251,13 @@ class BillWiseBalance(models.AbstractModel):
 
         form = lines
         sheet.merge_range(row, col, row, col+2, 'Start Date :', format2)
-        sheet.merge_range(row, col+3, row, col+6, form['date_from'], format2)
+        sheet.merge_range(row, col+3, row, col+6, str(form['date_from']), format2)
         row += 1
         sheet.merge_range(row, col, row, col+2, 'Period Length (days) :', format2)
         sheet.merge_range(row, col+3, row, col+6, form['period_length'], format2)
+        row += 1
+        sheet.merge_range(row, col, row, col + 2, 'Period count :', format2)
+        sheet.merge_range(row, col + 3, row, col + 6, form['period_count'], format2)
         row += 1
         account_type = ""
         if form['result_selection'] == 'customer':
@@ -268,6 +277,7 @@ class BillWiseBalance(models.AbstractModel):
         sheet.merge_range(row, col, row, col+2, 'Report Type :', format2)
         sheet.merge_range(row, col+3, row, col+6,
                           "Bill-Wise", format2)
+
         row += 2
         # constructing the table
         sheet.merge_range(row, col, row, col+2, "Partners", format5)
