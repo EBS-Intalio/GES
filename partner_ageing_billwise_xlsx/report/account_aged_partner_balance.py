@@ -131,10 +131,8 @@ class BillWiseBalance(models.AbstractModel):
             dates_query = ''
             if date_used == 'due_date':
                 dates_query = '(COALESCE(l.date_maturity,l.date)'
-                print(dates_query)
             if date_used == 'transaction_date':
                 dates_query = '(COALESCE(l.date,l.date_maturity)'
-                print(dates_query)
             if periods[str(i)]['start'] and periods[str(i)]['stop']:
                 dates_query += ' BETWEEN %s AND %s)'
                 args_list += (periods[str(i)]['start'], periods[str(i)]['stop'])
@@ -334,7 +332,8 @@ class BillWiseBalance(models.AbstractModel):
             #             total[6] and str(total[6])+" "+currency or '__',
             #             format2)
             for k in range(period_count):
-                sheet.write(row, col+4+k, total[period_count-1-k] and str(total[period_count-1-k])+" "+currency or '__', format2)
+                result2 = float_repr(total[period_count-1-k] and total[period_count-1-k], precision_digits=2)
+                sheet.write(row, col+4+k, result2+" "+currency if float(result2) else '__', format2)
             # sheet.write(row, col + 4,
             #             total[4] and str(total[4])+" "+currency or '__',
             #             format2)
@@ -353,8 +352,9 @@ class BillWiseBalance(models.AbstractModel):
             # sheet.write(row, col + 9,
             #             total[5] and str(total[5])+" "+currency or '__',
             #             format2)
+            result_3 = float_repr(total[period_count] and total[period_count], precision_digits=2)
             sheet.write(row, col + period_count + 4,
-                        total[period_count] and str(total[period_count])+" "+currency or '__',
+                        result_3+" "+currency if float(result_3) else '__',
                         format2)
 
         row += 1
@@ -363,7 +363,8 @@ class BillWiseBalance(models.AbstractModel):
             result = float_repr(partner['direction'] and partner['direction'], precision_digits=2)
             sheet.write(row, col + 3, result+" "+currency if float(result) else '__',format2)
             for l in range(period_count):
-                sheet.write(row, col+4+l, partner[str(period_count-1-l)] and str(partner[str(period_count-1-l)]) +" " +currency or '__', format2)
+                result4 = float_repr(partner[str(period_count-1-l)] and partner[str(period_count-1-l)], precision_digits=2)
+                sheet.write(row, col+4+l, result4+ " " + currency if float(result4) else '__', format2)
             # sheet.write(row, col + 4,
             #             partner['4'] and str(partner['4'])+" "+currency or '__',
             #             format2)
@@ -379,8 +380,8 @@ class BillWiseBalance(models.AbstractModel):
             # sheet.write(row, col + 8,
             #             partner['0'] and str(partner['0'])+" "+currency or '__',
             #             format2)
-
-            sheet.write(row, col + period_count + 4, partner['total'] and str(partner['total'])+" "+currency or '__', format2)
+            result5 = float_repr(partner['total'] and partner['total'], precision_digits=2)
+            sheet.write(row, col + period_count + 4, result5+" "+currency if float(result5) else '__', format2)
             # sheet.write(row, col + 9,
             #             partner['total'] and str(partner['total'])+" "+currency or '__',
             #             format2)
@@ -389,12 +390,14 @@ class BillWiseBalance(models.AbstractModel):
             for line in dummy[partner['partner_id']]:
                 if line['amount'] > 0:
                     sheet.merge_range(row, col, row, col + 2, line['line'].move_id.name, format4)
-                    sheet.write(row, col + 3, line['intervals'].get(str(period_count)) and str(line['intervals'].get(str(period_count)))+" "+currency or '__', format2)
+                    result6 = float_repr(line['intervals'].get(str(period_count)) and line['intervals'].get(str(period_count)), precision_digits=2)
+                    sheet.write(row, col + 3, result6 +" "+currency if float(result6) else '__', format2)
                     # sheet.write(row, col + 3,
                     #             line['intervals'].get('5') and str(line['intervals'].get('5'))+" "+currency or '__',
                     #             format2)
                     for m in range(period_count):
-                        sheet.write(row, col + m + 4,line['intervals'].get(str(period_count-1-m)) and str(line['intervals'].get(str(period_count-1-m)))+" "+currency or '__', format2)
+                        result7 = float_repr(line['intervals'].get(str(period_count-1-m)) and line['intervals'].get(str(period_count-1-m)), precision_digits=2)
+                        sheet.write(row, col + m + 4, result7 +" "+currency if float(result7) else '__', format2)
                     # sheet.write(row, col + 4,
                     #             line['intervals'].get('4') and str(line['intervals'].get('4'))+" "+currency or '__',
                     #             format2)
@@ -411,7 +414,8 @@ class BillWiseBalance(models.AbstractModel):
                     #             line['intervals'].get('0') and str(line['intervals'].get('0'))+" "+currency or '__',
                     #             format2)
 
-                    sheet.write(row, col + period_count + 4, line['intervals'].get('total') and str(line['intervals'].get('total'))+" "+currency or '__', format2)
+                    result8 = float_repr(line['intervals'].get('total') and line['intervals'].get('total'), precision_digits=2)
+                    sheet.write(row, col + period_count + 4, result8 +" "+currency  if float(result8) else '__', format2)
                     # sheet.write(row, col + 9,
                     #             line['intervals'].get('total') and str(line['intervals'].get('total'))+" "+currency or '__',
                     #             format2)
