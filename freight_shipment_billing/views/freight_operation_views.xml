@@ -77,6 +77,20 @@
                     </group>
                 </page>
             </xpath>
+            <xpath expr="//button[@name='button_customer_invoices']" position="attributes">
+                  <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_vendor_bills']" position="attributes">
+                  <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_services_bookings']" position="after">
+                <button class="oe_stat_button" name="button_billing" type="object" icon="fa-money">
+                    <field name="bill_count" string="Vendor Bills"  widget="statinfo" icon="fa-usd"/>
+                </button>
+                <button class="oe_stat_button" name="button_invoices" type="object" icon="fa-money">
+                    <field name="invoice_count" string="Vendor Bills"  widget="statinfo" icon="fa-usd"/>
+                </button>
+            </xpath>
         </field>
     </record>
         <record id="action_server_post_sell" model="ir.actions.server">

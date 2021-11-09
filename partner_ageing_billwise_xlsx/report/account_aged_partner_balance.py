@@ -6,6 +6,7 @@ from datetime import datetime
 from odoo.tools import float_is_zero
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
+from odoo.tools import float_round, float_repr
 
 
 
@@ -13,7 +14,7 @@ class BillWiseBalance(models.AbstractModel):
     _name = 'report.partner_ageing_billwise_xlsx.financial_report_xlsx'
     _inherit = 'report.report_xlsx.abstract'
 
-    def _get_billwise_move_lines(self, account_type, date_from, target_move, period_length, period_count):
+    def _get_billwise_move_lines(self, account_type, date_from, target_move, period_length, period_count, date_used):
         # This method can receive the context key 'include_nullified_amount' {Boolean}
         # Do an invoice and a payment and unreconcile. The amount will be nullified
         # By default, the partner wouldn't appear in this report.
@@ -23,7 +24,7 @@ class BillWiseBalance(models.AbstractModel):
         for i in range(period_count)[::-1]:
             stop = start - relativedelta(days=period_length)
             periods[str(i)] = {
-                'name': (i!=0 and (str((period_count-(i+1)) * period_length) + '-' + str((period_count-i) * period_length)) or ('+'+str((period_count -1) * period_length))),
+                'name': (i!=0 and (str(1 +(period_count-(i+1)) * period_length) + '-' + str((period_count-i) * period_length)) or ('+'+str((period_count -1) * period_length))),
                 'stop': start.strftime('%Y-%m-%d'),
                 'start': (i!=0 and stop.strftime('%Y-%m-%d') or False),
             }
@@ -74,16 +75,27 @@ class BillWiseBalance(models.AbstractModel):
         partner_ids = [partner['partner_id'] for partner in partners if partner['partner_id']]
         lines = dict((partner['partner_id'] or False, []) for partner in partners)
         if not partner_ids:
-            return [], [], {}, periods, period_count
+            return [], [], {}, periods, period_count, date_used
 
         # This dictionary will store the not due amount of all partners
         undue_amounts = {}
-        query = '''SELECT l.id
+        if date_used == 'due_date':
+            query = '''SELECT l.id
                 FROM account_move_line AS l, account_account, account_move am
                 WHERE (l.account_id = account_account.id) AND (l.move_id = am.id)
                     AND (am.state IN %s)
                     AND (account_account.internal_type IN %s)
                     AND (COALESCE(l.date_maturity,l.date) >= %s)\
+                    AND ((l.partner_id IN %s) OR (l.partner_id IS NULL))
+                AND (l.date <= %s)
+                AND l.company_id = %s'''
+        if date_used == 'transaction_date':
+            query = '''SELECT l.id
+                FROM account_move_line AS l, account_account, account_move am
+                WHERE (l.account_id = account_account.id) AND (l.move_id = am.id)
+                    AND (am.state IN %s)
+                    AND (account_account.internal_type IN %s)
+                    AND (COALESCE(l.date,l.date_maturity) >= %s)\
                     AND ((l.partner_id IN %s) OR (l.partner_id IS NULL))
                 AND (l.date <= %s)
                 AND l.company_id = %s'''
@@ -116,7 +128,13 @@ class BillWiseBalance(models.AbstractModel):
         history = []
         for i in range(period_count):
             args_list = (tuple(move_state), tuple(account_type), tuple(partner_ids),)
-            dates_query = '(COALESCE(l.date_maturity,l.date)'
+            dates_query = ''
+            if date_used == 'due_date':
+                dates_query = '(COALESCE(l.date_maturity,l.date)'
+                print(dates_query)
+            if date_used == 'transaction_date':
+                dates_query = '(COALESCE(l.date,l.date_maturity)'
+                print(dates_query)
             if periods[str(i)]['start'] and periods[str(i)]['stop']:
                 dates_query += ' BETWEEN %s AND %s)'
                 args_list += (periods[str(i)]['start'], periods[str(i)]['stop'])
@@ -199,7 +217,7 @@ class BillWiseBalance(models.AbstractModel):
 
             if at_least_one_amount or (self._context.get('include_nullified_amount') and lines[partner['partner_id']]):
                 res.append(values)
-        return res, total, lines, periods, period_count
+        return res, total, lines, periods, period_count, date_used
 
     @api.model
     def generate_xlsx_report(self, workbook, data, lines):
@@ -228,7 +246,7 @@ class BillWiseBalance(models.AbstractModel):
             account_type = ['payable', 'receivable']
         target_move = lines['target_move']
 
-        movelines, total, dummy, periods, period_count = self._get_billwise_move_lines(account_type, lines['date_from'], target_move, lines['period_length'], lines['period_count'])
+        movelines, total, dummy, periods, period_count, date_used = self._get_billwise_move_lines(account_type, lines['date_from'], target_move, lines['period_length'], lines['period_count'], lines['date_used'])
         peroid_list = [i for i in range(period_count+1)]
         for partner in dummy:
             for line in dummy[partner]:
@@ -252,6 +270,9 @@ class BillWiseBalance(models.AbstractModel):
         form = lines
         sheet.merge_range(row, col, row, col+2, 'Start Date :', format2)
         sheet.merge_range(row, col+3, row, col+6, str(form['date_from']), format2)
+        row += 1
+        sheet.merge_range(row, col, row, col+2, 'Date Used :', format2)
+        sheet.merge_range(row, col+3, row, col+6, str(form['date_used']), format2)
         row += 1
         sheet.merge_range(row, col, row, col+2, 'Period Length (days) :', format2)
         sheet.merge_range(row, col+3, row, col+6, form['period_length'], format2)
@@ -305,8 +326,9 @@ class BillWiseBalance(models.AbstractModel):
         row += 2
         sheet.merge_range(row, col, row, col+2, "Account Total", format3)
         if total:
+            result = float_repr(total[period_count + 1] and total[period_count + 1], precision_digits=2)
             sheet.write(row, col + 3,
-                        total[period_count+1] and str(total[period_count+1])+" "+currency or '__',
+                        result+ " "+currency if float(result) else '__',
                         format2)
             # sheet.write(row, col + 3,
             #             total[6] and str(total[6])+" "+currency or '__',
@@ -338,9 +360,8 @@ class BillWiseBalance(models.AbstractModel):
         row += 1
         for partner in movelines:
             sheet.merge_range(row, col, row, col + 2, partner['name'], format3)
-            sheet.write(row, col + 3,
-                        partner['direction'] and str(partner['direction'])+" "+currency or '__',
-                        format2)
+            result = float_repr(partner['direction'] and partner['direction'], precision_digits=2)
+            sheet.write(row, col + 3, result+" "+currency if float(result) else '__',format2)
             for l in range(period_count):
                 sheet.write(row, col+4+l, partner[str(period_count-1-l)] and str(partner[str(period_count-1-l)]) +" " +currency or '__', format2)
             # sheet.write(row, col + 4,

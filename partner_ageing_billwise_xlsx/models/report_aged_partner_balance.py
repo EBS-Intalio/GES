@@ -9,7 +9,7 @@ class AgedTrialBalanceBillwise(models.TransientModel):
     _inherit = 'account.aged.trial.balance'
     _description = 'Account Aged Trial balance Report Bill-wise'
 
-    # customer = fields.Many2many('res.partner', 'name', string='Customers')
+    date_used = fields.Selection([('due_date', 'Due Date'), ('transaction_date', 'Transaction Date')], string='Date Used', default='due_date')
 
     def _print_report(self, data):
         res = {}
@@ -38,5 +38,5 @@ class AgedTrialBalanceBillwise(models.TransientModel):
             }
             start = stop - relativedelta(days=1)
         data['form'].update(res)
-        # data['form'].update({'customer': self.customer.ids})
+        data['form'].update({'date_used': self.date_used})
         return self.env.ref('partner_ageing_billwise_xlsx.financial_report_xlsx').with_context(landscape=True).report_action(self, data=data)

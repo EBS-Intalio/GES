@@ -64,33 +64,72 @@ class FreightOperationInherit(models.Model):
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
             billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('operation_billing_id', '=', self.id)])
-            invoice_line_ids = []
-            for record in self.account_operation_lines:
-                if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount:
-                    invoice_line_ids.append((0, 0, {
-                        'product_id': record.charge_code.id,
-                        'transport': record.transport,
-                        'direction': record.operation_billing_id.direction,
-                        'service_type': record.operation_billing_id.service_level,
-                        'operating_unit_id': record.operating_unit_id.id,
-                        'analytic_account_id': record.operating_unit_id.id,
-                        'quantity': 1,
-                        'price_unit': record.os_cost_amount,
-                        'billing_line_id': record.id,
-                        'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
-                    }))
-                    record.bill_created = True
-            bill_id = self.env['account.move'].sudo().create({
-                'name': "/",
-                'move_type': 'in_invoice',
-                'partner_id': vendor_id.id,
-                'invoice_date': fields.Date.today(),
-                'operating_unit_id': billing_id.operating_unit_id,
-                'currency_id': billing_id.cost_currency_id.id,
-                'invoice_line_ids': invoice_line_ids,
-            })
-            billing_id.ar_bill_number = bill_id.id
-            bill_id.created_from_shipment = True
+            if billing_id:
+                invoice_line_ids = []
+                for record in self.account_operation_lines:
+                    if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount:
+                        invoice_line_ids.append((0, 0, {
+                            'product_id': record.charge_code.id,
+                            'transport': record.transport,
+                            'direction': record.operation_billing_id.direction,
+                            'service_type': record.operation_billing_id.service_level,
+                            'operating_unit_id': record.operating_unit_id.id,
+                            'analytic_account_id': record.operating_unit_id.id,
+                            'quantity': 1,
+                            'price_unit': record.os_cost_amount,
+                            'billing_line_id': record.id,
+                            'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
+                        }))
+                        record.bill_created = True
+                bill_id = self.env['account.move'].sudo().create({
+                    'name': "/",
+                    'move_type': 'in_invoice',
+                    'partner_id': vendor_id.id,
+                    'invoice_date': fields.Date.today(),
+                    'operating_unit_id': billing_id.operating_unit_id,
+                    'currency_id': billing_id.cost_currency_id.id,
+                    'invoice_line_ids': invoice_line_ids,
+                })
+                billing_id.ar_bill_number = bill_id.id
+                bill_id.created_from_shipment = True
+
+    bill_count = fields.Integer('Bill Count', compute='_compute_invoice_bill')
+    invoice_count = fields.Integer('Invoice Count', compute='_compute_invoice_bill')
+
+    def _compute_invoice_bill(self):
+        for record in self:
+            record.bill_count = len(self.account_operation_lines.search([('bill_created', '=', True), ('operation_billing_id', '=', self.id)]).ar_bill_number)
+            record.invoice_count = len(self.account_operation_lines.search([('invoice_created', '=', True), ('operation_billing_id', '=', self.id)]).ar_invoice_number)
+
+    def button_invoices(self):
+        invoices = self.account_operation_lines.search([('invoice_created', '=', True), ('operation_billing_id', '=', self.id)]).ar_invoice_number
+        action = self.env["ir.actions.actions"]._for_xml_id("account.action_move_out_invoice_type")
+        action['context'] = {'default_freight_operation_id': self.id, 'default_move_type': 'out_invoice', }
+        if len(invoices) == 1:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoices.id
+        else:
+            action['domain'] = [('id', 'in', invoices.ids)]
+        return action
+
+    def button_billing(self):
+        invoices = self.account_operation_lines.search([('bill_created', '=', True), ('operation_billing_id', '=', self.id)]).ar_bill_number
+        action = self.env["ir.actions.actions"]._for_xml_id("account.action_move_in_invoice_type")
+        action['context'] = {'default_freight_operation_id': self.id, 'default_move_type': 'in_invoice', }
+        if len(invoices) == 1:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoices.id
+        else:
+            action['domain'] = [('id', 'in', invoices.ids)]
+        return action
 
 class FreightOperationBilling(models.Model):
     _name = "freight.operation.billing"
