@@ -16,6 +16,14 @@
             <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
                 <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
             </xpath>
+            <xpath expr="//button[@name='open_reconcile_view']" position="after">
+                <button class="oe_stat_button" name="open_related_shipment" attrs="{'invisible': [('created_from_shipment','=',False)]}" type="object" icon="fa-truck">
+                    Shipment
+                </button>
+                <button class="oe_stat_button" name="open_related_shipment_billing_lines" attrs="{'invisible': [('created_from_shipment','=',False)]}" type="object" icon="fa-bars">
+                    Billing Lines
+                </button>
+            </xpath>
         </field>
     </record>
 </odoo>

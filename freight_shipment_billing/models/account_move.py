@@ -31,12 +31,35 @@ class AccountMoveinherit(models.Model):
 
         return super(AccountMoveinherit, self).action_post()
 
+    def open_related_shipment(self):
+        shipment = self.invoice_line_ids.search([('created_from_shipment', '=', True), ('move_id', '=', self.id)]).shipment_line
+        action = self.env["ir.actions.actions"]._for_xml_id("freight.view_freight_operation_all_action")
+        if len(shipment) == 1:
+            form_view = [(self.env.ref('freight.view_freight_operation_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = shipment.id
+        else:
+            action['domain'] = [('id', 'in', shipment.ids)]
+        return action
+
+    def open_related_shipment_billing_lines(self):
+        billing_lines = self.invoice_line_ids.search([('created_from_shipment', '=', True), ('move_id', '=', self.id)]).billing_line_id
+        action = self.env["ir.actions.actions"]._for_xml_id("freight_shipment_billing.action_freight_Billing")
+        if billing_lines:
+            action['domain'] = [('id', 'in', billing_lines.ids)]
+        return action
+
 class AccountMoveLineinherit(models.Model):
     _inherit = "account.move.line"
 
     billing_line_id = fields.Many2one('freight.operation.billing',string="Billing Line", inverse='_inverse_invoice_line_ids')
 
     shipment_line = fields.Many2one('freight.operation', string="shipment", related='billing_line_id.operation_billing_id')
+
+    created_from_shipment = fields.Boolean(related='move_id.created_from_shipment')
 
     def _inverse_invoice_line_ids(self):
         for rec in self:
