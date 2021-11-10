@@ -7,10 +7,11 @@
                 Account Aged Payable & Receivable
                """,
     'sequence': 51,
-    'depends': ['account', 'account_reports'],
+    'depends': ['account', 'account_reports', 'account_operating_unit'],
     'author': 'Ever Business Solutions',
     'website': "http://www.ever-bs.com/",
     'data': [
+        'views/general_ledger_view.xml',
     ],
     'installable': True,
     'application': True,
