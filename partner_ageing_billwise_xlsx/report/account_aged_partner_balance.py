@@ -20,7 +20,7 @@ class BillWiseBalance(models.AbstractModel):
         # By default, the partner wouldn't appear in this report.
         # The context key allow it to appear
         periods = {}
-        start = datetime.strptime(str(date_from), "%Y-%m-%d")
+        start = datetime.strptime(str(date_from), "%Y-%m-%d") - relativedelta(days=1)
         for i in range(period_count)[::-1]:
             stop = start - relativedelta(days=period_length)
             periods[str(i)] = {
@@ -32,6 +32,7 @@ class BillWiseBalance(models.AbstractModel):
         res = []
         total = []
         cr = self.env.cr
+        print(periods)
         # company_ids = self.env.context.get('company_ids', (self.env.user.company_id.id,))
         user_company = self.env.company.id
         user_currency = self.env.company.currency_id
