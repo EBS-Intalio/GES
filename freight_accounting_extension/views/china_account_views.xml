@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="china_account_form_view" model="ir.ui.view">
+            <field name="name">china.account.type.form</field>
+            <field name="model">china.account.type</field>
+            <field name="arch" type="xml">
+                <form>
+                 <sheet>
+                    <group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="china_account_tree_view">
+            <field name="name">china.account.type.tree</field>
+            <field name="model">china.account.type</field>
+            <field name="arch" type="xml">
+                <tree string="China Accounts">
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="china_account_action">
+            <field name="name">China Accounts</field>
+            <field name="res_model">china.account.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="China Accounts" parent="account.account_account_menu" id="menu_china_account"
+                  action="china_account_action" sequence="15"/>
+
+    </data>
+</odoo>

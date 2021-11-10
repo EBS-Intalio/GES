@@ -11,10 +11,13 @@
     'author': 'Ever Business Solutions',
     'website': "http://www.ever-bs.com/",
     'data': [
+        "security/ir.model.access.csv",
         "views/account_move_view.xml",
         "views/account_journal_view.xml",
         "views/operation_unit_views.xml",
         "views/account_payment_view.xml",
+        "views/china_account_views.xml",
+        "views/account_account_views.xml",
     ],
     'installable': True,
     'application': True,
