@@ -50,7 +50,7 @@ class FreightOperationInherit(models.Model):
                 'partner_id': debtor_id.id,
                 'invoice_date': fields.Date.today(),
                 'operating_unit_id': billing_id.operating_unit_id,
-                'currency_id': billing_id.sell_currency_id.id,
+                'currency_id': self.env.company.currency_id.id,
                 'invoice_line_ids': invoice_line_ids,
             })
             billing_id.ar_invoice_number = invoice_id.id
@@ -87,7 +87,7 @@ class FreightOperationInherit(models.Model):
                     'partner_id': vendor_id.id,
                     'invoice_date': fields.Date.today(),
                     'operating_unit_id': billing_id.operating_unit_id,
-                    'currency_id': billing_id.cost_currency_id.id,
+                    'currency_id': self.env.company.currency_id.id,
                     'invoice_line_ids': invoice_line_ids,
                 })
                 billing_id.ar_bill_number = bill_id.id
