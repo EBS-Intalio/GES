@@ -23,11 +23,11 @@ class FreightOperationInherit(models.Model):
 
     def button_post_sell(self):
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'debtor', 'in', self.account_operation_lines.debtor.ids), ('invoice_created', '=', False)], fields=['debtor'], groupby=['debtor'])
+            'debtor', 'in', self.account_operation_lines.debtor.ids), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0)], fields=['debtor'], groupby=['debtor'])
         mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('operation_billing_id', '=', self.id)])
+            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0), ('operation_billing_id', '=', self.id)])
             invoice_line_ids = []
             for record in self.account_operation_lines:
                 if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount:
@@ -58,12 +58,12 @@ class FreightOperationInherit(models.Model):
 
     def button_post_cost(self):
         vendors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'vendor', 'in', self.account_operation_lines.vendor.ids), ('bill_created', '=', False)],
+            'vendor', 'in', self.account_operation_lines.vendor.ids), ('bill_created', '=', False), ('os_cost_amount', '!=', 0)],
             fields=['vendor'], groupby=['vendor'])
         mapped_data = list([(vendor['vendor'][0]) for vendor in vendors_data])
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('operation_billing_id', '=', self.id)])
+            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '=', self.id)])
             if billing_id:
                 invoice_line_ids = []
                 for record in self.account_operation_lines:
@@ -263,11 +263,11 @@ class FreightOperationBilling(models.Model):
 
     def action_post_sell(self):
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], fields=['debtor'],groupby=['debtor'])
+            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False), ('booking_id', '!=', False), ('os_sell_amount', '!=', 0), ('operation_billing_id', '!=', False)], fields=['debtor'],groupby=['debtor'])
         mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
+            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('os_sell_amount', '!=', 0),('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
             invoice_line_ids = []
             for record in self:
                 if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount and record.booking_id and record.operation_billing_id:
@@ -300,11 +300,11 @@ class FreightOperationBilling(models.Model):
 
     def action_post_cost(self):
         vendors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'vendor', 'in', self.vendor.ids), ('bill_created', '=', False), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], fields=['vendor'],groupby=['vendor'])
+            'vendor', 'in', self.vendor.ids), ('bill_created', '=', False), ('booking_id', '!=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '!=', False)], fields=['vendor'],groupby=['vendor'])
         mapped_data = list([(vendor['vendor'][0]) for vendor in vendors_data])
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
+            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('booking_id', '!=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '!=', False)], limit=1)
             invoice_line_ids = []
             for record in self:
                 if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount and record.booking_id and record.operation_billing_id:
