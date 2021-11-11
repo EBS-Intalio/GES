@@ -31,6 +31,8 @@ class AccountMoveinherit(models.Model):
         for vals in vals_list:
             if vals.get("name"):
                 vals["name"] = "/"
+            if not vals.get("name"):
+                vals["name"] = "/"
         return super().create(vals_list)
 
     @api.depends('restrict_mode_hash_table', 'state')
