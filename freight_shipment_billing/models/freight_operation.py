@@ -263,7 +263,7 @@ class FreightOperationBilling(models.Model):
 
     def action_post_sell(self):
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False), ('booking_id', '!=', False), ('os_sell_amount', '!=', 0), ('operation_billing_id', '!=', False)], fields=['debtor'],groupby=['debtor'])
+            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False), ('booking_id', '!=', False), ('os_sell_amount', '!=', 0),('operation_billing_id', '!=', False)], fields=['debtor'],groupby=['debtor'])
         mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
