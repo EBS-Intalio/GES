@@ -18,14 +18,20 @@ class AccountMoveinherit(models.Model):
     # name = fields.Char(string='Number', copy=False, compute='_compute_name', readonly=False, store=True, index=True,
     #                    tracking=True)
 
-    @api.depends('posted_before', 'state', 'journal_id', 'date')
-    def _compute_name(self):
-        for rec in self:
-            if rec.state == 'draft':
-                rec.name = ""
-            else:
-                super(AccountMoveinherit, self)._compute_name()
+    # @api.depends('posted_before', 'state', 'journal_id', 'date')
+    # def _compute_name(self):
+    #     for rec in self:
+    #         if rec.state == 'draft':
+    #             rec.name = ""
+    #         else:
+    #             super(AccountMoveinherit, self)._compute_name()
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name"):
+                vals["name"] = "/"
+        return super().create(vals_list)
 
     @api.depends('restrict_mode_hash_table', 'state')
     def _compute_show_reset_to_draft_button(self):
