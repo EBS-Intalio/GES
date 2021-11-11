@@ -215,8 +215,8 @@
         </record>
         <record id="create_statements" model="ir.actions.server">
             <field name="name">Create Bank Statement</field>
-            <field name="model_id" ref="account_extended.model_account_payment"/>
-            <field name="binding_model_id" ref="account_extended.model_account_payment"/>
+            <field name="model_id" ref="model_account_payment"/>
+            <field name="binding_model_id" ref="model_account_payment"/>
             <field name="state">code</field>
             <field name="code">
                 if records:

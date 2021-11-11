@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Account Extended',
-    'version': '14.0.0.9',
+    'version': '14.0.0.10',
     'category': 'Accounting/Accounting',
     'description': """
                 Multi currency according to the company timezone
@@ -14,7 +14,7 @@
         'views/ir_cron.xml',
         'views/res_company.xml',
         'views/assets.xml',
-        'views/account_payment.xml',
+        # 'views/account_payment.xml',
         'wizard/res_config_settings_view.xml',
         'views/search_template_inherit.xml',
     ],
