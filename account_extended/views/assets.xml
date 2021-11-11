@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="operating_unit_report_backend" inherit_id="web.assets_backend" name="Budget Report">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/account_extended/static/src/js/operating_unit_filter.js"/>
+        </xpath>
+    </template>
+</odoo>

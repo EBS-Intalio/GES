@@ -1,14 +1,26 @@
 <odoo>
     <data>
+        <!--        Currency-->
 
         <template id="search_template" inherit_id="account_reports.search_template">
             <xpath expr="//div[hasclass('o_account_reports_filter_date')]" position="after">
-<!--                <t t-esc="options"/>-->
-                <div class="btn-group o_dropdown" t-if="options.get('currency') != None and options.get('unhide_currency') == True and options.get('curr_model') in ['account.financial.html.report','account.assets.report']">
+                <!--                <t t-esc="options"/>-->
+                <div class="btn-group o_dropdown"
+                     t-if="options.get('currency') != None and options.get('unhide_currency') == True and options.get('curr_model') in ['account.financial.html.report','account.assets.report']">
                     <t t-call="account_extended.search_template_filter_currency"/>
                 </div>
 
+
+
             </xpath>
+            <xpath expr="//div[hasclass('o_account_reports_filter_journals')]" position="before">
+                <div class="btn-o_account_reports_filter_operating_unit btn-group o_dropdown "
+                     t-if="options.get('operating_unit') != None and options.get('journals') != None">
+                    <t t-call="account_extended.search_template_filter_operating_unit"/>
+                </div>
+            </xpath>
+
+
         </template>
         <template id="search_template_filter_currency">
 
@@ -48,6 +60,32 @@
                 </t>
             </div>
         </template>
+<!--operating unit-->
+        <template id="search_template_filter_operating_unit">
+            <a type="button" class="dropdown-toggle operating_unit_filter" data-toggle="dropdown">
+                <span class="fa fa-folder-open"/>
+                Branch
+            </a>
+            <div class="dropdown-menu o_filters_menu" role="menu">
+                <li style='margin-left: 10px; margin-right: 10px;'>
+                    <b>Branch</b>
+                    <br/>
+                    <select class="js_operating_unit"
+                            data-filter="operating_unit" multiple="multiple" style="min-width: 200px;">
+                        <t t-foreach="request.env['operating.unit'].search([('active','=',True)])"
+                           t-as="a">
+                            <option t-att-value="a.id">
+                                <t t-esc="a.code"/>
+                                -
+                                <t t-esc="a.name"/>
+                            </option>
+                        </t>
+                    </select>
+                </li>
+                <div class="dropdown-divider" role="separator"></div>
+            </div>
+        </template>
+
 
     </data>
 </odoo>

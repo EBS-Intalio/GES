@@ -1,6 +1,8 @@
 from odoo import api, models, _, fields
 from odoo.tools import date_utils
-
+from odoo.osv import expression
+import ast
+from odoo.addons.web.controllers.main import clean_action
 from odoo.tools import formatLang, format_date
 from odoo.addons.account_reports.models.formula import FormulaSolver, PROTECTED_KEYWORDS
 from odoo.http import request
@@ -13,6 +15,72 @@ class AccountReportExtended(models.AbstractModel):
     _inherit = 'account.report'
 
     filter_currency = None
+    filter_operating_unit = None
+
+    @api.model
+    def _init_filter_operating_unit(self, options, previous_options=None):
+        if not self.filter_operating_unit:
+            return
+        options['filter_operating_unit'] = True
+        previous_accounts = (previous_options or {}).get('operating_unit', [])
+        operating_unit_ids = [int(x) for x in previous_accounts]
+        selected_operating_unit = self.env['operating.unit'].search([('id', 'in', operating_unit_ids)])
+        options['operating_unit'] = selected_operating_unit.ids
+        options['selected_operating_unit'] = selected_operating_unit.mapped('name')
+
+
+    def get_report_informations(self, options):
+        info = super(AccountReportExtended, self).get_report_informations(options=options)
+        if options and options.get('operating_unit') is not None:
+            # new_options = info['options']
+            # searchview_dict = {'options': new_options, 'context': self.env.context}
+            options['selected_operating_unit'] = [self.env['operating.unit'].browse(int(operating_unit_id)).name for
+                                                  operating_unit_id in options['operating_unit']]
+            report_manager = self._get_report_manager(options)
+            info['options'] = options
+            info['report_manager_id'] = report_manager.id
+            info['footnotes'] = [{'id': f.id, 'line': f.line, 'text': f.text} for f in report_manager.footnotes_ids]
+            info['main_html'] = self.get_html(options)
+
+            # info = {'options': options,
+            #         'context': self.env.context,
+            #         'report_manager_id': report_manager.id,
+            #         'footnotes': [{'id': f.id, 'line': f.line, 'text': f.text} for f in report_manager.footnotes_ids],
+            #         'buttons': self._get_reports_buttons_in_sequence(),
+            #         'main_html': self.get_html(options),
+            #         'searchview_html': self.env['ir.ui.view']._render_template(
+            #             self._get_templates().get('search_template', 'account_report.search_template'),
+            #             values=searchview_dict),
+            #         }
+        return info
+
+
+    @api.model
+    def _get_options_operating_unit_domain(self, options):
+        domain = []
+        if options.get('operating_unit'):
+            operating_unit_ids = [int(acc) for acc in options['operating_unit']]
+            domain.append(('operating_unit_id', 'in', operating_unit_ids))
+            # domain.append(('operating_unit_id', '!=', False))
+        return domain
+
+    @api.model
+    def _get_options_domain(self, options):
+        domain = super(AccountReportExtended, self)._get_options_domain(options=options)
+        domain += self._get_options_operating_unit_domain(options)
+        return domain
+
+
+
+    def open_journal_items(self, options, params):
+        action = super(AccountReportExtended, self).open_journal_items(options=options,params=params)
+        if action and options.get('operating_unit'):
+            domain = action['domain']
+            operating_unit_ids = [int(r) for r in options['operating_unit']]
+            domain = expression.AND([domain, [('operating_unit_id', 'in', operating_unit_ids)]])
+            action['domain'] = domain
+        return action
+
 
     @api.model
     def _get_filter_currency(self):
@@ -156,10 +224,9 @@ class AccountReportExtended(models.AbstractModel):
                     i = 1
                     for curr in options.get('currency'):
                         if curr.get('selected'):
-                            # amount = self.get_multi_currency_balance(heararchy.get('columns')[0].get('no_format'), curr.get('id'))
                             currency_id = request.env['res.currency'].browse(curr.get('id'))
                             heararchy['columns'][i]['name'] = formatLang(request.env, heararchy['columns'][i].get(
-                                'no_format_name') or heararchy['columns'][i].get('no_format'),
+                                'no_format_name') or heararchy['columns'][i].get('no_format') or 0.0,
                                                                          currency_obj=currency_id)
                             i += 1
 
@@ -179,7 +246,6 @@ class AccountReportExtended(models.AbstractModel):
                                                                                                'no_format'),
                                                                                            currency_obj=currency_id)
                             currency_list_index += 1
-                print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
             return hierarchy_lines
 
@@ -211,6 +277,8 @@ class AccountReportExtended(models.AbstractModel):
 
 class ReportAccountFinancialReportExtended(models.Model):
     _inherit = "account.financial.html.report"
+
+    filter_operating_unit = True
 
     def _build_headers_hierarchy(self, options_list, groupby_keys):
 
@@ -479,6 +547,9 @@ class ReportAccountFinancialReportExtended(models.Model):
                 'no_format': multi_currency_amount}
 
 
+
+
+
 class assets_report_extended(models.AbstractModel):
     _inherit = 'account.assets.report'
 
@@ -658,3 +729,8 @@ class assets_report_extended(models.AbstractModel):
         multi_currency_amount = company_currency._convert(balance, currency_id, company, date)
         return {'name': formatLang(self.env, multi_currency_amount, currency_obj=currency_id),
                 'no_format_name': multi_currency_amount}
+
+    class AccountCashFlowReportInherit(models.AbstractModel):
+        _inherit = 'account.cash.flow.report'
+
+        filter_operating_unit = True
