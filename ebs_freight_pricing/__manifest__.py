@@ -27,6 +27,7 @@
         'views/booking_views.xml',
         'views/sales_views.xml',
         'views/freight_operation_views.xml',
+        'views/inherit_account_move.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

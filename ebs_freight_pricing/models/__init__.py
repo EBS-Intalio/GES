@@ -4,3 +4,4 @@ from . import freight_pricing
 from . import freight
 from . import booking
 from . import sale_managment
+from . import account_move_line
