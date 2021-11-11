@@ -180,20 +180,6 @@
             </field>
         </record>
 
-        <record id="account_journal_dashboard_inherit_ges" model="ir.ui.view">
-            <field name="name">account.journal.dashboard.inherit.ges</field>
-            <field name="model">account.journal</field>
-            <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
-            <field name="arch" type="xml">
-                <xpath expr='//button[@name="action_configure_bank_journal"]' position='after'>
-                    <button name="%(action_account_payments_unreconciled)d" type="action"
-                            class="btn btn-primary" groups="account.group_account_invoice">outstanding Payments/Receipts
-                    </button>
-                </xpath>
-            </field>
-        </record>
-
-
         <record id="action_account_payments_unreconciled" model="ir.actions.act_window">
             <field name="name">Outstanding Payments/Receipts</field>
             <field name="res_model">account.payment</field>
@@ -213,6 +199,22 @@
                 </p>
             </field>
         </record>
+
+        <record id="account_journal_dashboard_inherit_ges" model="ir.ui.view">
+            <field name="name">account.journal.dashboard.inherit.ges</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//button[@name="action_configure_bank_journal"]' position='after'>
+                    <button name="%(action_account_payments_unreconciled)d" type="action"
+                            class="btn btn-primary" groups="account.group_account_invoice">outstanding Payments/Receipts
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+
+
         <record id="create_statements" model="ir.actions.server">
             <field name="name">Create Bank Statement</field>
             <field name="model_id" ref="model_account_payment"/>
