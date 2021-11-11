@@ -7,14 +7,6 @@ class AccountPayemntEXT(models.Model):
 
     is_statement_create = fields.Boolean('Statement Created', compute='compute_reconciled_statement_create', store=True)
 
-    # @api.depends('move_id.line_ids.matched_debit_ids', 'move_id.line_ids.matched_credit_ids')
-    # def _compute_stat_buttons_from_reconciliation(self):
-    #     super(AccountPayemntEXT, self)._compute_stat_buttons_from_reconciliation()
-    #     for rec in self:
-    #         is_statement_create = False
-    #         if rec.reconciled_statements_count != 0:
-    #             is_statement_create = True
-    #         rec.is_statement_create = is_statement_create
     @api.depends('reconciled_statement_ids')
     def compute_reconciled_statement_create(self):
         for rec in self:

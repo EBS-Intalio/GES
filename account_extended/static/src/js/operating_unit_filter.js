@@ -34,11 +34,7 @@ var accountReportWidget = accountReportsWidget.include({
                 self.$searchview_buttons.find('.operating_unit_filter').click();
             })
         });
-//        if(this.controlPanelProps && this.controlPanelProps.action && ['Profit and Loss','Balance Sheet','Cash Flow Statement'].includes(this.controlPanelProps.action.display_name))
-//        {
-//        console.log('hello',this.$searchview_buttons.find('.btn-o_account_reports_filter_operating_unit'))
-//           this.$searchview_buttons.find('.btn-o_account_reports_filter_operating_unit').hide();
-//        }
+
 
     }
 

@@ -8,6 +8,7 @@ class AccountMoveLineInherit(models.Model):
         comodel_name="operating.unit",
         compute='_default_operating_unit_id',
         readonly=False,
+        store=True
     )
 
     memo = fields.Text("Memo")
@@ -18,6 +19,7 @@ class AccountMoveLineInherit(models.Model):
         ('c', 'C'),
     ], string='CODE Journal',default='a')
 
+    @api.depends("move_id.operating_unit_id")
     def _default_operating_unit_id(self):
         for rec in self:
             rec.operating_unit_id = rec.move_id.operating_unit_id.id

@@ -42,16 +42,6 @@ class AccountReportExtended(models.AbstractModel):
             info['footnotes'] = [{'id': f.id, 'line': f.line, 'text': f.text} for f in report_manager.footnotes_ids]
             info['main_html'] = self.get_html(options)
 
-            # info = {'options': options,
-            #         'context': self.env.context,
-            #         'report_manager_id': report_manager.id,
-            #         'footnotes': [{'id': f.id, 'line': f.line, 'text': f.text} for f in report_manager.footnotes_ids],
-            #         'buttons': self._get_reports_buttons_in_sequence(),
-            #         'main_html': self.get_html(options),
-            #         'searchview_html': self.env['ir.ui.view']._render_template(
-            #             self._get_templates().get('search_template', 'account_report.search_template'),
-            #             values=searchview_dict),
-            #         }
         return info
 
 
@@ -61,7 +51,6 @@ class AccountReportExtended(models.AbstractModel):
         if options.get('operating_unit'):
             operating_unit_ids = [int(acc) for acc in options['operating_unit']]
             domain.append(('operating_unit_id', 'in', operating_unit_ids))
-            # domain.append(('operating_unit_id', '!=', False))
         return domain
 
     @api.model
