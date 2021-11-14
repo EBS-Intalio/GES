@@ -19,6 +19,8 @@ class AccountMoveLineInherit(models.Model):
                                       ('custom_and_brokerage', 'Customs and Brokerage')],
                                      string="Service Level")
 
+    line_of_service_id = fields.Many2one('account.operation.matrix', 'Line of Service')
+
     @api.onchange('product_id', 'transport', 'direction', 'service_type')
     def _onchange_product_transport_direction_service(self):
         for rec in self:

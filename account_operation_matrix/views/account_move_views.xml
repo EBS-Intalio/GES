@@ -10,6 +10,7 @@
                     <field name="transport" optional="show"/>
                     <field name="direction" optional="show"/>
                     <field name="service_type" optional="show"/>
+                    <field name="line_of_service_id" optional="show"/>
                 </xpath>
             </field>
         </record>
