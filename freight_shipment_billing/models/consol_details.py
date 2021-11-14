@@ -8,12 +8,16 @@ class ConsolDetailsInherit(models.Model):
 
     billing_lines = fields.One2many(comodel_name='console.details.billing.lines', inverse_name='freight_console_id')
 
+    def create_billing_lines(self):
+        for record in self.billing_lines:
+            record.create_billing()
 
 class ConsoleDetailsBillingLines(models.Model):
     _name = 'console.details.billing.lines'
 
+    handler = fields.Integer("Handler")
     charge_code_sequence = fields.Integer("Sequence")
-    charge_code = fields.Many2one('product.product', 'Charge Code')
+    charge_code = fields.Many2one('product.product', 'Charge Code', required=True)
     description = fields.Char(compute='_default_description', string="Description", readonly=False)
     operating_unit_id = fields.Many2one('operating.unit', compute='_default_operating_unit_id', readonly=False,
                                         string='Branch')
@@ -23,14 +27,14 @@ class ConsoleDetailsBillingLines(models.Model):
     cost_currency_id = fields.Many2one('res.currency', string='Cost Currency',
                                        default=lambda self: self.env.company.currency_id.id)
 
-    os_cost_amount = fields.Monetary(string="OS Cost Amount", currency_field='cost_currency_id')
+    os_cost_amount = fields.Monetary(string="OS Cost Amount", currency_field='cost_currency_id', required=True)
     company_currency_id = fields.Many2one('res.currency', string="Currency",
                                           default=lambda self: self.env.company.currency_id.id)
 
     local_cost_amount = fields.Monetary(string="Local Cost Amount", currency_field='company_currency_id',
                                         compute='_compute_local_cost_amount')
 
-    vendor = fields.Many2one("res.partner", string="Creditor", domain="[('is_payable', '=', True)]")
+    vendor = fields.Many2one("res.partner", string="Creditor", domain="[('is_payable', '=', True)]", required=True)
 
     cost_recognition = fields.Selection(([('imm', 'IMM')]), string='Cost Recognition', default='imm')
 

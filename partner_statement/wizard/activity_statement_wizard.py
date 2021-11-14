@@ -21,6 +21,9 @@ class ActivityStatementWizard(models.TransientModel):
 
     date_start = fields.Date(required=True, default=_get_date_start)
 
+    show_partner_ref = fields.Boolean("Show Partner Ref", default=False)
+    show_requested_by = fields.Boolean("Show Requested By", default=False)
+
     @api.onchange("aging_type")
     def onchange_aging_type(self):
         super().onchange_aging_type()
@@ -38,5 +41,7 @@ class ActivityStatementWizard(models.TransientModel):
 
     def _prepare_statement(self):
         res = super()._prepare_statement()
-        res.update({"date_start": self.date_start})
+        res.update({"date_start": self.date_start,
+                    "show_partner_ref": self.show_partner_ref,
+                    "show_requested_by": self.show_requested_by})
         return res

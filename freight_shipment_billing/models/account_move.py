@@ -12,7 +12,16 @@ class AccountMoveinherit(models.Model):
     ], string='Inv. Type', default='local_individual', required=True)
 
 
-    created_from_shipment = fields.Boolean("Shipment Invoice", default=False, readonly=True)
+    created_from_shipment = fields.Boolean("Shipment Invoice", default=False, readonly=True,  inverse='compute_shipment_requested_by')
+    requested_by = fields.Date("Requested By", compute='compute_shipment_requested_by', store=True)
+
+    def compute_shipment_requested_by(self):
+        for rec in self:
+            if rec.created_from_shipment:
+                shipment = rec.invoice_line_ids.search(
+                    [('created_from_shipment', '=', True), ('move_id', '=', rec.id)]).shipment_line
+                if len(shipment) == 1:
+                    rec.requested_by = shipment.requested_by
 
     def action_post(self):
         if self.move_type == 'out_invoice':
