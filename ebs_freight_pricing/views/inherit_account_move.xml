@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="after">
-                <field name="tax_amount"/>
-                <field name="gross_amount"/>
+                <field name="tax_amount" optional="show"/>
+                <field name="gross_amount" optional="show"/>
             </xpath>
         </field>
     </record>

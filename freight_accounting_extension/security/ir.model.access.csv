@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_china_account_type,access_china_account_type,model_china_account_type,,1,1,1,1
+access_account_code_journal,access_account_code_journal,model_account_code_journal,,1,1,1,1

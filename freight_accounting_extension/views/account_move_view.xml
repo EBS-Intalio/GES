@@ -18,10 +18,13 @@
             <xpath expr="//field[@name='line_ids']/tree/field[@name='operating_unit_id']" position="attributes">
                 <attribute name="string">Branch</attribute>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="before">
-                <field name="operating_unit_id" />
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace">
+                <field name="operating_unit_id" string="Branch"/>
                 <field name="memo" />
-                <field name="code_journal" />
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
+                <field name="name" />
+                <field name="employee_id" optional="show"/>
             </xpath>
             <xpath expr="//field[@name='partner_bank_id']" position="attributes">
                 <attribute name="string">Bill Bank</attribute>
@@ -55,6 +58,26 @@
                 <field name="currency_id"
                         groups="base.group_multi_currency"
                         attrs="{'readonly': [('posted_before', '=', True)]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='operating_unit_id']" position="after">
+                <field name="code_journal_id"/>
+            </xpath>
+
+             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="attributes">
+                <attribute name="optional">show</attribute>
             </xpath>
         </field>
     </record>

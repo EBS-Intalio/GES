@@ -14,6 +14,7 @@ class AccountMoveinherit(models.Model):
 
     payment_hold = fields.Boolean(string='Payment Hold', default=False, tracking=True)
     custom_payment_reference = fields.Char(string="Payment Reference", readonly=True)
+    code_journal_id = fields.Many2one('account.code.journal', string='Code Journal Type')
 
     # name = fields.Char(string='Number', copy=False, compute='_compute_name', readonly=False, store=True, index=True,
     #                    tracking=True)

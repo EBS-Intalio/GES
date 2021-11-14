@@ -13,12 +13,6 @@ class AccountMoveLineInherit(models.Model):
 
     memo = fields.Text("Memo")
 
-    code_journal = fields.Selection(selection=[
-        ('a', 'A'),
-        ('b', 'B'),
-        ('c', 'C'),
-    ], string='CODE Journal',default='a')
-
     @api.depends("move_id.operating_unit_id")
     def _default_operating_unit_id(self):
         for rec in self:
