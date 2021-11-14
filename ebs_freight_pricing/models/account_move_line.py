@@ -25,6 +25,6 @@ class InheritAccountMoveLine(models.Model):
             if record.tax_amount > 0.0:
                 record.gross_amount = record.tax_amount + record.price_subtotal
             else:
-                record.gross_amount = 0.0
+                record.gross_amount = record.price_subtotal
 
 
