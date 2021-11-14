@@ -25,8 +25,8 @@
                         <strong>Partner Name:</strong>
                         <p t-field="o.name" class="m-0" />
                     </div>
-                    <div t-if="o.ref" class="col-3 bm-2">
-                        <strong>Partner Code:</strong>
+                    <div t-if="o.ref and show_partner_ref" class="col-3 bm-2">
+                        <strong>Partner Ref:</strong>
                         <p t-field="o.ref" class="m-0" />
                     </div>
                 </div>
@@ -48,6 +48,9 @@
                             <thead>
                                 <tr>
                                     <th>Reference number</th>
+                                    <t t-if="show_requested_by">
+                                        <th class="col-1">Requested By</th>
+                                    </t>
                                     <th>Date</th>
                                     <th>Description</th>
                                     <th class="amount">Amount</th>
@@ -57,6 +60,9 @@
                             <tbody>
                                 <tr>
                                     <td />
+                                    <t t-if="show_requested_by">
+                                        <td></td>
+                                    </t>
                                     <td>
                                         <span t-esc="d['start']" />
                                     </td>
@@ -79,6 +85,11 @@
                                     <td>
                                         <span t-esc="line['move_id']" />
                                     </td>
+                                     <t t-if="show_requested_by">
+                                        <td>
+                                            <span t-esc="line['request_by']"/>
+                                        </td>
+                                     </t>
                                     <td>
                                         <span t-esc="line['date']" />
                                     </td>
@@ -122,6 +133,9 @@
                                 </tr>
                                 <tr>
                                     <td />
+                                    <t t-if="show_requested_by">
+                                        <td></td>
+                                    </t>
                                     <td>
                                         <span t-esc="d['end']" />
                                     </td>

@@ -17,6 +17,7 @@ class ReportStatementCommon(models.AbstractModel):
         inv_addr_id = part.address_get(["invoice"]).get("invoice", part.id)
         return self.env["res.partner"].browse(inv_addr_id)
 
+
     def _format_date_to_partner_lang(
         self, date, date_format=DEFAULT_SERVER_DATE_FORMAT
     ):
@@ -348,6 +349,7 @@ class ReportStatementCommon(models.AbstractModel):
             company_id, partner_ids, date_start, account_type
         )
 
+        # print("BBBBBBBBBBB", lines)
         if data["show_aging_buckets"]:
             buckets = self._get_account_show_buckets(
                 company_id, partner_ids, date_end, account_type, aging_type

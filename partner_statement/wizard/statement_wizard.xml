@@ -124,6 +124,10 @@
             <xpath expr="//field[@name='date_end']" position="before">
                 <field name="date_start" />
             </xpath>
+            <xpath expr="//field[@name='filter_negative_balances']" position="after">
+                <field name="show_partner_ref" />
+                <field name="show_requested_by" />
+            </xpath>
         </field>
     </record>
 </odoo>

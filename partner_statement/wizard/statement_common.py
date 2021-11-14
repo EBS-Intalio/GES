@@ -41,6 +41,8 @@ class StatementCommon(models.AbstractModel):
         default="receivable",
     )
 
+    show_partner_ref = fields.Boolean("Show Partner Ref", default=False)
+
     @api.onchange("aging_type")
     def onchange_aging_type(self):
         if self.aging_type == "months":

@@ -37,7 +37,7 @@ class FreightOperationInherit(models.Model):
                         'direction': record.operation_billing_id.direction,
                         'service_type': record.operation_billing_id.service_level,
                         'operating_unit_id': record.operating_unit_id.id,
-                        'analytic_account_id': record.operating_unit_id.id,
+                        'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
                         'price_unit': record.os_sell_amount,
                         'billing_line_id': record.id,
@@ -74,7 +74,7 @@ class FreightOperationInherit(models.Model):
                             'direction': record.operation_billing_id.direction,
                             'service_type': record.operation_billing_id.service_level,
                             'operating_unit_id': record.operating_unit_id.id,
-                            'analytic_account_id': record.operating_unit_id.id,
+                            'analytic_account_id': record.analytic_account_id.id,
                             'quantity': 1,
                             'price_unit': record.os_cost_amount,
                             'billing_line_id': record.id,
@@ -232,6 +232,7 @@ class FreightOperationBilling(models.Model):
     @api.depends('cost_currency_id', 'os_cost_amount')
     def _compute_local_cost_amount(self):
         date = self._context.get('date') or fields.Date.today()
+        usd = self.env['res.currency']
         company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
         for rec in self:
             if rec.cost_currency_id and rec.os_cost_amount:
@@ -277,7 +278,7 @@ class FreightOperationBilling(models.Model):
                         'direction': record.operation_billing_id.direction,
                         'service_type': record.operation_billing_id.service_level,
                         'operating_unit_id': record.operating_unit_id.id,
-                        'analytic_account_id': record.operating_unit_id.id,
+                        'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
                         'price_unit': record.os_sell_amount,
                         'billing_line_id': record.id,
@@ -314,7 +315,7 @@ class FreightOperationBilling(models.Model):
                         'direction': record.operation_billing_id.direction,
                         'service_type': record.operation_billing_id.service_level,
                         'operating_unit_id': record.operating_unit_id.id,
-                        'analytic_account_id': record.operating_unit_id.id,
+                        'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
                         'price_unit': record.os_cost_amount,
                         'billing_line_id': record.id,
