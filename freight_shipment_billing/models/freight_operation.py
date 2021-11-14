@@ -134,6 +134,7 @@ class FreightOperationInherit(models.Model):
 class FreightOperationBilling(models.Model):
     _name = "freight.operation.billing"
 
+    handler = fields.Integer("Handler")
     charge_code_sequence = fields.Integer("Sequence")
     charge_code = fields.Many2one('product.product', 'Charge Code')
     description = fields.Char(compute='_default_description', string="Description", readonly=False)
