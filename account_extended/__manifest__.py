@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Account Extended',
-    'version': '14.0.0.12',
+    'version': '14.0.0.13',
     'category': 'Accounting/Accounting',
     'description': """
                 Multi currency according to the company timezone
