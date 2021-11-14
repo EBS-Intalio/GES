@@ -29,7 +29,7 @@ class AccountPayemntEXT(models.Model):
                      'date':fields.Date.today(),
                      'payment_ref':'Payment',
                      'partner_id':rec.partner_id and rec.partner_id.id,
-                     'amount':rec.amount,
+                     'amount':rec.amount if rec.payment_type == 'inbound' and rec.partner_type == 'customer' else -(rec.amount),
                  }
                  )
             )
@@ -40,7 +40,7 @@ class AccountPayemntEXT(models.Model):
             'company_id': self.env.company.id,
             'line_ids':data_list,
             'balance_start':last_ending_balance,
-            'balance_end_real':last_ending_balance + sum(self.mapped('amount')),
+            'balance_end_real':last_ending_balance + sum(self.filtered(lambda x: x.payment_type == 'inbound' and  x.partner_type == 'customer').mapped('amount')) - sum(self.filtered(lambda x: x.payment_type == 'outbound' and  x.partner_type == 'supplier').mapped('amount')),
         }
         bank_statement = self.env['account.bank.statement'].create(vals)
         print(bank_statement)
