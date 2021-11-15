@@ -28,6 +28,8 @@ class FreightOperationInherit(models.Model):
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
             billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0), ('operation_billing_id', '=', self.id)])
+            date = self._context.get('date') or fields.Date.today()
+            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
             invoice_line_ids = []
             for record in self.account_operation_lines:
                 if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount:
@@ -39,7 +41,7 @@ class FreightOperationInherit(models.Model):
                         'operating_unit_id': record.operating_unit_id.id,
                         'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
-                        'price_unit': record.os_sell_amount,
+                        'price_unit':record.sell_currency_id._convert(record.os_sell_amount, self.env.company.currency_id, company, date),
                         'billing_line_id': record.id,
                         'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
                     }))
@@ -64,6 +66,8 @@ class FreightOperationInherit(models.Model):
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
             billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '=', self.id)])
+            date = self._context.get('date') or fields.Date.today()
+            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
             if billing_id:
                 invoice_line_ids = []
                 for record in self.account_operation_lines:
@@ -76,7 +80,7 @@ class FreightOperationInherit(models.Model):
                             'operating_unit_id': record.operating_unit_id.id,
                             'analytic_account_id': record.analytic_account_id.id,
                             'quantity': 1,
-                            'price_unit': record.os_cost_amount,
+                            'price_unit': record.cost_currency_id._convert(record.os_cost_amount, self.env.company.currency_id, company, date),
                             'billing_line_id': record.id,
                             'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
                         }))
@@ -270,6 +274,8 @@ class FreightOperationBilling(models.Model):
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
             billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('os_sell_amount', '!=', 0),('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
+            date = self._context.get('date') or fields.Date.today()
+            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
             invoice_line_ids = []
             for record in self:
                 if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount and record.booking_id and record.operation_billing_id:
@@ -281,7 +287,7 @@ class FreightOperationBilling(models.Model):
                         'operating_unit_id': record.operating_unit_id.id,
                         'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
-                        'price_unit': record.os_sell_amount,
+                        'price_unit': record.sell_currency_id._convert(record.os_sell_amount, self.env.company.currency_id, company, date),
                         'billing_line_id': record.id,
                         'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
                     }))
@@ -292,7 +298,7 @@ class FreightOperationBilling(models.Model):
                             'partner_id': debtor_id.id,
                             'invoice_date': fields.Date.today(),
                             'operating_unit_id':billing_id.operating_unit_id,
-                            'currency_id':billing_id.sell_currency_id.id,
+                            'currency_id':self.env.company.currency_id.id,
                             'invoice_line_ids': invoice_line_ids,
             })
             billing_id.ar_invoice_number = invoice_id.id
@@ -307,6 +313,8 @@ class FreightOperationBilling(models.Model):
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
             billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('booking_id', '!=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '!=', False)], limit=1)
+            date = self._context.get('date') or fields.Date.today()
+            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
             invoice_line_ids = []
             for record in self:
                 if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount and record.booking_id and record.operation_billing_id:
@@ -318,7 +326,7 @@ class FreightOperationBilling(models.Model):
                         'operating_unit_id': record.operating_unit_id.id,
                         'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
-                        'price_unit': record.os_cost_amount,
+                        'price_unit': record.cost_currency_id._convert(record.os_cost_amount, self.env.company.currency_id, company, date),
                         'billing_line_id': record.id,
                         'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
                     }))
@@ -330,7 +338,7 @@ class FreightOperationBilling(models.Model):
                             'partner_id': vendor_id.id,
                             'invoice_date': fields.Date.today(),
                             'operating_unit_id':billing_id.operating_unit_id,
-                            'currency_id':billing_id.cost_currency_id.id,
+                            'currency_id':self.env.company.currency_id.id,
                             'invoice_line_ids': invoice_line_ids,
             })
             billing_id.ar_bill_number = bill_id.id

@@ -21,6 +21,7 @@
                             <field name="company_currency_id" invisible="1" />
                             <field name="local_cost_amount"  readonly="1" />
                             <field name="vendor" options="{'no_create': True,'no_create_edit':True}"  attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="cost_tax_ids" widget="many2many_tags" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
                             <field name="cost_recognition" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
                             <field name="app_method" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
                             <button name="create_billing" type="object" string="Create billing" attrs="{'invisible': [('sent_to_shipment','=', True)]}" class="oe_highlight"/>

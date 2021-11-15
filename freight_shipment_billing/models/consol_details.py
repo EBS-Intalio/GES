@@ -36,6 +36,8 @@ class ConsoleDetailsBillingLines(models.Model):
 
     vendor = fields.Many2one("res.partner", string="Creditor", domain="[('is_payable', '=', True)]", required=True)
 
+    cost_tax_ids = fields.Many2many(comodel_name='account.tax', relation="console_billing_cost_tax_rel", string="Cost Tax", domain="[('type_tax_use', '=', 'purchase')]")
+
     cost_recognition = fields.Selection(([('imm', 'IMM')]), string='Cost Recognition', default='imm')
 
     app_method = fields.Many2one("app.method", string="App Method")
@@ -83,6 +85,7 @@ class ConsoleDetailsBillingLines(models.Model):
                             'os_cost_amount': rec.os_cost_amount / shipments_count,
                             'company_currency_id': rec.company_currency_id.id,
                             'local_cost_amount': rec.local_cost_amount,
+                            'cost_tax_ids': [(6, 0, rec.cost_tax_ids.ids)],
                             'vendor': rec.vendor.id,
                             'cost_recognition': rec.cost_recognition,
                             'freight_console_id': rec.freight_console_id.id,
