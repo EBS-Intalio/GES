@@ -1,4 +1,6 @@
 from odoo import api, models, _, fields
+from odoo.exceptions import ValidationError
+
 
 
 
@@ -17,6 +19,8 @@ class AccountPayemntEXT(models.Model):
 
 
     def create_statements(self):
+        if 'draft' in self.mapped('state') or 'create' in self.mapped('state') or 'cancel' in self.mapped('state'):
+            raise ValidationError(_('All payment should be in posted state!'))
         company_id = self.env.company.id
         journals = self.env['account.journal'].search([('type', '=', 'bank'), ('company_id', '=', company_id)])
         if journals:

@@ -3,6 +3,8 @@
     <template id="operating_unit_report_backend" inherit_id="web.assets_backend" name="Budget Report">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/account_extended/static/src/js/operating_unit_filter.js"/>
+            <script type="text/javascript" src="/account_extended/static/src/js/action_create_statement_hide_show.js"/>
         </xpath>
     </template>
+
 </odoo>

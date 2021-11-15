@@ -185,6 +185,7 @@
             <field name="res_model">account.payment</field>
             <field name="view_mode">tree,kanban,form,graph</field>
             <field name="domain">[('is_statement_create','=',False)]</field>
+            <field name="context">{'show_action_bank_statement':True}</field>
 
             <field name="view_ids" eval="[(5, 0, 0),
     (0, 0, {'view_mode': 'tree', 'view_id': ref('view_account_payment_tree_inheritt')}),
@@ -232,6 +233,7 @@
                 id="menu_recociled_payments"
                 name="Outstanding Payments/Receipts"
                 action="action_account_payments_unreconciled"
+
         />
 
 
