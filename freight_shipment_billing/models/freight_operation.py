@@ -178,8 +178,8 @@ class FreightOperationBilling(models.Model):
     invoice_line_id = fields.Many2one('account.move.line')
     bill_line_id = fields.Many2one('account.move.line')
     # cost_invoice_no = fields.Char("Cost Inv No.")
-    estimated_revenue = fields.Monetary(string="Estimated Revenue", currency_field='company_currency_id', related='ar_invoice_number.amount_total')
-    estimated_cost = fields.Monetary(string="Estimated Cost", currency_field='company_currency_id', related='ar_bill_number.amount_total')
+    estimated_revenue = fields.Monetary(string="Estimated Revenue", currency_field='company_currency_id')
+    estimated_cost = fields.Monetary(string="Estimated Cost", currency_field='company_currency_id')
     sell_invoice_amount = fields.Monetary(string="Sell Inv. Amount", currency_field='invoice_currency_id', related='invoice_line_id.price_subtotal')
     cost_bill_amount = fields.Monetary(string="Cost Bill Amount", currency_field='bill_currency_id', related='bill_line_id.price_subtotal')
     local_sell_invoice_amount = fields.Monetary(string="Local Sell Invoice Amount", currency_field='company_currency_id',
