@@ -15,18 +15,24 @@ class AccountMove(models.Model):
         amount_conferted = line_currency._convert(amount, USD, company, date)
         return amount_conferted
 
-    # def get_shipment(self):
-    #     if self.created_from_shipment == True:
-    #         if len(self.invoice_line_ids) == 1:
-    #             shipment_id = self.invoice_line_ids.shipment_line
-    #     print('#############',shipment_id)
-    #
-    #     return{
-    #         'shipment_name':shipment_id.name or '',
-    #         'shipper_name':shipment_id.shipper_id.name or '',
-    #         'gross_weight':shipment_id.gross_weight or '',
-    #         'volume':shipment_id.volume or '',
-    #         'atd':shipment_id.atd or '',
-    #         'consignee':shipment_id.consignee_id.name or '',
-    #         'ata':shipment_id.ata or '',
-    #     }
+    def get_shipment(self):
+        shipment_ids = []
+        if self.created_from_shipment == True:
+            for rec in self.invoice_line_ids:
+                shipment_ids += self.env['freight.operation'].search([('id','=',rec.shipment_line.id)])
+
+        if len(shipment_ids) > 1 :
+            shipment_ids = []
+        else:
+            shipment_ids
+        # print('#############', shipment_ids[0].shipper_id.name)
+        return{
+            'shipment_name':shipment_ids[0].name if shipment_ids else '',
+            'shipper_name':shipment_ids[0].shipper_id.name if shipment_ids else '',
+            'gross_weight':shipment_ids[0].gross_weight if shipment_ids else '',
+            'volume':shipment_ids[0].volume if shipment_ids else '',
+            'atd':shipment_ids[0].atd if shipment_ids else '',
+            'consignee':shipment_ids[0].consignee_id.name if shipment_ids else '',
+            'ata':shipment_ids[0].ata if shipment_ids else '',
+            'house_bill':shipment_ids[0].house_bill if shipment_ids else '',
+        }

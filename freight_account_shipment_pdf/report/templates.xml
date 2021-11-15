@@ -6,7 +6,7 @@
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
                     <t t-call="web.basic_layout">
-                        <div class="page" style="font-size: 8px">
+                        <div class="page">
                             <t t-call="freight_account_shipment_pdf.form_header"/>
 
 
@@ -16,133 +16,190 @@
                                 </t>
 
                             </t>
+                            <style>
+
+                                .table td,.table th{padding:0px}
+
+                            </style>
                             <div class="container text-left" style="width: 100%">
                                 <table class="table table-borderless"
-                                       style="float: left;width: 40% ;text-align:left;">
+                                       style="float: left;width: 50% ;text-align:left;">
                                     <thead>
 
                                         <tr>
-                                            <th style="font-weight: bold"><span
-                                                    t-field="o.partner_id.contact_address"/></th>
+                                            <th style="font-weight: bold">
+                                                <span
+                                                        t-field="o.partner_id.contact_address"/>
+                                            </th>
                                         </tr>
                                         <tr>
-                                            <th class="text-left" style="font-weight: bold">Our VAT TRN # <span
-                                                    t-esc="o.company_id.vat"/></th>
+                                            <th class="text-left" style="font-weight: bold">Our VAT TRN #
+                                                <span
+                                                        t-esc="o.company_id.vat"/>
+                                            </th>
                                         </tr>
 
                                     </thead>
                                 </table>
                                 <table class="table table-bordered"
-                                       style="float: right;width: 60% ;text-align:left;">
+                                       style="float: right;width: 50% ;text-align:left;border-collapse: collapse;border-spacing: 0;"
+                                       cellspacing="0">
                                     <thead>
 
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <th style="font-weight: bold">INVOICE NUMBER</th>
-                                            <th style="font-weight: bold"><span t-field="o.name"/></th>
+                                            <td style="font-weight: 900;padding:0px" class="text-right">INVOICE NUMBER
+                                            </td>
+                                            <td style="font-weight: 900;padding:0px">
+                                                <span t-field="o.name"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td style="font-weight: bold">INVOICE DATE</td>
-                                            <td><span t-field="o.invoice_date"/></td>
+                                            <td style="font-weight: 900" class="text-right">INVOICE DATE</td>
+                                            <td style="font-weight: bold">
+                                                <span t-field="o.invoice_date"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td style="font-weight: bold">CUSTOMER ID</td>
-                                            <td><span t-field="o.partner_id.vat"/></td>
+                                            <td style="font-weight: 900" class="text-right">CUSTOMER ID</td>
+                                            <td style="font-weight: bold">
+                                                <span t-field="o.partner_id.vat"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td style="font-weight: bold">SHIPMENT</td>
-                                            <t t-if="shipment_id">
-                                                <td><span t-esc="shipment_id.name"/></td>
-                                            </t>
+                                            <td style="font-weight: 900" class="text-right">SHIPMENT</td>
+                                            <th style="font-weight: bold">
+                                                <t t-esc="o.get_shipment()['shipment_name']"/>
+                                            </th>
+                                            <!--                                            <t t-if="shipment_id">-->
+                                            <!--                                                <td style="font-weight: bold">-->
+                                            <!--                                                    <span t-esc="shipment_id.name"/>-->
+                                            <!--                                                </td>-->
+                                            <!--                                            </t>-->
                                         </tr>
                                         <tr>
-                                            <td style="font-weight: bold">DUE DATE</td>
-                                            <td><span t-field="o.invoice_date_due"/></td>
+                                            <td style="font-weight: 900" class="text-right">DUE DATE</td>
+                                            <td style="font-weight: bold">
+                                                <span t-field="o.invoice_date_due"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td style="font-weight: bold">TERMS</td>
-                                            <td><span t-field="o.invoice_payment_term_id.name"/></td>
+                                            <td style="font-weight: 900" class="text-right">TERMS</td>
+                                            <td style="font-weight: bold">
+                                                <span t-field="o.invoice_payment_term_id.name"/>
+                                            </td>
                                         </tr>
 
                                     </tbody>
                                 </table>
                             </div>
-                            <t t-if="shipment_id">
-                                <div class="text-left" style="width: 100%;display:inline-block">
-                                    <table class="table table-bordered"
-                                           style="float: left;width: 50% ;text-align:left;">
-                                        <tr>
-                                            <td colspan="2" style="font-weight: 900">SHIPMENT DETAILS</td>
+                            <div class="text-left" style="width: 100%;display:inline-block">
 
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="font-weight: bold">SHIPPER</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="font-weight: bold"><span
-                                                    t-esc="shipment_id.shipper_id.name"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight: bold">Weight</td>
-                                            <td style="font-weight: bold">Volume</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight: bold"><span t-esc="shipment_id.gross_weight"/></td>
-                                            <td style="font-weight: bold"><span t-esc="shipment_id.volume"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight: bold">ORIGIN</td>
-                                            <td style="font-weight: bold">ETD</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td style="font-weight: bold"><span t-esc="shipment_id.atd"/></td>
-                                        </tr>
+                                <table class="table table-bordered"
+                                       style="float: left;width: 50% ;text-align:left;height:200px">
+                                    <tr>
+                                        <td colspan="2" style="font-weight: 900">SHIPMENT DETAILS</td>
 
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight: bold">SHIPPER</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="font-weight: bold">
+                                            <t t-esc="o.get_shipment()['shipper_name']"/>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: bold">Weight</td>
+                                        <td style="font-weight: bold">Volume</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="font-weight: bold">
+                                            <t t-esc="o.get_shipment()['gross_weight']"/>
+                                        </th>
+                                        <th style="font-weight: bold">
+                                            <t t-esc="o.get_shipment()['volume']"/>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight: bold;height:20px"></td>
 
-                                    </table>
-                                    <table class="table table-bordered"
-                                           style="float: right;width: 49% ;text-align:left;">
-                                        <tr>
-                                            <td colspan="2" style="font-weight: 900">PRINTED BY :<span
-                                                    t-esc=" o.env.user.name"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="font-weight: 900">CONSIGNEE</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="font-weight: 900"><span
-                                                    t-esc="shipment_id.consignee_id.name"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td>&#160;</td>
-                                            <td style="font-weight: bold">Packages</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight: bold">MASTER BILL</td>
-                                            <td style="font-weight: bold">HOUSE BILL</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td style="font-weight: bold"><span t-esc="shipment_id.house_bill"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-weight: bold">DESTINATION</td>
-                                            <td style="font-weight: bold">ETA</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td style="font-weight: bold"><span t-esc="shipment_id.ata"/></td>
-                                        </tr>
+                                    </tr>
+                                    <tr>
+                                        <th style="font-weight: bold">
+                                            <span>ORIGIN</span>
+                                            <br/>
+                                            <span></span>
+                                        </th>
+                                        <th style="font-weight: bold">
+                                            <span>ETD</span>
+                                            <br/>
+                                            <t t-esc="o.get_shipment()['atd']"/>
+                                        </th>
+                                    </tr>
+                                </table>
+                                <table class="table table-bordered"
+                                       style="float: right;width: 49.5% ;text-align:left;height:200px">
+                                    <tr>
+                                        <td colspan="2" style="font-weight: 900">PRINTED BY :
+                                            <span
+                                                    t-esc=" o.env.user.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight: 900">CONSIGNEE</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" style="font-weight: 900">
+                                            <t t-esc="o.get_shipment()['consignee']"/>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>&#160;</td>
+                                        <td style="font-weight: bold">Packages</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: bold">
+                                            <span>MASTER BILL</span>
+                                            <br/>
+                                            <span></span>
+                                        </td>
+                                        <th style="font-weight: bold">
+                                            <span>HOUSE BILL</span>
+                                            <br/>
+                                             <t t-esc="o.get_shipment()['house_bill']"/>
+                                        </th>
+                                        <!--                                            <td style="font-weight: bold">HOUSE BILL</td>-->
+                                    </tr>
+                                    <!--                                        <tr>-->
+                                    <!--                                            <td></td>-->
+                                    <!--                                            <td style="font-weight: bold"><span t-esc="shipment_id.house_bill"/></td>-->
+                                    <!--                                        </tr>-->
+                                    <tr>
+                                        <td style="font-weight: bold">
+                                            <span>DESTINATION</span>
+                                            <br/>
+                                            <span></span>
+                                        </td>
+                                        <th style="font-weight: bold">
+                                            <span>ETA</span>
+                                            <br/>
+                                            <t t-esc="o.get_shipment()['consignee']"/>
+                                        </th>
+                                        <!--                                            <td style="font-weight: bold">ETA</td>-->
+                                    </tr>
+                                    <!--                                        <tr>-->
+                                    <!--                                            <td></td>-->
+                                    <!--                                            <td style="font-weight: bold"><span t-esc="shipment_id.ata"/></td>-->
+                                    <!--                                        </tr>-->
 
-                                    </table>
-                                </div>
-                            </t>
+                                </table>
+                            </div>
                             <div class="text-left">
 
                                 <table class="table table-bordered"
@@ -156,14 +213,30 @@
                                 <table class="table table-sm o_main_table" name="invoice_line_table">
                                     <thead>
                                         <tr>
-                                            <th name="th_description" class="text-left" style="font-weight: bold"><span>
-                                                Description</span></th>
-                                            <th name="th_quantity" class="text-right" style="font-weight: bold"><span>
-                                                Amount Exl. VAT</span></th>
-                                            <th name="th_quantity" class="text-right" style="font-weight: bold"><span>
-                                                VAT IN USD</span></th>
-                                            <th name="th_quantity" class="text-right" style="font-weight: bold"><span>
-                                                CHARGES IN USD</span></th>
+                                            <th name="th_description" class="text-left"
+                                                style="font-weight: bold;width:40%;">
+                                                <span>
+                                                    Description
+                                                </span>
+                                            </th>
+                                            <th name="th_quantity" class="text-right"
+                                                style="font-weight: bold;width:20%;">
+                                                <span>
+                                                    Amount Exl. VAT
+                                                </span>
+                                            </th>
+                                            <th name="th_quantity" class="text-right"
+                                                style="font-weight: bold;width:20%;">
+                                                <span>
+                                                    VAT IN USD
+                                                </span>
+                                            </th>
+                                            <th name="th_quantity" class="text-right"
+                                                style="font-weight: bold;width:20%;">
+                                                <span>
+                                                    CHARGES IN USD
+                                                </span>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="invoice_tbody">
@@ -171,34 +244,54 @@
                                         <t t-foreach="o.invoice_line_ids" t-as="line">
 
                                             <tr>
-                                                <td><span t-field="line.product_id.name"/></td>
-                                                <td class="text-right"><span
-                                                        t-esc="line.move_id.convert_Currency_to_usd(line.price_subtotal,o.currency_id)"/></td>
-                                                <td class="text-right"><span
-                                                        t-esc="line.move_id.convert_Currency_to_usd(line.tax_amount,o.currency_id)"/></td>
-                                                <td class="text-right"><span
-                                                        t-esc="line.move_id.convert_Currency_to_usd(line.gross_amount,o.currency_id)"/></td>
+                                                <td>
+                                                    <span t-field="line.product_id.name"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span
+                                                            t-esc="line.move_id.convert_Currency_to_usd(line.price_subtotal,o.currency_id)"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span
+                                                            t-esc="line.move_id.convert_Currency_to_usd(line.tax_amount,o.currency_id)"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span
+                                                            t-esc="line.move_id.convert_Currency_to_usd(line.gross_amount,o.currency_id)"/>
+                                                </td>
                                             </tr>
 
                                         </t>
 
                                     </tbody>
-                                    <td style="font-weight: 900">TOTAL CHARGES</td>
-                                    <td class="text-right" style="margin-right:3.2em"><span
-                                            t-esc="o.convert_Currency_to_usd(o.amount_untaxed,o.currency_id)"/></td>
-                                    <td class="text-right"><span
-                                            t-esc="o.convert_Currency_to_usd(o.amount_tax,o.currency_id)"/></td>
-                                    <td class="text-right"><span
-                                            t-esc="o.convert_Currency_to_usd(o.amount_total,o.currency_id)"/></td>
-                                    <!--                                    <table class="table table-bordered"-->
-                                    <!--                                           style="border: 1px solid black;font-weight: 900">-->
-                                    <!--                                            <td>TOTAL CHARGES</td>-->
-                                    <!--                                            <td class="text-left" style="margin-right:3.2em"><span t-esc="o.convert_Currency_to_usd(o.amount_untaxed,o.currency_id)"/></td>-->
-                                    <!--                                            <td class="text-left"><span-->
-                                    <!--                                                    t-esc="o.convert_Currency_to_usd(o.amount_tax,o.currency_id)"/></td>-->
-                                    <!--                                            <td class="text-right"><span-->
-                                    <!--                                                    t-esc="o.convert_Currency_to_usd(o.amount_total,o.currency_id)"/></td>-->
-                                    <!--                                    </table>-->
+                                    <!--                                    <td style="font-weight: 900">TOTAL CHARGES</td>-->
+                                    <!--                                    <td class="text-right" style="margin-right:3.2em"><span-->
+                                    <!--                                            t-esc="o.convert_Currency_to_usd(o.amount_untaxed,o.currency_id)"/></td>-->
+                                    <!--                                    <td class="text-right"><span-->
+                                    <!--                                            t-esc="o.convert_Currency_to_usd(o.amount_tax,o.currency_id)"/></td>-->
+                                    <!--                                    <td class="text-right"><span-->
+                                    <!--                                            t-esc="o.convert_Currency_to_usd(o.amount_total,o.currency_id)"/></td>-->
+                                </table>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <table class="table table-bordered"
+                                       style="border: 2px solid black;font-weight: 900">
+                                    <td style="width:40%">TOTAL CHARGES</td>
+                                    <td class="text-right" style="width:20%">
+                                        <span style=""
+                                              t-esc="o.convert_Currency_to_usd(o.amount_untaxed,o.currency_id)"/>
+                                    </td>
+                                    <td class="text-right" style="width:20%">
+                                        <span
+                                                t-esc="o.convert_Currency_to_usd(o.amount_tax,o.currency_id)"/>
+                                    </td>
+                                    <td class="text-right" style="width:20%">
+                                        <span
+                                                t-esc="o.convert_Currency_to_usd(o.amount_total,o.currency_id)"/>
+                                    </td>
                                 </table>
 
                             </div>
@@ -210,7 +303,8 @@
                                     <thead>
                                         <td>CHEQUE PAYABLE TO: OVERSEAS DEVELOPMENT L.L.C
                                             Except Errors or Omission, This Invoice will be considered confirmed unless
-                                            you notify us in writing within fifteen(15)days from delivery.</td>
+                                            you notify us in writing within fifteen(15)days from delivery.
+                                        </td>
                                     </thead>
                                 </table>
                             </div>
@@ -219,8 +313,12 @@
                                 <table class="table table-bordered"
                                        style="width: 50% ;text-align:left;float: right">
                                     <tr>
-                                        <td style="font-weight: 900">VAT in <span t-field="o.currency_id.name"/></td>
-                                        <td style="font-weight: 900"><span t-field="o.amount_tax"/></td>
+                                        <td style="font-weight: 900">VAT in
+                                            <span t-field="o.currency_id.name"/>
+                                        </td>
+                                        <td style="font-weight: 900">
+                                            <span t-field="o.amount_tax"/>
+                                        </td>
                                     </tr>
 
                                 </table>
@@ -230,23 +328,31 @@
                             <div class="text-left" style="width: 100%;display: inline-block;font-weight: bold">
 
                                 <table class="table table-bordered"
-                                       style="float: left;width: 50% ;text-align:left;">
+                                       style="float: left;width: 50% ;text-align:left;height:100px">
                                     <tr>
                                         <td colspan="4">Transfer Funds To:</td>
                                     </tr>
                                     <tr>
-                                        <td>Bank</td>
-                                        <td><span t-field="o.partner_bank_id.bank_id.name"/></td>
-                                        <td>SWIFT</td>
-                                        <td><span t-field="o.partner_bank_id.bank_id.bic"/></td>
+                                        <td style="width: 10%">Bank</td>
+                                        <td style="width: 40%">
+                                            <span t-field="o.partner_bank_id.bank_id.name"/>
+                                        </td>
+                                        <td style="width:10%">SWIFT</td>
+                                        <td style="width: 40%">
+                                            <span t-field="o.partner_bank_id.bank_id.bic"/>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2">Account</td>
-                                        <td colspan="2"><span t-field="o.partner_bank_id.acc_number"/></td>
+                                        <td colspan="1">Account</td>
+                                        <td colspan="3">
+                                            <span t-field="o.partner_bank_id.acc_number"/>
+                                        </td>
 
                                     </tr>
                                     <tr>
-                                        <td colspan="4"><span t-field="o.partner_bank_id.bank_id.street"/></td>
+                                        <td colspan="4">
+                                            <span t-field="o.partner_bank_id.bank_id.street"/>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <t t-if="o.partner_id.vat">
@@ -258,22 +364,27 @@
 
 
                                         <td colspan="2">Pay Ref</td>
-                                        <td colspan="2"><span t-esc="pay_ref"/></td>
+                                        <td colspan="2">
+                                            <span t-esc="pay_ref"/>
+                                        </td>
                                     </tr>
                                 </table>
                                 <table class="table table-bordered"
-                                       style="float: right;width: 49% ;text-align:left;">
+                                       style="float: right;width: 49.5% ;height:200px;text-align:left;height:120px">
                                     <tr>
-                                        <td>Address:</td>
+                                        <td>
+                                            <span>Address:</span>
+                                            <br/>
+                                            <span t-field="o.company_id.street"/>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td><span t-field="o.company_id.street"/></td>
-                                    </tr>
+
                                 </table>
                             </div>
 
                         </div>
-                        <div class="text-left" style="width: 100%;display: inline-block;font-weight: bold">
+                        <div class="text-left"
+                             style="width: 100%;display: inline-block;font-weight: bold;position:absolute !important;top:1200px !important">
                             <table class="table table-borderless m-0"
                                    style="width: 100% ;text-align:left;">
                                 <tr>

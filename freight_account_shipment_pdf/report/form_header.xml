@@ -3,13 +3,16 @@
     <data>
         <template id="form_header">
 
-            <div class="header text-left" >
-
+            <div class="header text-left">
                 <table class="table table-bordered"
                        style="border: 2px solid black;font-weight: 900">
-
-                    <td><h5><span style="border-radius: 100% border: 1px solid black;font-weight: 900">
-                        INVOICE</span></h5></td>
+                    <td>
+                        <h5>
+                            <span style="border-radius: 100% border: 1px solid black;font-weight: 900">
+                                INVOICE
+                            </span>
+                        </h5>
+                    </td>
                     <td>
                         <div class="text-right page_number">
                             <div class="text-muted">
@@ -22,10 +25,27 @@
                     </td>
                 </table>
             </div>
-            <br/><br/><br/><br/><br/>
-
+            <br/>
+            <br/>
+            <br/>
+<!--            <div class="footer">-->
+<!--                <span>Checked By: ________________________________</span>-->
+<!--                <div>-->
+<!--                    <table class="table table-borderless m-0"-->
+<!--                           style="width: 100% ;text-align:left;">-->
+<!--                        <tr>-->
+<!--                            <td>Checked By: ________________________________</td>-->
+<!--                            <td>Accepted By: ________________________________</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
 
         </template>
+        <!--        <template id="form_footer">-->
+
+
+        <!--        </template>-->
 
 
     </data>
