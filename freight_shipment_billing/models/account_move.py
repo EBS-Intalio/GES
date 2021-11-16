@@ -18,6 +18,7 @@ class AccountMoveinherit(models.Model):
 
     def compute_shipment_requested_by(self):
         for rec in self:
+            rec.requested_by = False
             if rec.created_from_shipment:
                 shipment = rec.invoice_line_ids.search(
                     [('created_from_shipment', '=', True), ('move_id', '=', rec.id)]).shipment_line
