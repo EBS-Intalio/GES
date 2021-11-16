@@ -14,7 +14,7 @@ class AccountMoveinherit(models.Model):
 
     created_from_shipment = fields.Boolean("Shipment Invoice", default=False, readonly=True,  inverse='compute_shipment_requested_by')
     requested_by = fields.Date("Requested By", compute='compute_shipment_requested_by')
-    requested_stored= fields.Date()
+    requested_stored= fields.Date("Requested By")
 
     def compute_shipment_requested_by(self):
         for rec in self:
