@@ -8,7 +8,8 @@
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="invoice_type" />
                 <field name="created_from_shipment" />
-                <field name="requested_by" invisible="0"/>
+                <field name="requested_by" invisible="1"/>
+                <field name="requested_stored" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
                 <field name="billing_line_id" readonly="1" invisible="1"/>

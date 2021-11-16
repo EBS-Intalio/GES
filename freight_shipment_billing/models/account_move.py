@@ -13,7 +13,8 @@ class AccountMoveinherit(models.Model):
 
 
     created_from_shipment = fields.Boolean("Shipment Invoice", default=False, readonly=True,  inverse='compute_shipment_requested_by')
-    requested_by = fields.Date("Requested By", compute='compute_shipment_requested_by', store=True)
+    requested_by = fields.Date("Requested By", compute='compute_shipment_requested_by')
+    requested_stored= fields.Date()
 
     def compute_shipment_requested_by(self):
         for rec in self:
@@ -22,6 +23,7 @@ class AccountMoveinherit(models.Model):
                     [('created_from_shipment', '=', True), ('move_id', '=', rec.id)]).shipment_line
                 if len(shipment) == 1:
                     rec.requested_by = shipment.requested_by
+                    rec.requested_stored = rec.requested_by
 
     def action_post(self):
         if self.move_type == 'out_invoice':

@@ -177,12 +177,10 @@ class ActivityStatement(models.AbstractModel):
             )
         )
         for row in self.env.cr.dictfetchall():
-            # print(row['name'])
-            request_by_line = self.env['account.move'].search([('name', '=', row['name']), ('partner_id.id', '=', row['partner_id'])]).requested_by
+            request_by_line = self.env['account.move'].search([('name', '=', row['move_id']), ('partner_id.id', '=', row['partner_id'])]).requested_stored
             row.update({
                 "request_by" : request_by_line,
             })
-            print(row)
             res[row.pop("partner_id")].append(row)
         return res
 
