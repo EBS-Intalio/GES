@@ -7,7 +7,7 @@
                 Freight VAT
                """,
     'sequence': 51,
-    'depends': ['account','freight_shipment_billing'],
+    'depends': ['account','freight_shipment_billing','ebs_freight_pricing'],
     'author': 'Ever Business Solutions',
     'website': "http://www.ever-bs.com/",
     'data': [
