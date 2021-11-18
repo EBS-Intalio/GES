@@ -27,6 +27,15 @@
             <xpath expr="//field[@name='partner_bank_id']" position="after">
               <field name="payment_ref" />
             </xpath>
+
+            <xpath expr="//field[@name='payment_method_id']" position="after">
+                <field name="check_name" invisible="1" />
+              <field name="check_num" attrs="{'invisible': [('check_name', '!=', 'Checks')]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_method_id']" position="after">
+              <field name="legal_name" attrs="{'invisible': [('partner_type', '!=', 'supplier')]}"/>
+            </xpath>
         </field>
    </record>
   </data>
