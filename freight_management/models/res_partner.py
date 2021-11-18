@@ -301,119 +301,119 @@ class ResPartner(models.Model):
     cust_se_bill = fields.Boolean('Customer Self Bills')
     iss_stat_pack = fields.Boolean('Issue Statement Pack')
     charge_group_ids = fields.One2many('charge.grouping','partner_id')
-    job_chrg = fields.Selection([
-        ('all', 'All Job Types'),
-        ('abk', 'Standalone Transport Booking Booked via CBA'),
-        ('acd', 'Linear and Agency Detention Invoice'),
-        ('acr', 'Air Cargo'),
-        ('agb', 'Linear and Agency Booking'),
-        ('ags', 'Linear and Agency Bill of Landing'),
-        ('ahe', 'Air Cargo CTO Export HAWB'),
-        ('ahw', 'Air Cargo CTO Import HAWB'),
-        ('asc', 'Linear and Agency Sundry Charges'),
-        ('ava', 'Linear and Agency Voyage Accounting'),
-        ('awa', 'Master Air Waybill'),
-        ('brk', 'Declaration Job'),
-        ('cae', 'E manifest Forwarder'),
-        ('cll', 'CFS Load List'),
-        ('csh', 'CFS Shipment'),
-        ('cst', 'FCL Container Storage'),
-        ('cto', 'Air Cargo CTO'),
-        ('cyi', 'Container Yard Gate In Job'),
-        ('cyo', 'Container Yard Gate Out Job'),
-        ('cys', 'Container Yard Storage  Job'),
-        ('fcn', 'Consol'),
-        ('gcn', 'Gateway Consol'),
-        ('isf', 'Imported Security Filing'),
-        ('ltc', 'Land Transport Consignment'),
-        ('man', 'e-Manifest'),
-        ('msc', 'Non Job related'),
-        ('nct', 'Custom Transit(NCTS)'),
-        ('pcb', 'Post Clearancer Declaration Job'),
-        ('qsh', 'Quick Booking'),
-        ('sab', 'Shipment and Brokerage'),
-        ('shp', 'Shipment'),
-        ('tbm', 'Standalone Transport Booking'),
-        ('tcw', 'Transport Booking Consignment'),
-        ('tdc', 'Transit Dispatch'),
-        ('trc', 'Transit receive'),
-        ('trn', 'Port Transport'),
-        ('ubr', 'Air Cargo Outturn'),
-        ('win', 'Warehouse Receive'),
-        ('wki', 'Work Item'),
-        ('wkp', 'Project'),
-        ('wkr', 'Customer Service Ticket'),
-        ('wou', 'Warehouse Release'),
-        ('wsc', 'Warehouse Stockable'),
-        ('wsj', 'Warehouse Ad Hoc Service Job'),
-        ('wst', 'Warehouse Periodic'),
-    ], string='Job type')
-    direction_inv = fields.Selection([('no_data', 'No Data')], string='Direction')
-    mode_inv = fields.Selection([('no_data', 'No Data')], string='Mode')
-    display_chrg = fields.Selection([
-        ('def', 'Use Default From Registry - refer to registry settings for details'),
-        ('alp', 'Alphabetical'),
-        ('rol', 'Roll Up charges'),
-        ('rsq', 'Roll Up charges and Sequence'),
-        ('seq', 'Sequence'),
-        ('ssq', 'Subtotal Charges and Sequence'),
-        ('sub', 'Subtotal Charges'),
-        ('usr', 'User Entered'),
-    ], string='Display')
-    style_chrg = fields.Selection([
-        ('def', 'Use Default From Registry - refer to registry settings for details'),
-        ('nog', 'No Grouping Of Invoice Charges'),
-        ('all', 'All Charges Except Custom Duty Tax as One Line'),
-        ('aec', 'Origin, Loading, Freight, Insurance, Unload and Destination as one Line'),
-        ('oaf', 'Origin, Loading, Freight and Insurance as one Line'),
-        ('orf', 'Origin and Freight as one Line'),
-        ('frt', 'Freight Charges as one Line'),
-        ('fad', 'Freight, Insurance, Unload and Destination as one Line'),
-        ('ofd', 'Origin and Landing as one Line, Freight and Insurance as one Line, Unload and Dest. as one Line'),
-        ('ofo', 'Origin and Landing as one Line, Freight and Insurance as one Line'),
-    ], string='Style')
-    invoice_chrg = fields.Selection([
-        ('def', 'Use Default From Registry - refer to registry settings for details'),
-        ('all', 'Calc. Desc. for All Charges'),
-        ('alx', 'Calc. Desc. for All Charges (With EX Rate and Foreign Amount)'),
-        ('frt', 'Calc. Desc. for Freight Charges'),
-        ('frx', 'Calc. Desc. for Freight Charges (With EX Rate and Foreign Amount)'),
-        ('faf', 'Calc. Desc. for Freight and FOB Charges'),
-        ('ffx', 'Calc. Desc. for Freight and FOB Charges (With EX Rate and Foreign Amount)'),
-        ('non', 'Charge Code Description Only'),
-        ('nex', 'Charge Code Desc., EX Rate and Foreign Amount'),
-
-    ], string='Invoice')
-    posting_chrg = fields.Selection([
-        ('def', 'Use Default From Registry - refer to registry settings for details'),
-        ('dfi', 'Disbursement and Final Invoice'),
-        ('dfc', 'Disbursement in Foreign Currency and Final Invoice'),
-        ('dfx', 'Disbursement in Foreign Currency (No Final Invoice, Only Disbursement Invoice)'),
-        ('dff', 'Disbursement, Freight in Foreign Currency and Final Invoice'),
-        ('dft', 'Disbursement and FRT Group on Disbursement Invoice and Final Invoice'),
-        ('dfr',
-         'Disbursement and FRT Group on Disbursement Invoice Per Foreign Currency, Standard Invoice Per Foreign Currency and Final Invoice'),
-        ('ddf', 'Disbursement in Foreign Currency and freight in Foreign Currenct and Final Invoice'),
-        ('dfo', 'Disbursement, Invoice per Foreign Currency and Final Invoice'),
-        ('dsb', 'Disbursement Invoice Only'),
-        ('dsf', 'Disbursement Per Foreign Currency and Standard Invoice Per Foreign Currency Final Invoice'),
-        ('fio', 'Final Invoice Only'),
-        ('fiu', 'Invoice Per Foreign Currency and Final Invoice'),
-        ('ffi', 'Freight in Foreign Currency and Final Invoice'),
-        ('itc', 'Invoiuce Per Tax Rate'),
-
-    ], string='Posting')
-    currency_chrg_id = fields.Many2one('res.currency', string='Currency')
+    # job_chrg = fields.Selection([
+    #     ('all', 'All Job Types'),
+    #     ('abk', 'Standalone Transport Booking Booked via CBA'),
+    #     ('acd', 'Linear and Agency Detention Invoice'),
+    #     ('acr', 'Air Cargo'),
+    #     ('agb', 'Linear and Agency Booking'),
+    #     ('ags', 'Linear and Agency Bill of Landing'),
+    #     ('ahe', 'Air Cargo CTO Export HAWB'),
+    #     ('ahw', 'Air Cargo CTO Import HAWB'),
+    #     ('asc', 'Linear and Agency Sundry Charges'),
+    #     ('ava', 'Linear and Agency Voyage Accounting'),
+    #     ('awa', 'Master Air Waybill'),
+    #     ('brk', 'Declaration Job'),
+    #     ('cae', 'E manifest Forwarder'),
+    #     ('cll', 'CFS Load List'),
+    #     ('csh', 'CFS Shipment'),
+    #     ('cst', 'FCL Container Storage'),
+    #     ('cto', 'Air Cargo CTO'),
+    #     ('cyi', 'Container Yard Gate In Job'),
+    #     ('cyo', 'Container Yard Gate Out Job'),
+    #     ('cys', 'Container Yard Storage  Job'),
+    #     ('fcn', 'Consol'),
+    #     ('gcn', 'Gateway Consol'),
+    #     ('isf', 'Imported Security Filing'),
+    #     ('ltc', 'Land Transport Consignment'),
+    #     ('man', 'e-Manifest'),
+    #     ('msc', 'Non Job related'),
+    #     ('nct', 'Custom Transit(NCTS)'),
+    #     ('pcb', 'Post Clearancer Declaration Job'),
+    #     ('qsh', 'Quick Booking'),
+    #     ('sab', 'Shipment and Brokerage'),
+    #     ('shp', 'Shipment'),
+    #     ('tbm', 'Standalone Transport Booking'),
+    #     ('tcw', 'Transport Booking Consignment'),
+    #     ('tdc', 'Transit Dispatch'),
+    #     ('trc', 'Transit receive'),
+    #     ('trn', 'Port Transport'),
+    #     ('ubr', 'Air Cargo Outturn'),
+    #     ('win', 'Warehouse Receive'),
+    #     ('wki', 'Work Item'),
+    #     ('wkp', 'Project'),
+    #     ('wkr', 'Customer Service Ticket'),
+    #     ('wou', 'Warehouse Release'),
+    #     ('wsc', 'Warehouse Stockable'),
+    #     ('wsj', 'Warehouse Ad Hoc Service Job'),
+    #     ('wst', 'Warehouse Periodic'),
+    # ], string='Job type')
+    # direction_inv = fields.Selection([('no_data', 'No Data')], string='Direction')
+    # mode_inv = fields.Selection([('no_data', 'No Data')], string='Mode')
+    # display_chrg = fields.Selection([
+    #     ('def', 'Use Default From Registry - refer to registry settings for details'),
+    #     ('alp', 'Alphabetical'),
+    #     ('rol', 'Roll Up charges'),
+    #     ('rsq', 'Roll Up charges and Sequence'),
+    #     ('seq', 'Sequence'),
+    #     ('ssq', 'Subtotal Charges and Sequence'),
+    #     ('sub', 'Subtotal Charges'),
+    #     ('usr', 'User Entered'),
+    # ], string='Display')
+    # style_chrg = fields.Selection([
+    #     ('def', 'Use Default From Registry - refer to registry settings for details'),
+    #     ('nog', 'No Grouping Of Invoice Charges'),
+    #     ('all', 'All Charges Except Custom Duty Tax as One Line'),
+    #     ('aec', 'Origin, Loading, Freight, Insurance, Unload and Destination as one Line'),
+    #     ('oaf', 'Origin, Loading, Freight and Insurance as one Line'),
+    #     ('orf', 'Origin and Freight as one Line'),
+    #     ('frt', 'Freight Charges as one Line'),
+    #     ('fad', 'Freight, Insurance, Unload and Destination as one Line'),
+    #     ('ofd', 'Origin and Landing as one Line, Freight and Insurance as one Line, Unload and Dest. as one Line'),
+    #     ('ofo', 'Origin and Landing as one Line, Freight and Insurance as one Line'),
+    # ], string='Style')
+    # invoice_chrg = fields.Selection([
+    #     ('def', 'Use Default From Registry - refer to registry settings for details'),
+    #     ('all', 'Calc. Desc. for All Charges'),
+    #     ('alx', 'Calc. Desc. for All Charges (With EX Rate and Foreign Amount)'),
+    #     ('frt', 'Calc. Desc. for Freight Charges'),
+    #     ('frx', 'Calc. Desc. for Freight Charges (With EX Rate and Foreign Amount)'),
+    #     ('faf', 'Calc. Desc. for Freight and FOB Charges'),
+    #     ('ffx', 'Calc. Desc. for Freight and FOB Charges (With EX Rate and Foreign Amount)'),
+    #     ('non', 'Charge Code Description Only'),
+    #     ('nex', 'Charge Code Desc., EX Rate and Foreign Amount'),
+    #
+    # ], string='Invoice')
+    # posting_chrg = fields.Selection([
+    #     ('def', 'Use Default From Registry - refer to registry settings for details'),
+    #     ('dfi', 'Disbursement and Final Invoice'),
+    #     ('dfc', 'Disbursement in Foreign Currency and Final Invoice'),
+    #     ('dfx', 'Disbursement in Foreign Currency (No Final Invoice, Only Disbursement Invoice)'),
+    #     ('dff', 'Disbursement, Freight in Foreign Currency and Final Invoice'),
+    #     ('dft', 'Disbursement and FRT Group on Disbursement Invoice and Final Invoice'),
+    #     ('dfr',
+    #      'Disbursement and FRT Group on Disbursement Invoice Per Foreign Currency, Standard Invoice Per Foreign Currency and Final Invoice'),
+    #     ('ddf', 'Disbursement in Foreign Currency and freight in Foreign Currenct and Final Invoice'),
+    #     ('dfo', 'Disbursement, Invoice per Foreign Currency and Final Invoice'),
+    #     ('dsb', 'Disbursement Invoice Only'),
+    #     ('dsf', 'Disbursement Per Foreign Currency and Standard Invoice Per Foreign Currency Final Invoice'),
+    #     ('fio', 'Final Invoice Only'),
+    #     ('fiu', 'Invoice Per Foreign Currency and Final Invoice'),
+    #     ('ffi', 'Freight in Foreign Currency and Final Invoice'),
+    #     ('itc', 'Invoiuce Per Tax Rate'),
+    #
+    # ], string='Posting')
+    # currency_chrg_id = fields.Many2one('res.currency', string='Currency')
     # peridic invoice conf
     periodic_invoice_ids = fields.One2many('periodic.invoice','partner_id')
-    job_type_per = fields.Selection([],string='Job Type')
-    bill_int = fields.Selection([],string='Billing Interval')
-    trans = fields.Selection([],string='Transport Mode')
-    serv_lev = fields.Selection([],string='Service Level')
-    comm = fields.Selection([],string='Commence')
-    layout = fields.Selection([],string='Layout')
-    direct_per = fields.Selection([],string='Direction')
-    sec_lay = fields.Selection([],string='Sec. layout')
+    # job_type_per = fields.Selection([],string='Job Type')
+    # bill_int = fields.Selection([],string='Billing Interval')
+    # trans = fields.Selection([],string='Transport Mode')
+    # serv_lev = fields.Selection([],string='Service Level')
+    # comm = fields.Selection([],string='Commence')
+    # layout = fields.Selection([],string='Layout')
+    # direct_per = fields.Selection([],string='Direction')
+    # sec_lay = fields.Selection([],string='Sec. layout')
     # charge code
     charge_code_ids =fields.One2many('charge.code','partner_id')
     # buyer
@@ -619,6 +619,16 @@ class ResPartner(models.Model):
     is_global_sailing_schedule = fields.Boolean(string='Global Sailing Schedule')
     is_container_automation = fields.Boolean(string='CargoSphere Rates')
     is_invoice = fields.Boolean(string='Invoice')
+
+    product_charge_ids = fields.One2many('product.charge', 'partner_id', string="Product Charge")
+    invoicing_type = fields.Selection(selection=[
+        ('local_individual', 'Local Individual'),
+        ('foreign_individual', 'Foreign Individual'),
+        ('consolidated_local', 'Consolidated Local'),
+        ('consolidated_foreign', 'Consolidated Foreign'),
+    ], string=' Invoicing Type', default='local_individual', required=True)
+
+    consolidated = fields.Char(string='Consolidated')
 
     @api.constrains('email')
     def _check_partner_email_address(self):

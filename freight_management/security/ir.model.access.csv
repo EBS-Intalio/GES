@@ -49,3 +49,4 @@ access_freight_container_location,access_freight_container_location,freight_mana
 access_tracking_dates,access_tracking_dates,freight_management.model_tracking_dates,,1,1,1,1
 access_freight_doc_line,access_freight_doc_line,freight_management.model_freight_doc_line,,1,1,1,1
 access_freight_allocated_packlines,access_freight_allocated_packlines,freight_management.model_freight_allocated_packlines,,1,1,1,1
+access_freight_product_charge,access_freight_product_charge,freight_management.model_product_charge,,1,1,1,1
