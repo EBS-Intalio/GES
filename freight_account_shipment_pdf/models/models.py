@@ -17,6 +17,7 @@ class AccountMove(models.Model):
 
     def get_shipment(self):
         shipment_ids = []
+        number_of_container = []
         if self.created_from_shipment == True:
             for rec in self.invoice_line_ids:
                 shipment_ids += self.env['freight.operation'].search([('id','=',rec.shipment_line.id)])
@@ -25,8 +26,13 @@ class AccountMove(models.Model):
             shipment_ids = []
         else:
             shipment_ids
-        # print('#############', shipment_ids[0].shipper_id.name)
+        if len(shipment_ids) == 1:
+            for rec in shipment_ids[0].consol_details_ids:
+                for line in rec.container_ids:
+                    number_of_container.append(line.id)
+
         return{
+            'transport':shipment_ids[0].transport if shipment_ids else 'air',
             'shipment_name':shipment_ids[0].name if shipment_ids else '',
             'shipper_name':shipment_ids[0].shipper_id.name if shipment_ids else '',
             'gross_weight':shipment_ids[0].gross_weight if shipment_ids else '',
@@ -35,4 +41,5 @@ class AccountMove(models.Model):
             'consignee':shipment_ids[0].consignee_id.name if shipment_ids else '',
             'ata':shipment_ids[0].ata if shipment_ids else '',
             'house_bill':shipment_ids[0].house_bill if shipment_ids else '',
+            'number_of_container': len(number_of_container) if number_of_container else 0,
         }

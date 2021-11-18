@@ -25,7 +25,7 @@ class AccountMoveLineVat(models.Model):
     @api.depends('move_id.invoice_date')
     def get_period_name(self):
         for rec in self:
-            rec.invoice_date_period = rec.invoice_date.strftime("%b, %Y")
+            rec.invoice_date_period = rec.invoice_date.strftime("%b %Y")
 
     @api.depends('price_subtotal', 'tax_amount', 'gross_amount','move_id.move_type')
     def _recalculate_amount_in_sign(self):
