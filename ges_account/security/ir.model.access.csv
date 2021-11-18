@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ges_account_payment_mode,ges_account.payment_mode,model_payment_mode,,1,1,1,1
