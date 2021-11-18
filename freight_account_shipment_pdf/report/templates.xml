@@ -9,13 +9,12 @@
                         <div class="page">
                             <t t-call="freight_account_shipment_pdf.form_header"/>
 
+                            <!--                            <t t-if="o.created_from_shipment == True">-->
+                            <!--                                <t t-if="len(o.invoice_line_ids) == 1">-->
+                            <!--                                    <t t-set="shipment_id" t-value="o.invoice_line_ids.shipment_line"/>-->
+                            <!--                                </t>-->
 
-                            <t t-if="o.created_from_shipment == True">
-                                <t t-if="len(o.invoice_line_ids) == 1">
-                                    <t t-set="shipment_id" t-value="o.invoice_line_ids.shipment_line"/>
-                                </t>
-
-                            </t>
+                            <!--                            </t>-->
                             <style>
 
                                 .table td,.table th{padding:0px}
@@ -123,7 +122,17 @@
                                         </th>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="font-weight: bold;height:20px"></td>
+                                        <t t-if="o.get_shipment()['transport'] == 'land'">
+                                            <th style="font-weight: 900">Number of Tracks</th>
+                                            <th style="font-weight: bold"></th>
+                                        </t>
+                                        <t t-if="o.get_shipment()['transport'] != 'land'">
+                                            <th style="font-weight: 900">Number of containers</th>
+                                            <th style="font-weight: bold"><t t-esc="o.get_shipment()['number_of_container']"/>
+                                            </th>
+
+                                        </t>
+
 
                                     </tr>
                                     <tr>
@@ -172,7 +181,7 @@
                                         <th style="font-weight: bold">
                                             <span>HOUSE BILL</span>
                                             <br/>
-                                             <t t-esc="o.get_shipment()['house_bill']"/>
+                                            <t t-esc="o.get_shipment()['house_bill']"/>
                                         </th>
                                         <!--                                            <td style="font-weight: bold">HOUSE BILL</td>-->
                                     </tr>
