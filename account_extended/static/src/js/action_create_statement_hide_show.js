@@ -8,10 +8,12 @@ odoo.define('account_extended.action_create_statement_hide_show', function (requ
 
 
     patch(ActionMenus, 'account_extended.action_create_statement_hide_show', {
-         async willStart() {
-            this.actionItems = await this._setActionItems(this.props);
+        mounted(){
             if (this.props['context'] != null && !this.props['context'].show_action_bank_statement)
+
                 {
+                console.log("===",this.props['context'].show_action_bank_statement)
+
                 for (var i = 0; i < this.actionItems.length; i++) {
                     if (this.actionItems[i]['action'] != null && this.actionItems[i]['action']['xml_id'] != null && this.actionItems[i]['action']['xml_id'] == 'account_extended.create_statements')
                     {
@@ -19,9 +21,14 @@ odoo.define('account_extended.action_create_statement_hide_show', function (requ
                     }
                 }
             }
-
-            this.printItems = await this._setPrintItems(this.props);
-        }
+        },
+//         async willStart() {
+//            this.actionItems = await this._setActionItems(this.props);
+//            console.log("===",this.props['context'])
+//
+//
+//            this.printItems = await this._setPrintItems(this.props);
+//        }
     });
 
 });
