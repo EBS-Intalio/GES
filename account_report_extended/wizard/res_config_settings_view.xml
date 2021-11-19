@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="account_report_extended_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">account_report_extended.res.config.settings.form.view.account</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <div id="analytic" position="after">
+                    <h2>Cash Flow Statement</h2>
+                    <div class="row mt16 o_settings_container" name="cash_flow_statement_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="cash_flow_statement">
+                            <div class="o_setting_right_pane">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <b>Cash Flow Statement accounts in:</b>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="depreciation_ids" class="col-lg-6 o_light_label" />
+                                        <field name="depreciation_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="allowance_doubtful_ids" class="col-lg-6 o_light_label"/>
+                                        <field name="allowance_doubtful_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="provision_employee_ids" class="col-lg-6 o_light_label"/>
+                                        <field name="provision_employee_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="interest_income_ids" class="col-lg-6 o_light_label"/>
+                                        <field name="interest_income_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="finance_cost_ids" class="col-lg-6 o_light_label"/>
+                                        <field name="finance_cost_ids" widget="many2many_tags"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="depriciation_rou_ids" class="col-lg-6 o_light_label"/>
+                                        <field name="depriciation_rou_ids" widget="many2many_tags"/>
+                                    </div>
+
+                                    <div class="row mt16">
+                                        <label for="gain_remeausement_ids" class="col-lg-6 o_light_label"/>
+                                        <field name="gain_remeausement_ids" widget="many2many_tags"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

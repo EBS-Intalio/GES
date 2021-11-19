@@ -184,7 +184,7 @@
             <field name="name">Outstanding Payments/Receipts</field>
             <field name="res_model">account.payment</field>
             <field name="view_mode">tree,kanban,form,graph</field>
-            <field name="domain">[('is_statement_create','=',False)]</field>
+            <field name="domain">[('is_statement_create','=',False),('journal_id.type','=','bank')]</field>
             <field name="context">{'show_action_bank_statement':True}</field>
 
             <field name="view_ids" eval="[(5, 0, 0),

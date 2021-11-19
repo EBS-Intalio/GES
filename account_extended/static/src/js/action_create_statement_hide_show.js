@@ -9,10 +9,9 @@ odoo.define('account_extended.action_create_statement_hide_show', function (requ
 
     patch(ActionMenus, 'account_extended.action_create_statement_hide_show', {
         mounted(){
-            if (this.props['context'] != null && !this.props['context'].show_action_bank_statement)
+                if (this.props['context'] != null && !this.props['context'].show_action_bank_statement)
 
                 {
-                console.log("===",this.props['context'].show_action_bank_statement)
 
                 for (var i = 0; i < this.actionItems.length; i++) {
                     if (this.actionItems[i]['action'] != null && this.actionItems[i]['action']['xml_id'] != null && this.actionItems[i]['action']['xml_id'] == 'account_extended.create_statements')
