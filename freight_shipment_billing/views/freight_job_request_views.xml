@@ -53,7 +53,6 @@
                             <field name="ar_invoice_number" readonly="1" optional="hide" />
                             <field name="ar_bill_number" readonly="1" optional="hide" />
                             <field name="invoice_type" optional="hide" />
-                            <field name="bill_type" optional="hide" />
                             <field name="invoice_date" optional="hide" />
                             <field name="bill_date" optional="hide" />
                             <field name="invoice_currency_id" invisible="1" />

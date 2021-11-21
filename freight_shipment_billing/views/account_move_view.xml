@@ -12,10 +12,59 @@
                 <field name="requested_stored" invisible="0" readonly="1"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
+                <field name="created_from_shipment" readonly="1"/>
                 <field name="billing_line_id" readonly="1" invisible="1"/>
                 <field name="shipment_line" readonly="1" invisible="1"/>
+                <field name="invoice_shipment" options="{'no_create': True,'no_create_edit':True}" domain="[('agent_id', '=', parent.partner_id)]" force_save="1" />
+                <field name="bill_shipment" options="{'no_create': True,'no_create_edit':True}" force_save="1" />
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+            <xpath expr="//field[@name='line_ids']/tree" position="inside">
+                <field name="invoice_shipment" invisible="1" />
+                <field name="bill_shipment" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='invoice_shipment']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)], 'column_invisible': [('parent.move_type','!=','out_invoice')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='bill_shipment']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)], 'column_invisible': [('parent.move_type','!=','in_invoice')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='operating_unit_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='memo']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='transport']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|','|', ('created_from_shipment', '=', True), ('invoice_shipment', '!=', False), ('bill_shipment', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='direction']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|','|', ('created_from_shipment', '=', True), ('invoice_shipment', '!=', False), ('bill_shipment', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='service_type']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|','|', ('created_from_shipment', '=', True), ('invoice_shipment', '!=', False), ('bill_shipment', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='line_of_service_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|','|', ('created_from_shipment', '=', True), ('invoice_shipment', '!=', False), ('bill_shipment', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='employee_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_account_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">
+                <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="attributes">
                 <attribute name="attrs">{'readonly': [('created_from_shipment', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//button[@name='open_reconcile_view']" position="after">

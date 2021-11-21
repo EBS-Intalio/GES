@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*"-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class FreightOperationInherit(models.Model):
     _inherit = "freight.operation"
@@ -14,6 +15,17 @@ class FreightOperationInherit(models.Model):
     profit = fields.Monetary(string="Profit", currency_field='company_currency_id',  compute="compute_data")
     company_currency_id = fields.Many2one('res.currency', string="Currency",default=lambda self: self.env.company.currency_id.id)
 
+    line_of_service_id = fields.Many2one('account.operation.matrix', 'Line of Service', compute="compute_line_of_service")
+
+    @api.depends('transport', 'direction', 'service_level')
+    def compute_line_of_service(self):
+        for rec in self:
+            line_of_service = self.env['account.operation.matrix'].search([('transport', '=', rec.transport), ('direction', '=', rec.direction), ('service_type', '=', rec.service_level)], limit=1)
+            if line_of_service:
+                rec.line_of_service_id = line_of_service.id
+            else:
+                rec.line_of_service_id = False
+
     @api.depends('account_operation_lines')
     def compute_data(self):
         for rec in self:
@@ -27,12 +39,16 @@ class FreightOperationInherit(models.Model):
         mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0), ('operation_billing_id', '=', self.id)])
-            date = self._context.get('date') or fields.Date.today()
-            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
-            invoice_line_ids = []
-            for record in self.account_operation_lines:
-                if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount:
+            local_billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0),
+                                                                              ('operation_billing_id', '=', self.id), ('invoice_type', 'in', ['local_individual', 'consolidated_local'])])
+
+            foreign_billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0),
+                                                                              ('operation_billing_id', '=', self.id), ('invoice_type', 'in', ['foreign_individual', 'consolidated_foreign'])])
+            if local_billing_id:
+                date = self._context.get('date') or fields.Date.today()
+                company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
+                invoice_line_ids = []
+                for record in local_billing_id:
                     invoice_line_ids.append((0, 0, {
                         'product_id': record.charge_code.id,
                         'transport': record.transport,
@@ -41,22 +57,63 @@ class FreightOperationInherit(models.Model):
                         'operating_unit_id': record.operating_unit_id.id,
                         'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
+                        'created_from_shipment': True,
                         'price_unit':record.sell_currency_id._convert(record.os_sell_amount, self.env.company.currency_id, company, date),
                         'billing_line_id': record.id,
                         'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
                     }))
                     record.invoice_created = True
-            invoice_id = self.env['account.move'].sudo().create({
-                'name': "/",
-                'move_type': 'out_invoice',
-                'partner_id': debtor_id.id,
-                'invoice_date': fields.Date.today(),
-                'operating_unit_id': billing_id.operating_unit_id,
-                'currency_id': self.env.company.currency_id.id,
-                'invoice_line_ids': invoice_line_ids,
-            })
-            billing_id.ar_invoice_number = invoice_id.id
-            invoice_id.created_from_shipment = True
+                invoice_id = self.env['account.move'].sudo().create({
+                    'name': "/",
+                    'move_type': 'out_invoice',
+                    'partner_id': debtor_id.id,
+                    'invoice_date': fields.Date.today(),
+                    'operating_unit_id': local_billing_id.operating_unit_id,
+                    'currency_id': self.env.company.currency_id.id,
+                    'invoice_type': "local_individual",
+                    'invoice_line_ids': invoice_line_ids,
+                })
+                local_billing_id.ar_invoice_number = invoice_id.id
+                invoice_id.created_from_shipment = True
+            if foreign_billing_id:
+                currencies_grouped = foreign_billing_id.read_group(domain=[('debtor', '=', debtor_id.id), ('invoice_created', '=', False),
+                                                                           ('os_sell_amount', '!=', 0),('operation_billing_id', '=', self.id),
+                                                                           ('invoice_type', 'in', ['foreign_individual', 'consolidated_foreign'])],
+                                                                   fields=['sell_currency_id'], groupby=['sell_currency_id'])
+                mapped_currencies = list([(currency['sell_currency_id'][0]) for currency in currencies_grouped])
+                for mapped_currency in mapped_currencies:
+                    currency_id = self.env['res.currency'].browse(mapped_currency)
+                    foreign_currency_billing_id = self.env['freight.operation.billing'].sudo().search(
+                        [('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0),('sell_currency_id', '=', currency_id.id),
+                         ('operation_billing_id', '=', self.id),('invoice_type', 'in', ['foreign_individual', 'consolidated_foreign'])])
+                    invoice_line_ids = []
+                    for record in foreign_currency_billing_id:
+                        invoice_line_ids.append((0, 0, {
+                            'product_id': record.charge_code.id,
+                            'transport': record.transport,
+                            'direction': record.operation_billing_id.direction,
+                            'service_type': record.operation_billing_id.service_level,
+                            'operating_unit_id': record.operating_unit_id.id,
+                            'analytic_account_id': record.analytic_account_id.id,
+                            'quantity': 1,
+                            'created_from_shipment': True,
+                            'price_unit': record.os_sell_amount,
+                            'billing_line_id': record.id,
+                            'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
+                        }))
+                        record.invoice_created = True
+                    invoice_id = self.env['account.move'].sudo().create({
+                        'name': "/",
+                        'move_type': 'out_invoice',
+                        'partner_id': debtor_id.id,
+                        'invoice_date': fields.Date.today(),
+                        'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
+                        'currency_id': currency_id.id,
+                        'invoice_type': "foreign_individual",
+                        'invoice_line_ids': invoice_line_ids,
+                    })
+                    foreign_currency_billing_id.ar_invoice_number = invoice_id.id
+                    invoice_id.created_from_shipment = True
 
     def button_post_cost(self):
         vendors_data = self.env['freight.operation.billing'].read_group(domain=[(
@@ -66,12 +123,22 @@ class FreightOperationInherit(models.Model):
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
             billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '=', self.id)])
-            date = self._context.get('date') or fields.Date.today()
-            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
+            # date = self._context.get('date') or fields.Date.today()
+            # company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
             if billing_id:
-                invoice_line_ids = []
-                for record in self.account_operation_lines:
-                    if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount:
+                currencies_grouped = self.env['freight.operation.billing'].sudo().read_group(
+                    domain=[('vendor', '=', vendor_id.id), ('bill_created', '=', False),
+                            ('os_cost_amount', '!=', 0), ('operation_billing_id', '=', self.id)],
+                    fields=['cost_currency_id'], groupby=['cost_currency_id'])
+                mapped_currencies = list([(currency['cost_currency_id'][0]) for currency in currencies_grouped])
+                for mapped_currency in mapped_currencies:
+                    currency_id = self.env['res.currency'].browse(mapped_currency)
+                    foreign_currency_billing_id = self.env['freight.operation.billing'].sudo().search(
+                        [('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('os_cost_amount', '!=', 0),
+                         ('cost_currency_id', '=', currency_id.id),
+                         ('operation_billing_id', '=', self.id),])
+                    invoice_line_ids = []
+                    for record in foreign_currency_billing_id:
                         invoice_line_ids.append((0, 0, {
                             'product_id': record.charge_code.id,
                             'transport': record.transport,
@@ -80,22 +147,22 @@ class FreightOperationInherit(models.Model):
                             'operating_unit_id': record.operating_unit_id.id,
                             'analytic_account_id': record.analytic_account_id.id,
                             'quantity': 1,
-                            'price_unit': record.cost_currency_id._convert(record.os_cost_amount, self.env.company.currency_id, company, date),
+                            'price_unit': record.os_cost_amount,
                             'billing_line_id': record.id,
                             'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
                         }))
                         record.bill_created = True
-                bill_id = self.env['account.move'].sudo().create({
-                    'name': "/",
-                    'move_type': 'in_invoice',
-                    'partner_id': vendor_id.id,
-                    'invoice_date': fields.Date.today(),
-                    'operating_unit_id': billing_id.operating_unit_id,
-                    'currency_id': self.env.company.currency_id.id,
-                    'invoice_line_ids': invoice_line_ids,
-                })
-                billing_id.ar_bill_number = bill_id.id
-                bill_id.created_from_shipment = True
+                    bill_id = self.env['account.move'].sudo().create({
+                        'name': "/",
+                        'move_type': 'in_invoice',
+                        'partner_id': vendor_id.id,
+                        'invoice_date': fields.Date.today(),
+                        'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
+                        'currency_id': currency_id.id,
+                        'invoice_line_ids': invoice_line_ids,
+                    })
+                    foreign_currency_billing_id.ar_bill_number = bill_id.id
+                    bill_id.created_from_shipment = True
 
     bill_count = fields.Integer('Bill Count', compute='_compute_invoice_bill')
     invoice_count = fields.Integer('Invoice Count', compute='_compute_invoice_bill')
@@ -169,8 +236,12 @@ class FreightOperationBilling(models.Model):
     reference = fields.Char("Ref")
     ar_invoice_number = fields.Many2one('account.move',"AR Invoice Number")
     ar_bill_number = fields.Many2one('account.move',"AR Bill Number")
-    invoice_type = fields.Selection(related='ar_invoice_number.invoice_type', string='Inv. Type')
-    bill_type = fields.Selection(related='ar_bill_number.invoice_type', string='Bill Type')
+    invoice_type = fields.Selection(selection=[
+        ('local_individual', 'Local Individual'),
+        ('foreign_individual', 'Foreign Individual'),
+        ('consolidated_local', 'Consolidated Local'),
+        ('consolidated_foreign', 'Consolidated Foreign'),
+    ], string='Inv. Type', default='local_individual')
     invoice_date = fields.Date(related='ar_invoice_number.invoice_date', string='Inv. Date')
     bill_date = fields.Date(related='ar_bill_number.invoice_date', string='Bill Date')
     invoice_currency_id = fields.Many2one('res.currency', string='Invoice Currency', related='ar_invoice_number.currency_id')
@@ -212,7 +283,7 @@ class FreightOperationBilling(models.Model):
     transport = fields.Selection(related='operation_billing_id.transport', store=True)
 
     bill_created = fields.Boolean("Bill Created", default=False)
-    invoice_created = fields.Boolean("Invoice Created", default=False)
+    invoice_created = fields.Boolean("Invoice Created", default=False, readonly=False)
 
     @api.depends('charge_code')
     def _default_description(self):
@@ -237,7 +308,6 @@ class FreightOperationBilling(models.Model):
     @api.depends('cost_currency_id', 'os_cost_amount')
     def _compute_local_cost_amount(self):
         date = self._context.get('date') or fields.Date.today()
-        usd = self.env['res.currency']
         company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
         for rec in self:
             if rec.cost_currency_id and rec.os_cost_amount:
@@ -267,18 +337,62 @@ class FreightOperationBilling(models.Model):
                 rec.local_sell_invoice_amount = 0
 
 
+    @api.onchange('os_sell_amount')
+    def on_change_os_sell_amount_field(self):
+        for rec in self:
+            date = self._context.get('date') or fields.Date.today()
+            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
+            if rec.invoice_created:
+                if rec.ar_invoice_number and rec.invoice_line_id.move_id.state != 'posted':
+                    if rec.ar_invoice_number.currency_id == rec.sell_currency_id:
+                        price_unit = rec.os_sell_amount
+                    else:
+                        price_unit = rec.sell_currency_id._convert(rec.os_sell_amount,rec.ar_invoice_number.currency_id,
+                                                                                              company, date)
+                    record = rec.ar_invoice_number.with_context(check_move_validity=False)
+                    record['line_ids'] = [
+                        (1, rec.invoice_line_id.id, {'quantity': 1, 'price_unit': price_unit}),
+                    ]
+                    record._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                if rec.invoice_line_id.move_id.state == 'posted':
+                    raise ValidationError("You cannot Update a posted invoice")
+
+    @api.onchange('os_cost_amount')
+    def on_change_os_cost_amount_field(self):
+        for rec in self:
+            if rec.bill_created:
+                if rec.ar_bill_number and rec.bill_line_id.move_id.state != 'posted':
+                    record = rec.ar_bill_number.with_context(check_move_validity=False)
+                    record['line_ids'] = [
+                        (1, rec.bill_line_id.id, {'quantity': 1, 'price_unit': rec.os_cost_amount}),
+                    ]
+                    record._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                if rec.bill_line_id.move_id.state == 'posted':
+                    raise ValidationError("You cannot Update a posted Bill")
+
     def action_post_sell(self):
+        active_ids = self.env.context.get('active_ids')
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False), ('booking_id', '!=', False), ('os_sell_amount', '!=', 0),('operation_billing_id', '!=', False)], fields=['debtor'],groupby=['debtor'])
+            'debtor', 'in', self.debtor.ids), ('invoice_created', '=', False),  ('os_sell_amount', '!=', 0),('operation_billing_id', '!=', False), ('id', 'in', active_ids)], fields=['debtor'],groupby=['debtor'])
         mapped_data = list([(debtor['debtor'][0]) for debtor in debtors_data])
         for data in mapped_data:
             debtor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('os_sell_amount', '!=', 0),('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
-            date = self._context.get('date') or fields.Date.today()
-            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
-            invoice_line_ids = []
-            for record in self:
-                if debtor_id == record.debtor and not record.invoice_created and record.os_sell_amount and record.booking_id and record.operation_billing_id:
+            local_billing_id = self.env['freight.operation.billing'].sudo().search(
+                [('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0),
+                 ('operation_billing_id', '!=', False), ('id', 'in', active_ids),
+                 ('invoice_type', 'in', ['local_individual', 'consolidated_local'])])
+
+            foreign_billing_id = self.env['freight.operation.billing'].sudo().search(
+                [('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0),
+                 ('operation_billing_id', '!=', False), ('id', 'in', active_ids),
+                 ('invoice_type', 'in', ['foreign_individual', 'consolidated_foreign'])])
+
+            # # billing_id = self.env['freight.operation.billing'].sudo().search([('debtor', '=', debtor_id.id), ('os_sell_amount', '!=', 0),('booking_id', '!=', False), ('operation_billing_id', '!=', False)], limit=1)
+            if local_billing_id:
+                date = self._context.get('date') or fields.Date.today()
+                company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
+                invoice_line_ids = []
+                for record in local_billing_id:
                     invoice_line_ids.append((0, 0, {
                         'product_id': record.charge_code.id,
                         'transport': record.transport,
@@ -287,59 +401,113 @@ class FreightOperationBilling(models.Model):
                         'operating_unit_id': record.operating_unit_id.id,
                         'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
+                        'created_from_shipment': True,
                         'price_unit': record.sell_currency_id._convert(record.os_sell_amount, self.env.company.currency_id, company, date),
                         'billing_line_id': record.id,
                         'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
                     }))
                     record.invoice_created = True
-            invoice_id = self.env['account.move'].sudo().create({
-                            'name': "/",
-                            'move_type': 'out_invoice',
-                            'partner_id': debtor_id.id,
-                            'invoice_date': fields.Date.today(),
-                            'operating_unit_id':billing_id.operating_unit_id,
-                            'currency_id':self.env.company.currency_id.id,
-                            'invoice_line_ids': invoice_line_ids,
-            })
-            billing_id.ar_invoice_number = invoice_id.id
-            invoice_id.created_from_shipment = True
+                invoice_id = self.env['account.move'].sudo().create({
+                    'name': "/",
+                    'move_type': 'out_invoice',
+                    'partner_id': debtor_id.id,
+                    'invoice_date': fields.Date.today(),
+                    'operating_unit_id':local_billing_id.operating_unit_id,
+                    'currency_id':self.env.company.currency_id.id,
+                    'invoice_type': "local_individual",
+                    'invoice_line_ids': invoice_line_ids,
+                })
+                local_billing_id.ar_invoice_number = invoice_id.id
+                invoice_id.created_from_shipment = True
+            if foreign_billing_id:
+                currencies_grouped = foreign_billing_id.read_group(
+                    domain=[('debtor', '=', debtor_id.id), ('invoice_created', '=', False),
+                            ('os_sell_amount', '!=', 0), ('operation_billing_id', '!=', False), ('id', 'in', active_ids),
+                            ('invoice_type', 'in', ['foreign_individual', 'consolidated_foreign'])],
+                    fields=['sell_currency_id'], groupby=['sell_currency_id'])
+                mapped_currencies = list([(currency['sell_currency_id'][0]) for currency in currencies_grouped])
+                for mapped_currency in mapped_currencies:
+                    currency_id = self.env['res.currency'].browse(mapped_currency)
+                    foreign_currency_billing_id = self.env['freight.operation.billing'].sudo().search(
+                        [('debtor', '=', debtor_id.id), ('invoice_created', '=', False), ('os_sell_amount', '!=', 0),
+                         ('sell_currency_id', '=', currency_id.id),
+                          ('operation_billing_id', '!=', False), ('id', 'in', active_ids),
+                         ('invoice_type', 'in', ['foreign_individual', 'consolidated_foreign'])])
+                    invoice_line_ids = []
+                    for record in foreign_currency_billing_id:
+                        invoice_line_ids.append((0, 0, {
+                            'product_id': record.charge_code.id,
+                            'transport': record.transport,
+                            'direction': record.operation_billing_id.direction,
+                            'service_type': record.operation_billing_id.service_level,
+                            'operating_unit_id': record.operating_unit_id.id,
+                            'analytic_account_id': record.analytic_account_id.id,
+                            'quantity': 1,
+                            'created_from_shipment': True,
+                            'price_unit': record.os_sell_amount,
+                            'billing_line_id': record.id,
+                            'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
+                        }))
+                        record.invoice_created = True
+                    invoice_id = self.env['account.move'].sudo().create({
+                        'name': "/",
+                        'move_type': 'out_invoice',
+                        'partner_id': debtor_id.id,
+                        'invoice_date': fields.Date.today(),
+                        'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
+                        'currency_id': currency_id.id,
+                        'invoice_type': "foreign_individual",
+                        'invoice_line_ids': invoice_line_ids,
+                    })
+                    foreign_currency_billing_id.ar_invoice_number = invoice_id.id
+                    invoice_id.created_from_shipment = True
 
 
 
     def action_post_cost(self):
+        active_ids = self.env.context.get('active_ids')
         vendors_data = self.env['freight.operation.billing'].read_group(domain=[(
-            'vendor', 'in', self.vendor.ids), ('bill_created', '=', False), ('booking_id', '!=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '!=', False)], fields=['vendor'],groupby=['vendor'])
+            'vendor', 'in', self.vendor.ids), ('bill_created', '=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '!=', False), ('id', 'in', active_ids)], fields=['vendor'],groupby=['vendor'])
         mapped_data = list([(vendor['vendor'][0]) for vendor in vendors_data])
         for data in mapped_data:
             vendor_id = self.env['res.partner'].browse(data)
-            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('booking_id', '!=', False), ('os_cost_amount', '!=', 0), ('operation_billing_id', '!=', False)], limit=1)
-            date = self._context.get('date') or fields.Date.today()
-            company = self.env['res.company'].browse(self._context.get('company_id')) or self.env.company
+            billing_id = self.env['freight.operation.billing'].sudo().search([('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('operation_billing_id', '!=', False), ('os_cost_amount', '!=', 0), ('id', 'in', active_ids)])
             invoice_line_ids = []
-            for record in self:
-                if vendor_id == record.vendor and not record.bill_created and record.os_cost_amount and record.booking_id and record.operation_billing_id:
-                    invoice_line_ids.append((0, 0, {
-                        'product_id': record.charge_code.id,
-                        'transport': record.transport,
-                        'direction': record.operation_billing_id.direction,
-                        'service_type': record.operation_billing_id.service_level,
-                        'operating_unit_id': record.operating_unit_id.id,
-                        'analytic_account_id': record.analytic_account_id.id,
-                        'quantity': 1,
-                        'price_unit': record.cost_currency_id._convert(record.os_cost_amount, self.env.company.currency_id, company, date),
-                        'billing_line_id': record.id,
-                        'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
-                    }))
-                    record.bill_created = True
-
-            bill_id = self.env['account.move'].sudo().create({
-                            'name': "/",
-                            'move_type': 'in_invoice',
-                            'partner_id': vendor_id.id,
-                            'invoice_date': fields.Date.today(),
-                            'operating_unit_id':billing_id.operating_unit_id,
-                            'currency_id':self.env.company.currency_id.id,
-                            'invoice_line_ids': invoice_line_ids,
-            })
-            billing_id.ar_bill_number = bill_id.id
-            bill_id.created_from_shipment = True
+            if billing_id:
+                currencies_grouped = self.env['freight.operation.billing'].sudo().read_group(
+                    domain=[('vendor', '=', vendor_id.id), ('bill_created', '=', False),('operation_billing_id', '!=', False),
+                            ('os_cost_amount', '!=', 0), ('id', 'in', active_ids)],
+                    fields=['cost_currency_id'], groupby=['cost_currency_id'])
+                mapped_currencies = list([(currency['cost_currency_id'][0]) for currency in currencies_grouped])
+                for mapped_currency in mapped_currencies:
+                    currency_id = self.env['res.currency'].browse(mapped_currency)
+                    foreign_currency_billing_id = self.env['freight.operation.billing'].sudo().search(
+                        [('vendor', '=', vendor_id.id), ('bill_created', '=', False), ('operation_billing_id', '!=', False), ('os_cost_amount', '!=', 0),
+                         ('cost_currency_id', '=', currency_id.id), ('id', 'in', active_ids) ])
+                    invoice_line_ids = []
+                    for record in foreign_currency_billing_id:
+                        invoice_line_ids.append((0, 0, {
+                            'product_id': record.charge_code.id,
+                            'transport': record.transport,
+                            'direction': record.operation_billing_id.direction,
+                            'service_type': record.operation_billing_id.service_level,
+                            'operating_unit_id': record.operating_unit_id.id,
+                            'analytic_account_id': record.analytic_account_id.id,
+                            'quantity': 1,
+                            'created_from_shipment': True,
+                            'price_unit': record.os_cost_amount,
+                            'billing_line_id': record.id,
+                            'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
+                        }))
+                        record.bill_created = True
+                    bill_id = self.env['account.move'].sudo().create({
+                        'name': "/",
+                        'move_type': 'in_invoice',
+                        'partner_id': vendor_id.id,
+                        'invoice_date': fields.Date.today(),
+                        'operating_unit_id':foreign_currency_billing_id.operating_unit_id,
+                        'currency_id':currency_id.id,
+                        'invoice_line_ids': invoice_line_ids,
+                    })
+                    foreign_currency_billing_id.ar_bill_number = bill_id.id
+                    bill_id.created_from_shipment = True
