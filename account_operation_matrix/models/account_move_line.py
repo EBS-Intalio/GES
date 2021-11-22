@@ -21,25 +21,25 @@ class AccountMoveLineInherit(models.Model):
 
     line_of_service_id = fields.Many2one('account.operation.matrix', 'Line of Service')
 
-    @api.onchange('product_id', 'transport', 'direction', 'service_type')
-    def _onchange_product_transport_direction_service(self):
-        for rec in self:
-            if rec.transport and rec.direction and rec.service_type:
-                if rec.product_id:
-                    account_matrix_id = self.env['account.operation.matrix'].search([('transport', '=', rec.transport),('direction', '=', rec.direction),
-                                                                                     ('service_type', '=', rec.service_type)], limit=1)
-                    if account_matrix_id:
-                        account_matrix_line_id = account_matrix_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
-                        if account_matrix_line_id:
-                            if rec.move_id.move_type == 'out_invoice':
-                                rec.account_id = account_matrix_line_id.income_account.id
-                            elif rec.move_id.move_type == 'in_invoice':
-                                rec.account_id = account_matrix_line_id.expense_account.id
-                else:
-                    account_matrix_id = self.env['account.operation.matrix'].search([('transport', '=', rec.transport), ('direction', '=', rec.direction),
-                                                                                     ('service_type', '=', rec.service_type)], limit=1)
-                    if account_matrix_id:
-                        if rec.move_id.move_type == 'out_invoice':
-                            rec.account_id = account_matrix_id.income_account.id
-                        elif rec.move_id.move_type == 'in_invoice':
-                            rec.account_id = account_matrix_id.expense_account.id
+    # @api.onchange('product_id', 'transport', 'direction', 'service_type')
+    # def _onchange_product_transport_direction_service(self):
+    #     for rec in self:
+    #         if rec.transport and rec.direction and rec.service_type:
+    #             if rec.product_id:
+    #                 account_matrix_id = self.env['account.operation.matrix'].search([('transport', '=', rec.transport),('direction', '=', rec.direction),
+    #                                                                                  ('service_type', '=', rec.service_type)], limit=1)
+    #                 if account_matrix_id:
+    #                     account_matrix_line_id = account_matrix_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
+    #                     if account_matrix_line_id:
+    #                         if rec.move_id.move_type == 'out_invoice':
+    #                             rec.account_id = account_matrix_line_id.income_account.id
+    #                         elif rec.move_id.move_type == 'in_invoice':
+    #                             rec.account_id = account_matrix_line_id.expense_account.id
+    #             else:
+    #                 account_matrix_id = self.env['account.operation.matrix'].search([('transport', '=', rec.transport), ('direction', '=', rec.direction),
+    #                                                                                  ('service_type', '=', rec.service_type)], limit=1)
+    #                 if account_matrix_id:
+    #                     if rec.move_id.move_type == 'out_invoice':
+    #                         rec.account_id = account_matrix_id.income_account.id
+    #                     elif rec.move_id.move_type == 'in_invoice':
+    #                         rec.account_id = account_matrix_id.expense_account.id

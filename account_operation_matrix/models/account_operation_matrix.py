@@ -21,8 +21,9 @@ class AccountOperationMatrix(models.Model):
                                      ('port_to_port', 'Port to Port'), ('port_to_door', 'Port to Door'),
                                      ('custom_and_brokerage', 'Customs and Brokerage')],
                                     string="Service Level")
-    income_account = fields.Many2one('account.account', 'Income Account',required=True)
-    expense_account = fields.Many2one('account.account', 'Expense Account',required=True)
+    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
+    income_account = fields.Many2one('account.account', 'Income Account',required=True, domain="[('company_id', '=', company_id)]")
+    expense_account = fields.Many2one('account.account', 'Expense Account',required=True, domain="[('company_id', '=', company_id)]")
     matrix_line_ids = fields.One2many('account.operation.matrix.line', 'operation_matrix_id')
     ocean_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
                                        ('breakbulk', 'Breakbulk'),
@@ -62,5 +63,8 @@ class AccountOperationMatrixLine(models.Model):
 
     operation_matrix_id = fields.Many2one('account.operation.matrix', "Operation Matrix")
     charge_code = fields.Many2one('product.product', 'Charge Code',required=True)
-    income_account = fields.Many2one('account.account', 'Income Account', required=True)
-    expense_account = fields.Many2one('account.account', 'Expense Account', required=True)
+    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
+    income_account = fields.Many2one('account.account', 'Income Account', required=True,
+                                     domain="[('company_id', '=', company_id)]")
+    expense_account = fields.Many2one('account.account', 'Expense Account', required=True,
+                                      domain="[('company_id', '=', company_id)]")

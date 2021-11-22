@@ -92,6 +92,12 @@ class AccountMoveLineinherit(models.Model):
                 rec.transport = rec.invoice_shipment.transport
                 rec.service_type = rec.invoice_shipment.service_level
                 rec.line_of_service_id = rec.invoice_shipment.line_of_service_id.id
+                if rec.line_of_service_id:
+                    account_matrix_line_id = rec.line_of_service_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
+                    if account_matrix_line_id:
+                        rec.account_id = account_matrix_line_id.income_account.id
+                    else:
+                        rec.account_id = rec.invoice_shipment.line_of_service_id.income_account.id
 
     def _inverse_bill_shipment(self):
         for rec in self:
@@ -100,6 +106,12 @@ class AccountMoveLineinherit(models.Model):
                 rec.transport = rec.bill_shipment.transport
                 rec.service_type = rec.bill_shipment.service_level
                 rec.line_of_service_id = rec.bill_shipment.line_of_service_id.id
+                if rec.line_of_service_id:
+                    account_matrix_line_id = rec.line_of_service_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
+                    if account_matrix_line_id:
+                        rec.account_id = account_matrix_line_id.expense_account.id
+                    else:
+                        rec.account_id = rec.bill_shipment.line_of_service_id.expense_account.id
 
     @api.onchange('price_unit')
     def on_change_price_unit_field(self):
@@ -141,9 +153,14 @@ class AccountMoveLineinherit(models.Model):
                             'os_sell_amount': invoice_line.price_unit,
                             'analytic_account_id': invoice_line.analytic_account_id.id,
                             'operation_billing_id': invoice_line.invoice_shipment.id,
+                            'invoice_line_id': invoice_line.id,
                             'invoice_created': True,
                         }),
                     ]})
+                    invoice_line.created_from_shipment = True
+                    for record in res:
+                        billing_line = invoice_line.invoice_shipment.account_operation_lines.search([('invoice_line_id', '=', record.id)])
+                        record.billing_line_id = billing_line.id
         if move.move_type == 'in_invoice':
             for invoice_line in move.invoice_line_ids:
                 if invoice_line.bill_shipment:
@@ -158,7 +175,13 @@ class AccountMoveLineinherit(models.Model):
                             'os_cost_amount': invoice_line.price_unit,
                             'analytic_account_id': invoice_line.analytic_account_id.id,
                             'operation_billing_id': invoice_line.invoice_shipment.id,
+                            'bill_line_id': invoice_line.id,
                             'bill_created': True,
                         }),
                     ]})
+                    invoice_line.created_from_shipment = True
+                    for record in res:
+                        billing_line = invoice_line.bill_shipment.account_operation_lines.search(
+                            [('bill_line_id', '=', record.id)])
+                        record.billing_line_id = billing_line.id
         return res
