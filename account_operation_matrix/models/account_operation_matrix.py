@@ -2,6 +2,9 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
+ACCOUNT_DOMAIN = "['&', '&', '&', ('deprecated', '=', False), ('internal_type','=','other'), ('company_id', '=', company_id), ('is_off_balance', '=', False)]"
+
 class AccountOperationMatrix(models.Model):
     _name = 'account.operation.matrix'
     _description = 'Account Operation Matrix'
@@ -22,8 +25,12 @@ class AccountOperationMatrix(models.Model):
                                      ('custom_and_brokerage', 'Customs and Brokerage')],
                                     string="Service Level")
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
-    income_account = fields.Many2one('account.account', 'Income Account',required=True, domain="[('company_id', '=', company_id)]")
-    expense_account = fields.Many2one('account.account', 'Expense Account',required=True, domain="[('company_id', '=', company_id)]")
+    # income_account = fields.Many2one('account.account', 'Income Account',required=True, domain="[('company_id', '=', company_id)]")
+    property_account_income_id = fields.Many2one('account.account', company_dependent=True, string="Income Account", domain=ACCOUNT_DOMAIN, required=True)
+
+    property_account_expense_id = fields.Many2one('account.account', company_dependent=True,string="Expense Account",domain=ACCOUNT_DOMAIN, required=True)
+
+    # expense_account = fields.Many2one('account.account', 'Expense Account',required=True, domain="[('company_id', '=', company_id)]")
     matrix_line_ids = fields.One2many('account.operation.matrix.line', 'operation_matrix_id')
     ocean_shipment = fields.Selection([('fcl', 'FCL'), ('lcl', 'LCL'),
                                        ('breakbulk', 'Breakbulk'),
@@ -64,7 +71,16 @@ class AccountOperationMatrixLine(models.Model):
     operation_matrix_id = fields.Many2one('account.operation.matrix', "Operation Matrix")
     charge_code = fields.Many2one('product.product', 'Charge Code',required=True)
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
-    income_account = fields.Many2one('account.account', 'Income Account', required=True,
-                                     domain="[('company_id', '=', company_id)]")
-    expense_account = fields.Many2one('account.account', 'Expense Account', required=True,
-                                      domain="[('company_id', '=', company_id)]")
+
+    property_account_income_id = fields.Many2one('account.account', company_dependent=True, string="Income Account",
+                                                 domain=ACCOUNT_DOMAIN,
+                                                 help="Keep this field empty to use the default value from the product category.")
+
+    property_account_expense_id = fields.Many2one('account.account', company_dependent=True, string="Expense Account",
+                                                  domain=ACCOUNT_DOMAIN,
+                                                  help="Keep this field empty to use the default value from the product category. If anglo-saxon accounting with automated valuation method is configured, the expense account on the product category will be used.")
+
+    # income_account = fields.Many2one('account.account', 'Income Account', required=True,
+    #                                  domain="[('company_id', '=', company_id)]")
+    # expense_account = fields.Many2one('account.account', 'Expense Account', required=True,
+    #                                   domain="[('company_id', '=', company_id)]")

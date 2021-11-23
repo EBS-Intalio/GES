@@ -95,9 +95,9 @@ class AccountMoveLineinherit(models.Model):
                 if rec.line_of_service_id:
                     account_matrix_line_id = rec.line_of_service_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
                     if account_matrix_line_id:
-                        rec.account_id = account_matrix_line_id.income_account.id
+                        rec.account_id = account_matrix_line_id.property_account_income_id.id
                     else:
-                        rec.account_id = rec.invoice_shipment.line_of_service_id.income_account.id
+                        rec.account_id = rec.invoice_shipment.line_of_service_id.property_account_income_id.id
 
     def _inverse_bill_shipment(self):
         for rec in self:
@@ -109,9 +109,9 @@ class AccountMoveLineinherit(models.Model):
                 if rec.line_of_service_id:
                     account_matrix_line_id = rec.line_of_service_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
                     if account_matrix_line_id:
-                        rec.account_id = account_matrix_line_id.expense_account.id
+                        rec.account_id = account_matrix_line_id.property_account_expense_id.id
                     else:
-                        rec.account_id = rec.bill_shipment.line_of_service_id.expense_account.id
+                        rec.account_id = rec.bill_shipment.line_of_service_id.property_account_expense_id.id
 
     @api.onchange('price_unit')
     def on_change_price_unit_field(self):
