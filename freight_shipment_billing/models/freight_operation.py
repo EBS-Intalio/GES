@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 class FreightOperationInherit(models.Model):
     _inherit = "freight.operation"
 
-    operating_unit_id = fields.Many2one('operating.unit', string='Branch')
+    operating_unit_id = fields.Many2one('operating.unit', string='Branch', default=lambda self:self.env.user.default_operating_unit_id.id)
     analytic_account_id = fields.Many2one('account.analytic.account',string='Department')
 
     account_operation_lines = fields.One2many(comodel_name='freight.operation.billing', inverse_name='operation_billing_id')
@@ -211,7 +211,7 @@ class FreightOperationBilling(models.Model):
 
     handler = fields.Integer("Handler")
     charge_code_sequence = fields.Integer("Sequence")
-    charge_code = fields.Many2one('product.product', 'Charge Code')
+    charge_code = fields.Many2one('product.product', 'Charge Code', required=True)
     description = fields.Char(compute='_default_description', string="Description", readonly=False)
     product_categ_id = fields.Many2one('product.category', string='Product Type', related='charge_code.categ_id')
     operating_unit_id = fields.Many2one('operating.unit', compute='_default_operating_unit_id', readonly=False , string='Branch', store=True)
