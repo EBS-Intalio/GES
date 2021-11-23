@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_account_form_inherit" model="ir.ui.view">
+            <field name="name">ebs_currency_revaluation.currency.revaluation.form</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="currency_revaluation" groups="base.group_multi_currency"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
