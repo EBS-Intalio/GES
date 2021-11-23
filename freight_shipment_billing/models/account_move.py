@@ -56,36 +56,37 @@ class AccountMoveinherit(models.Model):
                 invoice_line.billing_line_id.cost_exchange_rate = rate_id.rate
 
         res = super(AccountMoveinherit, self).action_post()
-        if not res.shipment_account_move_id and res.operation_billing_id and res.operation_billing_id.line_of_service_id:
-            freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_invoice_number', '=', res.id)])
-            if res.move_type == 'in_invoice':
-                freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_bill_number', '=', res.id)])
+        for mv in self:
+            if not mv.shipment_account_move_id and mv.operation_billing_id and mv.operation_billing_id.line_of_service_id:
+                freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_invoice_number', '=', mv.id)])
+                if mv.move_type == 'in_invoice':
+                    freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_bill_number', '=', mv.id)])
 
-            for billing in freight_billing:
-                journal_id = self.company_id.accrual_journal_id
-                if not journal_id:
-                    journal_id = self.env['account.journal'].sudo().search(
-                        [('type', '=', 'general'), ('company_id', '=', res.company_id.id)], limit=1)
+                for billing in freight_billing:
+                    journal_id = self.company_id.accrual_journal_id
+                    if not journal_id:
+                        journal_id = self.env['account.journal'].sudo().search(
+                            [('type', '=', 'general'), ('company_id', '=', mv.company_id.id)], limit=1)
 
-                ref = 'Accrued Expense Entry/%s' % res.name
-                if res.move_type == 'in_invoice':
-                    ref = 'Rev. Accrued Expense Entry/%s' % res.name
+                    ref = 'Accrued Expense Entry/%s' % mv.name
+                    if mv.move_type == 'in_invoice':
+                        ref = 'Rev. Accrued Expense Entry/%s' % mv.name
 
-                line_vals = res.prepare_journal_entry_lines(billing=billing)
-                if line_vals:
-                    account_move_vals = {
-                        'move_type': 'entry',
-                        'ref': ref,
-                        'journal_id': journal_id.id,
-                        'operation_billing_id': res.operation_billing_id and res.operation_billing_id.id or False,
-                        'shipment_account_move_id': res.id,
-                        'date': fields.Date.today(),
-                        'line_ids': line_vals,
-                    }
-                    move = res.env['account.move'].create(account_move_vals)
-                    move.action_post()
-                    if res.move_type == 'out_invoice':
-                        billing.write({'accrual_entry_amount': billing.estimated_cost})
+                    line_vals = mv.prepare_journal_entry_lines(billing=billing)
+                    if line_vals:
+                        account_move_vals = {
+                            'move_type': 'entry',
+                            'ref': ref,
+                            'journal_id': journal_id.id,
+                            'operation_billing_id': mv.operation_billing_id and mv.operation_billing_id.id or False,
+                            'shipment_account_move_id': mv.id,
+                            'date': fields.Date.today(),
+                            'line_ids': line_vals,
+                        }
+                        move = mv.env['account.move'].create(account_move_vals)
+                        move.action_post()
+                        if mv.move_type == 'out_invoice':
+                            billing.write({'accrual_entry_amount': billing.estimated_cost})
         return res
 
     def prepare_journal_entry_lines(self, billing=False):
