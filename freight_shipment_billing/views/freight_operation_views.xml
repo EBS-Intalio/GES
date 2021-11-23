@@ -91,6 +91,12 @@
                 <button class="oe_stat_button" name="button_invoices" type="object" icon="fa-money">
                     <field name="invoice_count" string="Vendor Bills"  widget="statinfo" icon="fa-usd"/>
                 </button>
+		        <field name="invoice_journal_count" invisible="1"/>
+                <button name="action_view_journal_entry"
+                        type="object"
+                        class="oe_stat_button"
+                        attrs="{'invisible': [('invoice_journal_count', '=', 0)]}"
+                        icon="fa-clipboard" string="Accrual Journal Entry"/>
             </xpath>
         </field>
     </record>

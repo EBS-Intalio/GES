@@ -5,6 +5,17 @@ from odoo.exceptions import ValidationError
 class FreightOperationInherit(models.Model):
     _inherit = "freight.operation"
 
+    @api.depends('invoice_journal_entry_ids')
+    def _compute_invoice_journal_entry(self):
+        """
+        Total Customer Invoice Journal Entry
+        :return:
+        """
+        for operation in self:
+            invoice_journal_count = len(operation.invoice_journal_entry_ids.filtered(
+                lambda x: x.move_type == 'entry' and x.state != 'cancel').mapped('amount_total'))
+            operation.invoice_journal_count = invoice_journal_count
+
     operating_unit_id = fields.Many2one('operating.unit', string='Branch', default=lambda self:self.env.user.default_operating_unit_id.id)
     analytic_account_id = fields.Many2one('account.analytic.account',string='Department')
 
@@ -14,8 +25,29 @@ class FreightOperationInherit(models.Model):
     total_cost = fields.Monetary(string="Total Cost", currency_field='company_currency_id',  compute="compute_data")
     profit = fields.Monetary(string="Profit", currency_field='company_currency_id',  compute="compute_data")
     company_currency_id = fields.Many2one('res.currency', string="Currency",default=lambda self: self.env.company.currency_id.id)
-
+    invoice_journal_count = fields.Integer(string='Invoice Amount', compute='_compute_invoice_journal_entry')
+    invoice_journal_entry_ids = fields.One2many('account.move', 'operation_billing_id', string='Invoice Journal Entry', copy=False)
     line_of_service_id = fields.Many2one('account.operation.matrix', 'Line of Service', compute="compute_line_of_service")
+    
+    def action_view_journal_entry(self):
+        """
+        Return journal Entries
+        :return:
+        """
+
+        action = self.env.ref('account.action_move_journal_line').read()[0]
+        invoice = self.invoice_journal_entry_ids.filtered(lambda x: x.move_type == 'entry')
+        if len(invoice) > 1:
+            action['domain'] = [('id', 'in', invoice.ids)]
+        elif invoice:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoice.id
+
+        return action
 
     @api.depends('transport', 'direction', 'service_level')
     def compute_line_of_service(self):
@@ -73,6 +105,7 @@ class FreightOperationInherit(models.Model):
                     'currency_id': self.env.company.currency_id.id,
                     'invoice_type': "local_individual",
                     'invoice_line_ids': invoice_line_ids,
+		            'operation_billing_id': self.id,
                 })
                 local_billing_id.ar_invoice_number = invoice_id.id
                 invoice_id.created_from_shipment = True
@@ -113,6 +146,7 @@ class FreightOperationInherit(models.Model):
                         'currency_id': currency_id.id,
                         'invoice_type': "foreign_individual",
                         'invoice_line_ids': invoice_line_ids,
+                        'operation_billing_id': self.id,
                     })
                     foreign_currency_billing_id.ar_invoice_number = invoice_id.id
                     invoice_id.created_from_shipment = True
@@ -163,6 +197,7 @@ class FreightOperationInherit(models.Model):
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
                         'currency_id': currency_id.id,
+                        'operation_billing_id': self.id,
                         'invoice_line_ids': invoice_line_ids,
                     })
                     foreign_currency_billing_id.ar_bill_number = bill_id.id
@@ -266,6 +301,8 @@ class FreightOperationBilling(models.Model):
 
     sell_invoice_tax_amount = fields.Monetary(string="Sell Tax Amount", currency_field='invoice_currency_id', compute='_get_tax_for_sell_line')
     cost_bill_tax_amount = fields.Monetary(string="Cost Tax Amount", currency_field='bill_currency_id', compute='_get_tax_for_cost_line')
+
+    accrual_entry_amount = fields.Float(string="Accrual Entry Amount")
 
     @api.depends('invoice_line_id','sell_invoice_amount','sell_invoice_with_tax_amount')
     def _get_tax_for_sell_line(self):
@@ -418,6 +455,7 @@ class FreightOperationBilling(models.Model):
                     'partner_id': debtor_id.id,
                     'invoice_date': fields.Date.today(),
                     'operating_unit_id':local_billing_id.operating_unit_id,
+                    'operation_billing_id': self.id,
                     'currency_id':self.env.company.currency_id.id,
                     'invoice_type': "local_individual",
                     'invoice_line_ids': invoice_line_ids,
@@ -461,6 +499,7 @@ class FreightOperationBilling(models.Model):
                         'partner_id': debtor_id.id,
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
+                        'operation_billing_id': self.id,
                         'currency_id': currency_id.id,
                         'invoice_type': "foreign_individual",
                         'invoice_line_ids': invoice_line_ids,
@@ -513,6 +552,7 @@ class FreightOperationBilling(models.Model):
                         'partner_id': vendor_id.id,
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id':foreign_currency_billing_id.operating_unit_id,
+                        'operation_billing_id': self.id,
                         'currency_id':currency_id.id,
                         'invoice_line_ids': invoice_line_ids,
                     })

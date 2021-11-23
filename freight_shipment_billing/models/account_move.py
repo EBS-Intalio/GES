@@ -14,7 +14,9 @@ class AccountMoveinherit(models.Model):
 
     created_from_shipment = fields.Boolean("Shipment Invoice", default=False, readonly=True,  inverse='compute_shipment_requested_by')
     requested_by = fields.Date("Requested By", compute='compute_shipment_requested_by')
-    requested_stored= fields.Date("Requested By")
+    requested_stored = fields.Date("Requested By")
+    operation_billing_id = fields.Many2one('freight.operation', readonly=True, copy=False)
+    shipment_account_move_id = fields.Many2one('account.move', string="Shipment Account Move")
 
     def compute_shipment_requested_by(self):
         for rec in self:
@@ -25,6 +27,20 @@ class AccountMoveinherit(models.Model):
                 if len(shipment) == 1:
                     rec.requested_by = shipment.requested_by
                     rec.requested_stored = rec.requested_by
+
+    def button_draft(self):
+        """
+        Cancel Accrual Journal Entry related to the account move
+        :return:
+        """
+        super(AccountMoveinherit, self).button_draft()
+        if not self.shipment_account_move_id and self.operation_billing_id:
+            shipment_journal_entry = self.env['account.move'].sudo().search([('shipment_account_move_id', '=', self.id),
+                                                                             ('move_type', '=', 'entry'),
+                                                                             ('state', '=', 'posted')])
+            for journal_entry in shipment_journal_entry:
+                journal_entry.button_draft()
+                journal_entry.button_cancel()
 
     def action_post(self):
         if self.move_type == 'out_invoice':
@@ -39,9 +55,89 @@ class AccountMoveinherit(models.Model):
                 rate_id = self.env['res.currency.rate'].sudo().search([('currency_id', '=', invoice_line.move_id.currency_id.id)], order='name desc', limit=1)
                 invoice_line.billing_line_id.cost_exchange_rate = rate_id.rate
 
+        res = super(AccountMoveinherit, self).action_post()
+        if not res.shipment_account_move_id and res.operation_billing_id and res.operation_billing_id.line_of_service_id:
+            freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_invoice_number', '=', res.id)])
+            if res.move_type == 'in_invoice':
+                freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_bill_number', '=', res.id)])
 
+            for billing in freight_billing:
+                journal_id = self.company_id.accrual_journal_id
+                if not journal_id:
+                    journal_id = self.env['account.journal'].sudo().search(
+                        [('type', '=', 'general'), ('company_id', '=', res.company_id.id)], limit=1)
 
-        return super(AccountMoveinherit, self).action_post()
+                ref = 'Accrued Expense Entry/%s' % res.name
+                if res.move_type == 'in_invoice':
+                    ref = 'Rev. Accrued Expense Entry/%s' % res.name
+
+                line_vals = res.prepare_journal_entry_lines(billing=billing)
+                if line_vals:
+                    account_move_vals = {
+                        'move_type': 'entry',
+                        'ref': ref,
+                        'journal_id': journal_id.id,
+                        'operation_billing_id': res.operation_billing_id and res.operation_billing_id.id or False,
+                        'shipment_account_move_id': res.id,
+                        'date': fields.Date.today(),
+                        'line_ids': line_vals,
+                    }
+                    move = res.env['account.move'].create(account_move_vals)
+                    move.action_post()
+                    if res.move_type == 'out_invoice':
+                        billing.write({'accrual_entry_amount': billing.estimated_cost})
+        return res
+
+    def prepare_journal_entry_lines(self, billing=False):
+        """
+        Prepare Journal entry lines
+        :return:
+        """
+        journal_entry_lines = []
+        if billing:
+            account_accrual_creditor_id = self.company_id.account_accrual_creditor_id
+            line_of_service_id = billing.operation_billing_id.line_of_service_id
+            expense_account = line_of_service_id.property_account_expense_id
+            if line_of_service_id.matrix_line_ids:
+                matrix_charge_code_line = line_of_service_id.matrix_line_ids.filtered(lambda x: x.charge_code == billing.charge_code and x.property_account_expense_id)
+                if matrix_charge_code_line:
+                    expense_account = matrix_charge_code_line[0].property_account_expense_id
+
+            estimated_cost = billing.estimated_cost
+            if self.move_type == 'in_invoice':
+                estimated_cost = billing.os_cost_amount
+                if estimated_cost > billing.accrual_entry_amount or (estimated_cost == 0 and billing.accrual_entry_amount != 0):
+                    estimated_cost = billing.accrual_entry_amount
+
+            if estimated_cost != 0:
+                credit_vals = self.prepare_journal_entry_line_vals(account_id=account_accrual_creditor_id.id, credit=estimated_cost)
+                if self.move_type == 'in_invoice':
+                    credit_vals.update({'account_id': expense_account.id})
+
+                debit_vals = self.prepare_journal_entry_line_vals(account_id=expense_account.id, debit=estimated_cost)
+                if self.move_type == 'in_invoice':
+                    debit_vals.update({'account_id': account_accrual_creditor_id.id})
+
+                journal_entry_lines = [(0, 0, debit_vals), (0, 0, credit_vals)]
+        return journal_entry_lines
+
+    def prepare_journal_entry_line_vals(self, account_id=False, debit=0.0, credit=0.0):
+        """
+        Prepare Journal Entry Line Vals
+        :param account_id:
+        :param debit:
+        :param credit:
+        :return:
+        """
+        vals = {
+                    'account_id': account_id,
+                    'currency_id': (self.currency_id and self.currency_id.id) or (
+                                    self.journal_id and self.journal_id.currency_id and self.journal_id.currency_id.id) or (
+                                                   self.company_id.currency_id and self.company_id.currency_id.id),
+                    'debit': debit,
+                    'credit': credit
+                }
+        return vals
 
     def open_related_shipment(self):
         shipment = self.invoice_line_ids.search([('created_from_shipment', '=', True), ('move_id', '=', self.id)]).shipment_line
