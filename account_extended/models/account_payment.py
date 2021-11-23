@@ -25,7 +25,7 @@ class AccountPayemntEXT(models.Model):
             raise ValidationError(_('Already reconciled!'))
         company_id = self.env.company.id
         journal = self.env['account.journal'].search([('type', '=', 'bank'), ('company_id', '=', company_id)], limit=1)
-        last_ending_balance = self.env['account.bank.statement'].search([('state', '=', 'confirm')], limit=1, order='id desc') and self.env['account.bank.statement'].search([('state', '=', 'confirm')], limit=1, order='id desc').balance_end_real or 0.0
+        last_ending_balance = self.env['account.bank.statement'].search([('state', '=', 'confirm'),('company_id', '=', company_id)], limit=1, order='id desc') and self.env['account.bank.statement'].search([('state', '=', 'confirm'),('company_id', '=', company_id)], limit=1, order='id desc').balance_end_real or 0.0
         vals = {
             'journal_id': journal.id,
             'date': fields.Date.today(),

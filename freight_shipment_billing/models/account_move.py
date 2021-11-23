@@ -17,6 +17,9 @@ class AccountMoveinherit(models.Model):
     requested_stored = fields.Date("Requested By")
     operation_billing_id = fields.Many2one('freight.operation', readonly=True, copy=False)
     shipment_account_move_id = fields.Many2one('account.move', string="Shipment Account Move")
+    is_reversed = fields.Boolean('Is reversed')
+    created_from_cron = fields.Boolean('Created from Cron')
+    journal_operation_id = fields.Many2one('freight.operation')
 
     def compute_shipment_requested_by(self):
         for rec in self:
@@ -83,7 +86,7 @@ class AccountMoveinherit(models.Model):
                             'date': fields.Date.today(),
                             'line_ids': line_vals,
                         }
-                        move = mv.env['account.move'].create(account_move_vals)
+                        move = self.env['account.move'].create(account_move_vals)
                         move.action_post()
                         if mv.move_type == 'out_invoice':
                             billing.write({'accrual_entry_amount': billing.estimated_cost})

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Shipment Billing',
-    'version': '1.0.0.1',
+    'version': '1.0.0.2',
     'category': 'Freight',
     'description': """
                 Freight Shipment Billing
@@ -20,7 +20,8 @@
         "views/freight_booking_views.xml",
         "views/freight_job_request_views.xml",
         "views/consol_details_views.xml",
-        "wizard/res_config_settings_view.xml"
+        "wizard/res_config_settings_view.xml",
+        "data/ir_cron.xml",
     ],
     'installable': True,
     'application': True,

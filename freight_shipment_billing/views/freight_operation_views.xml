@@ -97,6 +97,12 @@
                         class="oe_stat_button"
                         attrs="{'invisible': [('invoice_journal_count', '=', 0)]}"
                         icon="fa-clipboard" string="Accrual Journal Entry"/>
+                <button class="oe_stat_button" name="open_journal_entires" type="object" icon="fa-book" attrs="{'invisible':[('journal_entries_count','=',0)]}">
+                    <field name="journal_entries_count" string="Deferral Journal entries"  widget="statinfo" />
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='agent_id']" position="after">
+                  <field name="company_id" readonly="1"/>
             </xpath>
         </field>
     </record>

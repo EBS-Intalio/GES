@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*"-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import datetime,date
+from calendar import monthrange
 
 class FreightOperationInherit(models.Model):
     _inherit = "freight.operation"
@@ -28,7 +30,9 @@ class FreightOperationInherit(models.Model):
     invoice_journal_count = fields.Integer(string='Invoice Amount', compute='_compute_invoice_journal_entry')
     invoice_journal_entry_ids = fields.One2many('account.move', 'operation_billing_id', string='Invoice Journal Entry', copy=False)
     line_of_service_id = fields.Many2one('account.operation.matrix', 'Line of Service', compute="compute_line_of_service")
-    
+    journal_entries_count = fields.Integer('Journal Entries',compute='get_journal_entires_count')
+    company_id = fields.Many2one('res.company', default=lambda self:self.env.company.id)
+
     def action_view_journal_entry(self):
         """
         Return journal Entries
@@ -240,6 +244,134 @@ class FreightOperationInherit(models.Model):
         else:
             action['domain'] = [('id', 'in', invoices.ids)]
         return action
+
+    def get_journal_entires_count(self):
+        """
+                 Get count of the journal items
+                  :return:
+                  """
+        for rec in self:
+            rec.journal_entries_count = self.env['account.move'].search_count([('journal_operation_id', '=', rec.id), ('move_type', '=', 'entry'), ('created_from_cron', '=', True)])
+
+    def open_journal_entires(self):
+        """
+               Prepare a action for the display the Journal Items
+               :return:
+               """
+        action = self.env.ref('account.action_move_journal_line').read()[0]
+        journal_entries = self.env['account.move'].search(
+            [('journal_operation_id', '=', self.id), ('move_type', '=', 'entry'), ('created_from_cron', '=', True)])
+
+        if len(journal_entries) > 1:
+            action['domain'] = [('id', 'in', journal_entries.ids)]
+        elif journal_entries:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = journal_entries.id
+
+        return action
+
+
+    def get_deferrals_journal_entry(self):
+        """
+                Method for scheduler to make journal entries at end of month
+                 :return:
+                 """
+        for company in self.env['res.company'].search([]):
+            if not company.account_deferral_creditor_id:
+                continue
+            deferral_account = company.account_deferral_creditor_id.id
+            if not company.deferral_journal_id:
+                continue
+            journal_id = company.deferral_journal_id.id
+            if date.today().day == monthrange(date.today().year, date.today().month)[1]:
+            # if date.today().day == 23:
+                for shipment in self.search([('company_id','=',company.id)]):
+                    customer_invoices_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_invoice_number and x.ar_invoice_number.state == 'posted')
+                    vendor_bill_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_bill_number and x.ar_bill_number.state == 'posted')
+                    vendor_dict = {}
+                    for vendor_line in vendor_bill_ids:
+                        if vendor_dict.get(vendor_line.charge_code):
+                            vendor_dict.update({vendor_line.charge_code:vendor_dict.get(vendor_line.charge_code)+vendor_line.local_cost_amount})
+                        else:
+                            vendor_dict.update(
+                                {vendor_line.charge_code:vendor_line.local_cost_amount})
+                    partial_dict = {}
+                    for customer_line in customer_invoices_ids:
+                        if customer_line.charge_code in vendor_dict.keys():
+                            if vendor_dict.get(customer_line.charge_code) - customer_line.local_sell_amount>0:
+                                partial_dict.update({customer_line.charge_code:True})
+                            vendor_dict.update(
+                                {customer_line.charge_code: vendor_dict.get(customer_line.charge_code) - customer_line.local_sell_amount})
+
+
+                    if not shipment.line_of_service_id:
+                        continue
+
+                    vals = {
+                        'name': '/',
+                        'ref': shipment.name,
+                        'journal_id': journal_id,
+                        'date': date.today(),
+                        'move_type': 'entry',
+                        'journal_operation_id': shipment.id,
+                        'created_from_cron': True,
+                    }
+                    line_ids = []
+                    total_amount = 0
+                    for vendor_key in vendor_dict.keys():
+                        amount = vendor_dict.get(vendor_key)
+                        if amount > 0:
+                            matrix_line = shipment.line_of_service_id.matrix_line_ids.filtered(lambda x:x.charge_code == vendor_key)
+                            account_id = matrix_line[0].property_account_expense_id if matrix_line and matrix_line[0].property_account_expense_id else shipment.line_of_service_id.property_account_expense_id
+                            if not account_id:
+                                continue
+                            name = vendor_key.name
+                            if partial_dict.get(vendor_key):
+                                name = vendor_key.name + " Partial Amount"
+                            line_ids.append((0,0,{
+                                'account_id':account_id.id,
+                                'name':name,
+                                'debit':0,
+                                'credit':amount
+                            }))
+                            total_amount+=amount
+                    line_ids.append(
+                        (0,0,{
+                            'account_id': deferral_account,
+                            'name': 'Total',
+                            'debit': total_amount,
+                            'credit': 0.0,
+                        })
+                    )
+                    vals['line_ids'] = line_ids
+                    if vals.get('line_ids'):
+                        journal_entry = self.env['account.move'].create(vals)
+                        journal_entry.action_create()
+                        journal_entry.action_post()
+
+
+    def get_deferrals_reversal_journal_entry(self):
+        """
+               Method for scheduler to make reverse journal entries at start of month that were made at end of the month
+                :return:
+                """
+        # if date.today().day == 23:
+        if date.today().day == 1:
+            for shipment in self.search([]):
+                for journal_entry in self.env['account.move'].search([('journal_operation_id','=',shipment.id),('move_type','=','entry'),('created_from_cron','=',True),('is_reversed','=',False)]):
+                    journal_entry.is_reversed = True
+                    default_values_list = [{
+                        'date': date.today(),
+                        'ref': _('Reversal of: %s') % journal_entry.name,
+                    }]
+                    journal_entry_reversed = journal_entry._reverse_moves(default_values_list, cancel=True)
+                    journal_entry_reversed.is_reversed = True
+                    journal_entry_reversed.created_from_cron = True
+
 
 class FreightOperationBilling(models.Model):
     _name = "freight.operation.billing"
