@@ -291,6 +291,7 @@ class FreightOperationInherit(models.Model):
                 for shipment in self.search([('company_id','=',company.id)]):
                     customer_invoices_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_invoice_number and x.ar_invoice_number.state == 'posted')
                     vendor_bill_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_bill_number and x.ar_bill_number.state == 'posted')
+                    # if vendor_bill_ids or customer_invoices_ids:
                     vendor_dict = {}
                     for vendor_line in vendor_bill_ids:
                         if vendor_dict.get(vendor_line.charge_code):
@@ -338,14 +339,15 @@ class FreightOperationInherit(models.Model):
                                 'credit':amount
                             }))
                             total_amount+=amount
-                    line_ids.append(
-                        (0,0,{
-                            'account_id': deferral_account,
-                            'name': 'Total',
-                            'debit': total_amount,
-                            'credit': 0.0,
-                        })
-                    )
+                    if total_amount>0:
+                        line_ids.append(
+                            (0,0,{
+                                'account_id': deferral_account,
+                                'name': 'Total',
+                                'debit': total_amount,
+                                'credit': 0.0,
+                            })
+                        )
                     vals['line_ids'] = line_ids
                     if vals.get('line_ids'):
                         journal_entry = self.env['account.move'].create(vals)
