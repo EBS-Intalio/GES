@@ -37,7 +37,7 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="charge_code_sequence" attrs="{'readonly': ['|', ('invoice_created','=',True), ('bill_created','=',True)]}"/>
+                            <field name="charge_code_sequence" invisible="1"/>
                             <field name="charge_code" options="{'no_create': True,'no_create_edit':True}" domain="['|', ('transport', '=', 'all'), ('transport', '=', parent.transport)]" attrs="{'readonly': ['|', ('invoice_created','=',True), ('bill_created','=',True)]}"/>
                             <field name="description" attrs="{'readonly': ['|', ('invoice_created','=',True), ('bill_created','=',True)]}"/>
                         </group>

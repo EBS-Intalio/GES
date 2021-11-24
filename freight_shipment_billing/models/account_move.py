@@ -169,7 +169,7 @@ class AccountMoveLineinherit(models.Model):
 
     billing_line_id = fields.Many2one('freight.operation.billing',string="Billing Line", inverse='_inverse_invoice_line_ids')
 
-    shipment_line = fields.Many2one('freight.operation', string="shipment", related='billing_line_id.operation_billing_id')
+    shipment_line = fields.Many2one('freight.operation', string="shipment", inverse='_inverse_shipment_line')
 
     invoice_shipment = fields.Many2one('freight.operation', string="invoice Shipment", inverse='_inverse_invoice_shipment')
 
@@ -181,9 +181,19 @@ class AccountMoveLineinherit(models.Model):
         for rec in self:
             if rec.move_id.move_type == 'out_invoice':
                 rec.billing_line_id.invoice_line_id = rec.id
+                rec.shipment_line = rec.billing_line_id.operation_billing_id.id
             if rec.move_id.move_type == 'in_invoice':
                 rec.billing_line_id.bill_line_id = rec.id
+                rec.shipment_line = rec.billing_line_id.operation_billing_id.id
 
+
+    def _inverse_shipment_line(self):
+        for rec in self:
+            if rec.move_id.move_type == 'out_invoice':
+                rec.invoice_shipment = rec.shipment_line.id
+
+            if rec.move_id.move_type == 'in_invoice':
+                rec.bill_shipment = rec.shipment_line.id
 
     def _inverse_invoice_shipment(self):
         for rec in self:
@@ -241,7 +251,7 @@ class AccountMoveLineinherit(models.Model):
         move = self.env['account.move'].browse(vals_list[0]['move_id'])
         if move.move_type == 'out_invoice':
             for invoice_line in move.invoice_line_ids:
-                if invoice_line.invoice_shipment:
+                if invoice_line.invoice_shipment and not invoice_line.shipment_line:
                     invoice_line.invoice_shipment.write({'account_operation_lines': [
                         (0, 0, {
                             'charge_code': invoice_line.product_id.id,
@@ -263,7 +273,7 @@ class AccountMoveLineinherit(models.Model):
                         record.billing_line_id = billing_line.id
         if move.move_type == 'in_invoice':
             for invoice_line in move.invoice_line_ids:
-                if invoice_line.bill_shipment:
+                if invoice_line.bill_shipment and not invoice_line.shipment_line:
                     invoice_line.bill_shipment.write({'account_operation_lines': [
                         (0, 0, {
                             'charge_code': invoice_line.product_id.id,

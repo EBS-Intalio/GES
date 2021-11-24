@@ -11,7 +11,7 @@
                         <tree string="Billing Lines" editable="bottom" delete="0">
                             <field name="sent_to_shipment" invisible="1"/>
                             <field name="handler" widget="handle"/>
-                            <field name="charge_code_sequence" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
+                            <field name="charge_code_sequence" invisible="1"/>
                             <field name="charge_code" options="{'no_create': True,'no_create_edit':True}" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
                             <field name="description" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>
                             <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}" attrs="{'readonly': [('sent_to_shipment','=', True)]}"/>

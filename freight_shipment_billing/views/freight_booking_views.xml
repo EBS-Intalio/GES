@@ -17,7 +17,7 @@
                     </group>
                     <field name="account_operation_lines" no_label="1" widget="one2many_list">
                         <tree string="Billing Lines">
-                            <field name="charge_code_sequence" />
+                            <field name="charge_code_sequence" invisible="1" />
                             <field name="charge_code" options="{'no_create': True,'no_create_edit':True}"/>
                             <field name="description"/>
                             <field name="product_categ_id" options="{'no_create': True,'no_create_edit':True}"/>
