@@ -204,7 +204,9 @@ class AccountMoveLineinherit(models.Model):
                 rec.line_of_service_id = rec.invoice_shipment.line_of_service_id.id
                 if rec.line_of_service_id:
                     # account_matrix_line_id = rec.line_of_service_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
-                    account_matrix_line_id = self.env['account.operation.matrix.line'].search([('charge_code', '=', rec.product_id.id), ('id', '=', rec.line_of_service_id.id)])
+                    account_matrix_line_id = self.env['account.operation.matrix.line'].search([('charge_code', '=', rec.product_id.id), ('operation_matrix_id', '=', rec.line_of_service_id.id)], limit=1)
+                    print(rec.line_of_service_id.id)
+                    print("FFFFFFFFFF", account_matrix_line_id.id)
                     if account_matrix_line_id:
                         rec.account_id = account_matrix_line_id.property_account_income_id.id
                     else:
@@ -219,7 +221,7 @@ class AccountMoveLineinherit(models.Model):
                 rec.line_of_service_id = rec.bill_shipment.line_of_service_id.id
                 if rec.line_of_service_id:
                     # account_matrix_line_id = rec.line_of_service_id.matrix_line_ids.search([('charge_code', '=', rec.product_id.id)], limit=1)
-                    account_matrix_line_id = self.env['account.operation.matrix.line'].search([('charge_code', '=', rec.product_id.id), ('id', '=', rec.line_of_service_id.id)])
+                    account_matrix_line_id = self.env['account.operation.matrix.line'].search([('charge_code', '=', rec.product_id.id), ('operation_matrix_id', '=', rec.line_of_service_id.id)], limit=1)
                     if account_matrix_line_id:
                         rec.account_id = account_matrix_line_id.property_account_expense_id.id
                     else:
