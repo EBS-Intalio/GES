@@ -287,8 +287,7 @@ class FreightOperationInherit(models.Model):
             if not company.deferral_journal_id:
                 continue
             journal_id = company.deferral_journal_id.id
-            if date.today().day == monthrange(date.today().year, date.today().month)[1]:
-            # if date.today().day == 23:
+            if date.today().day == monthrange(date.today().year, date.today().month)[1] or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
                 for shipment in self.search([('company_id','=',company.id)]):
                     customer_invoices_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_invoice_number and x.ar_invoice_number.state == 'posted')
                     vendor_bill_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_bill_number and x.ar_bill_number.state == 'posted')
@@ -359,8 +358,7 @@ class FreightOperationInherit(models.Model):
                Method for scheduler to make reverse journal entries at start of month that were made at end of the month
                 :return:
                 """
-        # if date.today().day == 23:
-        if date.today().day == 1:
+        if date.today().day == 1 or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
             for shipment in self.search([]):
                 for journal_entry in self.env['account.move'].search([('journal_operation_id','=',shipment.id),('move_type','=','entry'),('created_from_cron','=',True),('is_reversed','=',False)]):
                     journal_entry.is_reversed = True

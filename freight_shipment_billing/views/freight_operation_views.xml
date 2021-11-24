@@ -3,125 +3,148 @@
     <record id="view_freight_operation_form_inherit" model="ir.ui.view">
         <field name="name">freight.operation.form.inherit</field>
         <field name="model">freight.operation</field>
-        <field name="inherit_id" ref="freight.view_freight_operation_form" />
+        <field name="inherit_id" ref="freight.view_freight_operation_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="Billing Lines">
                     <group>
                         <group>
-                            <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}" />
+                            <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}"/>
                         </group>
                         <group>
-                            <field name="analytic_account_id" options="{'no_create': True,'no_create_edit':True}" />
-                            <field name="line_of_service_id" readonly="1" />
+                            <field name="analytic_account_id" options="{'no_create': True,'no_create_edit':True}"/>
+                            <field name="line_of_service_id" readonly="1"/>
                         </group>
                     </group>
                     <field name="account_operation_lines" no_label="1" widget="one2many_list">
-                        <tree string="Billing Lines"  delete="0">
-                            <field name="handler" widget="handle" />
+                        <tree string="Billing Lines" delete="0">
+                            <field name="handler" widget="handle"/>
                             <field name="charge_code_sequence" invisible="1"/>
                             <field name="charge_code" options="{'no_create': True,'no_create_edit':True}"/>
                             <field name="description"/>
                             <field name="product_categ_id" options="{'no_create': True,'no_create_edit':True}"/>
                             <field name="operating_unit_id" options="{'no_create': True,'no_create_edit':True}"/>
                             <field name="analytic_account_id" options="{'no_create': True,'no_create_edit':True}"/>
-                            <field name="cost_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide"/>
-                            <field name="os_cost_amount" optional="hide" />
-                            <field name="estimated_cost" optional="hide" />
-                            <field name="company_currency_id" invisible="1" optional="hide" />
-                            <field name="local_cost_amount"  optional="hide"/>
-                            <field name="vendor" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
-                            <field name="cost_recognition" optional="hide" />
-                            <field name="posted_cost" readonly="1" optional="hide" />
-<!--                            <field name="cost_invoice_no" readonly="1" optional="hide" />-->
-                            <field name="cost_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
-                            <field name="sell_tax_ids" widget="many2many_tags" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
-                            <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}" optional="hide" />
-                            <field name="os_sell_amount" optional="hide" />
-                            <field name="estimated_revenue" readonly="1" optional="hide" />
-                            <field name="local_sell_amount" optional="hide" />
-                            <field name="debtor" optional="hide" />
-                            <field name="sell_recognition" optional="hide" />
+                            <field name="cost_currency_id" options="{'no_create': True,'no_create_edit':True}"
+                                   optional="hide"/>
+                            <field name="os_cost_amount" optional="hide"/>
+                            <field name="estimated_cost" optional="hide"/>
+                            <field name="company_currency_id" invisible="1" optional="hide"/>
+                            <field name="local_cost_amount" optional="hide"/>
+                            <field name="vendor" options="{'no_create': True,'no_create_edit':True}" optional="hide"/>
+                            <field name="cost_recognition" optional="hide"/>
+                            <field name="posted_cost" readonly="1" optional="hide"/>
+                            <!--                            <field name="cost_invoice_no" readonly="1" optional="hide" />-->
+                            <field name="cost_tax_ids" widget="many2many_tags"
+                                   options="{'no_create': True,'no_create_edit':True}" optional="hide"/>
+                            <field name="sell_tax_ids" widget="many2many_tags"
+                                   options="{'no_create': True,'no_create_edit':True}" optional="hide"/>
+                            <field name="sell_currency_id" options="{'no_create': True,'no_create_edit':True}"
+                                   optional="hide"/>
+                            <field name="os_sell_amount" optional="hide"/>
+                            <field name="estimated_revenue" readonly="1" optional="hide"/>
+                            <field name="local_sell_amount" optional="hide"/>
+                            <field name="debtor" optional="hide"/>
+                            <field name="sell_recognition" optional="hide"/>
                             <field name="operation_billing_id" invisible="1"/>
                             <field name="operation_billing_id" invisible="1"/>
                             <field name="booking_id" invisible="1"/>
-                            <field name="posted_revenue" readonly="1" optional="hide" />
-                            <field name="sell_reference" optional="hide" />
-                            <field name="cost_exchange_rate" readonly="1" optional="hide" />
-                            <field name="sell_exchange_rate" readonly="1" optional="hide" />
-                            <field name="reference" optional="hide" />
-                            <field name="ar_invoice_number" readonly="1" optional="hide" />
-                            <field name="ar_bill_number" readonly="1" optional="hide" />
-                            <field name="invoice_type" optional="hide" />
-                            <field name="invoice_date" optional="hide" />
-                            <field name="bill_date" optional="hide" />
-                            <field name="invoice_currency_id" invisible="1" />
-                            <field name="bill_currency_id" invisible="1" />
-                            <field name="sell_invoice_amount" optional="hide" />
-                            <field name="cost_bill_amount" optional="hide" />
-                            <field name="local_sell_invoice_amount" optional="hide" />
-                            <field name="invoice_line_id" invisible="1" />
-                            <field name="bill_line_id" invisible="1" />
-                            <field name="sell_invoice_with_tax_amount" readonly="1" optional="hide" />
-                            <field name="cost_bill_with_tax_amount" readonly="1" optional="hide" />
-                            <field name="sell_invoice_tax_amount" readonly="1" optional="hide" />
-                            <field name="cost_bill_tax_amount" readonly="1" optional="hide" />
+                            <field name="posted_revenue" readonly="1" optional="hide"/>
+                            <field name="sell_reference" optional="hide"/>
+                            <field name="cost_exchange_rate" readonly="1" optional="hide"/>
+                            <field name="sell_exchange_rate" readonly="1" optional="hide"/>
+                            <field name="reference" optional="hide"/>
+                            <field name="ar_invoice_number" readonly="1" optional="hide"/>
+                            <field name="ar_bill_number" readonly="1" optional="hide"/>
+                            <field name="invoice_type" optional="hide"/>
+                            <field name="invoice_date" optional="hide"/>
+                            <field name="bill_date" optional="hide"/>
+                            <field name="invoice_currency_id" invisible="1"/>
+                            <field name="bill_currency_id" invisible="1"/>
+                            <field name="sell_invoice_amount" optional="hide"/>
+                            <field name="cost_bill_amount" optional="hide"/>
+                            <field name="local_sell_invoice_amount" optional="hide"/>
+                            <field name="invoice_line_id" invisible="1"/>
+                            <field name="bill_line_id" invisible="1"/>
+                            <field name="sell_invoice_with_tax_amount" readonly="1" optional="hide"/>
+                            <field name="cost_bill_with_tax_amount" readonly="1" optional="hide"/>
+                            <field name="sell_invoice_tax_amount" readonly="1" optional="hide"/>
+                            <field name="cost_bill_tax_amount" readonly="1" optional="hide"/>
                             <field name="bill_created" readonly="1"/>
                             <field name="invoice_created" readonly="1"/>
                         </tree>
                     </field>
                     <group>
                         <field name="company_currency_id" invisible="1"/>
-                        <field name="total_revenue" />
-                        <field name="total_cost" />
-                        <field name="profit" />
+                        <field name="total_revenue"/>
+                        <field name="total_cost"/>
+                        <field name="profit"/>
                     </group>
                 </page>
             </xpath>
             <xpath expr="//button[@name='button_customer_invoices']" position="attributes">
-                  <attribute name="invisible">1</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='button_vendor_bills']" position="attributes">
-                  <attribute name="invisible">1</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//button[@name='button_services_bookings']" position="after">
                 <button class="oe_stat_button" name="button_billing" type="object" icon="fa-money">
-                    <field name="bill_count" string="Vendor Bills"  widget="statinfo" icon="fa-usd"/>
+                    <field name="bill_count" string="Vendor Bills" widget="statinfo" icon="fa-usd"/>
                 </button>
                 <button class="oe_stat_button" name="button_invoices" type="object" icon="fa-money">
-                    <field name="invoice_count" string="Vendor Bills"  widget="statinfo" icon="fa-usd"/>
+                    <field name="invoice_count" string="Vendor Bills" widget="statinfo" icon="fa-usd"/>
                 </button>
-		        <field name="invoice_journal_count" invisible="1"/>
+                <field name="invoice_journal_count" invisible="1"/>
                 <button name="action_view_journal_entry"
                         type="object"
                         class="oe_stat_button"
                         attrs="{'invisible': [('invoice_journal_count', '=', 0)]}"
                         icon="fa-clipboard" string="Accrual Journal Entry"/>
-                <button class="oe_stat_button" name="open_journal_entires" type="object" icon="fa-book" attrs="{'invisible':[('journal_entries_count','=',0)]}">
-                    <field name="journal_entries_count" string="Deferral Journal entries"  widget="statinfo" />
+                <button class="oe_stat_button" name="open_journal_entires" type="object" icon="fa-book"
+                        attrs="{'invisible':[('journal_entries_count','=',0)]}">
+                    <field name="journal_entries_count" string="Deferral Journal entries" widget="statinfo"/>
                 </button>
             </xpath>
             <xpath expr="//field[@name='agent_id']" position="after">
-                  <field name="company_id" readonly="1"/>
+                <field name="company_id" readonly="1"/>
             </xpath>
         </field>
     </record>
-        <record id="action_server_post_sell" model="ir.actions.server">
-            <field name="name">Post Sell</field>
-            <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_freight_operation" />
-            <field name="binding_model_id" ref="model_freight_operation" />
-            <field name="binding_view_types">form</field>
-            <field name="state">code</field>
-            <field name="code">records.button_post_sell()</field>
-        </record>
-        <record id="action_server_post_cost" model="ir.actions.server">
-            <field name="name">Post Cost</field>
-            <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_freight_operation" />
-            <field name="binding_model_id" ref="model_freight_operation" />
-            <field name="binding_view_types">form</field>
-            <field name="state">code</field>
-            <field name="code">records.button_post_cost()</field>
-        </record>
+    <record id="action_server_post_sell" model="ir.actions.server">
+        <field name="name">Post Sell</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_freight_operation"/>
+        <field name="binding_model_id" ref="model_freight_operation"/>
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">records.button_post_sell()</field>
+    </record>
+    <record id="action_server_post_cost" model="ir.actions.server">
+        <field name="name">Post Cost</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_freight_operation"/>
+        <field name="binding_model_id" ref="model_freight_operation"/>
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">records.button_post_cost()</field>
+    </record>
+    <record id="action_server_create_deferral_journal_entries" model="ir.actions.server">
+        <field name="name">Create Deferral Journal Entries</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_freight_operation"/>
+        <field name="binding_model_id" ref="model_freight_operation"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">records.get_deferrals_journal_entry()</field>
+    </record>
+    <record id="action_server_create_reverse_deferral_journal_entries" model="ir.actions.server">
+        <field name="name">Create Reverse Deferral Journal Entries</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_freight_operation"/>
+        <field name="binding_model_id" ref="model_freight_operation"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">records.get_deferrals_reversal_journal_entry()</field>
+    </record>
 </odoo>

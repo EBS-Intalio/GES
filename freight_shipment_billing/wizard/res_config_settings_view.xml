@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="account.res_config_settings_view_form"/>
             <field name="arch" type="xml">
                 <div id="analytic" position="after">
-                    <h2>Accrual And Deferral Account</h2>
+                    <h2>Accrual Account and Accural Journal</h2>
                     <div class="row mt16 o_settings_container" name="account_accrual_creditor_setting_container">
                         <div class="col-12 col-lg-6 o_setting_box" id="account_accrual_creditor">
                             <div class="o_setting_right_pane">
@@ -20,23 +20,25 @@
                                 </div>
                                 <div class="content-group">
                                     <div class="row mt8">
-                                        <label for="account_deferral_creditor_id" class="col-lg-3 o_light_label" />
-                                        <field name="account_deferral_creditor_id"/>
+                                        <label for="accrual_journal_id" class="col-lg-3 o_light_label" />
+                                        <field name="accrual_journal_id"/>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
 
 
-                    <h2>Accrual And Deferral Journal</h2>
+                    <h2>Deferral Account and Deferral Journal</h2>
                     <div class="row mt16 o_settings_container" name="account_accrual_creditor_setting_container">
                         <div class="col-12 col-lg-6 o_setting_box" id="account_accrual_creditor_journal">
                             <div class="o_setting_right_pane">
+
                                 <div class="content-group">
                                     <div class="row mt8">
-                                        <label for="accrual_journal_id" class="col-lg-3 o_light_label" />
-                                        <field name="accrual_journal_id"/>
+                                        <label for="account_deferral_creditor_id" class="col-lg-3 o_light_label" />
+                                        <field name="account_deferral_creditor_id"/>
                                     </div>
                                 </div>
                                 <div class="content-group">
@@ -45,6 +47,7 @@
                                         <field name="deferral_journal_id"/>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
