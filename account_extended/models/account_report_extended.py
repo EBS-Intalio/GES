@@ -30,19 +30,13 @@ class AccountReportExtended(models.AbstractModel):
 
 
     def get_report_informations(self, options):
-        info = super(AccountReportExtended, self).get_report_informations(options=options)
         if options and options.get('operating_unit') is not None:
-            # new_options = info['options']
-            # searchview_dict = {'options': new_options, 'context': self.env.context}
             options['selected_operating_unit'] = [self.env['operating.unit'].browse(int(operating_unit_id)).name for
                                                   operating_unit_id in options['operating_unit']]
-            report_manager = self._get_report_manager(options)
-            info['options'] = options
-            info['report_manager_id'] = report_manager.id
-            info['footnotes'] = [{'id': f.id, 'line': f.line, 'text': f.text} for f in report_manager.footnotes_ids]
-            info['main_html'] = self.get_html(options)
 
-        return info
+        return super(AccountReportExtended, self).get_report_informations(options=options)
+
+
 
 
     @api.model
@@ -232,7 +226,7 @@ class AccountReportExtended(models.AbstractModel):
                                                                                                'no_format_name') or
                                                                                            heararchy['columns'][
                                                                                                currency_list_index].get(
-                                                                                               'no_format'),
+                                                                                               'no_format') or 0.0,
                                                                                            currency_obj=currency_id)
                             currency_list_index += 1
 
@@ -579,7 +573,7 @@ class assets_report_extended(models.AbstractModel):
                 header[1].append({'name': '', 'class': 'number'})
 
         return header
-
+#
     def _get_lines(self, options, line_id=None):
         options['self'] = self
         lines = []
