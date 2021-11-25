@@ -438,6 +438,7 @@ class FreightOperation(models.Model):
     freight_order_id = fields.Many2one('freight.order', string="Order")
     source_location_id = fields.Many2one('freight.port', 'Source Location', index=True, required=False)
     destination_location_id = fields.Many2one('freight.port', 'Destination Location', index=True, required=False)
+    branch_id = fields.Many2one('operating.unit', string="Branch")
 
     @api.model
     def create(self, values):

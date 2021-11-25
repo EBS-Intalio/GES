@@ -71,6 +71,7 @@
                                 <group>
                                     <field name="job_type"/>
                                     <field name="service_level"/>
+                                    <field name="branch_id"/>
                                 </group>
                             </group>
                             <group>

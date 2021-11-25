@@ -28,6 +28,13 @@ class SalesOrder(models.Model):
                                      ('low_bed', 'Low Bed'), ('box_truck', 'Box Truck w/Liftgate')],
                                     string="Vehicle Type")
 
+    analytic_account_id = fields.Many2one(
+        'account.analytic.account', 'Department',
+        readonly=True, copy=False, check_company=True,  # Unrequired company
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        help="The analytic account related to a sales order.")
+
     @api.depends('amount_total')
     def _compute_usd_aed_amount(self):
         for rec in self:

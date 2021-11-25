@@ -11,6 +11,9 @@ class AccountMoveLineInherit(models.Model):
     _inherit = 'account.move.line'
 
     employee_id = fields.Many2one('hr.employee','Employee')
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Department',
+                                          index=True, compute="_compute_analytic_account_id", store=True,
+                                          readonly=False, check_company=True, copy=True)
 
 
     def _prepare_analytic_line(self):

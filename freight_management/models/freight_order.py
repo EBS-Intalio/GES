@@ -252,6 +252,7 @@ class FreightOrder(models.Model):
     new_order_count = fields.Integer('New Order Count', compute="_get_order_count")
     tracking_dates_ids = fields.One2many('tracking.dates','order_id')
     planned_container_ids = fields.Many2many('freight.container',string='Planned Container')
+    branch_id = fields.Many2one('operating.unit', string="Branch")
 
     def _get_order_count(self):
         for rec in self:
@@ -322,7 +323,8 @@ class FreightOrder(models.Model):
             'number_packages': self.packs,
             'gross_weight': self.gross_weight,
             'weight_type': self.weight_type,
-            'freight_order_id': self.id
+            'freight_order_id': self.id,
+            'branch_id': self.branch_id.id
         }
         freight_operation = self.env['freight.operation'].create(vals)
         self.write({'state': 'converted', 'shipment_no': freight_operation.name})
@@ -354,7 +356,8 @@ class FreightOrder(models.Model):
             'equipment_type': self.equipment_type,
             'vehicle_size': self.vehicle_size,
             'vehicle_type': self.vehicle_type,
-            'freight_order_id': self.id
+            'freight_order_id': self.id,
+            'branch_id': self.branch_id.id
         }
         #TODO Add Warning of Require field
         freight_booking = self.env['freight.booking'].create(vals)

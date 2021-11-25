@@ -66,6 +66,7 @@
                         <group>
                             <group>
                                 <field name="order_no" required="1"/>
+                                <field name="branch_id" required="1"/>
                                 <field name="agent_id"/>
                                 <field name="confirm_no"/>
                                 <field name="invoice_no"/>
