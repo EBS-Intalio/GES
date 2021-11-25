@@ -33,6 +33,8 @@ class FreightOperationInherit(models.Model):
     journal_entries_count = fields.Integer('Journal Entries',compute='get_journal_entires_count')
     company_id = fields.Many2one('res.company', default=lambda self:self.env.company.id)
 
+    accrual_entry_amount = fields.Float(string="Accrual Entry Amount")
+
     def action_view_journal_entry(self):
         """
         Return journal Entries

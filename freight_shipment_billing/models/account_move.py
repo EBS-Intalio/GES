@@ -42,6 +42,12 @@ class AccountMoveinherit(models.Model):
                                                                              ('move_type', '=', 'entry'),
                                                                              ('state', '=', 'posted')])
             for journal_entry in shipment_journal_entry:
+                entry_amount = self.operation_billing_id.accrual_entry_amount - journal_entry.amount_total
+                if self.move_type == 'in_invoice':
+                    entry_amount = self.operation_billing_id.accrual_entry_amount + journal_entry.amount_total
+
+                self.operation_billing_id.write({'accrual_entry_amount': entry_amount})
+
                 journal_entry.button_draft()
                 journal_entry.button_cancel()
 
@@ -63,10 +69,13 @@ class AccountMoveinherit(models.Model):
             if not mv.shipment_account_move_id and mv.operation_billing_id and mv.operation_billing_id.line_of_service_id:
                 freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_invoice_number', '=', mv.id)])
                 if mv.move_type == 'in_invoice':
+                    if mv.operation_billing_id.accrual_entry_amount <= 0:
+                        continue
+
                     freight_billing = self.env['freight.operation.billing'].sudo().search([('ar_bill_number', '=', mv.id)])
 
                 for billing in freight_billing:
-                    journal_id = self.company_id.accrual_journal_id
+                    journal_id = mv.company_id.accrual_journal_id
                     if not journal_id:
                         journal_id = self.env['account.journal'].sudo().search(
                             [('type', '=', 'general'), ('company_id', '=', mv.company_id.id)], limit=1)
@@ -89,6 +98,8 @@ class AccountMoveinherit(models.Model):
                         move = self.env['account.move'].create(account_move_vals)
                         move.action_post()
                         if mv.move_type == 'out_invoice':
+                            estimated_cost = mv.operation_billing_id.accrual_entry_amount
+                            mv.operation_billing_id.write({'accrual_entry_amount': estimated_cost + billing.estimated_cost})
                             billing.write({'accrual_entry_amount': billing.estimated_cost})
         return res
 
@@ -99,8 +110,9 @@ class AccountMoveinherit(models.Model):
         """
         journal_entry_lines = []
         if billing:
+            operation_billing_id = billing.operation_billing_id
             account_accrual_creditor_id = self.company_id.account_accrual_creditor_id
-            line_of_service_id = billing.operation_billing_id.line_of_service_id
+            line_of_service_id = operation_billing_id.line_of_service_id
             expense_account = line_of_service_id.property_account_expense_id
             if line_of_service_id.matrix_line_ids:
                 matrix_charge_code_line = line_of_service_id.matrix_line_ids.filtered(lambda x: x.charge_code == billing.charge_code and x.property_account_expense_id)
@@ -109,20 +121,29 @@ class AccountMoveinherit(models.Model):
 
             estimated_cost = billing.estimated_cost
             if self.move_type == 'in_invoice':
-                estimated_cost = billing.os_cost_amount
-                if estimated_cost > billing.accrual_entry_amount or (estimated_cost == 0 and billing.accrual_entry_amount != 0):
-                    estimated_cost = billing.accrual_entry_amount
+                if operation_billing_id.accrual_entry_amount <= 0:
+                    estimated_cost = 0
+                else:
+                    estimated_cost = billing.os_cost_amount
+                    if estimated_cost > billing.accrual_entry_amount and billing.invoice_created:
+                        estimated_cost = billing.accrual_entry_amount
+
+                    if estimated_cost > operation_billing_id.accrual_entry_amount or (estimated_cost == 0 and operation_billing_id.accrual_entry_amount != 0):
+                        estimated_cost = operation_billing_id.accrual_entry_amount
 
             if estimated_cost != 0:
                 credit_vals = self.prepare_journal_entry_line_vals(account_id=account_accrual_creditor_id.id, credit=estimated_cost)
                 if self.move_type == 'in_invoice':
                     credit_vals.update({'account_id': expense_account.id})
+                    operation_billing_id.write({
+                        'accrual_entry_amount': operation_billing_id.accrual_entry_amount - estimated_cost})
 
                 debit_vals = self.prepare_journal_entry_line_vals(account_id=expense_account.id, debit=estimated_cost)
                 if self.move_type == 'in_invoice':
                     debit_vals.update({'account_id': account_accrual_creditor_id.id})
 
                 journal_entry_lines = [(0, 0, debit_vals), (0, 0, credit_vals)]
+
         return journal_entry_lines
 
     def prepare_journal_entry_line_vals(self, account_id=False, debit=0.0, credit=0.0):
@@ -134,13 +155,13 @@ class AccountMoveinherit(models.Model):
         :return:
         """
         vals = {
-                    'account_id': account_id,
-                    'currency_id': (self.currency_id and self.currency_id.id) or (
-                                    self.journal_id and self.journal_id.currency_id and self.journal_id.currency_id.id) or (
-                                                   self.company_id.currency_id and self.company_id.currency_id.id),
-                    'debit': debit,
-                    'credit': credit
-                }
+                'account_id': account_id,
+                'currency_id': (self.currency_id and self.currency_id.id) or (
+                                self.journal_id and self.journal_id.currency_id and self.journal_id.currency_id.id) or (
+                                               self.company_id.currency_id and self.company_id.currency_id.id),
+                'debit': debit,
+                'credit': credit
+            }
         return vals
 
     def open_related_shipment(self):
