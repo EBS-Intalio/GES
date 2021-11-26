@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.1.51',
+    'version': '14.0.1.52',
 
     'category': 'Freight',
     'description': """
@@ -67,7 +67,8 @@
         "views/freight_container_service.xml",
         "views/freight_container_location.xml",
         "views/freight_doc_line.xml",
-	"views/freight_allocated_packlines_view.xml"
+	    "views/freight_allocated_packlines_view.xml",
+	    "views/account_account.xml",
     ],
     'installable': True,
     'application': True,

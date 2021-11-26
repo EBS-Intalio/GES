@@ -1,13 +1,25 @@
-from odoo import api, models, _, fields
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-
-
+from datetime import date
 
 
 class AccountPayemntEXT(models.Model):
     _inherit = 'account.payment'
 
+
+
     is_statement_create = fields.Boolean('Statement Created', compute='compute_reconciled_statement_create', store=True)
+
+    def action_post(self):
+        res = super(AccountPayemntEXT, self).action_post()
+        for rec in self:
+            if rec.payment_type == 'inbound':
+                rec.name = rec.journal_id.code + '/r/' + date.today().strftime('%y') + '/' + self.env[
+                               'ir.sequence'].next_by_code('account.payment.sequence.receive') or _('New')
+            else:
+                rec.name = rec.journal_id.code + '/s/' + date.today().strftime('%y') + '/' + self.env[
+                               'ir.sequence'].next_by_code('account.payment.sequence.send') or _('New')
+        return res
 
     @api.depends('reconciled_statement_ids')
     def compute_reconciled_statement_create(self):
@@ -16,7 +28,6 @@ class AccountPayemntEXT(models.Model):
             if rec.reconciled_statements_count != 0:
                 is_statement_create = True
             rec.is_statement_create = is_statement_create
-
 
     def create_statements(self):
         if 'draft' in self.mapped('state') or 'create' in self.mapped('state') or 'cancel' in self.mapped('state'):

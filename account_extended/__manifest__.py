@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Account Extended',
-    'version': '14.0.0.16',
+    'version': '14.0.0.17',
     'category': 'Accounting/Accounting',
     'description': """
                 Multi currency according to the company timezone
@@ -17,6 +17,7 @@
         'views/account_payment.xml',
         'wizard/res_config_settings_view.xml',
         'views/search_template_inherit.xml',
+        'data/sequence.xml',
     ],
     'installable': True,
     'application': True,

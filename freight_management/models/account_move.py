@@ -1,5 +1,6 @@
 from odoo import api, models, _, fields
-
+from odoo.exceptions import ValidationError
+from datetime import date
 
 class FreightAccountMove(models.Model):
     _inherit = 'account.move'
@@ -46,6 +47,13 @@ class AccountMoveLineInherit(models.Model):
                 'company_id': move_line.analytic_account_id.company_id.id or move_line.move_id.company_id.id,
             })
         return result
+
+    @api.constrains('account_id')
+    def is_shipment_account(self):
+        for rec in self:
+            if rec.move_id and (rec.move_id.freight_operation_id or rec.move_id.journal_operation_id or rec.move_id.operation_billing_id) and rec.account_id and not rec.account_id.is_shipment_account:
+                raise ValidationError(_("The account in line is not related to shipment"))
+            self.filtered(lambda x: x.account_id.is_shipment_account == True)
 
 class AccountAnalyticLineInherit(models.Model):
     _inherit = 'account.analytic.line'

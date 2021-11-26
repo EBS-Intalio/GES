@@ -2,6 +2,7 @@
 from docutils.nodes import field
 
 from odoo import api, fields, models, _
+from datetime import date
 
 
 class FreightOperation(models.Model):
@@ -452,6 +453,19 @@ class FreightOperation(models.Model):
         res = super(FreightOperation, self).create(values)
         if res.booking_id and res.booking_id.freight_order_id:
             res.booking_id.freight_order_id.shipment_no = res.name
+        if self._context and self._context.get('from_booking'):
+            branch = ''
+            if res.branch_id:
+                branch = res.branch_id.code
+            mode = ''
+            if res.transport:
+                if res.transport == 'land':
+                    mode = 'R'
+                else:
+                    mode = res.transport[0].upper()
+            direction = res.direction[0].upper() if res.direction else ''
+            res.name = branch + '-' + date.today().strftime('%y') + mode + direction + self.env[
+                'ir.sequence'].next_by_code('freight.operation.quotation') or _('New')
         return res
 
     def check_admin(self):
@@ -540,12 +554,12 @@ class FreightOperation(models.Model):
         Set Load and discharge according to the origin and destination
         :return:
         """
-        load_location_id = False
-        discharge_location_id = False
+        # load_location_id = False
+        # discharge_location_id = False
         if self.source_location_id:
-            load_location_id = self.source_location_id.id
+            self.load_location_id = self.source_location_id and self.source_location_id.id
         if self.destination_location_id:
-            discharge_location_id = self.destination_location_id.id
+            self.discharge_location_id = self.destination_location_id and self.destination_location_id.id
 
         direction = 'cross_state'
         if self.env.company.country_id:
@@ -565,9 +579,8 @@ class FreightOperation(models.Model):
                             self.source_location_id and self.source_location_id.country != self.env.company.country_id))):
                 direction = 'import'
 
-        self.write({'load_location_id': load_location_id,
-                    'discharge_location_id': discharge_location_id,
-                    'direction': direction})
+        self.direction = direction
+
 
     @api.depends('source_location_id', 'destination_location_id')
     def _compute_is_domestic(self):

@@ -48,3 +48,4 @@ from . import freight_container_service
 from . import freight_doc_line
 from . import freight_allocated_packlines
 from . import product_charge
+from . import account_account

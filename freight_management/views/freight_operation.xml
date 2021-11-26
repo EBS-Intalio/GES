@@ -62,7 +62,7 @@
 
                         <group>
                                 <group>
-                                    <field name="direction" readonly="1" options="{'horizontal': true}" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
+                                    <field name="direction" force_save="1" readonly="1" options="{'horizontal': true}" widget="radio" attrs="{'readonly':[('id','!=',False),('is_admin','!=',True)]}"/>
                                 </group>
                                 <group>
                                     <field name="service_level"/>

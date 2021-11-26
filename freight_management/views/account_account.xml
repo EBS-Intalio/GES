@@ -1,0 +1,13 @@
+<odoo>
+    <record model="ir.ui.view" id="view_account_account_form_inherit">
+        <field name="name">account.account.form.inherit</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='centralized']" position="after">
+                <field name="is_shipment_account"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

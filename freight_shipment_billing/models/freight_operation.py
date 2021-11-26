@@ -290,7 +290,8 @@ class FreightOperationInherit(models.Model):
                 continue
             journal_id = company.deferral_journal_id.id
             if date.today().day == monthrange(date.today().year, date.today().month)[1] or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
-                for shipment in self.search([('company_id','=',company.id)]):
+            #     for shipment in self.search([('id','=',34)]):
+                for shipment in (self.filtered(lambda x:x.company_id == company) if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([('company_id','=',company.id)])):
                     customer_invoices_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_invoice_number and x.ar_invoice_number.state == 'posted')
                     vendor_bill_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_bill_number and x.ar_bill_number.state == 'posted')
                     # if vendor_bill_ids or customer_invoices_ids:
@@ -363,7 +364,7 @@ class FreightOperationInherit(models.Model):
                 :return:
                 """
         if date.today().day == 1 or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
-            for shipment in self.search([]):
+            for shipment in (self if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([])):
                 for journal_entry in self.env['account.move'].search([('journal_operation_id','=',shipment.id),('move_type','=','entry'),('created_from_cron','=',True),('is_reversed','=',False)]):
                     journal_entry.is_reversed = True
                     default_values_list = [{
@@ -371,6 +372,9 @@ class FreightOperationInherit(models.Model):
                         'ref': _('Reversal of: %s') % journal_entry.name,
                     }]
                     journal_entry_reversed = journal_entry._reverse_moves(default_values_list, cancel=True)
+                    # self.env['ir.sequence'].next_by_code(
+                    #     'account.move.sequence.entry')
+                    journal_entry_reversed.with_context({'reversal_journal_entry': True}).action_create()
                     journal_entry_reversed.is_reversed = True
                     journal_entry_reversed.created_from_cron = True
 
