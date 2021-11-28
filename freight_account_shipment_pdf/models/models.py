@@ -13,7 +13,7 @@ class AccountMove(models.Model):
 
         date = self._context.get('date') or fields.Date.today()
         amount_conferted = line_currency._convert(amount, USD, company, date)
-        return amount_conferted
+        return round(amount_conferted,3)
 
     def get_shipment(self):
         shipment_ids = []
