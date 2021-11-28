@@ -549,6 +549,34 @@ class FreightOperationBilling(models.Model):
                 if rec.bill_line_id.move_id.state == 'posted':
                     raise ValidationError("You cannot Update a posted Bill")
 
+    def create(self, vals_list):
+        res = super(FreightOperationBilling, self).create(vals_list)
+        for vals in vals_list:
+            operation_billing_id = self.env['freight.operation'].browse(vals.get('operation_billing_id'))
+            total_estimated_cost = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('estimated_cost'))
+            total_os_cost_amount = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('local_cost_amount'))
+            if total_os_cost_amount > total_estimated_cost and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Cost is greater than Total Estimated Value")
+
+            if total_os_cost_amount > total_estimated_cost and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                operation_billing_id.sudo().message_post(body=" Total Acuatl Cost per Product > Estimated cost value but user has privilege", type='notification')
+
+        return res
+
+    def write(self, vals):
+        res = super(FreightOperationBilling, self).write(vals)
+        for record in self:
+            total_estimated_cost = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('estimated_cost'))
+            total_os_cost_amount = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('local_cost_amount'))
+
+            if total_os_cost_amount > total_estimated_cost and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Cost is greater than Total Estimated Value")
+
+            if total_os_cost_amount > total_estimated_cost and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                record.operation_billing_id.sudo().message_post(body=" Total Acuatl Cost per Product > Estimated cost value but user has privilege", type='notification')
+
+
+        return res
     def action_post_sell(self):
         active_ids = self.env.context.get('active_ids')
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(

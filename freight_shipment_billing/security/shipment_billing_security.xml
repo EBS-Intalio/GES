@@ -8,4 +8,13 @@
         <field name="name">Manager of Estimated Revenue and Cost</field>
         <field name="category_id" ref="module_freight_shipment_billing_estimated" />
     </record>
+
+    <record model="ir.module.category" id="module_freight_shipment_billing_estimated_bypass">
+        <field name="name">Estimated Revenue and Cost Bypass</field>
+        <field name="sequence">32</field>
+    </record>
+    <record id="group_estimated_revenue_cost_bypass" model="res.groups">
+        <field name="name">Bypass Estimated Revenue and Cost</field>
+        <field name="category_id" ref="module_freight_shipment_billing_estimated_bypass" />
+    </record>
 </odoo>
