@@ -555,11 +555,21 @@ class FreightOperationBilling(models.Model):
             operation_billing_id = self.env['freight.operation'].browse(vals.get('operation_billing_id'))
             total_estimated_cost = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('estimated_cost'))
             total_os_cost_amount = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('local_cost_amount'))
+            total_estimated_revenue = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('estimated_revenue'))
+            total_os_sell_amount = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('local_sell_amount'))
+
+
             if total_os_cost_amount > total_estimated_cost and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
-                raise ValidationError("Total Actual Cost is greater than Total Estimated Value")
+                raise ValidationError("Total Actual Cost is greater than Total Estimated Cost")
+
+            if total_os_sell_amount < total_estimated_revenue and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Sell is less than Total Estimated Revenue")
 
             if total_os_cost_amount > total_estimated_cost and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
-                operation_billing_id.sudo().message_post(body=" Total Acuatl Cost per Product > Estimated cost value but user has privilege", type='notification')
+                operation_billing_id.sudo().message_post(body="Total Actual Cost per Product > Estimated cost value but user has privilege", type='notification')
+
+            if total_os_sell_amount < total_estimated_revenue and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                operation_billing_id.sudo().message_post(body="Total Actual Sell per Product < Estimated Revenue value but user has privilege", type='notification')
 
         return res
 
@@ -568,15 +578,23 @@ class FreightOperationBilling(models.Model):
         for record in self:
             total_estimated_cost = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('estimated_cost'))
             total_os_cost_amount = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('local_cost_amount'))
+            total_estimated_revenue = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('estimated_revenue'))
+            total_os_sell_amount = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('local_sell_amount'))
 
             if total_os_cost_amount > total_estimated_cost and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
-                raise ValidationError("Total Actual Cost is greater than Total Estimated Value")
+                raise ValidationError("Total Actual Cost is greater than Total Estimated Cost")
+
+            if total_os_sell_amount < total_estimated_revenue and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Sell is less than Total Estimated Revenue")
 
             if total_os_cost_amount > total_estimated_cost and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
-                record.operation_billing_id.sudo().message_post(body=" Total Acuatl Cost per Product > Estimated cost value but user has privilege", type='notification')
+                record.operation_billing_id.sudo().message_post(body="Total Acuatl Cost per Product > Estimated cost value but user has privilege", type='notification')
 
+            if total_os_sell_amount < total_estimated_revenue and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                record.operation_billing_id.sudo().message_post(body="Total Actual Sell per Product < Estimated Revenue value but user has privilege", type='notification')
 
         return res
+
     def action_post_sell(self):
         active_ids = self.env.context.get('active_ids')
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
