@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="console_profit_loss_summary_lines_form_view">
+            <field name="name">console.profit.loss.summary.lines.form.view</field>
+            <field name="model">console.profit.loss.summary.lines</field>
+            <field name="arch" type="xml">
+                <form string="Console Profit/Loss Summary">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="job_number" required="1"/>
+                                <field name="charge_code"/>
+                                <field name="branch"/>
+                                <field name="department"/>
+                                <field name="transaction_no"/>
+                                <field name="job_local_ref"/>
+                                <field name="invoice_date"/>
+                                <field name="recognized_date"/>
+                            </group>
+                            <group>
+                                <field name="date_reversed"/>
+                                <field name="audit_details"/>
+                                <field name="post_date"/>
+                                <field name="amount"/>
+                                <field name="ledger"/>
+                                <field name="org"/>
+                                <field name="audited_by"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="console_profit_loss_summary_lines_tree_view">
+            <field name="name">console.profit.loss.summary.lines.tree.view</field>
+            <field name="model">console.profit.loss.summary.lines</field>
+            <field name="arch" type="xml">
+                <tree string="Console Profit/Loss Summary">
+                    <field name="job_number" required="1"/>
+                    <field name="branch"/>
+                    <field name="department"/>
+                    <field name="transaction_no"/>
+                    <field name="job_local_ref"/>
+                    <field name="invoice_date"/>
+                    <field name="recognized_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="console_profit_loss_summary_lines_action">
+            <field name="name">Console Profit/Loss Summary</field>
+            <field name="res_model">console.profit.loss.summary.lines</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Console Profit/Loss Summary.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -48,4 +48,7 @@ from . import freight_container_service
 from . import freight_doc_line
 from . import freight_allocated_packlines
 from . import product_charge
+from . import freight_console_costing
+from . import console_profit_loss_details_lines
+from . import console_profit_loss_summary_lines
 from . import account_account

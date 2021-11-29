@@ -332,7 +332,7 @@ class FreightBooking(models.Model):
                         'default_container_ids': [(6, 0, self.container_ids.ids)],
                         'default_service_details_ids': service_details,
                         'default_reference_ids': reference_vals_lst,
-                        'default_branch_id': self.branch_id.id,
+                        'default_operating_unit_id': self.branch_id.id,
                         'default_service_level': self.service_level,
                         'from_booking':True}),
 

@@ -27,5 +27,6 @@ class FreightPreAdvice(models.Model):
     order_ids = fields.Many2many('freight.order', string='Order', copy=False)
     container_ids = fields.Many2many('freight.container', string='Container', copy=False)
     is_canceled = fields.Boolean(string="Canceled")
+    routing_ids = fields.One2many('freight.routing', 'pre_advice_id', string="Routing")
 
 

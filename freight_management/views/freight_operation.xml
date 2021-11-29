@@ -66,7 +66,7 @@
                                 </group>
                                 <group>
                                     <field name="service_level"/>
-                                    <field name="branch_id" required="1"/>
+<!--                                    <field name="branch_id" required="1"/>-->
                                 </group>
                         </group>
 
@@ -954,8 +954,6 @@
                                                     <field name="delivery_pc_distance_type"/>
 
                                                 </div>
-
-
                                             </group>
                                             <group string="Address">
                                                 <field name="delivery_address" nolabel="1"/>
@@ -963,6 +961,235 @@
                                         </group>
                                     </page>
                                 </notebook>
+                            </page>
+                            <page name="packing" string="Packing">
+                                <group string="Container">
+                                    <field name="container_ids" nolabel="1"/>
+                                </group>
+                                <group string="Pack Lines">
+                                    <field name="allocation_pack_line" nolabel="1"/>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="commodity_id"/>
+                                        <field name="hs_country_code"/>
+                                    </group>
+                                    <group>
+                                        <field name="origin"/>
+                                        <field name="ref_number"/>
+                                        <field name="goods_description"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Dangerous Goods">
+                                        <field name="dg_class"/>
+                                        <field name="flash_point"/>
+                                        <field name="undg_contact"/>
+                                    </group>
+                                    <group string="Temperature Controlled">
+                                        <field name="is_temp_controlled"/>
+                                        <label for="min_temp"/>
+                                        <div class="o_row">
+                                            <field name="min_temp"/>
+                                            <field name="min_temp_type"/>
+                                        </div>
+                                        <label for="max_temp"/>
+                                        <div class="o_row">
+                                            <field name="max_temp"/>
+                                            <field name="max_temp_type"/>
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Outer Pack Total">
+                                        <field name="outer_package_total"/>
+                                        <label for="outer_package_weight"/>
+                                        <div class="o_row">
+                                            <field name="outer_package_weight"/>
+                                            <field name="outer_package_weight_uom"/>
+                                        </div>
+                                        <label for="outer_package_volume"/>
+                                        <div class="o_row">
+                                            <field name="outer_package_volume"/>
+                                            <field name="outer_package_volume_uom"/>
+                                        </div>
+                                    </group>
+                                    <group string="Shipment Total">
+                                        <field name="shipment_total_package"/>
+                                        <label for="shipment_weight"/>
+                                        <div class="o_row">
+                                            <field name="shipment_weight"/>
+                                            <field name="shipment_weight_uom"/>
+                                        </div>
+                                        <label for="shipment_volume"/>
+                                        <div class="o_row">
+                                            <field name="shipment_volume"/>
+                                            <field name="shipment_volume_uom"/>
+                                        </div>
+                                    </group>
+                                </group>
+                                <notebook>
+                                    <page name="packing_1" string="Packing">
+                                        <group>
+                                            <group>
+                                                <label for="packs"/>
+                                                <div class="o_row">
+                                                    <field name="packs"/>
+                                                    <field name="packs_type"/>
+                                                </div>
+                                                <label for="weight"/>
+                                                <div class="o_row">
+                                                    <field name="weight"/>
+                                                    <field name="weight_uom"/>
+                                                </div>
+                                                <field name="length"/>
+                                                <field name="width"/>
+                                            </group>
+                                            <group>
+                                                <label for="packing_volume"/>
+                                                <div class="o_row">
+                                                    <field name="packing_volume"/>
+                                                    <field name="packing_volume_uom"/>
+                                                </div>
+                                                <label for="height"/>
+                                                <div class="o_row">
+                                                    <field name="height"/>
+                                                    <field name="height_uom"/>
+                                                </div>
+                                            </group>
+                                        </group>
+                                        <group string="Last Known Transit Warehouse">
+                                            <group>
+                                                <field name="packing_transit_warehouse_id"/>
+                                                <field name="status"></field>
+                                                <field name="date"/>
+                                                <field name="outturn"/>
+                                                <field name="damaged"/>
+                                                <field name="pillaged"/>
+                                            </group>
+                                            <group>
+                                                <label for="outturned_weight"/>
+                                                <div class="o_row">
+                                                    <field name="outturned_weight"/>
+                                                    <field name="outturned_uom"/>
+                                                </div>
+                                                <label for="outturned_volume"/>
+                                                <div class="o_row">
+                                                    <field name="outturned_volume"/>
+                                                    <field name="outturned_volume_uom"/>
+                                                </div>
+                                                <label for="outturned_height"/>
+                                                <div class="o_row">
+                                                    <field name="outturned_height"/>
+                                                    <field name="outturned_height_uom"/>
+                                                </div>
+                                                <field name="outturned_length"/>
+                                                <field name="outturned_width"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <group string="Outturn Comments">
+                                                <field name="outturned_comments" nolabel="1"/>
+                                            </group>
+                                            <group string="Marks &amp; Number">
+                                                <field name="marks_and_number" nolabel="1"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                    <page name="location" string="Location"></page>
+                                    <page name="custom_fields" string="Custom Fields">
+                                        <group>
+                                            <group>
+                                                <field name="custom_flag_1"/>
+                                            </group>
+                                            <group>
+                                                <field name="custom_flag_2"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <group>
+                                                <field name="custom_tax_1"/>
+                                                <field name="custom_tax_2"/>
+                                                <field name="custom_tax_3"/>
+                                                <field name="custom_tax_4"/>
+                                            </group>
+                                            <group>
+                                                <field name="custom_date_1"/>
+                                                <field name="custom_date_2"/>
+                                                <field name="custom_decimal_1"/>
+                                                <field name="custom_decimal_2"/>
+                                            </group>
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </page>
+                            <page name="related_shipment" string="Related Shipment">
+                                <group>
+                                    <group>
+                                        <field name="master_lead"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="doc_data" string="Doc Data">
+                                <notebook>
+                                    <page name="system_defined_data" string="System Defined Data">
+                                        <group>
+                                            <group>
+                                                <field name="document_type"/>
+                                            </group>
+                                            <group>
+                                                <field name="always_show_common_fields"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <field name="shipmen_defined_lines" nolabel="1"/>
+                                        </group>
+                                    </page>
+                                    <page name="user_defined_data" string="User Defined Data">
+                                        <notebook>
+                                            <page name="bill_of_loading" string="Bill Of Loading">
+                                                <group>
+                                                    <group>
+                                                        <field name="consignee_shipper"/>
+                                                        <field name="consignee_importer"/>
+                                                        <field name="notify_party"/>
+                                                        <field name="delivery_agent_address"/>
+                                                        <field name="delivery_agent_fax"/>
+                                                        <field name="port_place_receipt"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="port_of_destination_delivery"/>
+                                                        <field name="port_of_loading"/>
+                                                        <field name="port_of_discharge"/>
+                                                        <field name="freight_payable_at"/>
+                                                        <field name="destination"/>
+                                                        <field name="as_agent_option"/>
+                                                    </group>
+                                                </group>
+                                                <group>
+                                                    <group>
+                                                        <field name="as_agent_details"/>
+                                                        <field name="place_of_issue"/>
+                                                        <field name="date_of_issue"/>
+                                                        <field name="shipper_load_and_count"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="consider_shipper_phone"/>
+                                                        <field name="access_value_declaration"/>
+                                                        <field name="sending_forwarder"/>
+                                                        <field name="freight_amount"/>
+                                                    </group>
+                                                </group>
+                                            </page>
+                                            <page name="miscellaneous" string="Miscellaneous"></page>
+                                        </notebook>
+                                    </page>
+                                </notebook>
+                            </page>
+                            <page name="addresses" string="Addresses">
+                                <group>
+                                    <field name="address_ids" nolabel="1"/>
+                                </group>
                             </page>
                     </notebook>
                     </sheet>

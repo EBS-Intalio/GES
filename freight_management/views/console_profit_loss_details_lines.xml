@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="console_profit_loss_detail_lines_form_view">
+            <field name="name">console.profit.loss.detail.lines.form.view</field>
+            <field name="model">console.profit.loss.detail.lines</field>
+            <field name="arch" type="xml">
+                <form string="Console Profit/Loss">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="trans_type" required="1"/>
+                                <field name="charge_code"/>
+                                <field name="job_number"/>
+                                <field name="branch"/>
+                                <field name="department"/>
+                                <field name="job_local_ref"/>
+                                <field name="revenue"/>
+                            </group>
+                            <group>
+                                <field name="wip"/>
+                                <field name="cost"/>
+                                <field name="accrual"/>
+                                <field name="profit_loss"/>
+                                <field name="margin"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="console_profit_loss_detail_lines_tree_view">
+            <field name="name">console.profit.loss.detail.lines.tree.view</field>
+            <field name="model">console.profit.loss.detail.lines</field>
+            <field name="arch" type="xml">
+                <tree string="Console Profit/Loss">
+                    <field name="job_number" required="1"/>
+                    <field name="branch"/>
+                    <field name="department"/>
+                    <field name="job_local_ref"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="console_profit_loss_detail_lines_action">
+            <field name="name">Console Profit/Loss</field>
+            <field name="res_model">console.profit.loss.detail.lines</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Console Profit/Loss.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

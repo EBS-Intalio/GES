@@ -387,8 +387,13 @@
                         <page name="container" string="Containers">
                             <field name="container_ids" nolabel="1"/>
                         </page>
-			<page name="packing" string="Packing">
-                            <field name="container_ids" nolabel="1" readonly="1"/>
+			            <page name="packing" string="Packing">
+                            <group string="Container">
+                                <field name="container_ids" nolabel="1" />
+                            </group>
+                            <group string="Allocated Packlines">
+                                <field name="allocated_line_ids" nolabel="1"/>
+                            </group>
                         </page>
                         <page name="doc_data" string="Doc Data">
                             <notebook>
@@ -407,9 +412,75 @@
 
                                     </group>
                                 </page>
-                                <page name="user_defined_data" string="User Defined Data">
+<!--                                <page name="user_defined_data" string="User Defined Data">-->
+<!--                                    <notebook>-->
+<!--                                        <page name="miscellaneous" string="miscellaneous"></page>-->
+<!--                                    </notebook>-->
+<!--                                </page>-->
+                            </notebook>
+                        </page>
+                        <page name="accounting" string="Accounting">
+                            <notebook>
+                                <page name="ar_and_ap_invoice" string="AR and AP Invoices">
                                     <notebook>
-                                        <page name="miscellaneous" string="miscellaneous"></page>
+                                        <page name="ar_invoice" string="AR Invoice">
+                                            <group string="AR Invoice">
+                                                <field name="ar_invoice_ids" nolabel="1"/>
+                                            </group>
+                                        </page>
+                                        <page name="ap_invoice" string="AP Invoice">
+                                            <group string="AP Invoice">
+                                                <field name="ap_invoice_ids" nolabel="1"/>
+                                            </group>
+                                        </page>
+                                    </notebook>
+                                </page>
+                                <page name="console_costing" string="Console Costing">
+                                    <group>
+                                        <group>
+                                            <field name="branch_id"/>
+                                            <field name="recognized_charges"/>
+                                        </group>
+                                        <group>
+                                            <field name="charge_code"/>
+                                            <field name="department"/>
+                                        </group>
+                                    </group>
+                                    <group string="Cost Summary">
+                                        <field name="console_costing_ids" nolabel="1"/>
+                                    </group>
+                                    <group>
+                                        <group>
+                                            <field name="recognized_revenue"/>
+                                            <field name="recognized_wip"/>
+                                            <field name="recognized_cost"/>
+                                            <field name="recognized_accrual"/>
+                                            <field name="recognized_profit_loss"/>
+                                            <field name="recognized_profit_rev"/>
+                                            <field name="recognized_profit_cost"/>
+                                        </group>
+                                        <group>
+                                            <field name="not_recognized_wip"/>
+                                            <field name="not_recognized_cost"/>
+                                            <field name="not_recognized_accrual"/>
+                                            <field name="not_recognized_profit_loss"/>
+                                            <field name="not_recognized_profit_rev"/>
+                                            <field name="not_not_recognized_profit_cost"/>
+                                        </group>
+                                    </group>
+                                </page>
+                                <page name="console_profit_loss" string="Console Profit/Loss">
+                                    <notebook>
+                                        <page name="summary" string="Summary">
+                                            <group>
+                                                <field name="console_pf_ls_summary_ids" nolabel="1"/>
+                                            </group>
+                                        </page>
+                                        <page name="details" string="Details">
+                                            <group>
+                                                <field name="console_profit_loss_detail_ids" nolabel="1"/>
+                                            </group>
+                                        </page>
                                     </notebook>
                                 </page>
                             </notebook>

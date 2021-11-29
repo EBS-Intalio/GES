@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Shipment Billing',
-    'version': '1.0.0.6',
+    'version': '1.0.0.7',
     'category': 'Freight',
     'description': """
                 Freight Shipment Billing

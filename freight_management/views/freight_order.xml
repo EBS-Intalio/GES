@@ -209,6 +209,24 @@
                                     <field name="consol_details_ids" nolabel="1"/>
                                 </group>
                             </page>
+                            <page name="partner_addresses" string="Addresses">
+                                <group string="Addresses">
+                                    <field name="partner_address_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name="doc_data" string="Doc Data">
+                                <group>
+                                    <group>
+                                        <field name="document_type"/>
+                                    </group>
+                                    <group>
+                                        <field name="always_show_common_field"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="freight_doc_line_ids" nolabel="1"/>
+                                </group>
+                            </page>
 <!--                            <page name="additional_details" string="Additional Details">-->
 <!--                            </page>-->
                             <page name="product_qty_summary" string="Product Quantity Summary">

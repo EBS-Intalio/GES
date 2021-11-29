@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Request Management',
-    'version': '14.0.1.52',
+    'version': '14.0.1.53',
 
     'category': 'Freight',
     'description': """
@@ -68,6 +68,9 @@
         "views/freight_container_location.xml",
         "views/freight_doc_line.xml",
 	    "views/freight_allocated_packlines_view.xml",
+        "views/console_profit_loss_details_lines.xml",
+        "views/console_profit_loss_summary_lines.xml",
+        "views/freight_console_costing.xml",
 	    "views/account_account.xml",
     ],
     'installable': True,

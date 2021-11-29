@@ -439,7 +439,140 @@ class FreightOperation(models.Model):
     freight_order_id = fields.Many2one('freight.order', string="Order")
     source_location_id = fields.Many2one('freight.port', 'Source Location', index=True, required=False)
     destination_location_id = fields.Many2one('freight.port', 'Destination Location', index=True, required=False)
-    branch_id = fields.Many2one('operating.unit', string="Branch")
+    # branch_id = fields.Many2one('operating.unit', string="Branch")
+
+    # NEW FIELDS ACCORDING TO FILE
+    freight_doc_line_ids = fields.One2many('freight.doc.line', 'shipment_id', string='Doc Line', copy=False)
+    allocation_pack_line = fields.One2many('freight.allocated.packlines', 'shipment_id', string="Allocation Packlines")
+    hs_country_code = fields.Many2one('res.country', string="Hs Country Code")
+    origin = fields.Many2one('res.country', string="Origin")
+    goods_description = fields.Text(string="Goods Description")
+    ref_number = fields.Char(string="Ref Number")
+    address_ids = fields.Many2many('res.partner', string="Addresses")
+    freight_amount = fields.Float(string="Freight Amount")
+    sending_forwarder = fields.Char(string="Sending Forwarder")
+    access_value_declaration = fields.Char(string="Access Value Declaration")
+    consider_shipper_phone = fields.Char(string="Consignor – Shipper Phone")
+    shipper_load_and_count = fields.Selection([('count', 'Shipper Load And Count'),
+                                               ('sealed', 'Shipper Load And Count and Sealed')],
+                                              string="Shipper Load And Count")
+    date_of_issue = fields.Date(string="Date Of Issue")
+    place_of_issue = fields.Char(string="Place Of Issue")
+    as_agent_details = fields.Char(string="As Agent Details")
+    as_agent_option = fields.Selection([('carrier', 'As Carrier'), ('agent', 'As Agent'),
+                                        ('agent_carrier', 'As Agent For Carrier'), ('agent_for', 'As Agent For')],
+                                       string="As Agent Option")
+    destination = fields.Char(string="Destination")
+    freight_payable_at = fields.Char(string="Freight Payable At")
+    port_of_discharge = fields.Char(string="Port Of Discharge")
+    port_of_loading = fields.Char(string="Port Of Loading")
+    port_of_destination_delivery = fields.Char(string="Destination Port – Place Of Delivery")
+    port_place_receipt = fields.Char(string="Origin Port – Place Of Receipt")
+    delivery_agent_fax = fields.Char(string="Delivery Agent Fax")
+    delivery_agent_address = fields.Char(string="Delivery Agent Address")
+    notify_party = fields.Char(strin="Notify Party")
+    consignee_importer = fields.Char(string="Consignee – Importer")
+    consignee_shipper = fields.Char(string="Consignor – Shipper")
+    always_show_common_fields = fields.Boolean(string="Always Show Common Fields")
+    document_type = fields.Selection([('all', 'All'), ('export_letter', 'Export Letter'),
+                                      ('commercial_inv', 'Commercial Invoice'),
+                                      ('shipper_letter', 'Shippers Letter Of Instruction'),
+                                      ('eur_1', 'EUR. 1'), ('bank_draft', 'Bank Draft'),
+                                      ('documentary', 'Documentary Collection Form'),
+                                      ('beneficiary', 'Beneficiary Certificate')], string="Document Type")
+    master_lead = fields.Many2one('freight.operation', string="Master/ Lead")
+    custom_tax_1 = fields.Char(string="Custom Text 1")
+    custom_tax_2 = fields.Char(string="Custom Text 2")
+    custom_tax_3 = fields.Char(string="Custom Text 3")
+    custom_tax_4 = fields.Char(string="Custom Text 4")
+    custom_date_1 = fields.Date(string="Custom Date 1")
+    custom_date_2 = fields.Date(string="Custom Date 2")
+    custom_decimal_1 = fields.Float(string="Custom Decimal 1")
+    custom_decimal_2 = fields.Float(string="Custom Decimal 2")
+    custom_flag_1 = fields.Boolean(string="Custom Flag 1")
+    custom_flag_2 = fields.Boolean(string="Custom Flag 2")
+    commodity_id = fields.Many2one('freight.commodity', string='Commodity Code')
+    dg_class = fields.Selection([('class_1', 'Class 1'), ('class_1_1a', 'Class 1.1A'), ('class_1_1b', 'Class 1.1B'),
+                                 ('class_1_1c', 'Class 1.1C'), ('class_1_1d', 'Class 1.1D'),
+                                 ('class_1_1e', 'Class 1.1E'), ('class_1_1f', 'Class 1.1F'),
+                                 ('class_1_1g', 'Class 1.1G'), ('class_1_1j', 'Class 1.1J'),
+                                 ('class_1_1l', 'Class 1.1L'), ('class_1_2b', 'Class 1.2B'),
+                                 ('class_1_2c', 'Class 1.2C'), ('class_1_2d', 'Class 1.2D'),
+                                 ('class_1_2e', 'Class 1.2E'), ('class_1_2f', 'Class 1.2F'),
+                                 ('class_1_2g', 'Class 1.2G'), ('class_1_2h', 'Class 1.2H'),
+                                 ('class_1_2j', 'Class 1.2J'), ('class_1_2k', 'Class 1.2K'),
+                                 ('class_1_2l', 'Class 1.2L'), ('class_1_3c', 'Class 1.3C'),
+                                 ('class_1_3g', 'Class 1.3G'), ('class_1_3h', 'Class 1.3H'),
+                                 ('class_1_3j', 'Class 1.3J'), ('class_1_3k', 'Class 1.3K'),
+                                 ('class_1_3l', 'Class 1.3L'), ('class_1_4b', 'Class 1.4B'),
+                                 ('class_1_4c', 'Class 1.4C'), ('class_1_4d', 'Class 1.4D'),
+                                 ('class_1_4e', 'Class 1.4E'), ('class_1_4f', 'Class 1.4F'),
+                                 ('class_1_4g', 'Class 1.4G'), ('class_1_4s', 'Class 1.4S'),
+                                 ('class_1_5d', 'Class 1.5D'), ('class_1_6n', 'Class 1.6N'),
+                                 ('class_2', 'Class 2'), ('class_2_1', 'Class 2.1'), ('class_2_2', 'Class 2.2'),
+                                 ('class_2_3', 'Class 2.3'), ('class_3', 'Class 3'), ('class_4', 'Class 4'),
+                                 ('class_4_1', 'Class 4.1'), ('class_4_2', 'Class 4.2'), ('class_4_3', 'Class 4.3'),
+                                 ('class_5_1', 'Class 5.1'), ('class_5_2', 'Class 5.2'), ('class_6', 'Class 6'),
+                                 ('class_6_1', 'Class 6.1'), ('class_6_2', 'Class 6.2'), ('class_7', 'Class 7'),
+                                 ('class_8', 'Class 8'), ('class_9', 'Class 9'),
+                                 ('combustible_liquid', 'Combustible Liquid')], string="DG Class")
+    flash_point = fields.Float(string="Flash Point")
+    undg_contact = fields.Many2one('res.partner', string="UNDG Contact")
+    is_temp_controlled = fields.Boolean(string="Is Temperature Controlled")
+    min_temp = fields.Float(string="Min. Temp.")
+    min_temp_type = fields.Selection([('cel', 'Celsius'), ('fahrenheit', 'Fahrenheit')], string="Min. Temp. Type")
+    max_temp = fields.Float(string="Max. Temp.")
+    max_temp_type = fields.Selection([('cel', 'Celsius'), ('fahrenheit', 'Fahrenheit')], string="Max. Temp. Type")
+    outer_package_total = fields.Float(string="Outer Packages")
+    outer_package_weight = fields.Float(string="Weight")
+    outer_package_weight_uom = fields.Many2one('uom.uom', string="Outer Package Weight UOM")
+    outer_package_volume = fields.Float(string="Volume")
+    outer_package_volume_uom = fields.Many2one('uom.uom', string="Outer Package Volume UOM")
+    shipment_total_package = fields.Float(string="Outer Packages")
+    shipment_weight = fields.Float(string="Weight")
+    shipment_weight_uom = fields.Many2one('uom.uom', string="Shipment Weight UOM")
+    shipment_volume_uom = fields.Many2one('uom.uom', string="Shipment Volume UOM")
+    shipment_volume = fields.Float(string="Volume")
+    packs = fields.Integer(string="Packs")
+    packs_type = fields.Selection([('bag', 'bag'), ('bulk_bag', 'Bulk Bag'), ('break_bulk', 'Break Bulk'),
+                                   ('bale', 'Bale'), ('compressed', 'compressed'), ('bale', 'Bale'),
+                                   ('uncompressed', 'Uncompressed'), ('bundle', 'Bundle'), ('bottle', 'Bottle'),
+                                   ('box', 'Box'), ('basket', 'Basket'), ('case', 'Case'), ('col', 'Col'),
+                                   ('creade', 'Creade'), ('crate', 'Crate'), ('carton', 'Carton'),
+                                   ('cylnder', 'Cylnder'), ('dozen', 'Dozen'), ('drum', 'Drum'),
+                                   ('envelope', 'Envelope'), ('gross', 'Gross'), ('keg', 'KEG'), ('mix', 'Mix'),
+                                   ('pal', 'Pal'), ('piece', 'Piece'), ('package', 'Package'), ('pallet', 'Pallet'),
+                                   ('panel', 'Panel'), ('rails', 'Rails'), ('reel', 'Reel'), ('rol', 'Rol'),
+                                   ('sheet', 'Sheet'), ('skid', 'Skid'), ('spool', 'Spool'), ('tote', 'Tote'),
+                                   ('tube', 'Tube'), ('unit', 'Unit')], string="Packs Type")
+    weight = fields.Float(string="Weight")
+    weight_uom = fields.Many2one('uom.uom', string="Weight UOM")
+    packing_volume_uom = fields.Many2one('uom.uom', string="Volume UOM")
+    packing_volume = fields.Float(string="Volume")
+    length = fields.Float(string="Length")
+    width = fields.Float(string="Width")
+    height = fields.Float(string="Height")
+    height_uom = fields.Many2one('uom.uom', string="Height UOM")
+    packing_transit_warehouse_id = fields.Many2one('res.partner', string="Transit Warehouse")
+    status = fields.Selection([('received', 'Received'),
+                               ('dispatched', 'Dispatched')], string="Status")
+    date = fields.Date(string="Date")
+    outturn = fields.Integer(string="Outturn")
+    damaged = fields.Integer(string="Damaged")
+    pillaged = fields.Integer(string="Pillaged")
+
+    outturned_weight = fields.Float(string="Weight")
+    outturned_uom = fields.Many2one('uom.uom', string="Weight UOM")
+    outturned_volume_uom = fields.Many2one('uom.uom', string="Volume UOM")
+    outturned_volume = fields.Float(string="Outturned Volume")
+    outturned_length = fields.Float(string="Length")
+    outturned_width = fields.Float(string="Outturn Width")
+    outturned_height = fields.Float(string="Height")
+    outturned_height_uom = fields.Many2one('uom.uom', string="Volume UOM")
+    outturned_comments = fields.Text(string="Outturn Comments")
+    marks_and_number = fields.Text(string="Marks & Number")
+
+    shipmen_defined_lines = fields.One2many('freight.doc.line', 'shipment_id', string="System Defined Lines")
 
     @api.model
     def create(self, values):

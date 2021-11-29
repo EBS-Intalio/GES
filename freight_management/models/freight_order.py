@@ -254,6 +254,12 @@ class FreightOrder(models.Model):
     planned_container_ids = fields.Many2many('freight.container',string='Planned Container')
     branch_id = fields.Many2one('operating.unit', string="Branch")
 
+    # New Fields Added
+    partner_address_ids = fields.Many2many('res.partner', string="Addresses")
+    freight_doc_line_ids = fields.One2many('freight.doc.line', 'freight_order_id', string='Doc Line', copy=False)
+    document_type = fields.Selection([('all', 'All')], default='all', string="Document Type")
+    always_show_common_field = fields.Boolean(string="Always Show Common Field")
+
     def _get_order_count(self):
         for rec in self:
             split_order_count = len(self.search([('split_order_id','=',rec.id)]).ids)
@@ -324,7 +330,7 @@ class FreightOrder(models.Model):
             'gross_weight': self.gross_weight,
             'weight_type': self.weight_type,
             'freight_order_id': self.id,
-            'branch_id': self.branch_id.id
+            'operating_unit_id': self.branch_id.id
         }
         freight_operation = self.env['freight.operation'].create(vals)
         self.write({'state': 'converted', 'shipment_no': freight_operation.name})
