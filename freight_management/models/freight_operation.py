@@ -588,8 +588,8 @@ class FreightOperation(models.Model):
             res.booking_id.freight_order_id.shipment_no = res.name
         if self._context and self._context.get('from_booking'):
             branch = ''
-            if res.branch_id:
-                branch = res.branch_id.code
+            if res.operating_unit_id:
+                branch = res.operating_unit_id.code
             mode = ''
             if res.transport:
                 if res.transport == 'land':
