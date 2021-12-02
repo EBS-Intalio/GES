@@ -15,7 +15,7 @@
                     <field name="shipment_line" string="JOB#:Name"/>
                     <field name="invoice_date_period" />
                     <field name="vat" />
-                    <field name="partner_id"/>
+                    <field name="rep_partner_id"/>
                     <field name="move_name" string="TRANSACTION N"/>
                     <field name="memo"/>
                     <field name="move_type"/>
