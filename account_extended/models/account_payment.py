@@ -19,6 +19,10 @@ class AccountPayemntEXT(models.Model):
             else:
                 rec.name = rec.journal_id.code + '/s/' + date.today().strftime('%y') + '/' + self.env[
                                'ir.sequence'].next_by_code('account.payment.sequence.send') or _('New')
+            if rec.move_id and rec.move_id.line_ids:
+                for line in rec.move_id.line_ids:
+                    line.payment_ref = rec.payment_ref
+                    line.check_ref = rec.check_num
         return res
 
     @api.depends('reconciled_statement_ids')
@@ -48,7 +52,7 @@ class AccountPayemntEXT(models.Model):
         for rec in self:
             statement_line_id = self.env['account.bank.statement.line'].create({
                  'date':fields.Date.today(),
-                 'payment_ref':'Payment',
+                 'payment_ref':self.name,
                  'statement_id': bank_statement.id,
                  'amount':rec.amount if rec.payment_type == 'inbound' and rec.partner_type == 'customer' else -(rec.amount),
              })

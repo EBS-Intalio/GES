@@ -1,0 +1,9 @@
+.o_reconciliation_line{
+    display:flex;
+}
+.o_reconciliation_line .accounting_view{
+    width:50% !important;
+}
+.o_reconciliation_line .o_notebook{
+    width:50%;
+}

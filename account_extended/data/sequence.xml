@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="sequence_account_payment_receive" model="ir.sequence">
             <field name="name">PAYMENT RECEIVE</field>
             <field name="code">account.payment.sequence.receive</field>

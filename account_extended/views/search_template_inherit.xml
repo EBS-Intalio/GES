@@ -15,9 +15,10 @@
             </xpath>
             <xpath expr="//div[hasclass('o_account_reports_filter_journals')]" position="before">
                 <div class="btn-o_account_reports_filter_operating_unit btn-group o_dropdown "
-                     t-if="options.get('operating_unit') != None and options.get('journals') != None">
+                     t-if="options.get('operating_unit') != None and options.get('journals') != None and options.get('unhide_operating_unit') == True">
                     <t t-call="account_extended.search_template_filter_operating_unit"/>
                 </div>
+
             </xpath>
 
 
@@ -69,10 +70,17 @@
             <div class="dropdown-menu o_filters_menu" role="menu">
                 <li style='margin-left: 10px; margin-right: 10px;'>
                     <b>Branch</b>
+
                     <br/>
                     <select class="js_operating_unit"
                             data-filter="operating_unit" multiple="multiple" style="min-width: 200px;">
-                        <t t-foreach="request.env['operating.unit'].search([('active','=',True)])"
+                        <t t-if="options.get('multi_company')">
+                            <t t-set="company" t-value="[company['id'] for company in  options.get('multi_company')]"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="company" t-value="options['single_company']"/>
+                        </t>
+                        <t t-foreach="request.env['operating.unit'].search([('active','=',True),('company_id','in',company)])"
                            t-as="a">
                             <option t-att-value="a.id">
                                 <t t-esc="a.code"/>

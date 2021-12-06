@@ -138,13 +138,13 @@
         <field name="state">code</field>
         <field name="code">records.get_deferrals_journal_entry()</field>
     </record>
-    <record id="action_server_create_reverse_deferral_journal_entries" model="ir.actions.server">
-        <field name="name">Create Reverse Deferral Journal Entries</field>
-        <field name="type">ir.actions.server</field>
-        <field name="model_id" ref="model_freight_operation"/>
-        <field name="binding_model_id" ref="model_freight_operation"/>
-        <field name="binding_view_types">list,form</field>
-        <field name="state">code</field>
-        <field name="code">records.get_deferrals_reversal_journal_entry()</field>
-    </record>
+<!--    <record id="action_server_create_reverse_deferral_journal_entries" model="ir.actions.server">-->
+<!--        <field name="name">Create Reverse Deferral Journal Entries</field>-->
+<!--        <field name="type">ir.actions.server</field>-->
+<!--        <field name="model_id" ref="model_freight_operation"/>-->
+<!--        <field name="binding_model_id" ref="model_freight_operation"/>-->
+<!--        <field name="binding_view_types">list,form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">records.get_deferrals_reversal_journal_entry()</field>-->
+<!--    </record>-->
 </odoo>

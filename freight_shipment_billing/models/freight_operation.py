@@ -322,6 +322,8 @@ class FreightOperationInherit(models.Model):
                         'move_type': 'entry',
                         'journal_operation_id': shipment.id,
                         'created_from_cron': True,
+                        'operating_unit_id':shipment.operating_unit_id and shipment.operating_unit_id.id,
+
                     }
                     line_ids = []
                     total_amount = 0
@@ -339,7 +341,8 @@ class FreightOperationInherit(models.Model):
                                 'account_id':account_id.id,
                                 'name':name,
                                 'debit':0,
-                                'credit':amount
+                                'credit':amount,
+                                'analytic_account_id': shipment.analytic_account_id and shipment.analytic_account_id.id
                             }))
                             total_amount+=amount
                     if total_amount>0:
@@ -349,34 +352,34 @@ class FreightOperationInherit(models.Model):
                                 'name': 'Total',
                                 'debit': total_amount,
                                 'credit': 0.0,
+                                'analytic_account_id': shipment.analytic_account_id and shipment.analytic_account_id.id
                             })
                         )
                     vals['line_ids'] = line_ids
                     if vals.get('line_ids'):
                         journal_entry = self.env['account.move'].create(vals)
-                        journal_entry.action_create()
-                        journal_entry.action_post()
+                        # journal_entry.action_create()
+                        # journal_entry.action_post()
 
 
-    def get_deferrals_reversal_journal_entry(self):
-        """
-               Method for scheduler to make reverse journal entries at start of month that were made at end of the month
-                :return:
-                """
-        if date.today().day == 1 or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
-            for shipment in (self if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([])):
-                for journal_entry in self.env['account.move'].search([('journal_operation_id','=',shipment.id),('move_type','=','entry'),('created_from_cron','=',True),('is_reversed','=',False)]):
-                    journal_entry.is_reversed = True
-                    default_values_list = [{
-                        'date': date.today(),
-                        'ref': _('Reversal of: %s') % journal_entry.name,
-                    }]
-                    journal_entry_reversed = journal_entry._reverse_moves(default_values_list, cancel=True)
-                    # self.env['ir.sequence'].next_by_code(
-                    #     'account.move.sequence.entry')
-                    journal_entry_reversed.with_context({'reversal_journal_entry': True}).action_create()
-                    journal_entry_reversed.is_reversed = True
-                    journal_entry_reversed.created_from_cron = True
+    # def get_deferrals_reversal_journal_entry(self):
+    #     """
+    #            Method for scheduler to make reverse journal entries at start of month that were made at end of the month
+    #             :return:
+    #             """
+    #     if date.today().day == 1 or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
+    #         for shipment in (self if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([])):
+    #             for journal_entry in self.env['account.move'].search([('journal_operation_id','=',shipment.id),('move_type','=','entry'),('created_from_cron','=',True),('is_reversed','=',False)]):
+    #                 journal_entry.is_reversed = True
+    #                 default_values_list = [{
+    #                     'date': date.today(),
+    #                     'ref': _('Reversal of: %s') % journal_entry.name,
+    #                 }]
+    #                 journal_entry_reversed = journal_entry._reverse_moves(default_values_list, cancel=False)
+    #
+    #                 journal_entry_reversed.with_context({'reversal_journal_entry': True}).action_create()
+    #                 journal_entry_reversed.is_reversed = True
+    #                 journal_entry_reversed.created_from_cron = True
 
 
 class FreightOperationBilling(models.Model):

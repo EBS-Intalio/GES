@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-extend="reconciliation.line.mv_line">
+        <t t-jquery="td.cell_label" t-operation="after">
+            <td class="cell_payment_ref">
+            <span class="font-weight-bold" t-esc="line.payment_ref"/>:
+        </td>
+            <td class="cell_check_ref">
+            <span class="font-weight-bold" t-esc="line.check_ref"/>:
+        </td>
+        </t>
+    </t>
+</templates>
