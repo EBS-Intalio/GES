@@ -18,7 +18,7 @@ class AccountPayment(models.Model):
         comodel_name="operating.unit",
         domain="[('user_ids', '=', uid)]",
         compute="_compute_operating_unit_id",
-        store=True,
+        store=True,readonly=False
     )
 
     def _prepare_move_line_default_vals(self, write_off_line_vals=None):

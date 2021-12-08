@@ -34,7 +34,7 @@
             </xpath>
 
             <xpath expr="//field[@name='payment_method_id']" position="after">
-              <field name="legal_name" attrs="{'invisible': [('partner_type', '!=', 'supplier')]}"/>
+              <field name="legal_name"/>
             </xpath>
         </field>
    </record>
