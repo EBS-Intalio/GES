@@ -1,9 +1,22 @@
 # -*- coding: utf-8 -*"-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import datetime,date
+from calendar import monthrange
 
 class FreightOperationInherit(models.Model):
     _inherit = "freight.operation"
+
+    @api.depends('invoice_journal_entry_ids')
+    def _compute_invoice_journal_entry(self):
+        """
+        Total Customer Invoice Journal Entry
+        :return:
+        """
+        for operation in self:
+            invoice_journal_count = len(operation.invoice_journal_entry_ids.filtered(
+                lambda x: x.move_type == 'entry' and x.state != 'cancel').mapped('amount_total'))
+            operation.invoice_journal_count = invoice_journal_count
 
     operating_unit_id = fields.Many2one('operating.unit', string='Branch', default=lambda self:self.env.user.default_operating_unit_id.id)
     analytic_account_id = fields.Many2one('account.analytic.account',string='Department')
@@ -14,8 +27,33 @@ class FreightOperationInherit(models.Model):
     total_cost = fields.Monetary(string="Total Cost", currency_field='company_currency_id',  compute="compute_data")
     profit = fields.Monetary(string="Profit", currency_field='company_currency_id',  compute="compute_data")
     company_currency_id = fields.Many2one('res.currency', string="Currency",default=lambda self: self.env.company.currency_id.id)
-
+    invoice_journal_count = fields.Integer(string='Invoice Amount', compute='_compute_invoice_journal_entry')
+    invoice_journal_entry_ids = fields.One2many('account.move', 'operation_billing_id', string='Invoice Journal Entry', copy=False)
     line_of_service_id = fields.Many2one('account.operation.matrix', 'Line of Service', compute="compute_line_of_service")
+    journal_entries_count = fields.Integer('Journal Entries',compute='get_journal_entires_count')
+    company_id = fields.Many2one('res.company', default=lambda self:self.env.company.id)
+
+    accrual_entry_amount = fields.Float(string="Accrual Entry Amount")
+
+    def action_view_journal_entry(self):
+        """
+        Return journal Entries
+        :return:
+        """
+
+        action = self.env.ref('account.action_move_journal_line').read()[0]
+        invoice = self.invoice_journal_entry_ids.filtered(lambda x: x.move_type == 'entry')
+        if len(invoice) > 1:
+            action['domain'] = [('id', 'in', invoice.ids)]
+        elif invoice:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoice.id
+
+        return action
 
     @api.depends('transport', 'direction', 'service_level')
     def compute_line_of_service(self):
@@ -73,6 +111,7 @@ class FreightOperationInherit(models.Model):
                     'currency_id': self.env.company.currency_id.id,
                     'invoice_type': "local_individual",
                     'invoice_line_ids': invoice_line_ids,
+		            'operation_billing_id': self.id,
                 })
                 local_billing_id.ar_invoice_number = invoice_id.id
                 invoice_id.created_from_shipment = True
@@ -113,6 +152,7 @@ class FreightOperationInherit(models.Model):
                         'currency_id': currency_id.id,
                         'invoice_type': "foreign_individual",
                         'invoice_line_ids': invoice_line_ids,
+                        'operation_billing_id': self.id,
                     })
                     foreign_currency_billing_id.ar_invoice_number = invoice_id.id
                     invoice_id.created_from_shipment = True
@@ -163,6 +203,7 @@ class FreightOperationInherit(models.Model):
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
                         'currency_id': currency_id.id,
+                        'operation_billing_id': self.id,
                         'invoice_line_ids': invoice_line_ids,
                     })
                     foreign_currency_billing_id.ar_bill_number = bill_id.id
@@ -205,6 +246,141 @@ class FreightOperationInherit(models.Model):
         else:
             action['domain'] = [('id', 'in', invoices.ids)]
         return action
+
+    def get_journal_entires_count(self):
+        """
+                 Get count of the journal items
+                  :return:
+                  """
+        for rec in self:
+            rec.journal_entries_count = self.env['account.move'].search_count([('journal_operation_id', '=', rec.id), ('move_type', '=', 'entry'), ('created_from_cron', '=', True)])
+
+    def open_journal_entires(self):
+        """
+               Prepare a action for the display the Journal Items
+               :return:
+               """
+        action = self.env.ref('account.action_move_journal_line').read()[0]
+        journal_entries = self.env['account.move'].search(
+            [('journal_operation_id', '=', self.id), ('move_type', '=', 'entry'), ('created_from_cron', '=', True)])
+
+        if len(journal_entries) > 1:
+            action['domain'] = [('id', 'in', journal_entries.ids)]
+        elif journal_entries:
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state, view) for state, view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = journal_entries.id
+
+        return action
+
+
+    def get_deferrals_journal_entry(self):
+        """
+                Method for scheduler to make journal entries at end of month
+                 :return:
+                 """
+        for company in self.env['res.company'].search([]):
+            if not company.account_deferral_creditor_id:
+                continue
+            deferral_account = company.account_deferral_creditor_id.id
+            if not company.deferral_journal_id:
+                continue
+            journal_id = company.deferral_journal_id.id
+            if date.today().day == monthrange(date.today().year, date.today().month)[1] or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
+            #     for shipment in self.search([('id','=',34)]):
+                for shipment in (self.filtered(lambda x:x.company_id == company) if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([('company_id','=',company.id)])):
+                    customer_invoices_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_invoice_number and x.ar_invoice_number.state == 'posted')
+                    vendor_bill_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_bill_number and x.ar_bill_number.state == 'posted')
+                    # if vendor_bill_ids or customer_invoices_ids:
+                    vendor_dict = {}
+                    for vendor_line in vendor_bill_ids:
+                        if vendor_dict.get(vendor_line.charge_code):
+                            vendor_dict.update({vendor_line.charge_code:vendor_dict.get(vendor_line.charge_code)+vendor_line.local_cost_amount})
+                        else:
+                            vendor_dict.update(
+                                {vendor_line.charge_code:vendor_line.local_cost_amount})
+                    partial_dict = {}
+                    for customer_line in customer_invoices_ids:
+                        if customer_line.charge_code in vendor_dict.keys():
+                            if vendor_dict.get(customer_line.charge_code) - customer_line.local_sell_amount>0:
+                                partial_dict.update({customer_line.charge_code:True})
+                            vendor_dict.update(
+                                {customer_line.charge_code: vendor_dict.get(customer_line.charge_code) - customer_line.local_sell_amount})
+
+
+                    if not shipment.line_of_service_id:
+                        continue
+
+                    vals = {
+                        'name': '/',
+                        'ref': shipment.name,
+                        'journal_id': journal_id,
+                        'date': date.today(),
+                        'move_type': 'entry',
+                        'journal_operation_id': shipment.id,
+                        'created_from_cron': True,
+                        'operating_unit_id':shipment.operating_unit_id and shipment.operating_unit_id.id,
+
+                    }
+                    line_ids = []
+                    total_amount = 0
+                    for vendor_key in vendor_dict.keys():
+                        amount = vendor_dict.get(vendor_key)
+                        if amount > 0:
+                            matrix_line = shipment.line_of_service_id.matrix_line_ids.filtered(lambda x:x.charge_code == vendor_key)
+                            account_id = matrix_line[0].property_account_expense_id if matrix_line and matrix_line[0].property_account_expense_id else shipment.line_of_service_id.property_account_expense_id
+                            if not account_id:
+                                continue
+                            name = vendor_key.name
+                            if partial_dict.get(vendor_key):
+                                name = vendor_key.name + " Partial Amount"
+                            line_ids.append((0,0,{
+                                'account_id':account_id.id,
+                                'name':name,
+                                'debit':0,
+                                'credit':amount,
+                                'analytic_account_id': shipment.analytic_account_id and shipment.analytic_account_id.id
+                            }))
+                            total_amount+=amount
+                    if total_amount>0:
+                        line_ids.append(
+                            (0,0,{
+                                'account_id': deferral_account,
+                                'name': 'Total',
+                                'debit': total_amount,
+                                'credit': 0.0,
+                                'analytic_account_id': shipment.analytic_account_id and shipment.analytic_account_id.id
+                            })
+                        )
+                    vals['line_ids'] = line_ids
+                    if vals.get('line_ids'):
+                        journal_entry = self.env['account.move'].create(vals)
+                        # journal_entry.action_create()
+                        # journal_entry.action_post()
+
+
+    # def get_deferrals_reversal_journal_entry(self):
+    #     """
+    #            Method for scheduler to make reverse journal entries at start of month that were made at end of the month
+    #             :return:
+    #             """
+    #     if date.today().day == 1 or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
+    #         for shipment in (self if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([])):
+    #             for journal_entry in self.env['account.move'].search([('journal_operation_id','=',shipment.id),('move_type','=','entry'),('created_from_cron','=',True),('is_reversed','=',False)]):
+    #                 journal_entry.is_reversed = True
+    #                 default_values_list = [{
+    #                     'date': date.today(),
+    #                     'ref': _('Reversal of: %s') % journal_entry.name,
+    #                 }]
+    #                 journal_entry_reversed = journal_entry._reverse_moves(default_values_list, cancel=False)
+    #
+    #                 journal_entry_reversed.with_context({'reversal_journal_entry': True}).action_create()
+    #                 journal_entry_reversed.is_reversed = True
+    #                 journal_entry_reversed.created_from_cron = True
+
 
 class FreightOperationBilling(models.Model):
     _name = "freight.operation.billing"
@@ -266,6 +442,8 @@ class FreightOperationBilling(models.Model):
 
     sell_invoice_tax_amount = fields.Monetary(string="Sell Tax Amount", currency_field='invoice_currency_id', compute='_get_tax_for_sell_line')
     cost_bill_tax_amount = fields.Monetary(string="Cost Tax Amount", currency_field='bill_currency_id', compute='_get_tax_for_cost_line')
+
+    accrual_entry_amount = fields.Float(string="Accrual Entry Amount")
 
     @api.depends('invoice_line_id','sell_invoice_amount','sell_invoice_with_tax_amount')
     def _get_tax_for_sell_line(self):
@@ -374,6 +552,52 @@ class FreightOperationBilling(models.Model):
                 if rec.bill_line_id.move_id.state == 'posted':
                     raise ValidationError("You cannot Update a posted Bill")
 
+    def create(self, vals_list):
+        res = super(FreightOperationBilling, self).create(vals_list)
+        for vals in vals_list:
+            operation_billing_id = self.env['freight.operation'].browse(vals.get('operation_billing_id'))
+            total_estimated_cost = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('estimated_cost'))
+            total_os_cost_amount = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('local_cost_amount'))
+            total_estimated_revenue = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('estimated_revenue'))
+            total_os_sell_amount = sum(operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code.id == vals.get('charge_code')).mapped('local_sell_amount'))
+
+
+            if total_os_cost_amount > total_estimated_cost and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Cost is greater than Total Estimated Cost")
+
+            if total_os_sell_amount < total_estimated_revenue and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Sell is less than Total Estimated Revenue")
+
+            if total_os_cost_amount > total_estimated_cost and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                operation_billing_id.sudo().message_post(body="Total Actual Cost per Product > Estimated cost value but user has privilege", type='notification')
+
+            if total_os_sell_amount < total_estimated_revenue and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                operation_billing_id.sudo().message_post(body="Total Actual Sell per Product < Estimated Revenue value but user has privilege", type='notification')
+
+        return res
+
+    def write(self, vals):
+        res = super(FreightOperationBilling, self).write(vals)
+        for record in self:
+            total_estimated_cost = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('estimated_cost'))
+            total_os_cost_amount = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('local_cost_amount'))
+            total_estimated_revenue = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('estimated_revenue'))
+            total_os_sell_amount = sum(record.operation_billing_id.account_operation_lines.filtered(lambda x: x.charge_code == record.charge_code).mapped('local_sell_amount'))
+
+            if total_os_cost_amount > total_estimated_cost and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Cost is greater than Total Estimated Cost")
+
+            if total_os_sell_amount < total_estimated_revenue and not self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                raise ValidationError("Total Actual Sell is less than Total Estimated Revenue")
+
+            if total_os_cost_amount > total_estimated_cost and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                record.operation_billing_id.sudo().message_post(body="Total Acuatl Cost per Product > Estimated cost value but user has privilege", type='notification')
+
+            if total_os_sell_amount < total_estimated_revenue and self.env.user.has_group('freight_shipment_billing.group_estimated_revenue_cost_bypass'):
+                record.operation_billing_id.sudo().message_post(body="Total Actual Sell per Product < Estimated Revenue value but user has privilege", type='notification')
+
+        return res
+
     def action_post_sell(self):
         active_ids = self.env.context.get('active_ids')
         debtors_data = self.env['freight.operation.billing'].read_group(domain=[(
@@ -418,6 +642,7 @@ class FreightOperationBilling(models.Model):
                     'partner_id': debtor_id.id,
                     'invoice_date': fields.Date.today(),
                     'operating_unit_id':local_billing_id.operating_unit_id,
+                    'operation_billing_id': self.id,
                     'currency_id':self.env.company.currency_id.id,
                     'invoice_type': "local_individual",
                     'invoice_line_ids': invoice_line_ids,
@@ -461,6 +686,7 @@ class FreightOperationBilling(models.Model):
                         'partner_id': debtor_id.id,
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
+                        'operation_billing_id': self.id,
                         'currency_id': currency_id.id,
                         'invoice_type': "foreign_individual",
                         'invoice_line_ids': invoice_line_ids,
@@ -513,6 +739,7 @@ class FreightOperationBilling(models.Model):
                         'partner_id': vendor_id.id,
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id':foreign_currency_billing_id.operating_unit_id,
+                        'operation_billing_id': self.id,
                         'currency_id':currency_id.id,
                         'invoice_line_ids': invoice_line_ids,
                     })

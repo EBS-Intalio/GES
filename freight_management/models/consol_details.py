@@ -278,6 +278,35 @@ class ConsolDerails(models.Model):
     alw_shw_cmn_fields = fields.Boolean('Always Show Common Fields')
     doc_line_ids = fields.One2many('freight.doc.line','console_id')
 
+    # NEW FIELDS ACCORDING TO FILE
+    allocated_line_ids = fields.One2many('freight.allocated.packlines', 'allocated_package_console_id',
+                                         string="Allocated Pack line")
+    ar_invoice_ids = fields.Many2many('account.move', 'ar_console_invoice_line', string="AR Invoice")
+    ap_invoice_ids = fields.Many2many('account.move', 'ap_console_invoice_line', string="AP Invoice")
+    console_costing_ids = fields.One2many('freight.console.costing', 'console_id', string="Console Costing")
+    console_profit_loss_detail_ids = fields.One2many('console.profit.loss.detail.lines', 'console_id',
+                                                     string="Console Profit/Loss Lines")
+    console_pf_ls_summary_ids = fields.One2many('console.profit.loss.summary.lines', 'console_id', string="Summary")
+    branch_id = fields.Many2one('operating.unit', string="Branch")
+    recognized_charges = fields.Selection([('both', 'Include Both Recognized and Not Recognized Charges'),
+                                           ('only_charge', 'Only Charges Not Yet Recognized'),
+                                           ('only_recognized', 'Only Recognized Charges')], string="Recognized Charges")
+    recognized_revenue = fields.Float(string="Recognized Revenue")
+    recognized_wip = fields.Float(string="Recognized WIP")
+    recognized_cost = fields.Float(string="Recognized Cost")
+    recognized_accrual = fields.Float(string="Recognized Accrual")
+    recognized_profit_loss = fields.Float(string="Recognized Profit/Loss")
+    recognized_profit_rev = fields.Float(string="Recognized Profit/Rev")
+    recognized_profit_cost = fields.Float(string="Recognized Profit/Cost")
+    not_recognized_wip = fields.Float(string="Not Recognized WIP")
+    not_recognized_cost = fields.Float(string="Not Recognized Cost")
+    not_recognized_accrual = fields.Float(string="Not Recognized Accrual")
+    not_recognized_profit_loss = fields.Float(string="Not Recognized Profit/Loss")
+    not_recognized_profit_rev = fields.Float(string="Not Recognized Profit/Rev")
+    not_not_recognized_profit_cost = fields.Float(string="Not Recognized Profit/Cost")
+    charge_code = fields.Many2one('product.product', string="Charge Code")
+    department = fields.Many2one('hr.department', string="Department")
+
     @api.onchange('bol')
     def get_old_data(self):
         for rec in self:

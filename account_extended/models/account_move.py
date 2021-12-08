@@ -135,3 +135,11 @@ class AccountMoveEXT(models.Model):
                 rec.reversal_date = False
             for rec in moves:
                 rec.reversal_date = False
+
+
+
+class AccountMoveLineEXT(models.Model):
+    _inherit = 'account.move.line'
+
+    check_ref = fields.Char('Check Ref')
+    payment_ref = fields.Char('Payment Ref')

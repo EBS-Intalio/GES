@@ -30,19 +30,13 @@ class AccountReportExtended(models.AbstractModel):
 
 
     def get_report_informations(self, options):
-        info = super(AccountReportExtended, self).get_report_informations(options=options)
         if options and options.get('operating_unit') is not None:
-            # new_options = info['options']
-            # searchview_dict = {'options': new_options, 'context': self.env.context}
             options['selected_operating_unit'] = [self.env['operating.unit'].browse(int(operating_unit_id)).name for
                                                   operating_unit_id in options['operating_unit']]
-            report_manager = self._get_report_manager(options)
-            info['options'] = options
-            info['report_manager_id'] = report_manager.id
-            info['footnotes'] = [{'id': f.id, 'line': f.line, 'text': f.text} for f in report_manager.footnotes_ids]
-            info['main_html'] = self.get_html(options)
 
-        return info
+        return super(AccountReportExtended, self).get_report_informations(options=options)
+
+
 
 
     @api.model
@@ -57,6 +51,7 @@ class AccountReportExtended(models.AbstractModel):
     def _get_options_domain(self, options):
         domain = super(AccountReportExtended, self)._get_options_domain(options=options)
         domain += self._get_options_operating_unit_domain(options)
+        print("domainnnnnnnnnnnnnnnnnnnnnnn=================",domain)
         return domain
 
 
@@ -78,6 +73,8 @@ class AccountReportExtended(models.AbstractModel):
 
     @api.model
     def _init_filter_date(self, options, previous_options=None):
+        if not options.get('multi_company'):
+            options['single_company'] = [self.env.company.id]
         if self.filter_date is None:
             return
 
@@ -232,7 +229,7 @@ class AccountReportExtended(models.AbstractModel):
                                                                                                'no_format_name') or
                                                                                            heararchy['columns'][
                                                                                                currency_list_index].get(
-                                                                                               'no_format'),
+                                                                                               'no_format') or 0.0,
                                                                                            currency_obj=currency_id)
                             currency_list_index += 1
 
@@ -325,10 +322,34 @@ class ReportAccountFinancialReportExtended(models.Model):
                 options[0]['unhide_currency'] = False
                 for cur in options[0].get('currency'):
                     cur['selected'] = False
+            is_currency_selected = False
+            for cur in options[0].get('currency'):
+                if cur.get('selected'):
+                    is_currency_selected = True
+                    break
+            options[0]['unhide_operating_unit'] = True
+            if options[0].get('comparison').get('filter') != 'no_comparison' or is_currency_selected or not(self.id in [self.env.ref('account_reports.account_financial_report_profitandloss0').id,self.env.ref('account_reports.account_financial_report_balancesheet0').id]):
+                options[0]['unhide_operating_unit'] = False
+                options[0]['operating_unit'] = []
+                options[0]['selected_operating_unit'] = []
+
+            options[0]['unhide_currency'] = True
+            if options[0].get('comparison').get('filter') != 'no_comparison' or options[0].get('operating_unit'):
+                options[0]['unhide_currency'] = False
+                for cur in options[0].get('currency'):
+                    cur['selected'] = False
             i = 1
             for currency in options[0].get('currency'):
                 if currency.get('selected'):
                     headers.append({'name': currency.get('name'),
+                                    'colspan': 1,
+                                    'key': i,
+                                    'class': 'number',
+                                    'children': None})
+                    i += 1
+            if self._context and not self._context.get('from_balance_sheet') and not self._context.get('from_cash_flow'):
+                for operating_unit in options[0].get('selected_operating_unit'):
+                    headers.append({'name': operating_unit,
                                     'colspan': 1,
                                     'key': i,
                                     'class': 'number',
@@ -400,10 +421,113 @@ class ReportAccountFinancialReportExtended(models.Model):
 
         return headers, sorted_groupby_keys
 
+
+    def check_formula_for_financial_line(self, financial_line, options,group_key):
+        if self.id == self.env.ref('account_reports.account_financial_report_profitandloss0').id and self._context and not self._context.get('from_balance_sheet') and not self._context.get('from_cash_flow'):
+            codes_with_type_dict = {'OPINC':13,'OIN':14,'EXP':15,'DEP':16,'COS':17}
+            codes_with_type_dict_value = {}
+            for code in codes_with_type_dict.keys():
+                sql_query = """SELECT
+                                                        sum(aml.debit - aml.credit) as total_amt
+                                                        from account_move_line as aml
+                                                        LEFT JOIN account_move as am ON am.id = aml.move_id
+                                                        LEFT JOIN account_account as acc ON acc.id = aml.account_id
+                                                        WHERE aml.company_id in %s and acc.user_type_id=%s and aml.operating_unit_id=%s and am.state in %s
+                                                        and aml.date <= %s and aml.date >= %s
+                                                """
+                query_params = (tuple(self.env.context.get('allowed_company_ids')), int(codes_with_type_dict.get(code)),
+                                options.get('operating_unit')[group_key[0] - 1],
+                                ('draft', 'create', 'posted', 'cancel',) if options.get('all_entries') else (
+                                    'posted',),
+                                options.get('date').get('date_to'), options.get('date').get('date_from'))
+                self.env.cr.execute(sql_query, query_params)
+                query_recs = self.env.cr.dictfetchall()
+                amount = (query_recs[0].get('total_amt') if query_recs[0].get('total_amt') != None else 0.0) if \
+                    query_recs[0] else 0.0
+                amount= -(
+                    amount) if code == 'OPINC' and amount != 0.0 else amount
+                codes_with_type_dict_value.update({code:amount})
+
+            codes_with_type_dict_value.update({
+                'GRP': codes_with_type_dict_value.get('OPINC') - codes_with_type_dict_value.get('COS'),
+                'INC': codes_with_type_dict_value.get('OPINC') - codes_with_type_dict_value.get(
+                    'COS') + codes_with_type_dict_value.get('OIN'),
+                'LEX': codes_with_type_dict_value.get('EXP') + codes_with_type_dict_value.get('DEP'),
+                'NEP': codes_with_type_dict_value.get('OPINC') + codes_with_type_dict_value.get(
+                    'OIN') - codes_with_type_dict_value.get('COS') - codes_with_type_dict_value.get(
+                    'EXP') - codes_with_type_dict_value.get('DEP')
+            })
+            return codes_with_type_dict_value.get(financial_line.code)
+        elif self.id == self.env.ref('account_reports.account_financial_report_balancesheet0').id:
+            codes_with_type_dict = {'BA': (3,), 'REC': ('receivable',), 'CAS': (5,), 'PRE': (7,), 'FA':( 8,),'PNCA':(6,),'CL1':(9,4),'CL2':('payable',),'NL':(10,),'CURR_YEAR_EARNINGS_ALLOC':(12,),'RETAINED_EARNINGS':(11,),'OS':(18,),'PREV_YEAR_EARNINGS_REMAINING':(13,14,15,16,17,),'ALLOCATED_EARNINGS':(12,)}
+            codes_with_type_dict_value = {}
+            for code in codes_with_type_dict.keys():
+                compare = ''
+                if type(codes_with_type_dict.get(code)[0]) == int:
+                    compare = "and acc.user_type_id in %s"
+                elif type(codes_with_type_dict.get(code)[0]) == str:
+                    compare = "and acc_type.type in %s"
+                sql_query = """SELECT
+                                                                    sum(aml.debit - aml.credit) as total_amt
+                                                                    from account_move_line as aml
+                                                                    LEFT JOIN account_move as am ON am.id = aml.move_id
+                                                                    LEFT JOIN account_account as acc ON acc.id = aml.account_id
+                                                                    LEFT JOIN account_account_type as acc_type ON acc.user_type_id = acc_type.id
+                                                                    WHERE aml.company_id in %s """+compare+""" and aml.operating_unit_id=%s and am.state in %s
+                                                                    and aml.date <= %s
+                                                            """
+                query_params = (tuple(self.env.context.get('allowed_company_ids')), codes_with_type_dict.get(code),
+                                options.get('operating_unit')[group_key[0] - 1],
+                                ('draft', 'create', 'posted', 'cancel',) if options.get('all_entries') else (
+                                    'posted',),
+                                options.get('date').get('date_to'))
+                self.env.cr.execute(sql_query, query_params)
+                query_recs = self.env.cr.dictfetchall()
+                amount = (query_recs[0].get('total_amt') if query_recs[0].get('total_amt') != None else 0.0) if \
+                    query_recs[0] else 0.0
+                amount = -(
+                    amount) if code in ['CL1','CL2','CURR_YEAR_EARNINGS_ALLOC','RETAINED_EARNINGS','NL','OS','PREV_YEAR_EARNINGS_REMAINING','ALLOCATED_EARNINGS'] and amount != 0.0 else amount
+                codes_with_type_dict_value.update({code: amount})
+
+            profit_and_loss_report_obj = self.env.ref('account_reports.account_financial_report_profitandloss0')
+            profit_loss_options = profit_and_loss_report_obj._get_options()
+            profit_loss_options['multi_company'] = options.get('multi_company')
+            profit_loss_options['date'] = options['date']
+            profit_loss_options['all_entries'] = options['all_entries']
+            profit_loss_options['filter_operating_unit'] = options['filter_operating_unit']
+            profit_loss_options['operating_unit'] = [options.get('operating_unit')[group_key[0] - 1]]
+            profit_loss_options['selected_operating_unit'] = options['selected_operating_unit']
+            profit_loss_options['filter_operating_unit'] = options['filter_operating_unit']
+            profit_loss_options['unfold_all'] = options['unfold_all']
+            profit_header, profit_lines = profit_and_loss_report_obj.with_context(from_balance_sheet=True)._get_table(profit_loss_options)
+            net_profit_amount = next(item for item in profit_lines if item["id"] == 1).get('columns')[0].get(
+                'no_format') or 0.0
+            codes_with_type_dict_value.update({
+                'CA':codes_with_type_dict_value.get('BA') + codes_with_type_dict_value.get(
+                    'REC') + codes_with_type_dict_value.get('CAS') + codes_with_type_dict_value.get(
+                    'PRE'),
+                'TA':codes_with_type_dict_value.get('BA') + codes_with_type_dict_value.get(
+                    'REC') + codes_with_type_dict_value.get('CAS') + codes_with_type_dict_value.get(
+                    'PRE') + codes_with_type_dict_value.get(
+                    'FA') + codes_with_type_dict_value.get('PNCA'),
+                'CL': codes_with_type_dict_value.get('CL1') + codes_with_type_dict_value.get(
+                    'CL2'),
+                'L':codes_with_type_dict_value.get('CL1') + codes_with_type_dict_value.get(
+                    'CL2')+codes_with_type_dict_value.get('NL'),
+                'CURR_YEAR_EARNINGS_PNL':net_profit_amount,
+                'PREV_YEAR_EARNINGS':codes_with_type_dict_value.get('PREV_YEAR_EARNINGS_REMAINING') - net_profit_amount + codes_with_type_dict_value.get('ALLOCATED_EARNINGS'),
+                'CURR_YEAR_EARNINGS':codes_with_type_dict_value.get('CURR_YEAR_EARNINGS_ALLOC') + net_profit_amount,
+                'UNAFFECTED_EARNINGS':codes_with_type_dict_value.get('CURR_YEAR_EARNINGS_ALLOC') + codes_with_type_dict_value.get('PREV_YEAR_EARNINGS_REMAINING') + codes_with_type_dict_value.get('ALLOCATED_EARNINGS'),
+                'EQ':codes_with_type_dict_value.get('CURR_YEAR_EARNINGS_ALLOC') + codes_with_type_dict_value.get('PREV_YEAR_EARNINGS_REMAINING') + codes_with_type_dict_value.get('ALLOCATED_EARNINGS') + codes_with_type_dict_value.get('RETAINED_EARNINGS'),
+                'LE':codes_with_type_dict_value.get('CL1') + codes_with_type_dict_value.get(
+                    'CL2')+codes_with_type_dict_value.get('NL')+codes_with_type_dict_value.get('CURR_YEAR_EARNINGS_ALLOC') + codes_with_type_dict_value.get('PREV_YEAR_EARNINGS_REMAINING') + codes_with_type_dict_value.get('ALLOCATED_EARNINGS') + codes_with_type_dict_value.get('RETAINED_EARNINGS'),
+            })
+            return codes_with_type_dict_value.get(financial_line.code) or 0.0
     @api.model
     def _get_financial_line_report_line(self, options, financial_line, solver, groupby_keys):
 
         results = solver.get_results(financial_line)['formula']
+
 
         is_leaf = solver.is_leaf(financial_line)
         has_lines = solver.has_move_lines(financial_line)
@@ -423,10 +547,19 @@ class ReportAccountFinancialReportExtended(models.Model):
         else:
             is_unfolded = False
 
+        if options.get('operating_unit') and self._context and not self._context.get('from_balance_sheet') and not self._context.get('from_cash_flow'):
+            for group_key in groupby_keys:
+                if group_key in results:
+                    pass
+                else:
+                    results[group_key]  = self.check_formula_for_financial_line(financial_line, options,group_key)
+
+
         # Standard columns.
         columns = []
         for key in groupby_keys:
             amount = results.get(key, 0.0)
+
             columns.append(
                 {'name': self._format_cell_value(financial_line, amount), 'no_format': amount, 'class': 'number'})
 
@@ -474,6 +607,39 @@ class ReportAccountFinancialReportExtended(models.Model):
 
         # Standard columns.
         columns = []
+        if options.get('operating_unit'):
+            for group_key in groupby_keys:
+                if group_key in results:
+                    pass
+                else:
+                    sql_query = """SELECT
+                                                            sum(aml.debit - aml.credit) as total_amt
+                                                            from account_move_line as aml
+                                                            LEFT JOIN account_move as am ON am.id = aml.move_id
+                                                            LEFT JOIN account_account as acc ON acc.id = aml.account_id
+                                                            WHERE aml.company_id in %s and aml.account_id=%s and aml.operating_unit_id=%s and am.state in %s
+                                                            and aml.date <= %s
+                                                    """
+
+                    query_params = (tuple(self.env.context.get('allowed_company_ids')), int(groupby_id),
+                                    options.get('operating_unit')[group_key[0] - 1],
+                                    ('draft', 'create', 'posted', 'cancel',) if options.get('all_entries') else (
+                                    'posted',),
+                                    options.get('date').get('date_to'))
+                    if self.id == self.env.ref('account_reports.account_financial_report_profitandloss0').id:
+                        sql_query+=' and aml.date >= %s'
+                        query_params= list(query_params)
+                        query_params.append(options.get('date').get('date_from'))
+                        query_params = tuple(query_params)
+                    if self.id == self.env.ref('account_reports.account_financial_report_balancesheet0').id:
+                        pass
+                    self.env.cr.execute(sql_query, query_params)
+                    query_recs = self.env.cr.dictfetchall()
+                    print("query_recsquery_recsquery_recsquery_recs===================",query_recs,options.get('date').get('date_to'),)
+                    amount = (query_recs[0].get('total_amt') if query_recs[0].get('total_amt') != None else 0.0) if \
+                    query_recs[0] else 0.0
+                    results[group_key] = -(
+                        amount) if financial_line.formulas and financial_line.formulas == '-sum' else amount
         for key in groupby_keys:
             amount = results.get(key, 0.0)
             columns.append(
@@ -579,7 +745,7 @@ class assets_report_extended(models.AbstractModel):
                 header[1].append({'name': '', 'class': 'number'})
 
         return header
-
+#
     def _get_lines(self, options, line_id=None):
         options['self'] = self
         lines = []
@@ -718,8 +884,3 @@ class assets_report_extended(models.AbstractModel):
         multi_currency_amount = company_currency._convert(balance, currency_id, company, date)
         return {'name': formatLang(self.env, multi_currency_amount, currency_obj=currency_id),
                 'no_format_name': multi_currency_amount}
-
-    class AccountCashFlowReportInherit(models.AbstractModel):
-        _inherit = 'account.cash.flow.report'
-
-        filter_operating_unit = True

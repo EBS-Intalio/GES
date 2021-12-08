@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- TRIAL BALANCE -->
+    <record id="trial_balance_wizard_Inherit" model="ir.ui.view">
+        <field name="name">Trial Balance Inherit</field>
+        <field name="model">trial.balance.report.wizard</field>
+        <field name="inherit_id" ref="account_financial_report.trial_balance_wizard"/>
+        <field name="arch" type="xml">
+            <field name="foreign_currency" position="after">
+                <field name="show_total"/>
+            </field>
+        </field>
+    </record>
+        <menuitem
+        parent="account_financial_report.menu_oca_reports"
+        action="account_financial_report.action_trial_balance_wizard"
+        id="account_financial_report.menu_trial_balance_wizard"
+        sequence="20"
+        name=" Customized Trial Balance"
+    />
+</odoo>

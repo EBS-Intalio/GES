@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Cron to Unrealized gain/loss journal entry -->
+        <record id="Deferrals_journal_entry" model="ir.cron">
+            <field name="name">Deferrals Journal entry</field>
+            <field name="model_id" ref="model_freight_operation"/>
+            <field name="state">code</field>
+            <field name="code">model.get_deferrals_journal_entry()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+        <record id="Deferrals_reverse_journal_entry" model="ir.cron">
+            <field name="name">Deferrals Reverse Journal entry</field>
+            <field name="model_id" ref="model_freight_operation"/>
+            <field name="state">code</field>
+            <field name="code">model.get_deferrals_reversal_journal_entry()</field>
+            <field name="active" eval="False"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+    </data>
+</odoo>

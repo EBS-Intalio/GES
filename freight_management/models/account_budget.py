@@ -27,6 +27,7 @@ class CrossoveredBudgetLinesInherit(models.Model):
     employee_id = fields.Many2one('hr.employee','Employee')
     operating_unit_id = fields.Many2one('operating.unit','Operating Unit')
     partner_id = fields.Many2one('res.partner', store=True)
+    analytic_account_id = fields.Many2one('account.analytic.account', 'Department')
 
     @api.depends('date_from', 'date_to', 'crossovered_budget_id.date_check_theoretcial_amount')
     def _compute_theoritical_amount_custom(self):

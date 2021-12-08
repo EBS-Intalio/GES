@@ -6,7 +6,7 @@ class FreightAllocatedPackLines(models.Model):
     _name = 'freight.allocated.packlines'
     _description = 'Freight Allocated PackLines'
 
-    shipment_id = fields.Char('Shipment ID')
+    shipment_id = fields.Many2one('freight.operation', string="Shipment")
     house_bill = fields.Char('House Bill')
     shipper_id = fields.Many2one('res.partner',string="Shipper ")
     consignee_id = fields.Many2one('res.partner',string="Consignee")
@@ -64,3 +64,6 @@ class FreightAllocatedPackLines(models.Model):
     ot_volume = fields.Float('OT Volume')
     ot_uw = fields.Many2one('uom.uom',string="UW")
     ot_uv = fields.Many2one('uom.uom',string="UV")
+
+    # NEW FIELDS ACCORDING TO FILE
+    allocated_package_console_id = fields.Many2one('consol.details', string="Console Detail")

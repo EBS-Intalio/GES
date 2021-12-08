@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="freight_console_costing_form_view">
+            <field name="name">freight.console.costing.form.view</field>
+            <field name="model">freight.console.costing</field>
+            <field name="arch" type="xml">
+                <form string="Console Costing">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="posted"/>
+                                <field name="include_on_collect_inv"/>
+                                <field name="display_rated_shipment"/>
+                                <field name="invoice_no" required="1"/>
+                            </group>
+                            <group>
+                                <label for="os_cost_amt"/>
+                                <div class="o_row" name="os_cost_amt">
+                                    <field name="os_cost_amt" nolabel="1"/>
+                                    <field name="os_cost_amt_currency" nolabel="1" />
+                                </div>
+                                <label for="local_cost_amt"/>
+                                <div class="o_row" name="local_cost_amt">
+                                    <field name="local_cost_amt" nolabel="1"/>
+                                    <field name="local_cost_amt_currency" nolabel="1" />
+                                </div>
+                                <label for="tax_amt"/>
+                                <div class="o_row" name="tax_amt">
+                                    <field name="tax_amt" nolabel="1"/>
+                                    <field name="tax_amt_currency" nolabel="1" />
+                                </div>
+                                <label for="total"/>
+                                <div class="o_row" name="total">
+                                    <field name="total" nolabel="1"/>
+                                    <field name="total_currency" nolabel="1" />
+                                </div>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="creditor"/>
+                                <field name="supply_cost_ref"/>
+                                <field name="cost_owner"/>
+                                <field name="payment_type"/>
+                                <field name="bank_account"/>
+                                <field name="app_method"/>
+                            </group>
+                            <group>
+                                <field name="invoice_date"/>
+                                <field name="doc_rec_date"/>
+                                <field name="due_date"/>
+                                <field name="tax_date"/>
+                                <field name="ref_number"/>
+                                <field name="override_tax_amt"/>
+                            </group>
+                        </group>
+                        <group string="Invoice Total">
+                            <group>
+                                <label for="os_total"/>
+                                <div class="o_row" name="os_total">
+                                    <field name="os_total" nolabel="1"/>
+                                    <field name="os_total_currency" nolabel="1" />
+                                </div>
+                                <label for="os_tax"/>
+                                <div class="o_row" name="os_tax">
+                                    <field name="os_tax" nolabel="1"/>
+                                    <field name="os_tax_currency" nolabel="1" />
+                                </div>
+                            </group>
+                            <group>
+                                <label for="local_total"/>
+                                <div class="o_row" name="local_total">
+                                    <field name="local_total" nolabel="1"/>
+                                    <field name="local_total_currency" nolabel="1" />
+                                </div>
+                                <label for="local_tax"/>
+                                <div class="o_row" name="local_tax">
+                                    <field name="local_tax" nolabel="1"/>
+                                    <field name="local_tax_currency" nolabel="1" />
+                                </div>
+                            </group>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="freight_console_costing_tree_view">
+            <field name="name">freight.console.costing.tree.view</field>
+            <field name="model">freight.console.costing</field>
+            <field name="arch" type="xml">
+                <tree string="Console Costing">
+                    <field name="posted"/>
+                    <field name="include_on_collect_inv"/>
+                    <field name="display_rated_shipment"/>
+                    <field name="os_cost_amt"/>
+                    <field name="local_cost_amt"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_console_costing_action">
+            <field name="name">Console Costing</field>
+            <field name="res_model">freight.console.costing</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Console Costing.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

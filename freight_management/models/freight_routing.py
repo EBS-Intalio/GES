@@ -77,3 +77,6 @@ class FreightRouting(models.Model):
     journey_ref = fields.Char('Journey Ref.')
 
     carrier_service_level = fields.Selection([('std', 'Standard')],string="Carrier Service Level")
+
+    # NEW FIELDS ACCORDING TO FILE
+    pre_advice_id = fields.Many2one('freight.pre.advice', string="Pre Advice")

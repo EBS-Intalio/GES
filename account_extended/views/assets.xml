@@ -4,6 +4,10 @@
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/account_extended/static/src/js/operating_unit_filter.js"/>
             <script type="text/javascript" src="/account_extended/static/src/js/action_create_statement_hide_show.js"/>
+            <link
+                href="/account_extended/static/src/css/reconcile_bank.css"
+                rel="stylesheet"
+            />
         </xpath>
     </template>
 

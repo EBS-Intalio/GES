@@ -204,6 +204,7 @@ class FreightBooking(models.Model):
     weight_type = fields.Selection(([('estimated', 'Estimated'), ('actual', 'Actual')]), string="Weight Type", required=False,default='estimated')
     clearance_required = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Clearance Required", required=False, default='no')
     warehousing = fields.Selection(([('yes', 'YES'), ('no', 'NO')]), string="Warehousing / Storage", required=False,default='no')
+    branch_id = fields.Many2one('operating.unit', string="Branch")
 
     def action_create_new_invoice(self):
         """
@@ -250,6 +251,8 @@ class FreightBooking(models.Model):
                 warn_list.append("Shipment Type")
         if not self.agent_id:
             warn_list.append("Customer")
+        if not self.branch_id:
+            warn_list.append("Branch")
         if not self.commodity_description and self.transport != 'documentation':
             warn_list.append("Commodity description")
         if not self.hs_code and self.transport != 'documentation':
@@ -329,7 +332,9 @@ class FreightBooking(models.Model):
                         'default_container_ids': [(6, 0, self.container_ids.ids)],
                         'default_service_details_ids': service_details,
                         'default_reference_ids': reference_vals_lst,
-                        'default_service_level': self.service_level}),
+                        'default_operating_unit_id': self.branch_id.id,
+                        'default_service_level': self.service_level,
+                        'from_booking':True}),
 
             book.write({'state': 'ship_order'})
             return {

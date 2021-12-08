@@ -47,19 +47,30 @@
                                 </div>
                             </group>
                         </group>
-                        <group string="Container">
-                            <field name="container_ids" nolabel="1">
-                                <tree>
-                                    <field name="number"/>
-                                    <field name="count"/>
-                                    <field name="cont_type"/>
-                                    <field name="seal"/>
-                                </tree>
-                            </field>
-                        </group>
-                        <group  string="Order">
-                            <field name="order_ids" nolabel="1"/>
-                        </group>
+                        <notebook>
+                            <page name="container" string="Container">
+                                <group>
+                                    <field name="container_ids" nolabel="1">
+                                        <tree>
+                                            <field name="number"/>
+                                            <field name="count"/>
+                                            <field name="cont_type"/>
+                                            <field name="seal"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page name="order" string="Order">
+                                <group>
+                                    <field name="order_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name="routing" string="Routing">
+                                <group>
+                                    <field name="routing_ids" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
