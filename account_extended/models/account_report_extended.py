@@ -51,7 +51,6 @@ class AccountReportExtended(models.AbstractModel):
     def _get_options_domain(self, options):
         domain = super(AccountReportExtended, self)._get_options_domain(options=options)
         domain += self._get_options_operating_unit_domain(options)
-        print("domainnnnnnnnnnnnnnnnnnnnnnn=================",domain)
         return domain
 
 
