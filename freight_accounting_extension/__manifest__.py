@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Freight Accounting Extension',
-    'version': '1.0.0.1',
+    'version': '1.0.0.2',
     'category': 'Accounting & Finance',
     'description': """
                 Freight Accounting Extension
