@@ -6,27 +6,11 @@
         <field name="arch" type="xml">
             <form string="Operating Unit">
                 <group name="main_group">
-                    <group>
-                        <field name="name"/>
-                        <field name="code"/>
-                        <field name="active"/>
-<!--                        <field name="phone"/>-->
-<!--                        <field name="internal_id"/>-->
-                        <field name="partner_id"/>
-                        <field name="company_id" groups="base.group_multi_company"/>
-                    </group>
-<!--                    <group string="Address">-->
-<!--                        <div class="o_address_format">-->
-<!--                            <field name="location_group" placeholder="Location Group" class="o_address_street" style="width:50%"/>-->
-<!--                            <field name="city" placeholder="City" class="o_address_country" style="width:50%"/>-->
-<!--                            <field name="state_id" class="o_address_country" placeholder="State"-->
-<!--                                   style="width:50%"/>-->
-<!--                            <field name="country_id" placeholder="Country" class="o_address_country"-->
-<!--                                  style="width:50%"/>-->
-<!--                        </div>-->
-
-<!--                    </group>-->
-
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="active" />
+                    <field name="partner_id" />
+                    <field name="company_id" groups="base.group_multi_company" />
                 </group>
             </form>
         </field>
