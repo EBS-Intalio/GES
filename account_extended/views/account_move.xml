@@ -7,8 +7,8 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//sheet/notebook/page[@id='aml_tab']/field[@name='line_ids']/tree/field[@name='name']" position="after">
-                    <field name="check_ref"/>
-                    <field name="payment_ref"/>
+                    <field name="check_ref" optional="hide"/>
+                    <field name="payment_ref" optional="hide"/>
                 </xpath>
             </field>
         </record>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_extended_account_payment_register_view_form_extended" model="ir.ui.view">
+            <field name="name">account_extended.account.payment.register.form.view.account.inherit</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <field name="payment_method_id" position="after">
+                    <field name="check_name" invisible="1" />
+                    <field name="available_partner_bank_ids" invisible="1"/>
+              <field name="check_num" attrs="{'invisible': [('check_name', '!=', 'Checks')]}"/>
+                </field>
+                <field name="partner_bank_id" position="after">
+                    <field name="payment_date_new"/>
+                    <field name="operating_unit_id" domain="[('company_id','=',company_id)]"/>
+                    <field name="payment_ref" />
+                    <field name="legal_name" />
+                    <field name="mode_of_payment" />
+                </field>
+
+            </field>
+        </record>
+    </data>
+</odoo>

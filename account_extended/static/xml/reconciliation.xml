@@ -1,13 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-extend="reconciliation.line.mv_line">
-        <t t-jquery="td.cell_label" t-operation="after">
-            <td class="cell_payment_ref">
-            <span class="font-weight-bold" t-esc="line.payment_ref"/>:
-        </td>
-            <td class="cell_check_ref">
-            <span class="font-weight-bold" t-esc="line.check_ref"/>:
-        </td>
+        <t t-jquery="td.cell_label" t-operation="append">
+            <t t-if="line.payment_ref &amp;&amp; line.payment_ref.length"> : </t>
+            <t t-esc="line.payment_ref"/>
+            <t t-if="line.check_ref &amp;&amp; line.check_ref.length"> : </t>
+            <t t-esc="line.check_ref"/>
+        </t>
+    </t>
+    <t t-extend="reconciliation.line.match">
+        <t t-jquery="div.match_controls" t-operation="after">
+            <div class="o_row">
+        <div>
+             <select name="Filter" id="filter_head" style="width:50px" class="filter_head">
+            <option value=""></option>
+                 <option value="code">Code</option>
+                 <option value="date">Date</option>
+<!--                 <option value="label">Label</option>-->
+        </select>
+        </div>
+                <div>
+                    <select name="Filter ASC DESC" id="filter_asc_desc" style="width:50px" class="filter_head_asc_desc">
+            <option value=""></option>
+                        <option value="asc">ASC</option>
+                        <option value="desc">DESC</option>
+        </select>
+        </div>
+    </div>
+        </t>
+        <t t-jquery="table" t-operation="replace">
+           <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Date</th>
+                <th>Label</th>
+                <th>Amount</th>
+                <th>Amount</th>
+                <th></th>
+                </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
         </t>
     </t>
 </templates>

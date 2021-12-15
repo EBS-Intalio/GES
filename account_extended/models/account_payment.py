@@ -23,6 +23,10 @@ class AccountPayemntEXT(models.Model):
                 for line in rec.move_id.line_ids:
                     line.payment_ref = rec.payment_ref
                     line.check_ref = rec.check_num
+            if rec.move_id and rec.move_id.line_ids and rec.operating_unit_id:
+                rec.move_id.operating_unit_id = rec.operating_unit_id.id
+                for line in rec.move_id.line_ids:
+                    line.operating_unit_id = rec.operating_unit_id.id
         return res
 
     @api.depends('reconciled_statement_ids')
@@ -68,6 +72,21 @@ class AccountPayemntEXT(models.Model):
             'type': 'ir.actions.act_window',
             'res_id': bank_statement.id,
         }
+
+    @api.depends('payment_type',
+                 'journal_id.inbound_payment_method_ids',
+                 'journal_id.outbound_payment_method_ids')
+    def _compute_payment_method_fields(self):
+        for pay in self:
+            if pay.payment_type == 'inbound':
+                pay.available_payment_method_ids = pay.journal_id.inbound_payment_method_ids
+            else:
+                pay.available_payment_method_ids = pay.journal_id.outbound_payment_method_ids
+
+        pay.hide_payment_method = len(
+            pay.available_payment_method_ids) == 1 and pay.available_payment_method_ids.code == 'manual'
+
+        pay.hide_payment_method = False
 
 
 

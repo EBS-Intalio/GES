@@ -289,7 +289,7 @@ class FreightOperationInherit(models.Model):
             if not company.deferral_journal_id:
                 continue
             journal_id = company.deferral_journal_id.id
-            if date.today().day == monthrange(date.today().year, date.today().month)[1] or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation'):
+            if date.today().day == monthrange(date.today().year, date.today().month)[1] or (self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation') or (self._context and self._context.get('bypass')):
             #     for shipment in self.search([('id','=',34)]):
                 for shipment in (self.filtered(lambda x:x.company_id == company) if self._context and self._context.get('active_model') and self._context.get('active_model') == 'freight.operation' else self.search([('company_id','=',company.id)])):
                     customer_invoices_ids = shipment.account_operation_lines.filtered(lambda x:x.ar_invoice_number and x.ar_invoice_number.state == 'posted')
@@ -745,3 +745,18 @@ class FreightOperationBilling(models.Model):
                     })
                     foreign_currency_billing_id.ar_bill_number = bill_id.id
                     bill_id.created_from_shipment = True
+
+
+class AccountJournalInherit(models.Model):
+    _inherit = "account.journal"
+
+    is_deferral = fields.Boolean('Is Deferral')
+
+    # def compute_is_deferral(self):
+    #     for rec in self:
+    #         rec.is_deferral = False
+    #         if rec.company_id.deferral_journal_id == rec.id:
+    #             rec.is_deferral = True
+
+    def get_defferal_entries(self):
+        self.env['freight.operation'].with_context(by_pass=True).get_deferrals_journal_entry()
