@@ -28,6 +28,14 @@ class OperatingUnit(models.Model):
         "Users Allowed",
     )
 
+    #new
+    internal_id = fields.Integer('Internal ID')
+    phone = fields.Char('Phone')
+    city = fields.Char('City')
+    state_id = fields.Many2one('res.country.state','State')
+    country_id = fields.Many2one('res.country','Country')
+    location_group = fields.Char('Location Group')
+
     _sql_constraints = [
         (
             "code_company_uniq",
