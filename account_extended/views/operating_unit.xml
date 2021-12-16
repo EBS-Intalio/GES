@@ -16,7 +16,7 @@
                                 <field name="phone"/>
                                 <field name="internal_id"/>
                                 <field name="partner_id"/>
-                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="company_id" groups="base.group_multi_company" required="1" />
                             </group>
                             <group string="Address">
                                 <div class="o_address_format">
