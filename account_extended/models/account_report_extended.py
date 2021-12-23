@@ -423,7 +423,12 @@ class ReportAccountFinancialReportExtended(models.Model):
 
     def check_formula_for_financial_line(self, financial_line, options,group_key):
         if self.id == self.env.ref('account_reports.account_financial_report_profitandloss0').id and self._context and not self._context.get('from_balance_sheet') and not self._context.get('from_cash_flow'):
-            codes_with_type_dict = {'OPINC':13,'OIN':14,'EXP':15,'DEP':16,'COS':17}
+            codes_with_type_dict = {'OPINC':self.env.ref('account.data_account_type_revenue') and self.env.ref('account.data_account_type_revenue').id ,#13
+                                    'OIN':self.env.ref('account.data_account_type_other_income') and self.env.ref('account.data_account_type_other_income').id,#14,
+                                    'EXP':self.env.ref('account.data_account_type_expenses') and self.env.ref('account.data_account_type_expenses').id,#15,
+                                    'DEP':self.env.ref('account.data_account_type_depreciation') and self.env.ref('account.data_account_type_depreciation').id,#16,
+                                    'COS':self.env.ref('account.data_account_type_direct_costs') and self.env.ref('account.data_account_type_direct_costs').id,#17
+                                    }
             codes_with_type_dict_value = {}
             for code in codes_with_type_dict.keys():
                 sql_query = """SELECT
@@ -458,7 +463,22 @@ class ReportAccountFinancialReportExtended(models.Model):
             })
             return codes_with_type_dict_value.get(financial_line.code)
         elif self.id == self.env.ref('account_reports.account_financial_report_balancesheet0').id:
-            codes_with_type_dict = {'BA': (3,), 'REC': ('receivable',), 'CAS': (5,), 'PRE': (7,), 'FA':( 8,),'PNCA':(6,),'CL1':(9,4),'CL2':('payable',),'NL':(10,),'CURR_YEAR_EARNINGS_ALLOC':(12,),'RETAINED_EARNINGS':(11,),'OS':(18,),'PREV_YEAR_EARNINGS_REMAINING':(13,14,15,16,17,),'ALLOCATED_EARNINGS':(12,)}
+            codes_with_type_dict = {
+                'BA': (self.env.ref('account.data_account_type_liquidity') and self.env.ref('account.data_account_type_liquidity').id,),#(3,),
+                'REC': ('receivable',),
+                'CAS': (self.env.ref('account.data_account_type_current_assets') and self.env.ref('account.data_account_type_current_assets').id,),#(5,),
+                'PRE': (self.env.ref('account.data_account_type_prepayments') and self.env.ref('account.data_account_type_prepayments').id,),#(7,),
+                'FA':(self.env.ref('account.data_account_type_fixed_assets') and self.env.ref('account.data_account_type_fixed_assets').id,),#( 8,),
+                'PNCA':(self.env.ref('account.data_account_type_non_current_assets') and self.env.ref('account.data_account_type_non_current_assets').id,),#(6,),
+                'CL1':(self.env.ref('account.data_account_type_current_liabilities') and self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_credit_card') and self.env.ref('account.data_account_type_credit_card').id),#(9,4),
+                'CL2':('payable',),
+                'NL':(self.env.ref('account.data_account_type_non_current_liabilities') and self.env.ref('account.data_account_type_non_current_liabilities').id,),#(10,),
+                'CURR_YEAR_EARNINGS_ALLOC':(self.env.ref('account.data_unaffected_earnings') and self.env.ref('account.data_unaffected_earnings').id,),#(12,),
+                'RETAINED_EARNINGS':(self.env.ref('account.data_account_type_equity') and self.env.ref('account.data_account_type_equity').id,),#(11,),
+                'OS':(self.env.ref('account.data_account_off_sheet') and self.env.ref('account.data_account_off_sheet').id,),#(18,),
+                'PREV_YEAR_EARNINGS_REMAINING':(13,14,15,16,17,),
+                'ALLOCATED_EARNINGS':(self.env.ref('account.data_unaffected_earnings') and self.env.ref('account.data_unaffected_earnings').id,),#(12,)
+            }
             codes_with_type_dict_value = {}
             for code in codes_with_type_dict.keys():
                 compare = ''
