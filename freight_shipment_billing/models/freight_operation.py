@@ -631,6 +631,7 @@ class FreightOperationBilling(models.Model):
                         'analytic_account_id': record.analytic_account_id.id,
                         'quantity': 1,
                         'created_from_shipment': True,
+                        'invoice_shipment':record.operation_billing_id and record.operation_billing_id.id or False,
                         'price_unit': record.sell_currency_id._convert(record.os_sell_amount, self.env.company.currency_id, company, date),
                         'billing_line_id': record.id,
                         'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
@@ -642,7 +643,7 @@ class FreightOperationBilling(models.Model):
                     'partner_id': debtor_id.id,
                     'invoice_date': fields.Date.today(),
                     'operating_unit_id':local_billing_id.operating_unit_id,
-                    'operation_billing_id': self.id,
+                    # 'operation_billing_id': self.id,#error
                     'currency_id':self.env.company.currency_id.id,
                     'invoice_type': "local_individual",
                     'invoice_line_ids': invoice_line_ids,
@@ -675,6 +676,7 @@ class FreightOperationBilling(models.Model):
                             'analytic_account_id': record.analytic_account_id.id,
                             'quantity': 1,
                             'created_from_shipment': True,
+                            'invoice_shipment': record.operation_billing_id and record.operation_billing_id.id or False,
                             'price_unit': record.os_sell_amount,
                             'billing_line_id': record.id,
                             'tax_ids': [(6, 0, record.sell_tax_ids.ids)],
@@ -686,7 +688,7 @@ class FreightOperationBilling(models.Model):
                         'partner_id': debtor_id.id,
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id': foreign_currency_billing_id.operating_unit_id,
-                        'operation_billing_id': self.id,
+                        # 'operation_billing_id': self.id,#error
                         'currency_id': currency_id.id,
                         'invoice_type': "foreign_individual",
                         'invoice_line_ids': invoice_line_ids,
@@ -728,6 +730,7 @@ class FreightOperationBilling(models.Model):
                             'analytic_account_id': record.analytic_account_id.id,
                             'quantity': 1,
                             'created_from_shipment': True,
+                            'invoice_shipment': record.operation_billing_id and record.operation_billing_id.id or False,
                             'price_unit': record.os_cost_amount,
                             'billing_line_id': record.id,
                             'tax_ids': [(6, 0, record.cost_tax_ids.ids)],
@@ -739,7 +742,7 @@ class FreightOperationBilling(models.Model):
                         'partner_id': vendor_id.id,
                         'invoice_date': fields.Date.today(),
                         'operating_unit_id':foreign_currency_billing_id.operating_unit_id,
-                        'operation_billing_id': self.id,
+                        # 'operation_billing_id': self.id,#error
                         'currency_id':currency_id.id,
                         'invoice_line_ids': invoice_line_ids,
                     })
