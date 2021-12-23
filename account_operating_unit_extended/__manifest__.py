@@ -2,7 +2,7 @@
 {
     "name": "Aaccount_financial_report_operating_unit",
 
-    "version": "14.0.0.0.2",
+    "version": "14.0.0.0.3",
     "author": "https://www.everbsgroup.com"
     "https://www.everbsgroup.com",
     "website": "https://www.everbsgroup.com",

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="account_view_account_list_inherit" model="ir.ui.view">
+            <field name="name">ebs_currency_revaluation.currency.revaluation.tree</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_list"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='reconcile']" position="after">
+                    <field name="currency_revaluation" widget="boolean_toggle" groups="base.group_multi_currency"/>
+                </xpath>
+            </field>
+        </record>
         <record id="account_account_form_inherit" model="ir.ui.view">
             <field name="name">ebs_currency_revaluation.currency.revaluation.form</field>
             <field name="model">account.account</field>
