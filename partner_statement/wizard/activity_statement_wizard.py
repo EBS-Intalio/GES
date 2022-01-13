@@ -23,6 +23,8 @@ class ActivityStatementWizard(models.TransientModel):
 
     show_partner_ref = fields.Boolean("Show Partner Ref", default=False)
     show_requested_by = fields.Boolean("Show Requested By", default=False)
+    date_used = fields.Selection([('due_date', 'Due Date'), ('transaction_date', 'Transaction Date')],
+                                 string='Date Used', default='due_date')
 
     @api.onchange("aging_type")
     def onchange_aging_type(self):
@@ -43,5 +45,6 @@ class ActivityStatementWizard(models.TransientModel):
         res = super()._prepare_statement()
         res.update({"date_start": self.date_start,
                     "show_partner_ref": self.show_partner_ref,
-                    "show_requested_by": self.show_requested_by})
+                    "show_requested_by": self.show_requested_by,
+                    "date_used":self.date_used})
         return res

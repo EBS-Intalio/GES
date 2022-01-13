@@ -26,12 +26,12 @@ class ReportStatementCommon(models.AbstractModel):
         return date.strftime(date_format) if date else ""
 
     def _get_account_display_lines(
-        self, company_id, partner_ids, date_start, date_end, account_type
+        self, company_id, partner_ids, date_start, date_end, account_type,date_used=False
     ):
         raise NotImplementedError
 
     def _get_account_initial_balance(
-        self, company_id, partner_ids, date_start, account_type
+        self, company_id, partner_ids, date_start, account_type,date_used=False
     ):
         return {}
 
@@ -342,11 +342,12 @@ class ReportStatementCommon(models.AbstractModel):
 
         res = {}
         # get base data
+        date_used = data.get('date_used') or False
         lines = self._get_account_display_lines(
-            company_id, partner_ids, date_start, date_end, account_type
+            company_id, partner_ids, date_start, date_end, account_type,date_used
         )
         balances_forward = self._get_account_initial_balance(
-            company_id, partner_ids, date_start, account_type
+            company_id, partner_ids, date_start, account_type,date_used
         )
 
         # print("BBBBBBBBBBB", lines)

@@ -216,6 +216,7 @@ class AccountMoveLineinherit(models.Model):
             if rec.move_id.move_type == 'in_invoice':
                 rec.bill_shipment = rec.shipment_line.id
 
+    @api.onchange('invoice_shipment')
     def _inverse_invoice_shipment(self):
         for rec in self:
             if rec.invoice_shipment:

@@ -13,7 +13,8 @@ class ActivityStatement(models.AbstractModel):
     _name = "report.partner_statement.activity_statement"
     _description = "Partner Activity Statement"
 
-    def _initial_balance_sql_q1(self, partners, date_start, account_type):
+    def _initial_balance_sql_q1(self, partners, date_start, account_type,date_used):
+        condition_dict = {'due_date':'l.date_maturity','transaction_date':'m.invoice_date'}
         return str(
             self._cr.mogrify(
                 """
@@ -32,10 +33,10 @@ class ActivityStatement(models.AbstractModel):
             JOIN account_move m ON (l.move_id = m.id)
             WHERE l.partner_id IN %(partners)s
                 AND at.type = %(account_type)s
-                AND l.date < %(date_start)s AND not l.blocked
+                AND {} < %(date_start)s AND not l.blocked
                 AND m.state IN ('posted')
             GROUP BY l.partner_id, l.currency_id, l.amount_currency, l.company_id
-        """,
+        """.format(condition_dict.get(date_used) or 'l.date'),
                 locals(),
             ),
             "utf-8",
@@ -57,7 +58,7 @@ class ActivityStatement(models.AbstractModel):
         )
 
     def _get_account_initial_balance(
-        self, company_id, partner_ids, date_start, account_type
+        self, company_id, partner_ids, date_start, account_type,date_used=False
     ):
         balance_start = defaultdict(list)
         partners = tuple(partner_ids)
@@ -67,7 +68,7 @@ class ActivityStatement(models.AbstractModel):
         SELECT partner_id, currency_id, balance
         FROM Q2"""
             % (
-                self._initial_balance_sql_q1(partners, date_start, account_type),
+                self._initial_balance_sql_q1(partners, date_start, account_type,date_used),
                 self._initial_balance_sql_q2(company_id),
             )
         )
@@ -75,7 +76,8 @@ class ActivityStatement(models.AbstractModel):
             balance_start[row.pop("partner_id")].append(row)
         return balance_start
 
-    def _display_lines_sql_q1(self, partners, date_start, date_end, account_type):
+    def _display_lines_sql_q1(self, partners, date_start, date_end, account_type,date_used):
+        condition_dict = {'due_date': 'l.date_maturity', 'transaction_date': 'm.invoice_date'}
         return str(
             self._cr.mogrify(
                 """
@@ -113,8 +115,8 @@ class ActivityStatement(models.AbstractModel):
             JOIN account_journal aj ON (l.journal_id = aj.id)
             WHERE l.partner_id IN %(partners)s
                 AND at.type = %(account_type)s
-                AND %(date_start)s <= l.date
-                AND l.date <= %(date_end)s
+                AND %(date_start)s <= {}
+                AND {} <= %(date_end)s
                 AND m.state IN ('posted')
             GROUP BY l.partner_id, m.name, l.date, l.date_maturity,
                 CASE WHEN (aj.type IN ('sale', 'purchase'))
@@ -131,7 +133,7 @@ class ActivityStatement(models.AbstractModel):
                     ELSE ''
                 END,
                 l.blocked, l.currency_id, l.amount_currency, l.company_id
-        """,
+        """.format(condition_dict.get(date_used) or 'l.date',condition_dict.get(date_used) or 'l.date'),
                 locals(),
             ),
             "utf-8",
@@ -155,7 +157,7 @@ class ActivityStatement(models.AbstractModel):
         )
 
     def _get_account_display_lines(
-        self, company_id, partner_ids, date_start, date_end, account_type
+        self, company_id, partner_ids, date_start, date_end, account_type,date_used=False
     ):
         res = dict(map(lambda x: (x, []), partner_ids))
         partners = tuple(partner_ids)
@@ -171,7 +173,7 @@ class ActivityStatement(models.AbstractModel):
         ORDER BY date, date_maturity, move_id"""
             % (
                 self._display_lines_sql_q1(
-                    partners, date_start, date_end, account_type
+                    partners, date_start, date_end, account_type,date_used
                 ),
                 self._display_lines_sql_q2(company_id),
             )

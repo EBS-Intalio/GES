@@ -127,6 +127,7 @@
             <xpath expr="//field[@name='filter_negative_balances']" position="after">
                 <field name="show_partner_ref" />
                 <field name="show_requested_by" />
+                <field name="date_used" widget="radio"/>
             </xpath>
         </field>
     </record>
