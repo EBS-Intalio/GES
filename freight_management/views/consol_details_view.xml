@@ -91,7 +91,7 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="bol" attrs="{'invisible':[('transport','not in',['land','rail'])]}"/>
+                                    <field name="bol" />
                                     <field name="payment"/>
                                 </group>
                                 <group>

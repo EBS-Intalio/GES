@@ -149,6 +149,12 @@
 
                                 <field name="house_bill"/>
                                 <field name="hbl_div_mode"/>
+
+                                <field name="marks_and_number"/>
+                                <field name="description"/>
+				<field name="entry_details"/>
+				<field name="screening_status"/>
+
                                 <field name="iss_date"/>
                                  <label for="on_board"/>
                                     <div class="o_row">

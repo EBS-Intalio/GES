@@ -570,9 +570,16 @@ class FreightOperation(models.Model):
     outturned_height = fields.Float(string="Height")
     outturned_height_uom = fields.Many2one('uom.uom', string="Volume UOM")
     outturned_comments = fields.Text(string="Outturn Comments")
-    marks_and_number = fields.Text(string="Marks & Number")
+    marks_and_number = fields.Text(string="Marks & Nums.")
 
     shipmen_defined_lines = fields.One2many('freight.doc.line', 'shipment_id', string="System Defined Lines")
+    entry_details = fields.Selection([('pmt', 'Customs Permit/Clearance Number'),
+                                      ('tsn', 'Transhipment Number'),
+                                      ('ata', 'ATA Carnet Number')],
+                                      string="Entry Details")
+    screening_status = fields.Selection([('yes', 'YES'), ('no', 'NO')], string="Screening Status")
+    description = fields.Text(string="Description")
+
 
     @api.model
     def create(self, values):
